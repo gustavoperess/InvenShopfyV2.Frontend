@@ -28,6 +28,7 @@ interface Data {
   id: number;
   warehouse: string;
   phone: string;
+  zipcode: string;
   email: string;
   address: string;
 }
@@ -70,7 +71,6 @@ const WarehouseList = () => {
     setOpen(false);
   }
 
-  
    // handle delete submission
   const handleDelete = async () => {
     if (warehouse > 0) {
@@ -144,7 +144,7 @@ const WarehouseList = () => {
     return 0;
   });
   
-
+  console.log(warehouseData)
   return (
 
     <>
@@ -278,7 +278,7 @@ const WarehouseList = () => {
                                 <TableCell>{warehouse.warehouseName}</TableCell>
                                 <TableCell>{warehouse.phoneNumber}</TableCell>
                                 <TableCell>{warehouse.email}</TableCell>
-                                <TableCell>{warehouse.address}</TableCell>
+                                <TableCell>{warehouse.zipCode} {warehouse.address}</TableCell>
                                 <TableCell>
                                   <div className="inventual-list-action-style">
                                     <PopupState variant="popover">

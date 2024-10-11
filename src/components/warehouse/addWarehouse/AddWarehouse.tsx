@@ -1,37 +1,41 @@
 "use client"
 import React, { useState } from 'react';
-import { MenuItem, TextField } from '@mui/material';
 import { toast } from 'react-toastify';
-
+import { useCreateWarehouseMutation } from '@/services/Warehouse/Warehouse';
 
 const AddWarehouse = () => {
-
-    const [warehouseName, setWarehouseName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
-    const [city, setCity] = useState('');
-    const [country, setCountry] = useState('');
-    const [zipCode, setZipCode] = useState('');
-    const [address, setAddress] = useState('');
+    const [addWarehouse] = useCreateWarehouseMutation();
+    const [warehouseName, setWarehouseName] = useState<string>('');
+    const [warehousePhoneNumber, setWarehousePhoneNumber] = useState<string>('');
+    const [warehouseEmail, setWarehouseEmailAddress] = useState<string>('');
+    const [warehouseCity, setWarehouseCity] = useState<string>('');
+    const [warehouseCountry, setWarehouseCountry] = useState<string>('');
+    const [warehouseZipCode, setWarehouseZipCode] = useState<string>('');
+    const [warehouseOpeningNotes, setWarehouseOpeningNotes] = useState<string>('');
 
     //handle Warehouse data
-    const handleWarehosueData = (e: any) => {
+    const handleWarehosueData = async (e: React.FormEvent<HTMLFormElement>) => {
+        const warehouseData = { warehouseName, warehousePhoneNumber, warehouseEmail,warehouseCity, warehouseCountry, warehouseZipCode, warehouseOpeningNotes };
         e.preventDefault();
         try {
+            await addWarehouse(warehouseData).unwrap();
             toast.success("Warehouse Created successfully!");
             setWarehouseName('');
-            setPhone('');
-            setEmail('');
-            setCity('');
-            setCountry('');
-            setZipCode('');
-            setAddress('');
-
+            setWarehousePhoneNumber('');
+            setWarehouseEmailAddress('');
+            setWarehouseCity('');  
+            setWarehouseCountry(''); 
+            setWarehouseZipCode(''); 
+            setWarehouseOpeningNotes('');
         } catch {
+            console.log("Error occurred while adding a Warehouse", e);
             toast.error("Failed to create Warehouse. Please try again later.");
         }
 
     }
+
+
+
 
     return (
         <>
@@ -59,8 +63,8 @@ const AddWarehouse = () => {
                                     <div className="inventual-input-field-style">
                                         <input
                                             required
-                                            value={phone}
-                                            onChange={(e) => setPhone(e.target.value)}
+                                            value={warehousePhoneNumber}
+                                            onChange={(e) => setWarehousePhoneNumber(e.target.value)}
                                             type="number"
                                             placeholder=' +234 23432432'
                                         />
@@ -73,8 +77,8 @@ const AddWarehouse = () => {
                                     <div className="inventual-input-field-style">
                                         <input
                                             required
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            value={warehouseEmail}
+                                            onChange={(e) => setWarehouseEmailAddress(e.target.value)}
                                             type="text"
                                             placeholder='info@example.com'
                                         />
@@ -87,46 +91,25 @@ const AddWarehouse = () => {
                                     <div className="inventual-input-field-style">
                                         <input
                                             required
-                                            value={city}
-                                            onChange={(e) => setCity(e.target.value)}
+                                            value={warehouseCity}
+                                            onChange={(e) => setWarehouseCity(e.target.value)}
                                             type="text"
-                                            placeholder='New York'
+                                            placeholder='London'
                                         />
                                     </div>
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-select-field">
-                                    <div className="inventual-form-field">
-                                        <h5>Country</h5>
-                                        <div className="inventual-select-field-style">
-                                            <TextField
-                                                select
-                                                required
-                                                value={country}
-                                                onChange={(e) => setCountry(e.target.value)}
-                                                label="Select"
-                                                defaultValue=""
-                                                SelectProps={{
-                                                    displayEmpty: true,
-                                                    renderValue: (value: any) => {
-                                                        if (value === '') {
-                                                            return <em>Select Country</em>;
-                                                        }
-                                                        return value;
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem value="">
-                                                    <em>Select Country</em>
-                                                </MenuItem>
-                                                <MenuItem value="United States">United States</MenuItem>
-                                                <MenuItem value="Canada">Canada</MenuItem>
-                                                <MenuItem value="Mexico">Mexico</MenuItem>
-                                                <MenuItem value="France">France</MenuItem>
-                                                <MenuItem value="Germany">Germany</MenuItem>
-                                            </TextField>
-                                        </div>
+                                <div className="inventual-form-field">
+                                    <h5>Country</h5>
+                                    <div className="inventual-input-field-style">
+                                        <input
+                                            required
+                                            value={warehouseCountry}
+                                            onChange={(e) => setWarehouseCountry(e.target.value)}
+                                            type="text"
+                                            placeholder='United Kingdom'
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -136,23 +119,23 @@ const AddWarehouse = () => {
                                     <div className="inventual-input-field-style">
                                         <input
                                             required
-                                            value={zipCode}
-                                            onChange={(e) => setZipCode(e.target.value)}
+                                            value={warehouseZipCode}
+                                            onChange={(e) => setWarehouseZipCode(e.target.value)}
                                             type="number"
-                                            placeholder='85701'
+                                            placeholder='SE20-5ET'
                                         />
                                     </div>
                                 </div>
                             </div>
                             <div className="col-span-12">
                                 <div className="inventual-form-field">
-                                    <h5>Address</h5>
+                                    <h5>Notes</h5>
                                     <div className="inventual-input-field-style">
                                         <textarea
                                             required
-                                            value={address}
-                                            onChange={(e) => setAddress(e.target.value)}
-                                            placeholder='2751 Polk Street, Tucson'
+                                            value={warehouseOpeningNotes}
+                                            onChange={(e) => setWarehouseOpeningNotes(e.target.value)}
+                                            placeholder='Notes....'
                                         ></textarea>
                                     </div>
                                 </div>

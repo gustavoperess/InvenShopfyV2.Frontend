@@ -12,13 +12,6 @@ export const warehouse = createApi({
         getWarehouseQuantity: builder.query<any, void>({
             query: () => 'Warehouse/warehouses-quantity',
         }),
-        // getAllWarehouses: builder.query<any, number>({
-        //     query: (pageNumber) => ({
-        //         url: "Warehouse/allwarehouses",
-        //         method: "GET",
-        //         params: { pageNumber}
-        //     }),
-        // }),
         getAllWarehouses: builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
                 url: `Warehouse/allwarehouses`,
@@ -32,8 +25,15 @@ export const warehouse = createApi({
                 method: 'DELETE',
             }),
         }),
+        createWarehouse: builder.mutation<any, any>({
+            query: (body) => ({
+                url: `Warehouse`,
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
 // Export auto-generated hooks for functional components
-export const { useGetWarehouseQuantityQuery, useGetAllWarehousesQuery, useDeleteWarehouseMutation } = warehouse;
+export const { useGetWarehouseQuantityQuery, useGetAllWarehousesQuery, useCreateWarehouseMutation, useDeleteWarehouseMutation } = warehouse;
