@@ -1,0 +1,19 @@
+//AdminUser
+.inventual-dashboard-user{
+    &.users-view{
+        @apply flex justify-between items-center;
+        .view-btn{
+            @apply cursor-pointer
+        }
+    }
+}
+.inventual-dashboard-user-list-start-img {
+    & img {
+        @apply rounded-[5px];
+    }
+}
+.inventual-dashboard-user-list-right {
+    & span {
+        @apply rounded-[100px];
+    }
+}

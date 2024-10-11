@@ -1,0 +1,12 @@
+.inventual-radio-field {
+	.MuiButtonBase-root {
+		&.MuiRadio-root {
+            @apply text-primary;
+		}
+	}
+}
+.MuiFormControlLabel-root {
+	.MuiTypography-root {
+		@apply font-primary tracking-normal;
+	}
+}

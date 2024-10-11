@@ -1,0 +1,68 @@
+* {
+    @apply box-border;
+}
+body {
+    @apply m-0 p-0 text-[14px] bg-lightest font-normal text-body font-primary;
+}
+input::placeholder,
+textarea::placeholder {
+    @apply opacity-100 text-body;
+}
+input,
+select,
+textarea,
+button {
+    @apply font-primary font-normal opacity-100 box-border;
+}
+button {
+    @apply cursor-pointer;
+}
+a,button,i {
+    @apply transition-all duration-300;
+}
+ul,
+ol {
+    @apply m-0 p-0 list-none;
+}
+img,
+svg,
+i {
+    @apply inline-block;
+}
+.custom-shadow {
+    @apply shadow-[0_20px_40px_rgba(18,42,91,0.05)];
+  }
+.inventual-common-card {
+    @apply bg-white p-5 sm:p-7 rounded-lg shadow-[0_20px_40px_rgba(18,42,91,0.05)];
+}
+//Material styles
+li.MuiMenuItem-root {
+    @apply outline-none text-[14px] text-heading font-primary not-italic flex items-center gap-[6px] min-h-10 min-w-[120px];
+    &:hover {
+        @apply text-primary;
+        a,i,button {
+            @apply text-primary;
+        }
+    }
+    em {
+        @apply not-italic;
+    }
+}
+
+//error page
+.content-error-item {
+    h2 {
+        @apply text-[28px] font-bold text-heading;
+    }
+    p {
+        @apply text-[15px] text-body;
+    }
+}
+.error-thumb {
+	img {
+        @apply mb-10 max-w-full;
+	}
+}
+.error-btn {
+	@apply mt-[35px];
+}

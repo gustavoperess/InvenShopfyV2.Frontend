@@ -1,0 +1,96 @@
+.inventual-possale-tab-product-text {
+    h5 {
+        @apply text-[15px] font-bold text-heading mb-2;
+    }
+
+    span {
+        @apply text-[14px] font-normal inline-block;
+    }
+}
+
+.inventual-possale-tab-product-img {
+    @apply h-[130px] flex flex-col justify-center items-center;
+}
+
+.inventual-possale-tab-product {
+    @apply border border-solid border-border pb-4 px-2 rounded-[5px] hover:border-primary cursor-pointer;
+    min-height: calc(100% - 10px);
+    transition: all linear 0.3s;
+}
+
+.inventual-possale-tab-product-acitve {
+    @apply border border-solid pb-4 px-2 rounded-[5px] border-primary cursor-pointer;
+    min-height: calc(100% - 10px);
+    transition: all linear 0.3s;
+}
+
+.inventual-possale-tab-menu-pagination {
+    & a {
+        @apply mx-2.5;
+        @apply inline-block;
+        transition: all linear 0.3s;
+
+        & .material-icons {
+            @apply text-[18px] leading-[33px];
+            transform: translateX(-1px);
+        }
+    }
+}
+
+//pos sale botom from 
+.inventual-possale-total-field {
+    @apply relative;
+
+    &.small-width {
+        & input {
+            @apply w-[150px] bg-gray focus:bg-white;
+        }
+    }
+
+    & input {
+        @apply m-0 h-[48px] leading-[46px] border border-e-0 border-solid border-border px-4 outline-none block text-[14px] font-primary font-semibold w-[180px] pe-11;
+        border-top-start-radius: 3px;
+        border-bottom-start-radius: 3px;
+
+        &::-moz-placeholder,
+        &::placeholder {
+            @apply text-[16px] opacity-100 font-primary font-semibold;
+            ;
+        }
+
+        &.disabled {
+            @apply bg-primary/5 cursor-not-allowed;
+        }
+    }
+
+    & button {
+        @apply h-[48px] w-10 leading-[46px] text-center border border-solid border-border outline-none inline-block text-[16px] font-semibold absolute end-0 bottom-0;
+        border-top-end-radius: 3px;
+        border-bottom-end-radius: 3px;
+        transition: all linear 0.3s;
+
+        &:hover {
+            @apply text-primary border-[#C1D5FE];
+        }
+    }
+}
+
+.payment-successful {
+    i {
+        @apply inline-flex items-center rounded-full border justify-center h-[60px] w-[60px] text-[30px];
+        --tw-border-opacity: 1;
+        color: rgb(50 201 141 / var(--tw-border-opacity));
+        border-color: rgb(50 201 141 / var(--tw-border-opacity));
+    }
+
+    h4 {
+        @apply text-2xl font-semibold text-[rgb(13_15_25_/_var(--tw-text-opacity))] mt-3;
+        --tw-text-opacity: 1;
+      }
+    
+      p {
+        @apply text-[15px] text-[rgb(97_97_97_/_var(--tw-text-opacity))];
+        --tw-text-opacity: 1;
+      }
+
+}

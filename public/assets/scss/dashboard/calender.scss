@@ -1,0 +1,24 @@
+.inventual-dashboard-calender-area{
+    .MuiDatePickerToolbar-root{
+        @apply pb-0 pt-8 pl-12;
+    }
+    .MuiTypography-overline{
+        @apply hidden;
+    }
+    .css-1rv8zyt-MuiStack-root {
+        @apply pt-0
+    }
+    .css-1rtg91x-MuiDateCalendar-root {
+         @apply h-[310px]
+    }
+      @media screen and (max-width: 1800px){
+        .MuiPickersLayout-root {
+            @apply inline-block;
+       }
+    }
+    .MuiDialogActions-root{
+        .MuiButtonBase-root{
+            @apply hidden
+        }
+    }
+}

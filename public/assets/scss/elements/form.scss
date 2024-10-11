@@ -1,0 +1,221 @@
+.inventual-form-field,
+.inventual-start-input-label-style {
+    @apply relative;
+    h5, h6 {
+        @apply text-[15px] text-heading font-semibold mb-3;
+    }
+    &.small-width{
+        & input{
+            @apply w-[150px];
+        }
+    }
+    input,select,textarea {
+        @apply m-0 h-12 leading-[46px] border border-solid border-border px-5 rounded outline-none block text-[14px] text-body font-primary font-normal w-full bg-gray focus:bg-white;
+        
+        &.disabled {
+            @apply bg-primary/5 cursor-not-allowed;
+        }
+    }
+    input, textarea {
+        @apply placeholder:text-body placeholder:text-[14px] font-primary;
+    }
+    textarea {
+        @apply h-[120px] leading-tight w-full py-2.5;
+    }
+    .react-datepicker-wrapper {
+        @apply w-full;
+        input {
+            @apply w-full;
+        }
+    }
+    .react-datepicker {
+        .react-datepicker__header__dropdown {
+            @apply mt-2.5;
+        }
+        select {
+            @apply w-full h-10 leading-10;
+        }
+        .react-datepicker__month-select,
+        .react-datepicker__year-select {
+            @apply px-2.5;
+        }
+        .react-datepicker__navigation-icon {
+            @apply top-0.5;
+        }
+    }
+    .react-datepicker__close-icon {
+        @apply end-4;
+    }
+    .react-datepicker__time-container {
+        @apply border-s w-[150px] min-w-[125px] border-border;
+        .react-datepicker__time .react-datepicker__time-box {
+            @apply w-full;
+        }
+    }
+    .react-datepicker {
+        @apply rounded-tr-none;
+    }
+    div.react-datepicker-popper {
+        transform: translate(0px, 50px) !important;
+    }
+    &.is-disabled {
+        textarea {
+            @apply h-[auto] resize-none;
+            &::placeholder {
+                @apply text-danger;
+            }
+        }
+    }
+}
+
+// input type file style
+div.inventual-input-type-file-style {
+    input {
+        @apply h-10 leading-10 border-[0.5px] border-border rounded outline-none outline-0 focus:ring-transparent focus:border-transparent focus:outline-primary text-heading text-[14px] font-primary font-medium px-4 bg-lightest w-full box-border cursor-pointer;
+    }
+    input::file-selector-button {
+    @apply bg-lightest rounded border border-solid border-transparent p-0 px-2 font-primary font-normal text-heading leading-none me-3 cursor-pointer;
+    }
+}
+// Material select field styles
+.inventual-select-field-style {
+    .MuiInputBase-root {
+        @apply bg-gray focus:bg-white w-full h-12 text-body border-border border shadow-none outline-none text-[14px] font-normal font-primary hover:border-border cursor-pointer;
+        .MuiButtonBase-root.Mui-selected {
+            @apply bg-primary/10;
+        }
+    }
+    .MuiSelect-select {
+        @apply py-3 ps-[22px] pe-10;
+    }
+    .MuiOutlinedInput-notchedOutline {
+        @apply hidden;
+    }
+    .MuiSvgIcon-root {
+        @apply end-3 text-body;
+    }
+    em {
+        @apply not-italic;
+    }
+    .MuiFormLabel-root {
+        @apply hidden;
+    }
+    .MuiFormControl-root {
+        @apply w-full;
+    }
+}
+
+// Material list action btn style
+.inventual-list-action-style {
+    button {
+        @apply border border-solid border-primary/50 h-9 rounded text-primary text-[14px] w-auto min-w-[85px] inline-flex items-center gap-2.5 px-4 font-primary;
+        i {
+            @apply text-primary/80 text-[14px] translate-y-[-2px] inline-block;
+        }
+    }
+    &.is-filter {
+        button {
+            @apply h-[2.5rem] px-5;
+        }
+    }
+    &.teal-btn {
+        button {
+            @apply border-teal text-teal;
+        }
+        svg {
+            * {
+                @apply fill-teal;
+            }
+        }
+    }
+}
+
+// Material Input Eye Style
+.inventual-form-field {
+    .inventual-input-eye-style {
+        input {
+            @apply py-0;
+            &::placeholder {
+                @apply text-body opacity-100 font-primary;
+            }
+        }
+        .MuiInputBase-root {
+            @apply w-full p-0;
+            &::after,
+            &::before {
+                @apply hidden;
+            }
+        }
+        .MuiButtonBase-root {
+            @apply text-body me-0 translate-x-[-5px];
+        }
+        .MuiFilledInput-root {
+            @apply bg-border;
+        }
+    }
+}
+
+// Input type file style
+.inventual-input-field-file-choose {
+    input {
+        @apply text-heading cursor-pointer ps-0;
+    }
+	input::file-selector-button {
+        @apply px-5 bg-border rounded border border-solid border-transparent p-0 translate-x-[-2px] text-body text-[14px] font-primary font-semibold me-2 cursor-pointer h-full;
+    }
+}
+
+//checkbox styles
+.check-spacing {
+	.inventual-checkbox-field-style label {
+		@apply ms-1.5 cursor-pointer;
+	}
+}
+.inventual-checkbox-field-style label {
+    @apply inline-flex items-start gap-1;
+}
+.inventual-checkbox-style {
+    .MuiFormControlLabel-root {
+        @apply m-0;
+    }
+    .MuiButtonBase-root {
+        @apply text-body/30 p-0 pe-0.5 translate-x-[-2px] relative top-[0.12rem];
+        &.Mui-checked {
+            @apply text-primary;
+        }
+    }
+    .MuiTypography-root {
+        @apply text-heading text-[15px] font-semibold font-primary translate-y-[2px] leading-none;
+    }
+    .MuiSvgIcon-root {
+        @apply h-6 w-6;
+    }
+}
+.inventual-add-product-content {
+    .inventual-checkbox-style .MuiFormControlLabel-root {
+        @apply gap-1.5;
+    }
+}
+
+// input multiple style
+.inventual-input-field-style {
+	&.multiple-field {
+        @apply flex flex-wrap gap-1 w-full;
+		input {
+            @apply w-[32px] p-0 text-center;
+		}
+	}
+    &.search-field{
+        @apply relative;
+        .search-close{
+            @apply absolute top-[10px] end-[10px] w-7 h-7 flex justify-center items-center bg-slate-200 rounded-full text-[20px] cursor-pointer;
+        }
+        .search-dropdown{
+            @apply absolute top-14 start-0 z-10;
+            width: -webkit-fill-available;
+            &.dropdown-scroll{
+                @apply max-h-[250px] overflow-y-auto;
+            }
+        }
+    }
+}

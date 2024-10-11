@@ -1,0 +1,76 @@
+//inventual table style
+.inventual-table-header-search {
+	& input {
+	  @apply h-10 w-full block rounded-[3px] border border-solid border-border ps-4 pe-9 text-[14px] font-normal font-primary focus:border-primary;
+	  &:focus-visible {
+		@apply outline-none;
+	  }
+	}
+	& span {
+	  @apply absolute top-[50%] end-3.5 -translate-y-2/4 text-[16px];
+	}
+}
+.inventual-input-field-file {
+	label {
+		@apply h-12 border-0 rounded-none outline-none block w-full bg-transparent cursor-pointer;
+		transition: all linear 0.3s;
+		line-height: 46px !important;
+		&:focus {
+		  @apply bg-white;
+		}
+	}
+	input {
+		@apply hidden;
+	}
+} 
+.inventual-addbrand-table-image {
+	img {
+		@apply w-12;
+	}
+}
+.inventual-input-field-file-image {
+    @apply w-40 min-w-40;
+	label {
+		@apply h-40 border border-dashed border-primary rounded-[10px] outline-none flex justify-center items-center text-[15px] text-heading font-primary font-normal w-full bg-gray cursor-pointer;
+		transition: all linear 0.3s;
+		line-height: 46px !important;
+		&:focus {
+			@apply bg-white;
+		}
+	}
+	input {
+		@apply hidden;
+	}
+}
+.inventual-input-field-file-image.image-1 {
+    width: 14rem;
+	label {
+		@apply bg-[#F6F9FF];
+	}
+}
+
+//import product area
+.inventual-import-porduct-area{
+	@apply mt-7;
+	.instruction-area{
+		@apply bg-red-100 rounded-md p-[20px];
+		.instruction-heading{
+			@apply border-b mb-5 pb-[5px] text-[20px] font-semibold  border-[rgb(239_203_210_/_var(--tw-border-opacity))] text-[rgb(13_15_25_/_var(--tw-text-opacity))];
+			--tw-border-opacity: 1;
+			--tw-text-opacity: 1;
+		}
+		.instruction-note {
+			@apply text-base font-semibold text-[rgb(97_97_97_/_var(--tw-text-opacity))];
+			--tw-text-opacity: 1;
+		  }
+		ol{
+			@apply mb-7 mt-5 ps-4 list-decimal;
+			li{
+				@apply mb-2 text-[16px];
+			}
+		}
+		
+		
+	}
+
+}

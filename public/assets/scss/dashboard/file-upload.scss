@@ -1,0 +1,60 @@
+.file-import-btn-wrapper {
+    @apply flex gap-5 flex-wrap
+}
+.file-import-btn-uploaded-wrap {
+    @apply flex gap-3 flex-wrap;
+}
+.file-import-btn {
+    @apply flex gap-5 flex-wrap;
+    input {
+        @apply h-[48px] bg-primary text-primary hover:text-success rounded px-[10px] leading-[48px] relative z-[1] hover:bg-success transition-all duration-300 cursor-pointer max-w-[200px];
+    }
+    input {
+        &::file-selector-button {
+            @apply hidden;
+        }
+    }
+    input[type="file"] {
+        &::placeholder {
+            @apply invisible;
+        }
+    }
+    .file-import-btn-inner {
+        @apply absolute top-[50%] start-[50%] text-[16px] whitespace-nowrap font-semibold font-primary z-[1] cursor-pointer text-white transform -translate-x-1/2 -translate-y-1/2;
+        i {
+            @apply me-1;
+        }
+    }
+    .image-container {
+        @apply relative;
+        .delete-icon {
+            @apply absolute h-5 w-5 bg-danger cursor-pointer text-[12px] leading-none text-white inline-flex justify-center items-center top-[-9px] end-[-9px] rounded-full;
+        }
+    }
+    .file-container{
+        @apply relative;
+        .delete-icon {
+            @apply ms-0.5 h-5 w-5 bg-danger cursor-pointer text-[12px] leading-none text-white inline-flex justify-center items-center rounded-md;
+        }
+    }
+}
+.fileuploaded-item {
+    @apply h-[48px] w-[48px] min-w-[48px];
+}
+// fileUpload
+.fileUpload-image {
+    @apply w-[160px] rounded-[120px];
+	img {
+		@apply rounded-[8px];
+	}
+}
+// drag-close 
+.inventual-inventual-drag-close {
+    @apply absolute top-[-9px] end-[-9px] w-[18px] h-[18px] bg-danger inline-flex items-center justify-center text-[12px] text-white rounded-[50%];
+}
+.inventual-drag-product-img {
+    @apply relative w-[60px] h-auto;
+}
+.image-flex{
+    @apply flex items-center gap-5;
+}

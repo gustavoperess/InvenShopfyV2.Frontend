@@ -1,0 +1,25 @@
+.inventual-login-wrapper {
+    @apply inline-block rounded-[10px] p-12 pb-11 bg-white max-w-[560px] w-[560px] maxSm:p-5 maxSm:pb-4;
+    box-shadow: 0px 10px 30px rgba(19,41,85,0.05);
+    @media (max-width: 600px) {
+		width: calc(100% - 40px);
+        max-width: inherit;
+	}
+}
+.inventual-input-field-style {
+    @apply relative;
+    .inventual-input-icon {
+        @apply absolute top-[1px] end-[1px] inline-flex justify-center w-[50px] h-[46px] bg-border text-body items-center;
+        i {
+            @apply text-[18px] text-body;
+        }
+    }
+    &.has-icon {
+        input {
+            @apply pe-[60px];
+        }
+    }
+}
+.inventual-input-field-style.has-icon-outline .inventual-input-icon {
+    @apply bg-transparent border-s border-border text-[15px];
+}

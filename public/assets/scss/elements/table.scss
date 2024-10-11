@@ -1,0 +1,167 @@
+//smalll table
+.inventual-common-small-table {
+    table {
+        @apply border bg-white border-border border-b-0 w-full maxMd:min-w-[450px];
+        tr {
+            @apply text-start h-[50px] relative border-b border-border;
+            th {
+                @apply font-semibold capitalize text-heading text-start;
+            }
+            th,td {
+                @apply px-1 py-1 text-[15px] first:ps-5 last:min-w-[95px] transition;
+            }
+            td {
+                @apply font-normal text-body;
+            }
+        }
+    }
+}
+
+//Large list table styles
+.inventual-common-lg-list {
+    @apply maxMd:pb-[300px] maxMd:overflow-x-auto overflow-y-visible;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    table {
+        @apply border bg-white border-border border-b-0 w-full maxMd:min-w-[1000px] maxMd:cursor-grab;
+        tr {
+            @apply text-start h-[50px] relative border-b border-border;
+            th {
+                @apply font-semibold capitalize text-heading;
+            }
+            th,td {
+                @apply px-1 py-1 text-[15px] first:ps-5 last:min-w-[95px] transition;
+            }
+            td {
+                @apply font-normal text-body;
+            }
+            &.inventual-table-row-active {
+                th,td {
+                    @apply bg-primary/5;
+                }
+            }
+        }
+    }
+}
+
+// Material Table Styles
+.inventual-common-mat-list {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    .MuiPaper-root {
+        @apply bg-transparent shadow-none;
+    }
+    table {
+        @apply border bg-white border-border border-b-0 w-full maxMd:min-w-[1000px] maxMd:cursor-grab;
+        .MuiTableRow-root {
+            @apply text-start h-[50px] relative;
+            .MuiTableCell-head {
+                @apply font-semibold capitalize text-heading font-primary;
+                .MuiTableSortLabel-root .MuiSvgIcon-root {
+                    @apply h-4 w-4;
+                }
+                .MuiTableSortLabel-root {
+                    &:hover {
+                        @apply font-semibold capitalize text-heading;
+                    }
+                }
+            }
+            .MuiTableCell-head,.MuiTableCell-body {
+                @apply px-1 py-1 text-[15px] first:ps-5 last:min-w-[95px] transition font-primary text-start;
+            }
+            .MuiTableCell-body {
+                @apply font-normal text-body;
+            }
+            .MuiTableCell-root {
+                @apply border-b border-border;
+            }
+        }
+    }
+    .MuiTablePagination-root {
+        @apply min-h-[0px] mt-4 bg-white rounded font-primary;
+    }
+    .MuiTablePagination-selectLabel,
+    .MuiTablePagination-displayedRows {
+        @apply text-[16px] font-medium font-primary text-heading capitalize;
+    }
+    .MuiToolbar-gutters {
+        @apply ms-0 ps-0;
+    }
+    .MuiTablePagination-displayedRows {
+        @apply ms-auto;
+    }
+    .MuiTablePagination-input {
+        @apply border border-border rounded;
+    }
+    .MuiTablePagination-spacer {
+        @apply hidden;
+    }
+    .MuiCheckbox-root {
+        @apply text-body;
+    }
+    .MuiTableRow-root:hover {
+        @apply bg-lightest;
+    }
+    .MuiInputBase-root {
+        @apply h-10 min-w-[60px];
+    }
+    .MuiSelect-select {
+        @apply min-w-[16px] flex justify-start ps-2.5;
+    }
+    .MuiToolbar-root {
+        p {
+            @apply text-[14px] font-medium text-body font-primary;
+        }
+    }
+    .MuiPaper-root {
+        @apply mb-0;
+    }
+}
+
+//Material Table Checkbox Style
+.inventual-common-small-table,
+.inventual-common-lg-list,
+.inventual-common-mat-list {
+    .MuiFormControlLabel-root {
+        @apply m-0;
+    }
+    .MuiButtonBase-root {
+        @apply p-0 pe-0.5 translate-x-[-2px];
+        &.Mui-checked {
+            @apply text-primary;
+        }
+    }
+    .MuiSvgIcon-root {
+        @apply h-6 w-6;
+    }
+    .MuiCheckbox-root {
+        @apply text-body/30;
+        &.MuiCheckbox-indeterminate {
+            @apply text-primary;
+        }
+    }
+}
+
+// Top sellar table 
+.inventual-common-small-table {
+	table {
+        .inventual-dashboard-supplier-list-name,
+        .inventual-dashboard-sellar-list-name {
+            @apply pt-[6px] pb-[6px]
+        }
+		tr {
+			th {
+                @apply border-r border-border;
+			}
+			td {
+                @apply border-r border-border;
+			}
+		}
+	}
+}

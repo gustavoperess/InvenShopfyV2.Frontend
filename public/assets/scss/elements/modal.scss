@@ -1,0 +1,45 @@
+div.MuiDialog-paper {
+    @apply p-[30px];
+    max-width: calc(100% - 64px);
+    overflow: inherit;
+    div.MuiDialogActions-root {
+        @apply p-0 pt-5;
+    }
+    .MuiDialogContent-root {
+        @apply p-0 pt-4 border-0 border-t border-border overflow-y-visible overflow-x-auto cursor-grab;
+        &.no-border{
+            @apply border-none;
+        }
+    }
+    .MuiDialogContent-root {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+.inventual-modal-title {
+    @apply flex flex-wrap gap-2.5 pb-2.5 items-center justify-between;
+    h4 {
+        @apply text-[20px] text-heading font-bold leading-none;
+    }
+    button {
+        @apply h-9 w-9 leading-[34px] text-center inline-block border border-danger text-danger rounded text-[18px];
+    }
+}
+.inventual-common-modal-width {
+    @apply w-[850px];
+    &.width-full {
+        @apply maxMd:w-full;
+    }
+    &.width-full.discount-popup {
+        @apply max-w-[700px];
+    }
+}
+.inventual-common-modal-width-medium {
+    @apply w-[650px];
+    &.width-full {
+        @apply maxMd:w-full;
+    }
+    &.width-full.discount-popup {
+        @apply max-w-[700px];
+    }
+}

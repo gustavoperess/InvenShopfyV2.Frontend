@@ -1,0 +1,12 @@
+.custom-height-50 {
+    @apply h-[50px];
+}
+.custom-height-70 {
+    @apply h-[70px] min-h-[70px];
+}
+.custom-height-100 {
+    @apply h-[100px];
+}
+.border-gray-borderThree {
+	@apply border-border;
+}

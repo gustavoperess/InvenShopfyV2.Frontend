@@ -1,0 +1,45 @@
+.inventual-common-tab-menus {
+    @apply font-primary;
+    .MuiTabs-flexContainer {
+        @apply border-b border-border;
+    }
+    .MuiTabs-root {
+        @apply min-h-0;
+    }
+    .MuiButtonBase-root {
+        @apply text-[15px] font-semibold font-primary text-heading transition-all duration-300 hover:bg-primary/10 hover:text-primary min-w-0 capitalize px-10;
+        &.MuiTabs-scrollButtons {
+            @apply px-0 bg-primary/5;
+        }
+        &.Mui-disabled {
+            @apply hidden;
+        }
+        &.Mui-selected {
+            @apply bg-primary/10 text-primary;
+        }
+    }
+}
+.inventual-common-tab-menus {
+	&.possale-tab {
+        .MuiTabs-flexContainer {
+            @apply border-0 gap-7;
+        }
+        .MuiButtonBase-root {
+            @apply rounded-[5px] xxxl:min-w-[30%];
+            &.Mui-selected {
+                @apply text-white;
+            }
+        }
+		.MuiTabs-flexContainer {
+			#simple-tab-0 {
+                @apply bg-primary text-white;
+			}
+			#simple-tab-1 {
+                @apply bg-success text-white;
+			}
+			#simple-tab-2 {
+                @apply bg-warning text-white;
+			}
+		}
+	}
+}

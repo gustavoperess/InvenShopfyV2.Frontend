@@ -1,0 +1,132 @@
+.inventual-btn {
+    @apply h-[48px] px-[30px] inline-flex items-center justify-center gap-[6px] bg-primary text-white font-semibold capitalize text-[16px] rounded-[5px] font-primary;
+    box-shadow:  0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    &:hover {
+        @apply bg-success
+    }
+    &.btn-low-padding{
+        @apply ps-[15px] pe-[15px];
+    }
+    &.disabled {
+        @apply cursor-not-allowed opacity-[60%];
+    }
+}
+.inventual-btn.primary-btn {
+    @apply bg-primary;
+    &:hover {
+        @apply bg-success;
+    }
+}
+.inventual-btn.secondary-btn {
+    @apply bg-success;
+    &:hover {
+        @apply bg-primary;
+    }
+}
+.inventual-btn.warning-btn {
+    @apply bg-warning;
+    &:hover {
+        @apply bg-primary;
+    }
+}
+.inventual-btn.teal-btn {
+    @apply bg-teal;
+    &:hover {
+        @apply bg-primary;
+    }
+}
+.inventual-btn.danger-btn {
+    @apply bg-danger;
+    &:hover {
+        @apply bg-primary;
+    }
+}
+//outline btn
+.inventual-btn.outline-btn {
+    @apply bg-transparent shadow-none text-body font-bold border border-border rounded-[5px];
+    &:hover {
+        @apply bg-primary border-transparent;
+        @apply text-white;
+        box-shadow:  0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    }
+}
+.inventual-btn.outline-btn.secondary-btn {
+    &:hover {
+        @apply bg-success
+    }
+}
+.inventual-btn.outline-btn.h-38 {
+    @apply h-[38px] px-[20px] hover:bg-white hover:text-body;
+    &:focus {
+        box-shadow: (0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12));
+    }
+}
+.inventual-outline-btn {
+    @apply inline-flex items-center justify-center h-12 text-[16px] font-bold px-6 border border-border rounded-[5px] hover:bg-primary hover:border-primary hover:text-white;
+    transition: all linear 0.3s;
+}
+
+//action btn
+.inventual-action-btn-wrapper {
+    @apply flex items-center gap-2;
+}
+.inventual-action-btn {
+    @apply h-[2.5rem] w-[2.5rem] flex items-center justify-center rounded-[3px] border  border-primary text-[14px] fill-primary;
+	svg {
+		* {
+            @apply fill-primary;
+		}
+	}
+    &.secondary-btn {
+        @apply border-success;
+        svg {
+            * {
+                @apply fill-success;
+            }
+        }
+    }
+    &.danger-btn {
+        @apply border-danger;
+        svg {
+            * {
+                @apply fill-danger;
+            }
+        }
+    }
+    &.warning-btn {
+        @apply border-warning;
+        svg {
+            * {
+                @apply fill-warning;
+            }
+        }
+    }
+    &.teal-btn {
+        @apply border-teal;
+        svg {
+            * {
+                @apply fill-teal;
+            }
+        }
+    }
+    &.teal-btn {
+        @apply border-teal;
+        svg {
+            * {
+                @apply fill-teal;
+            }
+        }
+    }
+    &.teal-btn {
+        @apply border-teal;
+        svg {
+            * {
+                @apply fill-teal;
+            }
+        }
+    }
+}
+// product delete button
+.product-delete-btn {
+    @apply h-[1.5rem] w-[1.5rem] inline-flex items-center justify-center border rounded-[3px] border-danger text-danger;
+}
