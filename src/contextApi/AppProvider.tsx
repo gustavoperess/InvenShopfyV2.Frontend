@@ -4,6 +4,8 @@
 import React, { createContext, useState, useEffect } from "react";
 import { AppContextType } from "@/interFace/interFace";
 import { usePathname } from "next/navigation";
+import { Provider } from 'react-redux';
+import { store } from '@/app/store'
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
 const AppProvider = ({ children }: { children: React.ReactNode }) => {
@@ -35,7 +37,11 @@ const AppProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
+    <Provider store={store}>
+      <AppContext.Provider value={contextValue}>
+        {children}
+      </AppContext.Provider>
+    </Provider>
   );
 };
 

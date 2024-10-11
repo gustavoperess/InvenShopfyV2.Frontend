@@ -132,6 +132,7 @@ const WarehouseList = () => {
   const [show, setShow] = useState<boolean | false>(false);
   const [deleteWarehouse] = useDeleteWarehouseMutation();
   const { data: warehouseData, error: warehouseError, isLoading: warehouseLoading, refetch } = useGetAllWarehousesQuery(currentPage);
+  console.log(warehouseData)
 
   // First Popup Start
   const [openFirstDialog, setOpenFirstDialog] = useState<boolean>(false);
