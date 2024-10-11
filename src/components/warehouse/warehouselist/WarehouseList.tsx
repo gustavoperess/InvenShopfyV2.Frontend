@@ -13,7 +13,11 @@ import {
   TableSortLabel,
   Menu,
   MenuItem,
-  TextField,
+  Modal,
+  Box,
+  Stack,
+  Button,
+  Typography,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import AddWarehousePopup from './popup/AddWarehousePopup';
@@ -23,148 +27,66 @@ import { useGetAllWarehousesQuery, useDeleteWarehouseMutation } from '@/services
 // Define the structure of the data
 interface Data {
   id: number;
-  sl: string;
   warehouse: string;
   phone: string;
   email: string;
   address: string;
-  protein: string;
 }
 
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    sl: '01',
-    warehouse: 'Warehouse 1',
-    phone: '+02 585 339 202',
-    email: 'Joseph@example.com',
-    address: '2851 Green Avenue, Oakland, CA 94612',
-    protein: '',
-  },
-  {
-    id: 2,
-    sl: '02',
-    warehouse: 'Warehouse 2',
-    phone: '+02 585 339 202',
-    email: 'paul@example.com',
-    address: '4148 Cooks Mine Road, Albuquerque, NM 87108',
-    protein: '',
-  },
-  {
-    id: 3,
-    sl: '03',
-    warehouse: 'Warehouse 3',
-    phone: '+02 585 339 20',
-    address: '4257 Marietta Street, Vallejo, CA 94590',
-    email: 'matthew@example.com',
-    protein: '',
-  },
-  {
-    id: 4,
-    sl: '04',
-    warehouse: 'Warehouse 4',
-    phone: '+02 585 339 202',
-    email: 'matthew@example.com',
-    address: '3926 Brookside Drive, Jasper, AL 35501',
-    protein: '',
-  },
-  {
-    id: 5,
-    sl: '05',
-    warehouse: 'Warehouse 5',
-    phone: '+02 585 339 202',
-    email: 'glenn@example.com',
-    address: '4408 Quarry Drive, Auburn, AL 36830',
-    protein: '',
-  },
-  {
-    id: 6,
-    sl: '06',
-    warehouse: 'Warehouse 6',
-    phone: '+02 585 339 202',
-    email: 'crow@example.com',
-    address: '2377 Gordon Street, Claremont, CA 91711',
-    protein: '',
-  },
-  {
-    id: 7,
-    sl: '07',
-    warehouse: 'Warehouse 7',
-    phone: '+02 585 339 202',
-    email: 'clark@example.com',
-    address: '1880 Gorby Lane, Jackson, MS 39201',
-    protein: '',
-  },
-  {
-    id: 8,
-    sl: '08',
-    warehouse: 'Warehouse 8',
-    phone: '+02 585 339 202',
-    email: 'jennifer@example.com',
-    address: '4292 Park Boulevard, Latimer, IA 50452',
-    protein: '',
-  },
-  {
-    id: 9,
-    sl: '09',
-    warehouse: 'Warehouse 9',
-    phone: '+02 585 339 202',
-    email: 'boser@example.com',
-    address: '236 Counts Lane, Cincinnati, KY 45214',
-    protein: '',
-  },
-  {
-    id: 10,
-    sl: '10',
-    warehouse: 'Warehouse 10',
-    phone: '+02 585 339 202',
-    email: 'maria@example.com',
-    address: '2751 Polk Street, Tucson, AZ 85701',
-    protein: '',
-  },
-];
+
 
 const WarehouseList = () => {
-
-  const [currentPage, setCurrentPage] = useState<number>(1);  // Managing current page number
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
   const [warehouse, setWarehouse] = useState<number>(0);
-  const [show, setShow] = useState<boolean | false>(false);
-  const [deleteWarehouse] = useDeleteWarehouseMutation();
-  const { data: warehouseData, error: warehouseError, isLoading: warehouseLoading, refetch } = useGetAllWarehousesQuery(currentPage);
-  console.log(warehouseData)
-
-  // First Popup Start
-  const [openFirstDialog, setOpenFirstDialog] = useState<boolean>(false);
-  const handleFirstDialogOpen = () => {
-    setOpenFirstDialog(true);
-  };
-  const handleFirstDialogClose = () => {
-    setOpenFirstDialog(false);
-  };
-  // First Popup End
-
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
-
-  const dummyData = (e: any) => {
-    e.preventDefault();
-  };
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [deleteWarehouse] = useDeleteWarehouseMutation();
+  const { data: warehouseData, error: warehouseError, isLoading: warehouseLoading, refetch } = useGetAllWarehousesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+
+
+  // if (warehouseLoading) return <div>Loading...</div>;
+  // if (warehouseError) return <div>Error loading data</div>;
+
+  
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+
+
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setCurrentPageSize(parseInt(event.target.value, 10));
+      setCurrentPageNumber(1); // Reset to first page on rows per page change
+      refetch();
+    };
+  
+
+  const handleOpenDelete = (warehouseId: number) => {
+    setWarehouse(warehouseId);
+    setOpen(true);
   };
+
+  const handleCloseDelete = () => {
+    setOpen(false);
+  }
+
+  const handleDelete = async () => {
+    if (warehouse > 0) {
+      try {
+        await deleteWarehouse(warehouse);
+        setOpen(false);
+        refetch()
+      } catch (err) {
+        console.error('Error deleting the category:', err);
+      }
+    }
+  };
+
+
 
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
@@ -174,13 +96,13 @@ const WarehouseList = () => {
   };
 
   // Handler for selecting/deselecting all items
-  const handleSelectAllClick = (checked: boolean) => {
-    if (checked) {
-      setSelected(rows.map((row) => row.id));
-    } else {
-      setSelected([]);
-    }
-  };
+  // const handleSelectAllClick = (checked: boolean) => {
+  //   if (checked) {
+  //     setSelected(rows.map((row) => row.id));
+  //   } else {
+  //     setSelected([]);
+  //   }
+  // };
 
   // Handler for selecting/deselecting a single item
   const handleClick = (id: number) => {
@@ -207,19 +129,19 @@ const WarehouseList = () => {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
-    const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+  // const sortedRows = rows.slice().sort((a, b) => {
+  //   const isAsc = order === 'asc';
+  //   const aValue = (a as any)[orderBy];
+  //   const bValue = (b as any)[orderBy];
 
-    if (aValue < bValue) {
-      return isAsc ? -1 : 1;
-    }
-    if (aValue > bValue) {
-      return isAsc ? 1 : -1;
-    }
-    return 0;
-  });
+  //   if (aValue < bValue) {
+  //     return isAsc ? -1 : 1;
+  //   }
+  //   if (aValue > bValue) {
+  //     return isAsc ? 1 : -1;
+  //   }
+  //   return 0;
+  // });
 
   return (
 
@@ -255,12 +177,9 @@ const WarehouseList = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Date</MenuItem>
-                            <MenuItem onClick={popupState.close}>Customer</MenuItem>
                             <MenuItem onClick={popupState.close}>Warehouse</MenuItem>
-                            <MenuItem onClick={popupState.close}>Biller</MenuItem>
-                            <MenuItem onClick={popupState.close}>Paid</MenuItem>
-                            <MenuItem onClick={popupState.close}>Due</MenuItem>
+                            <MenuItem onClick={popupState.close}>Email</MenuItem>
+                            <MenuItem onClick={popupState.close}>Address</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -288,18 +207,14 @@ const WarehouseList = () => {
                           <TableHead className='bg-lightest'>
                             <TableRow>
                               <TableCell>
-                                <Checkbox
+                                {/* <Checkbox
                                   indeterminate={selected.length > 0 && selected.length < rows.length}
                                   checked={rows.length > 0 && selected.length === rows.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
-                                />
+                                /> */}
                               </TableCell>
                               <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'sl'}
-                                  direction={orderBy === 'sl' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('sl')}
-                                >
+                                <TableSortLabel>
                                   sl
                                 </TableSortLabel>
                               </TableCell>
@@ -313,11 +228,7 @@ const WarehouseList = () => {
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'phone'}
-                                  direction={orderBy === 'phone' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('phone')}
-                                >
+                                <TableSortLabel>
                                   Phone
                                 </TableSortLabel>
                               </TableCell>
@@ -340,55 +251,46 @@ const WarehouseList = () => {
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'protein'}
-                                  direction={orderBy === 'protein' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('protein')}
-                                >
+                                <TableSortLabel>
                                   Action
                                 </TableSortLabel>
                               </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
-                                <TableRow
-                                  key={row.id}
-                                  hover
-                                  onClick={() => handleClick(row.id)}
-                                  role="checkbox"
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
-                                >
-                                  <TableCell>
-                                    <Checkbox checked={isSelected(row.id)} />
-                                  </TableCell>
-                                  <TableCell>{row.sl}</TableCell>
-                                  <TableCell>{row.warehouse}</TableCell>
-                                  <TableCell>{row.phone}</TableCell>
-                                  <TableCell>{row.email}</TableCell>
-                                  <TableCell>{row.address}</TableCell>
-                                  <TableCell>
-                                    <div className="inventual-list-action-style">
-                                      <PopupState variant="popover">
-                                        {(popupState: any) => (
-                                          <React.Fragment>
-                                            <button className='' type='button' {...bindTrigger(popupState)}>
-                                              Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                            </button>
-                                            <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href="/warehouse/addWarehouse">Edit</Link></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                            </Menu>
-                                          </React.Fragment>
-                                        )}
-                                      </PopupState>
-                                    </div>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
+                            {warehouseData?.data.map((warehouse: any) => (
+                              <TableRow key={warehouse.id} hover
+                                onClick={() => handleClick(warehouse.id)}
+                                role="checkbox"
+                                aria-checked={isSelected(warehouse.id)}
+                                selected={isSelected(warehouse.id)}>
+                                <TableCell>
+                                  <Checkbox checked={isSelected(warehouse.id)} />
+                                </TableCell>
+                                <TableCell>{warehouse.id}</TableCell>
+                                <TableCell>{warehouse.warehouseName}</TableCell>
+                                <TableCell>{warehouse.phoneNumber}</TableCell>
+                                <TableCell>{warehouse.email}</TableCell>
+                                <TableCell>{warehouse.address}</TableCell>
+                                <TableCell>
+                                  <div className="inventual-list-action-style">
+                                    <PopupState variant="popover">
+                                      {(popupState: any) => (
+                                        <React.Fragment>
+                                          <button className='' type='button' {...bindTrigger(popupState)}>
+                                            Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                          </button>
+                                          <Menu {...bindMenu(popupState)}>
+                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href="/warehouse/addWarehouse">Edit</Link></MenuItem>
+                                            <MenuItem onClick={() => handleOpenDelete(warehouse.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                          </Menu>
+                                        </React.Fragment>
+                                      )}
+                                    </PopupState>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
                           </TableBody>
                         </Table>
                       </TableContainer>
@@ -398,21 +300,42 @@ const WarehouseList = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                      component="div"
+                      count={warehouseData?.totalCount || 0}
+                      page={currentPageNumber - 1}
+                      onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
+                      rowsPerPage={currentPageSize}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
               </div>
             </div>
+            <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  bgcolor: 'background.paper',
+                  border: '2px solid #000',
+                  boxShadow: 24,
+                  zIndex: 9999,
+                  p: 4,
+                }}
+              >
+                <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Warehouse?</Typography>
+                <Stack spacing={2} direction="row">
+                  <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                  <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                </Stack>
+              </Box>
+            </Modal>
           </div>
         </div>
       </div>
-      <AddWarehousePopup open={openFirstDialog} handleAddWarehouseDialogClose={handleFirstDialogClose} />
+
     </>
 
   );
