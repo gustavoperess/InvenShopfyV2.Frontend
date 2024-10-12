@@ -8,6 +8,7 @@ import NotificationDropdown from "./NotificationDropdown";
 import QuickMenuDropdown from "./QuickMenuDropdown";
 import LanguageDropdown from "./LanguageDropdown";
 import useGlobalContext from "@/hooks/use-context";
+import { useUserLogOutMutation } from "@/services/Authentication/Authentication";
 
 const Header = () => {
   const [isQuickDropdown, setQuickDropdown] = useState<boolean>(false);
@@ -15,6 +16,7 @@ const Header = () => {
   const [isEmailDropdown, setEmailDropdown] = useState<boolean>(false);
   const [isProfileDropdown, setProfileDropdown] = useState<boolean>(false);
   const [isNotificationDropdown, setNotificationDropdown] = useState<boolean>(false);
+  const [logout] = useUserLogOutMutation();
 
   const toggleQuickDropdown = () => {
     setQuickDropdown(!isQuickDropdown);
@@ -119,7 +121,7 @@ const Header = () => {
             <div className={`inventual-quick-dropdown inventual-quick-pro-dropdown ${isProfileDropdown ? 'promenu-enable' : ''}`}>
               <ul>
                 <li><a href="/profile"><i className="fal fa-user"></i> Profile</a></li>
-                <li><a href="/"><i className="fal fa-sign-out"></i> Logout</a></li>
+                <li><a onClick={logout} href="/"><i className="fal fa-sign-out"></i> Logout</a></li>
               </ul>
             </div>
           </div>

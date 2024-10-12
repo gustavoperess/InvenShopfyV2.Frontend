@@ -13,14 +13,36 @@ export const authApi = createApi({
     baseQuery: baseQueryWithCookies,
     endpoints: (builder) => ({
         userLogin: builder.mutation({
-            query: (credentials) => ({
-                url: '/identity/login?useCookies=true',
-                method: 'POST',
-                body: credentials,
-            }),
+            query: (credentials) => {     
+                return {
+                    url: '/identity/handleLoginApplication?useCookies=true',
+                    method: 'POST',
+                    body: credentials,
+                };
+            },
         }),
+        userRegister: builder.mutation({
+            query: (credentials) => {
+                console.log('Credentials being sent to the backend:', credentials);
+                return {
+                    url: '/identity/register',
+                    method: 'POST',
+                    body: credentials,
+                }
+            }
+        }),
+        userLogOut: builder.mutation({
+            query: () => {
+                console.log('Credentials being sent to the backend:');
+                return {
+                    url: '/identity/logout',
+                    method: 'POST',
+                }
+            }
+        })
+
     }),
 });
 
 // Export the mutation hook
-export const { useUserLoginMutation } = authApi;
+export const { useUserLoginMutation, useUserRegisterMutation, useUserLogOutMutation } = authApi;

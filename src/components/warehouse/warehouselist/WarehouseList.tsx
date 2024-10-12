@@ -276,9 +276,9 @@ const WarehouseList = () => {
                                 </TableCell>
                                 <TableCell>{warehouse.id}</TableCell>
                                 <TableCell>{warehouse.warehouseName}</TableCell>
-                                <TableCell>{warehouse.phoneNumber}</TableCell>
-                                <TableCell>{warehouse.email}</TableCell>
-                                <TableCell>{warehouse.zipCode} {warehouse.address}</TableCell>
+                                <TableCell>{warehouse.warehousePhoneNumber}</TableCell>
+                                <TableCell>{warehouse.warehouseEmail}</TableCell>
+                                <TableCell>{warehouse.warehouseZipCode} {warehouse.warehouseCountry} {warehouse.warehouseCity}</TableCell>
                                 <TableCell>
                                   <div className="inventual-list-action-style">
                                     <PopupState variant="popover">

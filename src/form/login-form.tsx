@@ -1,6 +1,6 @@
 "use client"
 import { FilledInput, IconButton, InputAdornment } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Password, Visibility, VisibilityOff } from '@mui/icons-material';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
@@ -10,32 +10,41 @@ import { login_schema } from '@/utils/validation-schema';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation'
 import ErrorMassage from './input-form-error';
+import { useUserLoginMutation } from '@/services/Authentication/Authentication';
+import { string } from 'yup';
 
 const LoginForm = () => {
     //form password field
     const router = useRouter()
+    const [loginUser] = useUserLoginMutation();
     const [isBtnDisable, setBtnDisable] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
     //form password field
 
-    const { handleSubmit, handleBlur, handleChange, values, errors, touched, resetForm } = useFormik({
+    const { handleSubmit,handleChange, handleBlur, values, errors, touched, resetForm } = useFormik({
         initialValues: {
-            userName: "admin123",
-            password: "admin123"
+            userName: '',
+            password: ''
         },
         validationSchema: login_schema,
         onSubmit: async (values) => {
             try {
+                const credentials = {
+                    Email: values.userName,
+                    Password: values.password
+                };
+                await loginUser(credentials).unwrap();
                 resetForm();
                 toast.success("Login Successfully");
                 setBtnDisable(true)
                 router.push("/dashboard")
-
             } catch (error: any) {
+                console.log("THIS HERE")
                 toast.warning(error.message);
             }
         }
@@ -96,12 +105,12 @@ const LoginForm = () => {
                     <Link className="text-[16px] inline-block text-primary" href="/forgotpassword">Forgot Password?</Link>
                 </div>
                 <div className="inventual-login-btn mb-7">
-                    <button type="submit" className="inventual-btn w-full">Log in</button>
+                     <button type="submit" className="inventual-btn w-full" disabled={isBtnDisable}>Log in</button>
                 </div>
                 <div className="inventual-login-footer">
                     <div className="inventual-login-footer-account text-center">
                         <span className="text-[16px] inline-block text-body">
-                            Have not an account? <Link className="text-[16px] text-primary" href="/registration">Register</Link>
+                            Don't have an account? <Link className="text-[16px] text-primary" href="/registration">Register</Link>
                         </span>
                     </div>
                 </div>
