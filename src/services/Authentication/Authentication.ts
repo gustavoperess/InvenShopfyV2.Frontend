@@ -31,6 +31,16 @@ export const authApi = createApi({
                 }
             }
         }),
+        userRegisterTwo: builder.mutation({
+            query: (credentials) => {
+                console.log('Credentials being sent to the backend:', credentials);
+                return {
+                    url: '/identity/register-custom',
+                    method: 'POST',
+                    body: credentials,
+                }
+            }
+        }),
         userLogOut: builder.mutation({
             query: () => {
                 console.log('Credentials being sent to the backend:');
@@ -45,4 +55,4 @@ export const authApi = createApi({
 });
 
 // Export the mutation hook
-export const { useUserLoginMutation, useUserRegisterMutation, useUserLogOutMutation } = authApi;
+export const { useUserLoginMutation, useUserRegisterMutation, useUserLogOutMutation, useUserRegisterTwoMutation } = authApi;

@@ -13,10 +13,10 @@ import { signup_schema } from '@/utils/validation-schema';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import ErrorMassage from './input-form-error';
-import { useUserRegisterMutation } from '@/services/Authentication/Authentication';
+import { useUserRegisterMutation, useUserRegisterTwoMutation } from '@/services/Authentication/Authentication';
 
 const RegistrationFrom = () => {
-    const [registerUser] = useUserRegisterMutation();
+    const [registerUser] = useUserRegisterTwoMutation();
     const router = useRouter()
     const [addRole, setAddRole] = useState("")
 
@@ -35,17 +35,17 @@ const RegistrationFrom = () => {
             email: "",
             password: "",
             phone: "",
-            selectRole: addRole
+            selectRole: ""
         },
         validationSchema: signup_schema,
         onSubmit: async (values) => {
-            console.log(values)
             const credentials = {
                 Name: values.name,
                 UserName: values.userName,
                 Email: values.email,
-                Password: values.password,
-                PhoneNumber: values.phone
+                PasswordHash: values.password,
+                PhoneNumber: values.phone,
+                Roles: addRole
             };
             try {
                 await registerUser(credentials).unwrap();
