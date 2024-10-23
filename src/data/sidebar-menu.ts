@@ -3,7 +3,7 @@ import { MenuItem } from "@/interFace/interFace";
 export const menuData: MenuItem[] = [
     {
         label: "Dashboard",
-        routeLink: "/",
+        routeLink: "/dashboard", // CHANGED THIS. NEED TO CHECK WHEN THE USER IS LOGGED
         iconClas: "fal fa-home"
 
     },

@@ -15,7 +15,7 @@ export const authApi = createApi({
         userLogin: builder.mutation({
             query: (credentials) => {     
                 return {
-                    url: '/identity/handleLoginApplication?useCookies=true',
+                    url: '/identity/login-custom?useCookies=true',
                     method: 'POST',
                     body: credentials,
                 };
@@ -45,7 +45,7 @@ export const authApi = createApi({
             query: () => {
                 console.log('Credentials being sent to the backend:');
                 return {
-                    url: '/identity/logout',
+                    url: '/identity/logout-custom',
                     method: 'POST',
                 }
             }

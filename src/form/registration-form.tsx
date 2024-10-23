@@ -45,7 +45,7 @@ const RegistrationFrom = () => {
                 Email: values.email,
                 PasswordHash: values.password,
                 PhoneNumber: values.phone,
-                Roles: addRole
+                RoleName: addRole
             };
             try {
                 await registerUser(credentials).unwrap();
