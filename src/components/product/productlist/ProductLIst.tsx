@@ -48,7 +48,6 @@ const ProductList = () => {
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [open, setOpen] = React.useState(false);
   const [product, setProduct] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<string>();
@@ -89,9 +88,6 @@ const ProductList = () => {
         }
       }
     };
-
-
-
 
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
@@ -152,8 +148,7 @@ const ProductList = () => {
     return 0;
   });
 
-  console.log(productData?.data)
-
+  
   return (
     <>
       <div className="inventual-content-area px-4 sm:px-7">

@@ -14,103 +14,70 @@ import {
   TableSortLabel,
   Menu,
   MenuItem,
+  Typography,
+  Modal,
+  Box,
+  Stack,
+  Button,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-
-import image1 from '../../../../public/assets/img/product/brand-2.png';
-import image2 from '../../../../public/assets/img/product/brand-3.png';
-import image3 from '../../../../public/assets/img/product/brand-4.png';
-import image4 from '../../../../public/assets/img/product/brand-5.png';
-import image5 from '../../../../public/assets/img/product/brand-6.png';
-import image6 from '../../../../public/assets/img/product/brand-7.png';
-import image7 from '../../../../public/assets/img/product/brand-8.png';
-import image8 from '../../../../public/assets/img/product/brand-9.png';
-import image9 from '../../../../public/assets/img/product/brand-10.png';
+import { useGetAllProductsBrandQuery, useDeleteBrandMutation } from '@/services/Product/Brand';
 import { toast } from 'react-toastify';
 
 // Define the structure of the data
 interface Data {
   id: number;
-  image: StaticImageData;
-  brandName: string;
-  protein: string;
+  title: string;
+  brandImage: string;
 }
 
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    image: image1,
-    brandName: 'Dell',
-    protein: '',
-  },
-  {
-    id: 2,
-    image: image2,
-    brandName: 'Reative',
-    protein: '',
-  },
-  {
-    id: 3,
-    image: image3,
-    brandName: 'Autodesk',
-    protein: '',
-  },
-  {
-    id: 4,
-    image: image4,
-    brandName: 'Samsung',
-    protein: '',
-  },
-  {
-    id: 5,
-    image: image5,
-    brandName: 'Redmi',
-    protein: '',
-  },
-  {
-    id: 6,
-    image: image6,
-    brandName: 'Ayam Goreng',
-    protein: '',
-  },
-  {
-    id: 7,
-    image: image7,
-    brandName: 'Amazon',
-    protein: '',
-  },
-  {
-    id: 8,
-    image: image8,
-    brandName: 'Adidas',
-    protein: '',
-  },
-  {
-    id: 9,
-    image: image9,
-    brandName: 'Realme',
-    protein: '',
-  },
-];
+
 
 const AddBrandList = () => {
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [open, setOpen] = React.useState(false);
+  const [brand, setBrand] = useState<number>(0);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [deleteBrand] = useDeleteBrandMutation();
+  const { data: brandData, error: brandError, isLoading: brandLoading, refetch } = useGetAllProductsBrandQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
+
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1); 
+    refetch();
   };
+    // handle opening delete modal
+    const handleOpenDelete = (productId: number) => {
+      setBrand(productId);
+      setOpen(true);
+    };
+     // handle closing delete modal
+     const handleCloseDelete = () => {
+      setOpen(false);
+    }
 
+     // handle delete submission
+     const handleDelete = async () => {
+      if (brand > 0) {
+        try {
+          await deleteBrand(brand);
+          setOpen(false);
+          refetch()
+        } catch (err) {
+          console.error('Error deleting the category:', err);
+        }
+      }
+    };
+  
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -121,7 +88,7 @@ const AddBrandList = () => {
   // Handler for selecting/deselecting all items
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(rows.map((row) => row.id));
+      setSelected(brandData?.data.map((brand: any) => brand.id));
     } else {
       setSelected([]);
     }
@@ -152,10 +119,14 @@ const AddBrandList = () => {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+  const sortedRows = brandData?.data.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof Data]; 
+    const bValue = b[orderBy as keyof Data];
+    if (aValue === undefined || bValue === undefined) {
+      return 0; 
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -254,63 +225,57 @@ const AddBrandList = () => {
                             <TableRow>
                               <TableCell>
                                 <Checkbox
-                                  indeterminate={selected.length > 0 && selected.length < rows.length}
-                                  checked={rows.length > 0 && selected.length === rows.length}
+                                  indeterminate={selected.length > 0 && selected.length < brandData?.data.length}
+                                  checked={brandData?.data.length> 0 && selected.length === brandData?.data.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                                 />
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'image'}
-                                  direction={orderBy === 'image' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('image')}
+                                  active={orderBy === 'brandImage'}
+                                  direction={orderBy === 'brandImage' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('brandImage')}
                                 >
                                   image
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'brandName'}
-                                  direction={orderBy === 'brandName' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('brandName')}
+                                  active={orderBy === 'title'}
+                                  direction={orderBy === 'title' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('title')}
                                 >
                                   Brand Name
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'protein'}
-                                  direction={orderBy === 'protein' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('protein')}
-                                >
+                                <TableSortLabel>
                                   Action
                                 </TableSortLabel>
                               </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
+                            {sortedRows?.map((brand: any) => (
                                 <TableRow
-                                  key={row.id}
+                                  key={brand.id}
                                   hover
-                                  onClick={() => handleClick(row.id)}
+                                  onClick={() => handleClick(brand.id)}
                                   role="checkbox"
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
+                                  aria-checked={isSelected(brand.id)}
+                                  selected={isSelected(brand.id)}
                                 >
                                   <TableCell>
-                                    <Checkbox checked={isSelected(row.id)} />
+                                    <Checkbox checked={isSelected(brand.id)} />
                                   </TableCell>
                                   <TableCell>
                                     <div className="min-h-[70px] inline-flex items-center justify-cente">
                                       <div className="inner px-2 py-2">
-                                        <Image src={row.image} height={48} width={48} alt='image not found' />
+                                        <Image src={brand.brandImage} height={48} width={48} alt='image not found' />
                                       </div>
                                     </div>
                                   </TableCell>
-                                  <TableCell>{row.brandName}</TableCell>
+                                  <TableCell>{brand.title}</TableCell>
                                   <TableCell>
                                     <div className="inventual-list-action-style">
                                       <PopupState variant="popover">
@@ -321,7 +286,7 @@ const AddBrandList = () => {
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                              <MenuItem onClick={() => handleOpenDelete(brand.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
                                           </React.Fragment>
                                         )}
@@ -338,17 +303,38 @@ const AddBrandList = () => {
                   <div className="inventual-pagination-area">
                     {/* Pagination */}
                     <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
                       component="div"
-                      count={rows.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
+                      count={brandData?.totalCount || 0}
+                      rowsPerPage={currentPageSize}
+                      page={currentPageNumber - 1}
+                      onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
                       onRowsPerPageChange={handleChangeRowsPerPage}
                     />
                   </div>
                 </div>
               </div>
+              <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  bgcolor: 'background.paper',
+                  border: '2px solid #000',
+                  boxShadow: 24,
+                  zIndex: 9999,
+                  p: 4,
+                }}
+              >
+                <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Warehouse?</Typography>
+                <Stack spacing={2} direction="row">
+                  <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                  <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                </Stack>
+              </Box>
+            </Modal>
             </div>
           </div>
         </div>
