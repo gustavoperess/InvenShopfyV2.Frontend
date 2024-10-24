@@ -144,7 +144,7 @@ const WarehouseList = () => {
     return 0;
   });
   
-  console.log(warehouseData)
+  
   return (
 
     <>

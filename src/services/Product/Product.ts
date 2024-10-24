@@ -10,10 +10,10 @@ export const productsApi = createApi({
         credentials: 'include',
     }),
     endpoints: (builder) => ({
-        getAllProducts: builder.query<any, number>({
-            query: (pageNumber) => ({
+            getAllProducts: builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize }) => ({
                 url: `Product`,
-                params: { pageNumber },
+                params: { pageNumber, pageSize },
             }),
         }),
         addProduct: builder.mutation<any, any>({

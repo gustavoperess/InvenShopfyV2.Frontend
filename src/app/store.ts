@@ -11,7 +11,7 @@ import { customerApi } from '@/services/People/Customer';
 import { billerApi } from '@/services/People/Biller';
 import { purchaseApi } from '@/services/Purchase/Purchase';
 import { supplierApi } from '@/services/People/Supplier';
-
+import { roleApi } from '@/services/Role/Role';
 
 const authApis = [authApi]; 
 const warehouseApis = [warehouse];
@@ -19,9 +19,10 @@ const productsApis = [productsApi, productsUnitApi, productsBrandApi, productsCa
 const salesApis = [salesApi];
 const peopleApis = [billerApi, customerApi, supplierApi]
 const purchaseApis = [purchaseApi]
+const roleApis = [roleApi]
 
 // Combine all APIs into a single array
-const apis = [...salesApis, ...warehouseApis, ...productsApis, ...authApis, ...peopleApis, ...purchaseApis];
+const apis = [...salesApis, ...warehouseApis, ...productsApis, ...authApis, ...peopleApis, ...purchaseApis, ...roleApis];
 
 // Configure reducers
 const reducers = apis.reduce((acc: Record<string, any>, api) => {

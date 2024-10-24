@@ -15,208 +15,83 @@ import {
   TableSortLabel,
   Menu,
   MenuItem,
+  Typography,
+  Modal,
+  Box,
+  Stack,
+  Button,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
+import { useGetAllProductsQuery, useDeleteProductMutation } from '@/services/Product/Product';
 
-import image1 from '../../../../public/assets/img/product/product-16.png';
-import image2 from '../../../../public/assets/img/product/product-17.png';
-import image3 from '../../../../public/assets/img/product/product-18.png';
-import image4 from '../../../../public/assets/img/product/product-19.png';
-import image5 from '../../../../public/assets/img/product/product-20.png';
-import image6 from '../../../../public/assets/img/product/product-21.png';
-import image7 from '../../../../public/assets/img/product/product-22.png';
-import image8 from '../../../../public/assets/img/product/product-23.png';
-import image9 from '../../../../public/assets/img/product/product-24.png';
-import image10 from '../../../../public/assets/img/product/product-25.png';
+
 
 // Define the structure of the data
 interface Data {
   id: number;
-  sl: string;
-  image: StaticImageData;
-  name: string;
-  code: string;
-  calories: string;
-  carbs?: number;
+  title: string;
+  price: number;
+  productCode: number;
+  stockQuantity: number;
+  created: string;
   subCategory: string;
-  brand: string;
   unit: string;
-  variant: string;
-  stock: string;
-  price: string;
-  protein: string;
+  brand: string;
+  category: string;
+  productImage: string;
 }
 
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    sl: '01',
-    image: image1,
-    name: 'Cotton T-shirt',
-    code: '875952214',
-    calories: 'Fashion',
-    subCategory: 'Cloth',
-    brand: 'Easy',
-    unit: 'Quantity (q)',
-    variant: '3',
-    stock: '725',
-    price: '250',
-    protein: '',
-  },
-  {
-    id: 2,
-    sl: '02',
-    image: image2,
-    name: 'Apple Device',
-    code: '875952215',
-    calories: 'Fashion',
-    subCategory: 'Food',
-    brand: 'N/A',
-    unit: 'Kilogram (kg)',
-    variant: 'N/A',
-    stock: '200',
-    price: '141',
-    protein: '',
-  },
-  {
-    id: 3,
-    sl: '03',
-    image: image3,
-    name: 'Apple Device',
-    code: '875952216',
-    calories: 'Gadget',
-    subCategory: 'Apple',
-    brand: 'Apple',
-    unit: 'Quantity (q)',
-    variant: '4',
-    stock: '36',
-    price: '2,052',
-    protein: '',
-  },
-  {
-    id: 4,
-    sl: '04',
-    image: image4,
-    name: 'Chair',
-    code: '875952217',
-    calories: 'Accessories',
-    subCategory: 'N/A',
-    brand: 'Sony Ericson',
-    unit: 'Quantity (q)',
-    variant: '6',
-    stock: '45',
-    price: '36',
-    protein: '',
-  },
-  {
-    id: 5,
-    sl: '05',
-    image: image5,
-    name: 'Inventual Face wash',
-    code: '875952218',
-    calories: 'Cosmetics',
-    subCategory: 'N/A',
-    brand: 'Glamour',
-    unit: 'Quantity (q)',
-    variant: 'N/A',
-    stock: '18',
-    price: '80',
-    protein: '',
-  },
-  {
-    id: 6,
-    sl: '06',
-    image: image6,
-    name: 'White Cream',
-    code: '875952219',
-    calories: 'Cosmetics',
-    subCategory: 'N/A',
-    brand: 'Unrivalled',
-    unit: 'Quantity (q)',
-    variant: 'N/A',
-    stock: '38',
-    price: '58',
-    protein: '',
-  },
-  {
-    id: 7,
-    sl: '07',
-    image: image7,
-    name: 'Meat & Fish',
-    code: '875952220',
-    calories: 'Food & fruit',
-    subCategory: 'Food',
-    brand: 'N/A',
-    unit: 'Quantity (q)',
-    variant: 'N/A',
-    stock: '33',
-    price: '101',
-    protein: '',
-  },
-  {
-    id: 8,
-    sl: '08',
-    image: image8,
-    name: 'Fresh Mineral Water',
-    code: '875952221',
-    calories: 'Life Style',
-    subCategory: 'Drinking',
-    brand: 'Fresh',
-    unit: 'Milligram (mg)',
-    variant: 'N/A',
-    stock: '74',
-    price: '250',
-    protein: '',
-  },
-  {
-    id: 9,
-    sl: '09',
-    image: image9,
-    name: 'Computer Mouse',
-    code: '875952222',
-    calories: 'Computer',
-    subCategory: 'Accessories',
-    brand: 'Asus',
-    unit: 'Quantity (q)',
-    variant: 'N/A',
-    stock: '14',
-    price: '69',
-    protein: '',
-  },
-  {
-    id: 10,
-    sl: '10',
-    image: image10,
-    name: 'Smart LED TV',
-    code: '	875952222',
-    calories: 'Electronics',
-    subCategory: 'N/A',
-    brand: 'Walton',
-    unit: 'Quantity (q)',
-    variant: '3',
-    stock: '28',
-    price: '47',
-    protein: '',
-  },
-];
+
 
 const ProductList = () => {
-
-  const [page, setPage] = useState(0);
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [open, setOpen] = React.useState(false);
+  const [product, setProduct] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<string>();
+  const [deleteProduct] = useDeleteProductMutation();
+  const { data: productData, error: productError, isLoading: productLoading, refetch } = useGetAllProductsQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1); 
+    refetch();
   };
+
+   // handle opening delete modal
+   const handleOpenDelete = (productId: number) => {
+    setProduct(productId);
+    setOpen(true);
+  };
+
+    // handle closing delete modal
+    const handleCloseDelete = () => {
+    setOpen(false);
+  }
+
+    // handle delete submission
+    const handleDelete = async () => {
+      if (product > 0) {
+        try {
+          await deleteProduct(product);
+          setOpen(false);
+          refetch()
+        } catch (err) {
+          console.error('Error deleting the category:', err);
+        }
+      }
+    };
+
+
+
 
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
@@ -228,7 +103,7 @@ const ProductList = () => {
   // Handler for selecting/deselecting all items
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(rows.map((row) => row.id));
+      setSelected(productData?.data.map((product: any) => product.id));
     } else {
       setSelected([]);
     }
@@ -259,10 +134,14 @@ const ProductList = () => {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+  const sortedRows = productData?.data.slice().sort((a : any, b : any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof Data]; 
+    const bValue = b[orderBy as keyof Data]; 
+    if (aValue === undefined || bValue === undefined) {
+      return 0; 
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -273,7 +152,7 @@ const ProductList = () => {
     return 0;
   });
 
-
+  console.log(productData?.data)
 
   return (
     <>
@@ -303,12 +182,10 @@ const ProductList = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Name</MenuItem>
-                            <MenuItem onClick={popupState.close}>Category</MenuItem>
-                            <MenuItem onClick={popupState.close}>Sub-Category</MenuItem>
-                            <MenuItem onClick={popupState.close}>Brand</MenuItem>
-                            <MenuItem onClick={popupState.close}>Stock</MenuItem>
-                            <MenuItem onClick={popupState.close}>Price</MenuItem>
+                          <MenuItem onClick={() => {handleRequestSort("id"); popupState.close();}}>Id</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("title"); popupState.close()}}>Product</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("price"); popupState.close()}}>Price</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("stockQuantity"); popupState.close()}}>Stock Quantity</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -340,100 +217,28 @@ const ProductList = () => {
                               {/* Checkbox for select all */}
                               <TableCell>
                                 <Checkbox
-                                  indeterminate={selected.length > 0 && selected.length < rows.length}
-                                  checked={rows.length > 0 && selected.length === rows.length}
+                                  indeterminate={selected.length > 0 && selected.length < productData?.data.length}
+                                  checked={productData?.data.length > 0 && selected.length === productData?.data.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                                 />
                               </TableCell>
                               {/* Table headers */}
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'sl'}
-                                  direction={orderBy === 'sl' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('sl')}
+                                  active={orderBy === 'id'}
+                                  direction={orderBy === 'id' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('id')}
                                 >
-                                  sl
+                                  Id
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'image'}
-                                  direction={orderBy === 'image' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('image')}
-                                >
-                                  image
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'name'}
-                                  direction={orderBy === 'name' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('name')}
+                                  active={orderBy === 'title'}
+                                  direction={orderBy === 'title' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('title')}
                                 >
                                   Name
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'code'}
-                                  direction={orderBy === 'code' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('code')}
-                                >
-                                  code
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'calories'}
-                                  direction={orderBy === 'calories' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('calories')}
-                                >
-                                  Calories
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'subCategory'}
-                                  direction={orderBy === 'subCategory' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('subCategory')}
-                                >
-                                  sub-Category
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'brand'}
-                                  direction={orderBy === 'brand' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('brand')}
-                                >
-                                  brand
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'unit'}
-                                  direction={orderBy === 'unit' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('unit')}
-                                >
-                                  unit
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'variant'}
-                                  direction={orderBy === 'variant' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('variant')}
-                                >
-                                  variant
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'stock'}
-                                  direction={orderBy === 'stock' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('stock')}
-                                >
-                                  stock
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -442,15 +247,74 @@ const ProductList = () => {
                                   direction={orderBy === 'price' ? order : 'asc'}
                                   onClick={() => handleRequestSort('price')}
                                 >
-                                  price
+                                  Price
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'protein'}
-                                  direction={orderBy === 'protein' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('protein')}
+                                  active={orderBy === 'productImage'}
+                                  direction={orderBy === 'productImage' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('productImage')}
                                 >
+                                  Image
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'productCode'}
+                                  direction={orderBy === 'productCode' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('productCode')}
+                                >
+                                  Code
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'stockQuantity'}
+                                  direction={orderBy === 'stockQuantity' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('stockQuantity')}
+                                >
+                                  StkQuantity
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'category'}
+                                  direction={orderBy === 'category' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('category')}
+                                >
+                                  Category
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'subCategory'}
+                                  direction={orderBy === 'subCategory' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('subCategory')}
+                                >
+                                  Sub-Category
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'unit'}
+                                  direction={orderBy === 'unit' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('unit')}
+                                >
+                                  Unit
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'brand'}
+                                  direction={orderBy === 'brand' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('brand')}
+                                >
+                                  Brand
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel>
                                   Action
                                 </TableSortLabel>
                               </TableCell>
@@ -459,39 +323,36 @@ const ProductList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
+                            {sortedRows?.map((product: any) => (
                                 <TableRow
-                                  key={row.id}
+                                  key={product.id}
                                   hover
-                                  onClick={() => handleClick(row.id)}
+                                  onClick={() => handleClick(product.id)}
                                   role="checkbox"
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
+                                  aria-checked={isSelected(product.id)}
+                                  selected={isSelected(product.id)}
                                 >
                                   {/* Checkbox for row selection */}
                                   <TableCell>
-                                    <Checkbox checked={isSelected(row.id)} />
+                                    <Checkbox checked={isSelected(product.id)} />
                                   </TableCell>
                                   {/* Data cells */}
-                                  <TableCell>{row.sl}</TableCell>
+                                  <TableCell>{product.id}</TableCell>
+                                  <TableCell>{product.title}</TableCell>
+                                  <TableCell>${product.price}</TableCell>
                                   <TableCell>
                                     <div className="min-h-[70px] inline-flex items-center justify-cente">
                                       <div className="inner px-2 py-2 bg-[#F4F5F8] rounded-[5px]">
-                                        <Image src={row.image} height={32} width={32} alt='image not found' priority />
+                                        <Image src={product.productImage} height={32} width={32} alt='image not found' priority />
                                       </div>
                                     </div>
                                   </TableCell>
-                                  <TableCell>{row.name}</TableCell>
-                                  <TableCell>{row.code}</TableCell>
-                                  <TableCell>{row.calories}</TableCell>
-                                  <TableCell>{row.subCategory}</TableCell>
-                                  <TableCell>{row.brand}</TableCell>
-                                  <TableCell>{row.unit}</TableCell>
-                                  <TableCell>{row.variant}</TableCell>
-                                  <TableCell>{row.stock}</TableCell>
-                                  <TableCell>${row.price}</TableCell>
+                                  <TableCell>{product.productCode}</TableCell>
+                                  <TableCell>{product.stockQuantity}</TableCell>
+                                  <TableCell>{product.categoryName}</TableCell>
+                                  <TableCell>{product.subCategories}</TableCell>
+                                  <TableCell>{product.unitName}</TableCell>
+                                  <TableCell>{product.brandName}</TableCell>
                                   <TableCell>
                                     <div className="inventual-list-action-style">
                                       <PopupState variant="popover">
@@ -502,7 +363,7 @@ const ProductList = () => {
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href="/product/addproduct">Edit</Link></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                              <MenuItem onClick={() => handleOpenDelete(product.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
                                           </React.Fragment>
                                         )}
@@ -520,17 +381,39 @@ const ProductList = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
+                    count={productData?.totalCount || 0}
+                    page={currentPageNumber - 1}
+                    rowsPerPage={currentPageSize}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
               </div>
             </div>
+            <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  bgcolor: 'background.paper',
+                  border: '2px solid #000',
+                  boxShadow: 24,
+                  zIndex: 9999,
+                  p: 4,
+                }}
+              >
+                <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Warehouse?</Typography>
+                <Stack spacing={2} direction="row">
+                  <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                  <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                </Stack>
+              </Box>
+            </Modal>
+
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export const warehouse = createApi({
     reducerPath: 'warehouseApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: `${BACKEND_URL}/v2/Warehouse/`,
+        baseUrl: `${BACKEND_URL}/v2/`,
         credentials: 'include',  // Important for sending cookies
     }),
     endpoints: (builder) => ({

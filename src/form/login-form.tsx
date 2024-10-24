@@ -35,7 +35,7 @@ const LoginForm = () => {
         onSubmit: async (values) => {
             try {
                 const credentials = {
-                    Email: values.userName,
+                    UserName: values.userName,
                     Password: values.password
                 };
                 await loginUser(credentials).unwrap();
