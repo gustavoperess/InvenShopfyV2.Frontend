@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import {
   Paper,
@@ -21,7 +21,7 @@ import {
   Button,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import { useGetAllProductsBrandQuery, useDeleteBrandMutation } from '@/services/Product/Brand';
+import { useGetAllProductsBrandQuery, useDeleteBrandMutation, useAddBrandMutation } from '@/services/Product/Brand';
 import { toast } from 'react-toastify';
 
 // Define the structure of the data
@@ -37,11 +37,16 @@ const AddBrandList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [open, setOpen] = React.useState(false);
+
+  const [brandImage, setBrandImage] = useState<string | null>(null);
+  const [title, setTitle] = useState<string>("");
+  const formRef = useRef<HTMLFormElement>(null);
   const [brand, setBrand] = useState<number>(0);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
   const [deleteBrand] = useDeleteBrandMutation();
+  const [addBrand] = useAddBrandMutation();
   const { data: brandData, error: brandError, isLoading: brandLoading, refetch } = useGetAllProductsBrandQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
   // handle pagination 
@@ -141,23 +146,39 @@ const AddBrandList = () => {
   const [fileUrls, setFileUrls] = useState<string[]>([]);
   const inputBrandRef = useRef<HTMLInputElement>(null)
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    const reader = new FileReader();
     if (file) {
-      const fileId = URL.createObjectURL(file);
-      setFileUrls(prevUrls => [...prevUrls, fileId]);
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        const base64Data = base64String.split(',')[1];
+        setBrandImage(base64Data);
+      }
+      reader.readAsDataURL(file); 
     }
-  };
+  }, []);
 
   const handleRemove = (index: number) => {
     setFileUrls(prevUrls => prevUrls.filter((item, i) => i !== index));
   };
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value)
+  }
 
   //handle brand reset
-  const handleBrandForm = (event: any) => {
+  const handleBrandForm = async (event: any) => {
     event.preventDefault()
+    // brandImage?.split(",")[1]
+    const brandData = { title, brandImage };
+    console.log(brandData)
     try {
+      await addBrand(brandData).unwrap();
+      setTitle('');
+      setBrandImage(null);
+      formRef.current?.reset();
       toast.success("Brand Created Successfully!")
+      refetch();
       if(inputBrandRef.current) {
         inputBrandRef.current.value = '';
         setFileUrls([]);
@@ -204,7 +225,7 @@ const AddBrandList = () => {
                     <div className="inventual-form-field">
                       <h5>Brand Name</h5>
                       <div className="inventual-input-field-style">
-                        <input ref={inputBrandRef} type="text" placeholder='HP' required />
+                        <input ref={inputBrandRef} value={title} onChange={handleTitleChange} type="text" placeholder='Microsoft' required />
                       </div>
                     </div>
                   </div>

@@ -19,7 +19,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const AddWarehousePopup = ({ open, handleAddWarehouseDialogClose }: AddWarehousePopupProps) => {
-    const dummyData = (e: any) => {
+    const data = (e: any) => {
         e.preventDefault();
     };
     return (
@@ -36,7 +36,7 @@ const AddWarehousePopup = ({ open, handleAddWarehouseDialogClose }: AddWarehouse
                     </div>
                     <DialogContent dividers>
                         <div className='inventual-common-modal-width width-full'>
-                            <form onSubmit={dummyData}>
+                            <form onSubmit={data}>
                                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                                     <div className="col-span-12 md:col-span-6">
                                         <div className="inventual-form-field">
