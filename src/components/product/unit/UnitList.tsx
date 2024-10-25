@@ -12,88 +12,39 @@ import {
     TablePagination,
     TableRow,
     TableSortLabel,
+    Typography,
+    Modal,
+    Box,
+    Stack,
+    Button,
 
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
+import { useGetAllProductsUnitQuery, useDeleteUnitMutation, useAddUnitMutation } from '@/services/Product/Unit';
 import { toast } from 'react-toastify';
 
 // Define the structure of the data
 interface Data {
     id: number;
-    name: string;
+    title: string;
     shortName: string;
-    protein: string;
-    calories: string;
 }
 
-// Sample data
-const rows: Data[] = [
-    {
-        id: 1,
-        name: 'Kilogram',
-        shortName: 'kg',
-        protein: '',
-        calories: '',
-    },
-    {
-        id: 2,
-        name: 'Centimeter',
-        shortName: 'cm',
-        protein: '',
-        calories: '',
-    },
-    {
-        id: 3,
-        name: 'Quantity',
-        shortName: 'qty',
-        protein: '',
-        calories: '',
-    },
-    {
-        id: 4,
-        name: 'Gram',
-        shortName: 'g',
-        protein: '',
-        calories: '',
-    },
-    {
-        id: 5,
-        name: 'Dozen',
-        shortName: 'pc',
-        protein: '',
-        calories: '',
-    },
-    {
-        id: 6,
-        name: 'Dozen',
-        shortName: 'mm',
-        protein: '',
-        calories: '',
-    },
-    {
-        id: 7,
-        name: 'Yard',
-        shortName: 'y',
-        protein: '',
-        calories: '',
-    },
-    {
-        id: 8,
-        name: 'Milliliter',
-        shortName: 'ml',
-        protein: '',
-        calories: '',
-    },
-    // Add more rows here...
-];
 
 const UnitList = () => {
-
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+    const [currentPageSize, setCurrentPageSize] = useState(10);
+    const [open, setOpen] = React.useState(false);
+    const [unit, setUnit] =  useState<number>(0);
+    const [title, setTitle] = useState("");
+    const [shortName, setShortName] = useState("");
     const [selected, setSelected] = useState<number[]>([]);
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Data>('id');
+    const [deleteUnit] = useDeleteUnitMutation();
+    const [addUnit] = useAddUnitMutation();
+    const { data: unitData, error: unitError, isLoading: unitLoading, refetch } = useGetAllProductsUnitQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+
 
     const dummyData = (e: any) => {
         e.preventDefault();
@@ -101,14 +52,22 @@ const UnitList = () => {
 
     // Component for rendering the table
 
-    // Handlers for pagination
-    const handleChangePage = (event: unknown, newPage: number) => {
-        setPage(newPage);
+    // handle pagination 
+    const handlePageChange = (event: unknown, newPage: number) => {
+        setCurrentPageNumber(newPage);
+        refetch();
     };
+
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
+        setCurrentPageSize(parseInt(event.target.value, 10));
+        setCurrentPageNumber(1); 
+        refetch();
+      };
+       // handle opening delete modal
+    const handleOpenDelete = (productId: number) => {
+        setUnit(productId);
+        setOpen(true);
+      };
 
     // Handlers for sorting
     const handleRequestSort = (property: keyof Data) => {
@@ -117,10 +76,29 @@ const UnitList = () => {
         setOrderBy(property);
     };
 
+     // handle closing delete modal
+     const handleCloseDelete = () => {
+        setOpen(false);
+      }
+
+      // handle delete submission
+     const handleDelete = async () => {
+        if (unit > 0) {
+          try {
+            await deleteUnit(unit);
+            setOpen(false);
+            refetch()
+          } catch (err) {
+            console.error('Error deleting the unit:', err);
+          }
+        }
+      };
+  
+
     // Handler for selecting/deselecting all items
     const handleSelectAllClick = (checked: boolean) => {
         if (checked) {
-            setSelected(rows.map((row) => row.id));
+            setSelected(unitData?.data.map((unit: any) => unit.id));
         } else {
             setSelected([]);
         }
@@ -151,30 +129,36 @@ const UnitList = () => {
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
     // Function to sort data
-    const sortedRows = rows.slice().sort((a, b) => {
+    const sortedRows = unitData?.data.slice().sort((a: any, b: any) => {
+        if (!orderBy) return 0;
         const isAsc = order === 'asc';
-        if (a[orderBy] < b[orderBy]) {
+        const aValue = a[orderBy as keyof Data]; 
+        const bValue = b[orderBy as keyof Data];
+        if (aValue === undefined || bValue === undefined) {
+            return 0; 
+          }
+          if (aValue < bValue) {
             return isAsc ? -1 : 1;
-        }
-        if (a[orderBy] > b[orderBy]) {
+          }
+          if (aValue > bValue) {
             return isAsc ? 1 : -1;
-        }
+          }
         return 0;
     });
 
-    //hanle reset unit form
-    const unitNameRef = useRef<HTMLInputElement>(null);
-    const unitShortNameRef = useRef<HTMLInputElement>(null);
-    const handleUnitList = (event:any) => {
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value);
+    const handleShortNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setShortName(e.target.value);
+
+    //hanle unit form
+    const handleUnitList = async (event:any) => {
         event.preventDefault();
+        const unitData = {title, shortName}
         try{
+            await addUnit(unitData).unwrap();
             toast.success("Product unit created successfuly!")
-            if(unitNameRef.current){
-                unitNameRef.current.value = '';
-            }
-            if(unitShortNameRef.current){
-                unitShortNameRef.current.value = '';
-            }
+            setTitle("");
+            setShortName("");
+            refetch();
         }catch{
             toast.error("Failed to create product create. Please try again later.")
         }
@@ -193,7 +177,7 @@ const UnitList = () => {
                                             <div className="inventual-form-field">
                                                 <h5>Name</h5>
                                                 <div className="inventual-input-field-style">
-                                                    <input ref={unitNameRef} type="text" placeholder='Kilogram' required/>
+                                                    <input onChange={handleTitleChange}    value={title}  type="text" placeholder='Kilogram' required/>
                                                 </div>
                                             </div>
                                         </div>
@@ -203,7 +187,7 @@ const UnitList = () => {
                                             <div className="inventual-form-field">
                                                 <h5>Short Name</h5>
                                                 <div className="inventual-input-field-style">
-                                                    <input ref={unitShortNameRef} type="text" placeholder='kg' required/>
+                                                    <input  onChange={handleShortNameChange}    value={shortName}  type="text" placeholder='kg' required/>
                                                 </div>
                                             </div>
                                         </div>
@@ -224,16 +208,16 @@ const UnitList = () => {
                                                     <TableRow>
                                                         <TableCell>
                                                             <Checkbox
-                                                                indeterminate={selected.length > 0 && selected.length < rows.length}
-                                                                checked={rows.length > 0 && selected.length === rows.length}
+                                                                indeterminate={selected.length > 0 && selected.length < unitData?.data.length}
+                                                                checked={unitData?.data.length > 0 && selected.length === unitData?.data.length}
                                                                 onChange={(e) => handleSelectAllClick(e.target.checked)}
                                                             />
                                                         </TableCell>
                                                         <TableCell>
                                                             <TableSortLabel
-                                                                active={orderBy === 'name'}
-                                                                direction={orderBy === 'name' ? order : 'asc'}
-                                                                onClick={() => handleRequestSort('name')}
+                                                                active={orderBy === 'title'}
+                                                                direction={orderBy === 'title' ? order : 'asc'}
+                                                                onClick={() => handleRequestSort('title')}
                                                             >
                                                                 Name
                                                             </TableSortLabel>
@@ -248,33 +232,27 @@ const UnitList = () => {
                                                             </TableSortLabel>
                                                         </TableCell>
                                                         <TableCell>
-                                                            <TableSortLabel
-                                                                active={orderBy === 'protein'}
-                                                                direction={orderBy === 'protein' ? order : 'asc'}
-                                                                onClick={() => handleRequestSort('protein')}
-                                                            >
-                                                                Action
-                                                            </TableSortLabel>
-                                                        </TableCell>
+                                                        <TableSortLabel>
+                                                        Action
+                                                        </TableSortLabel>
+                                                    </TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                    {sortedRows
-                                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                        .map((row) => (
+                                                    {sortedRows?.map((unit: any) => (
                                                             <TableRow
-                                                                key={row.id}
+                                                                key={unit.id}
                                                                 hover
-                                                                onClick={() => handleClick(row.id)}
+                                                                onClick={() => handleClick(unit.id)}
                                                                 role="checkbox"
-                                                                aria-checked={isSelected(row.id)}
-                                                                selected={isSelected(row.id)}
+                                                                aria-checked={isSelected(unit.id)}
+                                                                selected={isSelected(unit.id)}
                                                             >
                                                                 <TableCell>
-                                                                    <Checkbox checked={isSelected(row.id)} />
+                                                                    <Checkbox checked={isSelected(unit.id)} />
                                                                 </TableCell>
-                                                                <TableCell>{row.name}</TableCell>
-                                                                <TableCell>{row.shortName}</TableCell>
+                                                                <TableCell>{unit.title}</TableCell>
+                                                                <TableCell>{unit.shortName}</TableCell>
                                                                 <TableCell>
                                                                     <div className="inventual-list-action-style">
                                                                         <PopupState variant="popover">
@@ -285,7 +263,7 @@ const UnitList = () => {
                                                                                     </button>
                                                                                     <Menu {...bindMenu(popupState)}>
                                                                                         <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
-                                                                                        <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                                                                        <MenuItem onClick={() => handleOpenDelete(unit.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                                                                     </Menu>
                                                                                 </React.Fragment>
                                                                             )}
@@ -299,18 +277,39 @@ const UnitList = () => {
                                         </TableContainer>
                                         {/* Pagination */}
                                         <TablePagination
-                                            rowsPerPageOptions={[5, 10, 25]}
                                             component="div"
-                                            count={rows.length}
-                                            rowsPerPage={rowsPerPage}
-                                            page={page}
-                                            onPageChange={handleChangePage}
+                                            count={unitData?.totalCount || 0}
+                                            rowsPerPage={currentPageSize}
+                                            page={currentPageNumber - 1}
+                                            onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
                                             onRowsPerPageChange={handleChangeRowsPerPage}
                                         />
                                     </Paper>
                                 </div>
                             </div>
                         </div>
+                        <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                            <Box
+                                sx={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                bgcolor: 'background.paper',
+                                border: '2px solid #000',
+                                boxShadow: 24,
+                                zIndex: 9999,
+                                p: 4,
+                                }}
+                            >
+                                <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Unit?</Typography>
+                                <Stack spacing={2} direction="row">
+                                <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                                <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                                </Stack>
+                            </Box>
+                            </Modal>
                     </div>
                 </div>
             </div>

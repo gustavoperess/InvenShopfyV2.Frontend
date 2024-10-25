@@ -78,7 +78,7 @@ const AddBrandList = () => {
           setOpen(false);
           refetch()
         } catch (err) {
-          console.error('Error deleting the category:', err);
+          console.error('Error deleting the brand:', err);
         }
       }
     };
@@ -169,7 +169,6 @@ const AddBrandList = () => {
   //handle brand reset
   const handleBrandForm = async (event: any) => {
     event.preventDefault()
-    // brandImage?.split(",")[1]
     const brandData = { title, brandImage };
     console.log(brandData)
     try {
@@ -290,9 +289,9 @@ const AddBrandList = () => {
                                     <Checkbox checked={isSelected(brand.id)} />
                                   </TableCell>
                                   <TableCell>
-                                    <div className="min-h-[70px] inline-flex items-center justify-cente">
+                                    <div className="max-h-[72px] inline-flex items-center justify-cente">
                                       <div className="inner px-2 py-2">
-                                        <Image src={brand.brandImage} height={48} width={48} alt='image not found' />
+                                        <Image src={brand.brandImage}  height={48} width={48} alt='brand-img' />
                                       </div>
                                     </div>
                                   </TableCell>
@@ -349,7 +348,7 @@ const AddBrandList = () => {
                 }}
               >
                 <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Warehouse?</Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Brand?</Typography>
                 <Stack spacing={2} direction="row">
                   <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
                   <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>

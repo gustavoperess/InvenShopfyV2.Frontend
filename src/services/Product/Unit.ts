@@ -9,10 +9,10 @@ export const productsUnitApi = createApi({
         credentials: 'include',
     }),
     endpoints: (builder) => ({
-        getAllProductsUnit: builder.query<any, number>({
-            query: (pageNumber) => ({
+            getAllProductsUnit: builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize })=> ({
                 url: 'Units',
-                params: {pageNumber}
+                params: { pageNumber, pageSize }
             })
         }),
         addUnit: builder.mutation<any, any>({
