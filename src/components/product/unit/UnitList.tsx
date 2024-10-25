@@ -17,7 +17,6 @@ import {
     Box,
     Stack,
     Button,
-
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import { useGetAllProductsUnitQuery, useDeleteUnitMutation, useAddUnitMutation } from '@/services/Product/Unit';
@@ -46,11 +45,6 @@ const UnitList = () => {
     const { data: unitData, error: unitError, isLoading: unitLoading, refetch } = useGetAllProductsUnitQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
 
-    const dummyData = (e: any) => {
-        e.preventDefault();
-    };
-
-    // Component for rendering the table
 
     // handle pagination 
     const handlePageChange = (event: unknown, newPage: number) => {
@@ -69,19 +63,11 @@ const UnitList = () => {
         setOpen(true);
       };
 
-    // Handlers for sorting
-    const handleRequestSort = (property: keyof Data) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-    };
-
-     // handle closing delete modal
+        // handle closing delete modal
      const handleCloseDelete = () => {
         setOpen(false);
       }
-
-      // handle delete submission
+         // handle delete submission
      const handleDelete = async () => {
         if (unit > 0) {
           try {
@@ -93,6 +79,16 @@ const UnitList = () => {
           }
         }
       };
+
+    // Handlers for sorting
+    const handleRequestSort = (property: keyof Data) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
+
+
+   
   
 
     // Handler for selecting/deselecting all items
@@ -232,10 +228,10 @@ const UnitList = () => {
                                                             </TableSortLabel>
                                                         </TableCell>
                                                         <TableCell>
-                                                        <TableSortLabel>
-                                                        Action
-                                                        </TableSortLabel>
-                                                    </TableCell>
+                                                            <TableSortLabel>
+                                                                Action
+                                                            </TableSortLabel>
+                                                        </TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
@@ -309,7 +305,7 @@ const UnitList = () => {
                                 <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
                                 </Stack>
                             </Box>
-                            </Modal>
+                        </Modal>
                     </div>
                 </div>
             </div>

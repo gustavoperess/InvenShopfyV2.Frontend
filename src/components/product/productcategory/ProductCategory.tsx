@@ -1,6 +1,6 @@
 "use client"
 import React, { useRef, useState } from 'react';
-import { MenuItem, TextField } from '@mui/material';
+import { Menu, MenuItem } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import {
   Paper,
@@ -12,91 +12,74 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  Typography,
+  Modal,
+  Box,
+  Stack,
+  Button,
 } from '@mui/material';
-import Image from 'next/image';
+import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import { toast } from 'react-toastify';
+import { useGetAllProductsCategoryQuery, useAddCategoryMutation, useDeleteCategoryMutation } from '@/services/Product/Category';
 
 
 // Define the structure of the data
 interface Data {
   id: number;
-  name: string;
-  calories: string;
-  fat: string;
+  mainCategory: string;
+  subCategory: string[];
 }
 
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    name: 'Fish & Meat',
-    calories: 'Deshi Fish',
-    fat: 'Katal, Rooi fish, Beef, Deshi chicken, Loitta fish,  Rice, Pasta, Noodles'
-  },
-  {
-    id: 2,
-    name: 'Electronics',
-    calories: 'Computer',
-    fat: 'TV & Video, Audio & Home Theater, Computers. Camera & Photo.Wearable Technology, & GPS'
-  },
-  {
-    id: 3,
-    name: 'Fashion',
-    calories: 'Full T-shirt',
-    fat: 'Streetwear Style, Ethnic fashion style,.Business Casual,  Sports Wear'
-  },
-  {
-    id: 4,
-    name: 'Accessories',
-    calories: 'Earphone',
-    fat: 'Sunglasses. Apron, Necklace, Watch, Socks, Tie, Bow, Pocket watch, Safety pin'
-  },
-  {
-    id: 5,
-    name: 'Cosmetics',
-    calories: 'White Creame',
-    fat: 'Budget Cosmetics, Cleaner, Sleek, Little Angel, Blooming Beauty, Glow Away, Maniacs.'
-  },
-  {
-    id: 6,
-    name: 'Gadgets',
-    calories: 'Apple',
-    fat: 'Katal, Rooi fish, Beef, Deshi chicken,Rice, Pasta, Noodles'
-  },
-  {
-    id: 7,
-    name: 'Flyer & brochure',
-    calories: 'Deshi Fish',
-    fat: 'Orbital Keys, Xpress Bottle, Uno Wear, Mono, Handy Mop Set,  Villafy, Sticken Snap.'
-  },
-  {
-    id: 8,
-    name: 'Electrical',
-    calories: 'Samsung',
-    fat: 'Business Card, Flyer, brochure, Banner, Rollup Banner, Ads, Kits, Image, Vector.'
-  },
-];
 
 const ProductCategory = () => {
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [open, setOpen] = React.useState(false);
+  const [category, setCategory] =  useState<number>(0);
+  const [mainCategory, setMainCategory] = useState<string>("");
+  const [subCategory, setSubCategory] = useState<string>("");
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [deleteCategory] = useDeleteCategoryMutation();
+  const [addCategory] = useAddCategoryMutation();
+  const { data: categorytData, error: categoryError, isLoading: categoryLoading, refetch } = useGetAllProductsCategoryQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
-  const dummyData = (e: any) => {
-    e.preventDefault();
+
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1); 
+    refetch();
   };
+     // handle opening delete modal
+     const handleOpenDelete = (categoryId: number) => {
+      setCategory(categoryId);
+      setOpen(true);
+    };
+
+     // handle closing delete modal
+     const handleCloseDelete = () => {
+      setOpen(false);
+    }
+    // handle delete submission
+    const handleDelete = async () => {
+      if (category > 0) {
+        try {
+          await deleteCategory(category);
+          setOpen(false);
+          refetch()
+        } catch (err) {
+          console.error('Error deleting category:', err);
+        }
+      }
+    };
+
 
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
@@ -108,7 +91,7 @@ const ProductCategory = () => {
   // Handler for selecting/deselecting all items
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(rows.map((row) => row.id));
+      setSelected(categorytData?.data.map((category: any) => category.id));
     } else {
       setSelected([]);
     }
@@ -139,45 +122,41 @@ const ProductCategory = () => {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+  const sortedRows = categorytData?.data.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    if (a[orderBy] < b[orderBy]) {
+    const aValue = a[orderBy as keyof Data]; 
+    const bValue = b[orderBy as keyof Data];
+    if (aValue === undefined || bValue === undefined) {
+      return 0; 
+    }
+    if (aValue < bValue) {
       return isAsc ? -1 : 1;
     }
-    if (a[orderBy] > b[orderBy]) {
+    if (aValue > bValue) {
       return isAsc ? 1 : -1;
     }
     return 0;
   });
 
-  // uploaded images
-  const [fileUrl, setFileUrl] = useState<string>('');
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const fileId = URL.createObjectURL(file);
-      setFileUrl(fileId);
-    }
-  };
 
-  const handleRemove = () => {
-    setFileUrl('');
-  };
 
   //handle category data
-  const categoryInputRef = useRef<HTMLInputElement>(null);
-  const [mainCategory, setMainCategory] = useState<string>('');
+  const handleMainCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => setMainCategory(e.target.value);
+  const handleSubCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => setSubCategory(e.target.value);
+
 
   const handleCategory = async (event: React.FormEvent<HTMLFormElement>) => {
+    const subCategoryArray = subCategory.split(',').map((item) => item.trim());
+    const categoryData = { mainCategory, subCategory: subCategoryArray };
     event.preventDefault();
     try {
+      await addCategory(categoryData).unwrap();
       toast.success("Category created successfully!");
-      if (categoryInputRef.current) {
-        categoryInputRef.current.value = '';
-        setFileUrl('');
-        setMainCategory('');
-      }
+      setMainCategory('');
+      setSubCategory('');
+      refetch();    
     } catch {
       toast.error("Failed to create category. Please try again later.");
     }
@@ -191,25 +170,14 @@ const ProductCategory = () => {
             <div className="col-span-12 lg:col-span-3">
             <form onSubmit={handleCategory}>
                 <div className="grid grid-cols-12 gap-y-7 minMaxMd:gap-7">
-                  <div className="col-span-12 md:col-span-12 lg:col-span-12">
-                    <div className="inventual-input-field-style flex flex-wrap  gap-5 relative">
-                      <div className="inventual-input-field-file-image image-1">
-                        <label htmlFor="fileUpload">
-                          {fileUrl ? "Image Uploaded" : "Upload Category Image"}
-                        </label>
-                        <input
-                          type="file"
-                          id="fileUpload"
-                          accept="image/*"
-                          onChange={handleFileChange}
-                        />
-                      </div>
-                      {fileUrl && (
-                        <div className="inventual-drag-product-img">
-                          <Image src={fileUrl} width={60} height={60} alt="Uploaded Image" className="object-cover" />
-                          <button className='inventual-inventual-drag-close' onClick={handleRemove}>X</button>
+                  <div className="col-span-12 md:col-span-6 lg:col-span-12">
+                    <div className="inventual-select-field">
+                      <div className="inventual-form-field">
+                        <h5>Main-Category</h5>
+                        <div className="inventual-input-field-style">
+                          <input onChange={handleMainCategoryChange} value={mainCategory} type="text" placeholder='Eletronics' required />
                         </div>
-                      )}
+                      </div>
                     </div>
                   </div>
                   <div className="col-span-12 md:col-span-6 lg:col-span-12">
@@ -217,47 +185,8 @@ const ProductCategory = () => {
                       <div className="inventual-form-field">
                         <h5>Sub-Category</h5>
                         <div className="inventual-input-field-style">
-                          <input ref={categoryInputRef} type="text" placeholder='HP Elitebook' required />
+                          <input onChange={handleSubCategoryChange} value={subCategory} type="text" placeholder='Computer' required />
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-12 md:col-span-6 lg:col-span-12">
-                    <div className="inventual-form-field">
-                      <h5>Main Category</h5>
-                      <div className="inventual-select-field-style">
-                        <TextField
-                          select
-                          required
-                          label="Select"
-                          defaultValue=""
-                          value={mainCategory}
-                          onChange={(e) => setMainCategory(e.target.value)}
-                          SelectProps={{
-                            displayEmpty: true,
-                            renderValue: (value: any) => {
-                              if (value === '') {
-                                return <em>Select Type</em>;
-                              }
-                              return value;
-                            },
-                          }}
-                        >
-
-                          <MenuItem value="">
-                            <em>Select Type</em>
-                          </MenuItem>
-                          <MenuItem value="Fish & Meat">Fish & Meat</MenuItem>
-                          <MenuItem value="Electronics">Electronics</MenuItem>
-                          <MenuItem value="Fashion">Fashion</MenuItem>
-                          <MenuItem value="Cosmetics">Cosmetics</MenuItem>
-                          <MenuItem value="Jewelry">Jewelry</MenuItem>
-                          <MenuItem value="Accessories">Accessories</MenuItem>
-                          <MenuItem value="Gadgets">Gadgets</MenuItem>
-                          <MenuItem value="Physical Goods">Physical Goods</MenuItem>
-                          <MenuItem value="Device">Device</MenuItem>
-                          <MenuItem value="Decoration">Decoration</MenuItem>
-                        </TextField>
                       </div>
                     </div>
                   </div>
@@ -277,59 +206,69 @@ const ProductCategory = () => {
                           <TableRow>
                             <TableCell>
                               <Checkbox
-                                indeterminate={selected.length > 0 && selected.length < rows.length}
-                                checked={rows.length > 0 && selected.length === rows.length}
+                                indeterminate={selected.length > 0 && selected.length < categorytData?.data.length}
+                                checked={categorytData?.data.length > 0 && selected.length === categorytData?.data.length}
                                 onChange={(e) => handleSelectAllClick(e.target.checked)}
                               />
                             </TableCell>
                             <TableCell>
                               <TableSortLabel
-                                active={orderBy === 'name'}
-                                direction={orderBy === 'name' ? order : 'asc'}
-                                onClick={() => handleRequestSort('name')}
+                                active={orderBy === 'mainCategory'}
+                                direction={orderBy === 'mainCategory' ? order : 'asc'}
+                                onClick={() => handleRequestSort('mainCategory')}
                               >
                                 Name
                               </TableSortLabel>
                             </TableCell>
                             <TableCell>
                               <TableSortLabel
-                                active={orderBy === 'calories'}
-                                direction={orderBy === 'calories' ? order : 'asc'}
-                                onClick={() => handleRequestSort('calories')}
+                                active={orderBy === 'subCategory'}
+                                direction={orderBy === 'subCategory' ? order : 'asc'}
+                                onClick={() => handleRequestSort('subCategory')}
                               >
                                 Sub-Category
                               </TableSortLabel>
                             </TableCell>
                             <TableCell>
-                              <TableSortLabel
-                                active={orderBy === 'fat'}
-                                direction={orderBy === 'fat' ? order : 'asc'}
-                                onClick={() => handleRequestSort('fat')}
-                              >
-                                Items
-                              </TableSortLabel>
+                                <TableSortLabel>
+                                    Action
+                                </TableSortLabel>
                             </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {sortedRows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => (
+                          {sortedRows?.map((category: any) => (
                               <TableRow
-                                key={row.id}
+                                key={category.id}
                                 hover
-                                onClick={() => handleClick(row.id)}
+                                onClick={() => handleClick(category.id)}
                                 role="checkbox"
-                                aria-checked={isSelected(row.id)}
-                                selected={isSelected(row.id)}
+                                aria-checked={isSelected(category.id)}
+                                selected={isSelected(category.id)}
                               >
                                 <TableCell>
-                                  <Checkbox checked={isSelected(row.id)} />
+                                  <Checkbox checked={isSelected(category.id)} />
                                 </TableCell>
                                 {/* Data cells */}
-                                <TableCell>{row.name}</TableCell>
-                                <TableCell>{row.calories}</TableCell>
-                                <TableCell>{row.fat}</TableCell>
+                                <TableCell>{category.mainCategory}</TableCell>
+                                <TableCell>{Array.isArray(category?.subCategory) ? category.subCategory.join(', ') : category?.subCategory}</TableCell>
+                                <TableCell>
+                                        <div className="inventual-list-action-style">
+                                            <PopupState variant="popover">
+                                                {(popupState: any) => (
+                                                    <React.Fragment>
+                                                        <button className='' type='button' {...bindTrigger(popupState)}>
+                                                            Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                                        </button>
+                                                        <Menu {...bindMenu(popupState)}>
+                                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
+                                                            <MenuItem onClick={() => handleOpenDelete(category.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                                        </Menu>
+                                                    </React.Fragment>
+                                                )}
+                                            </PopupState>
+                                        </div>
+                                    </TableCell>
                               </TableRow>
                             ))}
                         </TableBody>
@@ -337,18 +276,39 @@ const ProductCategory = () => {
                     </TableContainer>
                     {/* Pagination */}
                     <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
                       component="div"
-                      count={rows.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
+                      count={categorytData?.totalCount || 0}
+                      rowsPerPage={currentPageSize}
+                      page={currentPageNumber - 1}
+                      onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
                       onRowsPerPageChange={handleChangeRowsPerPage}
                     />
                   </Paper>
                 </div>
               </div>
             </div>
+            <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                  <Box
+                      sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      bgcolor: 'background.paper',
+                      border: '2px solid #000',
+                      boxShadow: 24,
+                      zIndex: 9999,
+                      p: 4,
+                      }}
+                  >
+                      <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                      <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Category?</Typography>
+                      <Stack spacing={2} direction="row">
+                      <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                      <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                      </Stack>
+                  </Box>
+              </Modal>
           </div>
         </div>
       </div>
