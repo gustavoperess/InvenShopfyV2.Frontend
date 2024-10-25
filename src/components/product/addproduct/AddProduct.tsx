@@ -1,21 +1,74 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { MenuItem, TextField } from '@mui/material';
+import { MenuItem, TextField, Select, InputLabel, FormControl, SelectChangeEvent } from '@mui/material';
 import dropProductImg from '../../../../public/assets/img/icon/drag.png';
 import Checkbox from '@mui/material/Checkbox';
 import { FormControlLabel } from '@mui/material'
 import { FileUploader } from 'react-drag-drop-files';
 const fileTypes = ["JPG", "PNG", "GIF"];
+import { useAddProductMutation } from '@/services/Product/Product';
+import { useGetAllProductsUnitQuery } from '@/services/Product/Unit';
+import { useGetAllProductsBrandQuery } from '@/services/Product/Brand';
+import { useGetAllProductsCategoryQuery, useGetProductByIdQuery } from '@/services/Product/Category';
+
+
+
+// Define the structure of the data
+interface mainCategoryData {
+    mainCategory: string;
+    id: number;
+    subCategory: string;
+  }
+
+interface brandData {
+    id: number;
+    title: string;
+}
+
+interface unitData {
+    id: number;
+    title: string;
+}
+
 
 const AddProduct = () => {
+    const [selectedCategory, setSelectedCategory] = useState<number | string>("");
 
+    const [selectedTitle, setSelectedTitle] = useState<string>("");
+    const [selectedBrand, setSelectedBrand] =useState<string>("");
+    const [selectedUnit, setSelectedUnit] =useState<string>("");
+    const [selectedPrice, setSelectedPrice] = useState<number>(0);
+    const [selectedCode, setSelectedCode] =  useState<string>("");
+    
+  
+
+    const [selectCategoryId, setSelectCategoryId] = useState<number>(0);
+    const [selectSubCategory, setSelectSubCategory] = useState<string>("");
+
+
+    const [subCategories, setSubCategories] = useState<string[]>([]);
+    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+    const [currentPageSize, setCurrentPageSize] = useState(10);
+    const { data: totalUnitData, error: totalUnitError, isLoading: totalUnitLoading } = useGetAllProductsUnitQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+    const { data: totalBrandData, error: totalBrandError, isLoading: totalBrandLoading } = useGetAllProductsBrandQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+    const { data: totalCategoryData, error: totalCategoryError, isLoading: totalCategoryLoading } = useGetAllProductsCategoryQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+    const { data: subCategoryData } = useGetProductByIdQuery(Number(selectedCategory) || 0, { skip: !selectedCategory});
+  
+
+    useEffect(() => {
+        if (subCategoryData) {
+            setSubCategories(subCategoryData.data.subCategory || []);
+        }
+    }, [subCategoryData]);
+   
 
     //react drag and drop image
     const [files, setFiles] = useState<File[]>([]);
     const handleChange = (file: File) => {
         setFiles([...files, file]);
     };
+
 
     //remove drag and drop image
     const handleRemove = (index: any) => {
@@ -30,6 +83,12 @@ const AddProduct = () => {
         setDifferentPrice(event.target.checked)
     }
 
+    // handlers
+    const handleCategoryChange = (e: SelectChangeEvent<number | string>) => {
+        setSelectedCategory(e.target.value); 
+    };
+
+    console.log(subCategoryData)
 
     return (
         <>
@@ -38,42 +97,13 @@ const AddProduct = () => {
                     <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                         <div className="col-span-12 xl:col-span-9 lg:col-span-8 lg:order-1 maxMd:order-2">
                             <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
-                                <div className="col-span-12 xl:col-span-8 lg:col-span-12">
+                                <div className="col-span-12 xl:col-span-12 lg:col-span-12">
                                     <div className="inventual-select-field">
                                         <div className="inventual-form-field">
                                             <h5>Product Name</h5>
                                             <div className="inventual-input-field-style">
-                                                <input type="text" placeholder='HP Elitebook' />
+                                                <input  onChange={(e) => setSelectedTitle(e.target.value)} type="text" placeholder='HP Elitebook' />
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                    <div className="inventual-form-field">
-                                        <h5>Product Type</h5>
-                                        <div className="inventual-select-field-style">
-                                            <TextField
-                                                select
-                                                label="Select"
-                                                defaultValue=""
-                                                SelectProps={{
-                                                    displayEmpty: true,
-                                                    renderValue: (value: any) => {
-                                                        if (value === '') {
-                                                            return <em>Select Type</em>;
-                                                        }
-                                                        return value;
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem value="">
-                                                    <em>Select Type</em>
-                                                </MenuItem>
-                                                <MenuItem value="Technology Products">Technology Products</MenuItem>
-                                                <MenuItem value="Automotive Products">Automotive Products</MenuItem>
-                                                <MenuItem value="Financial Products">Financial Products</MenuItem>
-                                                <MenuItem value="Entertainment Products">Entertainment Products</MenuItem>
-                                            </TextField>
                                         </div>
                                     </div>
                                 </div>
@@ -82,27 +112,67 @@ const AddProduct = () => {
                                         <div className="inventual-form-field">
                                             <h5>Category</h5>
                                             <div className="inventual-select-field-style">
+                                                <FormControl fullWidth>
+                                                    <InputLabel>Select Category</InputLabel>
+                                                    <Select
+                                                        label="Select"
+                                                        value={selectedCategory}
+                                                        onChange={handleCategoryChange}
+                                                        displayEmpty
+                                                        renderValue={(value) => {
+                                                            const selectedCategoryItem = totalCategoryData?.data.find(
+                                                                (category: mainCategoryData) => category.id === Number(value)
+                                                            );
+                                                            return selectedCategoryItem ? selectedCategoryItem.mainCategory : <em>Select Category</em>;
+                                                        }}
+                                                    >
+                                                        {totalCategoryData && totalCategoryData.data.length > 0 ? (
+                                                            totalCategoryData.data.map((mainCategory: mainCategoryData) => (
+                                                                <MenuItem key={mainCategory.id} value={mainCategory.id}>
+                                                                    {mainCategory.mainCategory}
+                                                                </MenuItem>
+                                                            ))
+                                                        ) : (
+                                                            <MenuItem value="">
+                                                                <em>No Categories Available</em>
+                                                            </MenuItem>
+                                                        )}
+                                                    </Select>
+                                                </FormControl>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-span-12 xl:col-span-4 md:col-span-6">
+                                    <div className="inventual-select-field">
+                                        <div className="inventual-form-field">
+                                            <h5>Sub-Category</h5>
+                                            <div className="inventual-select-field-style">
                                                 <TextField
                                                     select
                                                     label="Select"
-                                                    defaultValue=""
+                                                    value={selectSubCategory}
+                                                    onChange={(e) => setSelectSubCategory(e.target.value)}
                                                     SelectProps={{
                                                         displayEmpty: true,
                                                         renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Select Type</em>;
-                                                            }
-                                                            return value;
+                                                            // Correctly find the selected sub-category
+                                                            const selectedSubCategory = subCategories.find((subCategory) => subCategory === value);
+                                                            return selectedSubCategory ? selectedSubCategory : <em>Select Sub-Category</em>;
                                                         },
                                                     }}
                                                 >
-                                                    <MenuItem value="">
-                                                        <em>Select Type</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="Computer">Computer</MenuItem>
-                                                    <MenuItem value="Television">Television</MenuItem>
-                                                    <MenuItem value="Shoes">Shoes</MenuItem>
-                                                    <MenuItem value="Fruits">Fruits</MenuItem>
+                                                    {subCategories.length > 0 ? (
+                                                        subCategories.map((subCategory, index) => (
+                                                            <MenuItem key={subCategory} value={subCategory}>
+                                                                {subCategory}
+                                                            </MenuItem>
+                                                        ))
+                                                    ) : (
+                                                        <MenuItem value="">
+                                                            <em>No Sub-Categories Available</em>
+                                                        </MenuItem>
+                                                    )}
                                                 </TextField>
                                             </div>
                                         </div>
@@ -113,7 +183,7 @@ const AddProduct = () => {
                                         <div className="inventual-form-field">
                                             <h5>Product Code</h5>
                                             <div className="inventual-input-field-style">
-                                                <input type="text" placeholder='8952202236' />
+                                                <input onChange={(e) => setSelectedTitle(e.target.value)} type="text" placeholder='8952202236' />
                                             </div>
                                         </div>
                                     </div>
@@ -126,36 +196,27 @@ const AddProduct = () => {
                                                 <TextField
                                                     select
                                                     label="Select"
-                                                    defaultValue=""
+                                                    value={selectedBrand}
+                                                    onChange={(e) => setSelectedBrand(e.target.value)}
                                                     SelectProps={{
                                                         displayEmpty: true,
                                                         renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Select Type</em>;
-                                                            }
-                                                            return value;
+                                                            const selectedBrand = totalBrandData?.data.find((brand: brandData) => brand.id === value);
+                                                            return selectedBrand ? selectedBrand.title : <em>Select Brand</em>;
                                                         },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">
-                                                        <em>Select Type</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="Dell">Dell</MenuItem>
-                                                    <MenuItem value="Acer">Acer</MenuItem>
-                                                    <MenuItem value="asus">asus</MenuItem>
-                                                    <MenuItem value="HP">HP</MenuItem>
-                                                    <MenuItem value="Lenovo">Lenovo</MenuItem>
+                                                    }}>
+                                                    {totalBrandData && totalBrandData.data.length > 0 ? (
+                                                            totalBrandData.data.map((brand: brandData) => (
+                                                                <MenuItem key={brand.id} value={brand.id}>
+                                                                    {brand.title}
+                                                                </MenuItem>
+                                                            ))
+                                                        ) : (
+                                                            <MenuItem value="">
+                                                                <em>No Brands Available</em>
+                                                            </MenuItem>
+                                                        )}
                                                 </TextField>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                    <div className="inventual-select-field">
-                                        <div className="inventual-form-field">
-                                            <h5>Barcode</h5>
-                                            <div className="inventual-input-field-style">
-                                                <input type="text" placeholder='Scan Barcode' />
                                             </div>
                                         </div>
                                     </div>
@@ -168,23 +229,26 @@ const AddProduct = () => {
                                                 <TextField
                                                     select
                                                     label="Select"
-                                                    defaultValue=""
+                                                    value={selectedUnit}
+                                                    onChange={(e) => setSelectedUnit(e.target.value)}
                                                     SelectProps={{
                                                         displayEmpty: true,
                                                         renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Select Type</em>;
-                                                            }
-                                                            return value;
+                                                            const selectedUnit = totalUnitData?.data.find((unit: unitData) => unit.id === value);
+                                                            return selectedUnit ? selectedUnit.title : <em>Select Unit</em>;
                                                         },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">
-                                                        <em>Select Type</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="Kilogra">Kilogram</MenuItem>
-                                                    <MenuItem value="Meter">Meter</MenuItem>
-                                                    <MenuItem value="Piece">Piece</MenuItem>
+                                                    }}>
+                                                        {totalUnitData && totalUnitData.data.length > 0 ? (
+                                                        totalUnitData.data.map((unit: unitData) => (
+                                                            <MenuItem key={unit.id} value={unit.id}>
+                                                                {unit.title}
+                                                            </MenuItem>
+                                                        ))
+                                                    ) : (
+                                                        <MenuItem value="">
+                                                            <em>No Units Available</em>
+                                                        </MenuItem>
+                                                        )}
                                                 </TextField>
                                             </div>
                                         </div>
@@ -195,104 +259,7 @@ const AddProduct = () => {
                                         <div className="inventual-form-field">
                                             <h5>Product Price</h5>
                                             <div className="inventual-input-field-style">
-                                                <input type="text" placeholder='0' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                    <div className="inventual-select-field">
-                                        <div className="inventual-form-field">
-                                            <h5>Expense</h5>
-                                            <div className="inventual-input-field-style">
-                                                <input type="number" placeholder='0' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                    <div className="inventual-select-field">
-                                        <div className="inventual-form-field">
-                                            <h5>Unit Price</h5>
-                                            <div className="inventual-input-field-style">
-                                                <input type="number" placeholder='0' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                    <div className="inventual-form-field">
-                                        <h5>Product Tax</h5>
-                                        <div className="inventual-select-field-style">
-                                            <TextField
-                                                select
-                                                label="Select"
-                                                defaultValue=""
-                                                SelectProps={{
-                                                    displayEmpty: true,
-                                                    renderValue: (value: any) => {
-                                                        if (value === '') {
-                                                            return <em>Select Type</em>;
-                                                        }
-                                                        return value;
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem value="">
-                                                    <em>Select Type</em>
-                                                </MenuItem>
-                                                <MenuItem value="Vat @10%">Vat @10%</MenuItem>
-                                                <MenuItem value="Vat @11%">Vat @11%</MenuItem>
-                                                <MenuItem value="Vat @15%">Vat @15%</MenuItem>
-                                                <MenuItem value="Vat @12%">Vat @12%</MenuItem>
-                                                <MenuItem value="Vat @16%">Vat @16%</MenuItem>
-                                            </TextField>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                    <div className="inventual-form-field">
-                                        <h5>Tax Method</h5>
-                                        <div className="inventual-select-field-style">
-                                            <TextField
-                                                select
-                                                label="Select"
-                                                defaultValue=""
-                                                SelectProps={{
-                                                    displayEmpty: true,
-                                                    renderValue: (value: any) => {
-                                                        if (value === '') {
-                                                            return <em>Select Type</em>;
-                                                        }
-                                                        return value;
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem value="">
-                                                    <em>Select Type</em>
-                                                </MenuItem>
-                                                <MenuItem value="Exclusive">Exclusive</MenuItem>
-                                                <MenuItem value="Non - Exclusive">Non - Exclusive</MenuItem>
-                                            </TextField>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                    <div className="inventual-select-field">
-                                        <div className="inventual-form-field">
-                                            <h5>Discount</h5>
-                                            <div className="inventual-input-field-style">
-                                                <input type="text" placeholder='0' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                    <div className="inventual-select-field">
-                                        <div className="inventual-form-field">
-                                            <h5>Stock Alert</h5>
-                                            <div className="inventual-input-field-style">
-                                                <input type="text" placeholder='0' />
+                                                <input type="text" onChange={(e) => setSelectedPrice(Number(e.target.value))} value={selectedPrice} placeholder='0' />
                                             </div>
                                         </div>
                                     </div>
