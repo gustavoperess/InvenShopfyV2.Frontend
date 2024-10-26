@@ -36,7 +36,7 @@ const AddProduct = () => {
     const [selectedBrand, setSelectedBrand] = useState<string>("");
     const [selectedUnit, setSelectedUnit] = useState<string>("");
     const [selectedPrice, setSelectedPrice] = useState<number | undefined>();
-    const [selectedCode, setSelectedCode] = useState<string>("");
+    const [selectedCode, setSelectedCode] = useState<number | undefined>();
     const [featured, setFeatured] = useState<boolean | false>(false);
     const [expired, setExpired] = useState<boolean | false>(false);
     const [sale, setSale] = useState<boolean | false>(false);
@@ -56,6 +56,7 @@ const AddProduct = () => {
     useEffect(() => {
         if (subCategoryData) {
             setSubCategories(subCategoryData.data.subCategory || []);
+            setSelectSubCategory(''); 
         }
     }, [subCategoryData]);
 
@@ -72,39 +73,38 @@ const AddProduct = () => {
             brandId: selectedBrand, unitId: selectedUnit,
             price: selectedPrice, featured, expired, sale
         };
-        // try {
-        //     await addProduct(productData).unwrap();
-        //     setSelectedTitle('');
-        //     setProductImage(null);
-        //     setSelectedCategory("");
-        //     setSelectSubCategory("");
-        //     setSelectedCode("");
-        //     setSelectedBrand("");
-        //     setSelectedUnit("");
-        //     setSelectedPrice(0);
-        //     setFeatured(false);
-        //     setSale(false);
-        //     setExpired(false);
-        //     setSelectedDiffPriceWarehouse(false);
-        //     toast.success("Brand Created Successfully!")
-        // } catch (error: any) {
-        //     if (error?.data?.message) {
-        //         toast.error(error?.data?.message);
-        //     } else {
-        //         // Fallback error message
-        //         toast.error("Failed to create product. Please try again later.");
-        //     }
-        // }
+        console.log(productData)
+        try {
+            await addProduct(productData).unwrap();
+            setSelectedTitle('');
+            setProductImage(null);
+            setSelectedCategory("");
+            setSelectSubCategory("");
+            setSelectedCode(undefined);
+            setSelectedBrand("");
+            setSelectedUnit("");
+            setSelectedPrice(undefined);
+            setFeatured(false);
+            setSale(false);
+            setExpired(false);
+            setSelectedDiffPriceWarehouse(false);
+            toast.success("Brand Created Successfully!")
+        } catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error?.data?.message);
+            } else {
+                // Fallback error message
+                toast.error("Failed to create product. Please try again later.");
+            }
+        }
     }
-
-
-    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setSelectedPrice(value === '' ? undefined : Number(value));
-    };
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedCategory(e.target.value as string);
+
+        if (!subCategories.some(subCategory => subCategory === selectSubCategory)) {
+            setSelectSubCategory(''); 
+        }
     };
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -114,9 +114,9 @@ const AddProduct = () => {
 
             reader.onloadend = () => {
                 const base64String = reader.result as string; // Cast to string
-                const mimeType = file.type;
-                const dataUrl = `${mimeType};base64,${base64String.split(',')[1]}`;
-                setProductImage(`data:${dataUrl}`);
+                const base64WithoutPrefix = base64String.split(',')[1]; 
+                setProductImage(base64WithoutPrefix);
+                // setProductImage(`data:${dataUrl}`);
             };
 
             reader.readAsDataURL(file); // Read the file as Data URL (Base64)
@@ -150,6 +150,7 @@ const AddProduct = () => {
                                                             variant="outlined"
                                                             value={selectedTitle}
                                                             required
+                                                            inputProps={{ maxLength: 80 }}
                                                             onChange={(e) => setSelectedTitle(e.target.value)}
                                                              />
                                                     </FormControl>
@@ -220,7 +221,7 @@ const AddProduct = () => {
                                                         }}
                                                     >
                                                         {subCategories.length > 0 ? (
-                                                            subCategories.map((subCategory, index) => (
+                                                            subCategories.map((subCategory) => (
                                                                 <MenuItem key={subCategory} value={subCategory}>
                                                                     {subCategory}
                                                                 </MenuItem>
@@ -247,8 +248,8 @@ const AddProduct = () => {
                                                             required
                                                             placeholder="8952202236"
                                                             variant="outlined"
-                                                            inputProps={{ min: 1, max: 1000 }}
-                                                            onChange={(e) => setSelectedCode(e.target.value)}/>
+                                                            inputProps={{ min: 1, max: 10000000 }}
+                                                            onChange={(e) => setSelectedCode(Number(e.target.value))}/>
                                                     </FormControl>
                                                 </div>
                                             </div>
@@ -399,7 +400,7 @@ const AddProduct = () => {
                                 <div {...getRootProps({ className: 'dropzone-two' })}>
                                     <input {...getInputProps()} />
                                     {productImage ? (
-                                        <img src={productImage} alt="Selected" className="preview-image" />
+                                        <img src={`data:image/jpeg;base64,${productImage}`} alt="Selected" className="preview-image" />
                                     ) : (
                                         <>
                                             <h3 className="text-[20px] font-semibold text-heading mb-4">Drop product image here</h3>
