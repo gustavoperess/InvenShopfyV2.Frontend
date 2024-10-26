@@ -9,9 +9,9 @@
             @apply w-[150px];
         }
     }
-    // changed the height
+    // changed the size for h, from 12 to 3
     input,select,textarea {
-        @apply m-0 leading-[46px] border border-solid border-border px-5 rounded outline-none block text-[14px] text-body font-primary font-normal w-full bg-gray focus:bg-white;
+        @apply m-0 h-3 leading-[46px] border border-solid border-border px-5 rounded outline-none block text-[14px] text-body font-primary font-normal w-full bg-gray focus:bg-white;
         
         &.disabled {
             @apply bg-primary/5 cursor-not-allowed;

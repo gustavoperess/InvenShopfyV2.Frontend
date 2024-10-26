@@ -1,13 +1,14 @@
 "use client"
 import React, { useState, useEffect, useCallback } from 'react';
 import { Accept, useDropzone } from "react-dropzone";
-import { MenuItem, TextField, Select, InputLabel, FormControl, SelectChangeEvent, Box } from '@mui/material';
+import { MenuItem, TextField, FormControl, InputAdornment } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import { FormControlLabel } from '@mui/material'
 import { useAddProductMutation } from '@/services/Product/Product';
 import { useGetAllProductsUnitQuery } from '@/services/Product/Unit';
 import { useGetAllProductsBrandQuery } from '@/services/Product/Brand';
 import { useGetAllProductsCategoryQuery, useGetProductByIdQuery } from '@/services/Product/Category';
+import { NumericFormat } from 'react-number-format';
 import { toast } from 'react-toastify';
 
 
@@ -34,7 +35,7 @@ const AddProduct = () => {
     const [selectedTitle, setSelectedTitle] = useState<string>("");
     const [selectedBrand, setSelectedBrand] = useState<string>("");
     const [selectedUnit, setSelectedUnit] = useState<string>("");
-    const [selectedPrice, setSelectedPrice] = useState<number>(0);
+    const [selectedPrice, setSelectedPrice] = useState<number | undefined>();
     const [selectedCode, setSelectedCode] = useState<string>("");
     const [featured, setFeatured] = useState<boolean | false>(false);
     const [expired, setExpired] = useState<boolean | false>(false);
@@ -97,7 +98,10 @@ const AddProduct = () => {
     }
 
 
-
+    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSelectedPrice(value === '' ? undefined : Number(value));
+    };
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedCategory(e.target.value as string);
@@ -144,6 +148,7 @@ const AddProduct = () => {
                                                             fullWidth
                                                             placeholder="Macbook Pro*"
                                                             variant="outlined"
+                                                            value={selectedTitle}
                                                             required
                                                             onChange={(e) => setSelectedTitle(e.target.value)}
                                                              />
@@ -202,6 +207,7 @@ const AddProduct = () => {
                                                     <TextField
                                                         select
                                                         label="Select"
+                                                        required
                                                         value={selectSubCategory}
                                                         onChange={(e) => setSelectSubCategory(e.target.value)}
                                                      
@@ -234,7 +240,16 @@ const AddProduct = () => {
                                             <div className="inventual-form-field">
                                                 <h5>Product Code</h5>
                                                 <div className="inventual-input-field-style">
-                                                    <input onChange={(e) => setSelectedCode(e.target.value)} type="number" placeholder='8952202236' />
+                                                    <FormControl fullWidth>
+                                                        <TextField 
+                                                            fullWidth
+                                                            type="number"
+                                                            required
+                                                            placeholder="8952202236"
+                                                            variant="outlined"
+                                                            inputProps={{ min: 1, max: 1000 }}
+                                                            onChange={(e) => setSelectedCode(e.target.value)}/>
+                                                    </FormControl>
                                                 </div>
                                             </div>
                                         </div>
@@ -247,6 +262,7 @@ const AddProduct = () => {
                                                     <TextField
                                                         select
                                                         label="Select"
+                                                        required
                                                         value={selectedBrand}
                                                         onChange={(e) => setSelectedBrand(e.target.value)}
                                                         SelectProps={{
@@ -280,6 +296,7 @@ const AddProduct = () => {
                                                     <TextField
                                                         select
                                                         label="Select"
+                                                        required
                                                         value={selectedUnit}
                                                         onChange={(e) => setSelectedUnit(e.target.value)}
                                                         SelectProps={{
@@ -305,22 +322,29 @@ const AddProduct = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    {/* <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
-                                                <h5>Product Price</h5>
-                                                <div className="inventual-input-field-style">
-                                                    <input type="text" onChange={(e) => setSelectedPrice(Number(e.target.value))} value={selectedPrice} placeholder='0' />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> */}
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
                                         <div className="inventual-select-field">
                                             <div className="inventual-form-field">
                                                 <h5>Product Price</h5>
                                                 <div className="inventual-input-field-style">
-                                                    <input type="text" onChange={(e) => setSelectedPrice(Number(e.target.value))} value={selectedPrice} placeholder='0' />
+                                                     <NumericFormat
+                                                        customInput={TextField}
+                                                        thousandSeparator=","
+                                                        required
+                                                        decimalSeparator="."
+                                                        decimalScale={2}
+                                                        fixedDecimalScale
+                                                        value={selectedPrice ?? ''} // Display empty if `selectedPrice` is null
+                                                        onValueChange={(values) => {
+                                                            setSelectedPrice(values.floatValue); 
+                                                        }}
+                                                        InputProps={{
+                                                            startAdornment: <InputAdornment position="start">£</InputAdornment>,
+                                                        }}
+                                                        fullWidth
+                                                        variant="outlined"
+                                                        placeholder="100.00"
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
