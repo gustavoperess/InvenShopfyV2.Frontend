@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect, useCallback } from 'react';
 import { Accept, useDropzone } from "react-dropzone";
-import { MenuItem, TextField, Select, InputLabel, FormControl, SelectChangeEvent } from '@mui/material';
+import { MenuItem, TextField, Select, InputLabel, FormControl, SelectChangeEvent, Box } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import { FormControlLabel } from '@mui/material'
 import { useAddProductMutation } from '@/services/Product/Product';
@@ -64,36 +64,43 @@ const AddProduct = () => {
     //handle brand submit form
     const handleFormSubmit = async (event: any) => {
         event.preventDefault()
-        const productData = { title: selectedTitle, differPriceWarehouse: warehousePrice, 
-            productImage, categoryId: selectedCategory, 
+        const productData = {
+            title: selectedTitle, differPriceWarehouse: warehousePrice,
+            productImage, categoryId: selectedCategory,
             subcategory: selectSubCategory, productCode: selectedCode,
-            brandId: selectedBrand, unitId: selectedUnit, 
-            price: selectedPrice, featured, expired, sale };
-        try {
-            await addProduct(productData).unwrap();
-                setSelectedTitle('');
-                setProductImage(null);
-                setSelectedCategory("");
-                setSelectSubCategory("");
-                setSelectedCode("");
-                setSelectedBrand("");
-                setSelectedUnit("");
-                setSelectedPrice(0);
-                setFeatured(false);
-                setSale(false);
-                setExpired(false);
-                setSelectedDiffPriceWarehouse(false);
-                toast.success("Brand Created Successfully!")
-            } catch {
-                toast.error("Failed to create brand. Please try again later.")
-        }
+            brandId: selectedBrand, unitId: selectedUnit,
+            price: selectedPrice, featured, expired, sale
+        };
+        // try {
+        //     await addProduct(productData).unwrap();
+        //     setSelectedTitle('');
+        //     setProductImage(null);
+        //     setSelectedCategory("");
+        //     setSelectSubCategory("");
+        //     setSelectedCode("");
+        //     setSelectedBrand("");
+        //     setSelectedUnit("");
+        //     setSelectedPrice(0);
+        //     setFeatured(false);
+        //     setSale(false);
+        //     setExpired(false);
+        //     setSelectedDiffPriceWarehouse(false);
+        //     toast.success("Brand Created Successfully!")
+        // } catch (error: any) {
+        //     if (error?.data?.message) {
+        //         toast.error(error?.data?.message);
+        //     } else {
+        //         // Fallback error message
+        //         toast.error("Failed to create product. Please try again later.");
+        //     }
+        // }
     }
 
 
 
 
-    const handleCategoryChange = (e: SelectChangeEvent<number | string>) => {
-        setSelectedCategory(e.target.value);
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedCategory(e.target.value as string);
     };
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -130,11 +137,19 @@ const AddProduct = () => {
                                     <div className="col-span-12 xl:col-span-12 lg:col-span-12">
                                         <div className="inventual-select-field">
                                             <div className="inventual-form-field">
-                                                <h5>Product Name</h5>
-                                                <div className="inventual-input-field-style">
-                                                    <input onChange={(e) => setSelectedTitle(e.target.value)} type="text" placeholder='HP Elitebook' />
-                                                </div>
+                                            <h5>Product Name</h5>
+                                            <div className="inventual-input-field-style">
+                                                    <FormControl fullWidth>
+                                                        <TextField 
+                                                            fullWidth
+                                                            placeholder="Macbook Pro*"
+                                                            variant="outlined"
+                                                            required
+                                                            onChange={(e) => setSelectedTitle(e.target.value)}
+                                                             />
+                                                    </FormControl>
                                             </div>
+                                        </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
@@ -143,17 +158,23 @@ const AddProduct = () => {
                                                 <h5>Category</h5>
                                                 <div className="inventual-select-field-style">
                                                     <FormControl fullWidth>
-                                                        <InputLabel>Select Category</InputLabel>
-                                                        <Select
+                                                        <TextField
                                                             label="Select"
+                                                            select
+                                                            required
+                                                            helperText="Please select a category"
                                                             value={selectedCategory}
                                                             onChange={handleCategoryChange}
-                                                            displayEmpty
-                                                            renderValue={(value) => {
-                                                                const selectedCategoryItem = totalCategoryData?.data.find(
-                                                                    (category: mainCategoryData) => category.id === Number(value)
-                                                                );
-                                                                return selectedCategoryItem ? selectedCategoryItem.mainCategory : <em>Select Category</em>;
+                                                            fullWidth
+                                                            InputLabelProps={{ shrink: true }}
+                                                            SelectProps={{
+                                                                displayEmpty: true,
+                                                                renderValue: (value) => {
+                                                                    const selectedCategoryItem = totalCategoryData?.data.find(
+                                                                        (category: mainCategoryData) => category.id === Number(value)
+                                                                    );
+                                                                    return selectedCategoryItem ? selectedCategoryItem.mainCategory : <em>Select Category</em>;
+                                                                },
                                                             }}
                                                         >
                                                             {totalCategoryData && totalCategoryData.data.length > 0 ? (
@@ -167,7 +188,7 @@ const AddProduct = () => {
                                                                     <em>No Categories Available</em>
                                                                 </MenuItem>
                                                             )}
-                                                        </Select>
+                                                        </TextField>
                                                     </FormControl>
                                                 </div>
                                             </div>
@@ -183,6 +204,7 @@ const AddProduct = () => {
                                                         label="Select"
                                                         value={selectSubCategory}
                                                         onChange={(e) => setSelectSubCategory(e.target.value)}
+                                                     
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
@@ -212,7 +234,7 @@ const AddProduct = () => {
                                             <div className="inventual-form-field">
                                                 <h5>Product Code</h5>
                                                 <div className="inventual-input-field-style">
-                                                    <input onChange={(e) => setSelectedCode(e.target.value)} type="text" placeholder='8952202236' />
+                                                    <input onChange={(e) => setSelectedCode(e.target.value)} type="number" placeholder='8952202236' />
                                                 </div>
                                             </div>
                                         </div>
@@ -283,6 +305,16 @@ const AddProduct = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    {/* <div className="col-span-12 xl:col-span-4 md:col-span-6">
+                                        <div className="inventual-select-field">
+                                            <div className="inventual-form-field">
+                                                <h5>Product Price</h5>
+                                                <div className="inventual-input-field-style">
+                                                    <input type="text" onChange={(e) => setSelectedPrice(Number(e.target.value))} value={selectedPrice} placeholder='0' />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> */}
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
                                         <div className="inventual-select-field">
                                             <div className="inventual-form-field">
