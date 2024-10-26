@@ -169,7 +169,7 @@ const AddBrandList = () => {
     setTitle(e.target.value)
   }
 
-  //handle brand reset
+  //handle brand submit form
   const handleBrandForm = async (event: any) => {
     event.preventDefault()
     const brandData = { title, brandImage };
