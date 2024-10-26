@@ -73,7 +73,6 @@ const AddProduct = () => {
             brandId: selectedBrand, unitId: selectedUnit,
             price: selectedPrice, featured, expired, sale
         };
-        console.log(productData)
         try {
             await addProduct(productData).unwrap();
             setSelectedTitle('');
@@ -88,7 +87,7 @@ const AddProduct = () => {
             setSale(false);
             setExpired(false);
             setSelectedDiffPriceWarehouse(false);
-            toast.success("Brand Created Successfully!")
+            toast.success("Product Created Successfully!")
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);

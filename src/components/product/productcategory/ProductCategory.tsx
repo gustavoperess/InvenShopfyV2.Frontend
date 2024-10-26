@@ -1,8 +1,11 @@
 "use client"
 import React, { useRef, useState } from 'react';
-import { Menu, MenuItem } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import {
+  TextField,
+  FormControl,
+  Menu,
+  MenuItem,
   Paper,
   Table,
   TableBody,
@@ -140,13 +143,6 @@ const ProductCategory = () => {
   });
 
 
-
-
-  //handle category data
-  const handleMainCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => setMainCategory(e.target.value);
-  const handleSubCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => setSubCategory(e.target.value);
-
-
   const handleCategory = async (event: React.FormEvent<HTMLFormElement>) => {
     const subCategoryArray = subCategory.split(',').map((item) => item.trim());
     const categoryData = { mainCategory, subCategory: subCategoryArray };
@@ -175,7 +171,18 @@ const ProductCategory = () => {
                       <div className="inventual-form-field">
                         <h5>Main-Category</h5>
                         <div className="inventual-input-field-style">
-                          <input onChange={handleMainCategoryChange} value={mainCategory} type="text" placeholder='Eletronics' required />
+                              <FormControl fullWidth>
+                                  <TextField 
+                                      fullWidth
+                                      placeholder="Eletronics*"
+                                      variant="outlined"
+                                      type="text"
+                                      value={mainCategory}
+                                      required
+                                      inputProps={{ maxLength: 50 }}
+                                      onChange={(e) => setMainCategory(e.target.value)}
+                                      />
+                              </FormControl>
                         </div>
                       </div>
                     </div>
@@ -185,7 +192,18 @@ const ProductCategory = () => {
                       <div className="inventual-form-field">
                         <h5>Sub-Category</h5>
                         <div className="inventual-input-field-style">
-                          <input onChange={handleSubCategoryChange} value={subCategory} type="text" placeholder='Computer' required />
+                          <FormControl fullWidth>
+                                  <TextField 
+                                      fullWidth
+                                      placeholder="Computer*"
+                                      type="text"
+                                      variant="outlined"
+                                      value={subCategory}
+                                      required
+                                      inputProps={{ maxLength: 50 }}
+                                      onChange={(e) => setSubCategory(e.target.value)}
+                                      />
+                              </FormControl>
                         </div>
                       </div>
                     </div>

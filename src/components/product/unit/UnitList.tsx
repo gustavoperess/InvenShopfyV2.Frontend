@@ -1,6 +1,6 @@
 "use client"
 import React, { useRef, useState } from 'react';
-import { Menu, MenuItem, } from '@mui/material';
+import { Menu, MenuItem,FormControl, TextField } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import {
     Paper,
@@ -86,9 +86,6 @@ const UnitList = () => {
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
-
-
-   
   
 
     // Handler for selecting/deselecting all items
@@ -142,16 +139,13 @@ const UnitList = () => {
         return 0;
     });
 
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value);
-    const handleShortNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setShortName(e.target.value);
-
     //hanle unit form
     const handleUnitList = async (event:any) => {
         event.preventDefault();
         const unitData = {title, shortName}
         try{
             await addUnit(unitData).unwrap();
-            toast.success("Product unit created successfuly!")
+            toast.success("Unit/Value created successfuly!")
             setTitle("");
             setShortName("");
             refetch();
@@ -171,9 +165,20 @@ const UnitList = () => {
                                     <div className="col-span-12 md:col-span-6 lg:col-span-12">
                                         <div className="inventual-select-field">
                                             <div className="inventual-form-field">
-                                                <h5>Name</h5>
+                                                <h5>Unit/Value Name</h5>
                                                 <div className="inventual-input-field-style">
-                                                    <input onChange={handleTitleChange}    value={title}  type="text" placeholder='Kilogram' required/>
+                                                    <FormControl fullWidth>
+                                                        <TextField 
+                                                            fullWidth
+                                                            placeholder="Kilogram*"
+                                                            variant="outlined"
+                                                            type="text"
+                                                            value={title}
+                                                            required
+                                                            inputProps={{ maxLength: 80 }}
+                                                            onChange={(e) => setTitle(e.target.value)}
+                                                            />
+                                                    </FormControl>
                                                 </div>
                                             </div>
                                         </div>
@@ -183,7 +188,18 @@ const UnitList = () => {
                                             <div className="inventual-form-field">
                                                 <h5>Short Name</h5>
                                                 <div className="inventual-input-field-style">
-                                                    <input  onChange={handleShortNameChange}    value={shortName}  type="text" placeholder='kg' required/>
+                                                    <FormControl fullWidth>
+                                                        <TextField 
+                                                            fullWidth
+                                                            placeholder="Kg*"
+                                                            variant="outlined"
+                                                            type="text"
+                                                            value={shortName}
+                                                            required
+                                                            inputProps={{ maxLength: 2 }}
+                                                            onChange={(e) => setShortName(e.target.value)}
+                                                            />
+                                                    </FormControl>
                                                 </div>
                                             </div>
                                         </div>

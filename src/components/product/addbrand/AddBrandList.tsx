@@ -1,7 +1,9 @@
 "use client"
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, } from 'react';
 import Image, { StaticImageData } from 'next/image';
 import {
+  TextField,
+  FormControl,
   Paper,
   Table,
   TableBody,
@@ -21,6 +23,7 @@ import {
   Button,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
+import { Accept, useDropzone } from "react-dropzone";
 import { useGetAllProductsBrandQuery, useDeleteBrandMutation, useAddBrandMutation } from '@/services/Product/Brand';
 
 
@@ -40,7 +43,6 @@ const AddBrandList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [open, setOpen] = React.useState(false);
-
   const [brandImage, setBrandImage] = useState<string | null>(null);
   const [title, setTitle] = useState<string>("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -60,32 +62,32 @@ const AddBrandList = () => {
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentPageSize(parseInt(event.target.value, 10));
-    setCurrentPageNumber(1); 
+    setCurrentPageNumber(1);
     refetch();
   };
-    // handle opening delete modal
-    const handleOpenDelete = (productId: number) => {
-      setBrand(productId);
-      setOpen(true);
-    };
-     // handle closing delete modal
-     const handleCloseDelete = () => {
-      setOpen(false);
-    }
+  // handle opening delete modal
+  const handleOpenDelete = (productId: number) => {
+    setBrand(productId);
+    setOpen(true);
+  };
+  // handle closing delete modal
+  const handleCloseDelete = () => {
+    setOpen(false);
+  }
 
-     // handle delete submission
-     const handleDelete = async () => {
-      if (brand > 0) {
-        try {
-          await deleteBrand(brand);
-          setOpen(false);
-          refetch()
-        } catch (err) {
-          console.error('Error deleting the brand:', err);
-        }
+  // handle delete submission
+  const handleDelete = async () => {
+    if (brand > 0) {
+      try {
+        await deleteBrand(brand);
+        setOpen(false);
+        refetch()
+      } catch (err) {
+        console.error('Error deleting the brand:', err);
       }
-    };
-  
+    }
+  };
+
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -130,10 +132,10 @@ const AddBrandList = () => {
   const sortedRows = brandData?.data.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data]; 
+    const aValue = a[orderBy as keyof Data];
     const bValue = b[orderBy as keyof Data];
     if (aValue === undefined || bValue === undefined) {
-      return 0; 
+      return 0;
     }
 
     if (aValue < bValue) {
@@ -146,28 +148,29 @@ const AddBrandList = () => {
   });
 
   // uploaded images
-  const [fileUrls, setFileUrls] = useState<string[]>([]);
-  const inputBrandRef = useRef<HTMLInputElement>(null)
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    const reader = new FileReader();
-    if (file) {
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0];
+      const reader = new FileReader();
+
       reader.onloadend = () => {
-        const base64String = reader.result as string;
-        const base64Data = base64String.split(',')[1];
-        setBrandImage(base64Data);
-      }
-      reader.readAsDataURL(file); 
+        const base64String = reader.result as string; // Cast to string
+        const base64WithoutPrefix = base64String.split(',')[1];
+        setBrandImage(base64WithoutPrefix);
+        // setProductImage(`data:${dataUrl}`);
+      };
+
+      reader.readAsDataURL(file); // Read the file as Data URL (Base64)
     }
   }, []);
 
-  const handleRemove = (index: number) => {
-    setFileUrls(prevUrls => prevUrls.filter((item, i) => i !== index));
+  const accept: Accept = {
+    'image/*': []
   };
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value)
-  }
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop, accept });
 
   //handle brand submit form
   const handleBrandForm = async (event: any) => {
@@ -181,10 +184,6 @@ const AddBrandList = () => {
       formRef.current?.reset();
       toast.success("Brand Created Successfully!")
       refetch();
-      if(inputBrandRef.current) {
-        inputBrandRef.current.value = '';
-        setFileUrls([]);
-      }
     } catch {
       toast.error("Failed to create brand. Please try again later.")
     }
@@ -197,43 +196,48 @@ const AddBrandList = () => {
           <div className="grid grid-cols-12 gap-7 maxSm:gap-x-0">
             <div className="col-span-12 md:col-span-4">
               <form onSubmit={handleBrandForm}>
-                <div className="inventual-addbrand-upload-area">
-                  <div className="inventual-input-field-style flex flex-wrap gap-5 relative mb-5">
-                    <div className="inventual-input-field-file-image image-1">
-                      <label htmlFor="fileUpload">
-                        {
-                          fileUrls.length > 0 ? (
-                            "Brand Logo Uploaded"
-                          ) : ("Upload Brand Logo")
-                        }
-                      </label>
-                      <input
-                        required
-                        type="file"
-                        id="fileUpload"
-                        accept='image/*'
-                        onChange={handleFileChange}
-                      />
-                    </div>
-                    {/* Display uploaded images */}
-                    {fileUrls.map((url, index) => (
-                      <div key={index} className="inventual-drag-product-img">
-                        <Image width={60} height={60} src={url} alt={`Uploaded Image ${index}`} />
-                        <button className='inventual-inventual-drag-close' onClick={() => handleRemove(index)}>X</button>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="inventual-select-field w-full mb-5">
-                    <div className="inventual-form-field">
-                      <h5>Brand Name</h5>
-                      <div className="inventual-input-field-style">
-                        <input ref={inputBrandRef} value={title} onChange={handleTitleChange} type="text" placeholder='Microsoft' required />
-                      </div>
+                <div className="col-span-12 xl:col-span-3 lg:col-span-4 lg:order-2 maxMd:order-1">
+                  <div className="inventual-product-dragdrop ngx-file-drop__drop-zone text-center border border-dashed border-primary bg-[#F8FAFF] p-4"
+                    style={{ padding: '10px', marginBottom: '10px' }}
+                  >
+                    <div {...getRootProps({ className: 'dropzone-two' })}>
+                      <input {...getInputProps()} />
+                      {brandImage ? (
+                        <img src={`data:image/jpeg;base64,${brandImage}`} alt="Selected" className="preview-image" 
+                        style={{ maxHeight: '300px', width: 'auto', objectFit: 'contain' }}
+                        />
+                      ) : (
+                        <>
+                          <h3 className="text-[20px] font-semibold text-heading mb-4">Drop brand image here</h3>
+                          <span className="block text-[20px] font-semibold text-heading mb-7">Or</span>
+                          <button type="submit" className="inventual-btn">Browse File</button>
+                          <span className="text-[14px] text-heading font-medium block pt-7">Allowed JPEG, JPG & PNG format  |  Max 100 mb</span>
+                        </>
+                      )}
                     </div>
                   </div>
-                  <div className="col-span-12">
-                    <button type='submit' className='inventual-btn'>Create Brand</button>
+                </div>
+                <div className="inventual-select-field w-full mb-5">
+                  <div className="inventual-form-field">
+                    <h5>Brand Name</h5>
+                    <div className="inventual-input-field-style">
+                      <FormControl fullWidth>
+                        <TextField
+                          fullWidth
+                          placeholder="Microsoft*"
+                          variant="outlined"
+                          type="text"
+                          value={title}
+                          required
+                          inputProps={{ maxLength: 80 }}
+                          onChange={(e) => setTitle(e.target.value)}
+                        />
+                      </FormControl>
+                    </div>
                   </div>
+                </div>
+                <div className="col-span-12">
+                  <button type='submit' className='inventual-btn'>Create Brand</button>
                 </div>
               </form>
             </div>
@@ -249,7 +253,7 @@ const AddBrandList = () => {
                               <TableCell>
                                 <Checkbox
                                   indeterminate={selected.length > 0 && selected.length < brandData?.data.length}
-                                  checked={brandData?.data.length> 0 && selected.length === brandData?.data.length}
+                                  checked={brandData?.data.length > 0 && selected.length === brandData?.data.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                                 />
                               </TableCell>
@@ -280,44 +284,44 @@ const AddBrandList = () => {
                           </TableHead>
                           <TableBody>
                             {sortedRows?.map((brand: any) => (
-                                <TableRow
-                                  key={brand.id}
-                                  hover
-                                  onClick={() => handleClick(brand.id)}
-                                  role="checkbox"
-                                  aria-checked={isSelected(brand.id)}
-                                  selected={isSelected(brand.id)}
-                                >
-                                  <TableCell>
-                                    <Checkbox checked={isSelected(brand.id)} />
-                                  </TableCell>
-                                  <TableCell>
-                                    <div className="max-h-[72px] inline-flex items-center justify-cente">
-                                      <div className="inner px-2 py-2">
-                                        <Image src={brand.brandImage}  height={48} width={48} alt='brand-img' />
-                                      </div>
+                              <TableRow
+                                key={brand.id}
+                                hover
+                                onClick={() => handleClick(brand.id)}
+                                role="checkbox"
+                                aria-checked={isSelected(brand.id)}
+                                selected={isSelected(brand.id)}
+                              >
+                                <TableCell>
+                                  <Checkbox checked={isSelected(brand.id)} />
+                                </TableCell>
+                                <TableCell>
+                                  <div className="max-h-[72px] inline-flex items-center justify-cente">
+                                    <div className="inner px-2 py-2">
+                                      <Image src={brand.brandImage} height={48} width={48} alt='brand-img' />
                                     </div>
-                                  </TableCell>
-                                  <TableCell>{brand.title}</TableCell>
-                                  <TableCell>
-                                    <div className="inventual-list-action-style">
-                                      <PopupState variant="popover">
-                                        {(popupState: any) => (
-                                          <React.Fragment>
-                                            <button className='' type='button' {...bindTrigger(popupState)}>
-                                              Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                            </button>
-                                            <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
-                                              <MenuItem onClick={() => handleOpenDelete(brand.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                            </Menu>
-                                          </React.Fragment>
-                                        )}
-                                      </PopupState>
-                                    </div>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
+                                  </div>
+                                </TableCell>
+                                <TableCell>{brand.title}</TableCell>
+                                <TableCell>
+                                  <div className="inventual-list-action-style">
+                                    <PopupState variant="popover">
+                                      {(popupState: any) => (
+                                        <React.Fragment>
+                                          <button className='' type='button' {...bindTrigger(popupState)}>
+                                            Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                          </button>
+                                          <Menu {...bindMenu(popupState)}>
+                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
+                                            <MenuItem onClick={() => handleOpenDelete(brand.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                          </Menu>
+                                        </React.Fragment>
+                                      )}
+                                    </PopupState>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
                           </TableBody>
                         </Table>
                       </TableContainer>
@@ -337,27 +341,27 @@ const AddBrandList = () => {
                 </div>
               </div>
               <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  bgcolor: 'background.paper',
-                  border: '2px solid #000',
-                  boxShadow: 24,
-                  zIndex: 9999,
-                  p: 4,
-                }}
-              >
-                <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Brand?</Typography>
-                <Stack spacing={2} direction="row">
-                  <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
-                  <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
-                </Stack>
-              </Box>
-            </Modal>
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    bgcolor: 'background.paper',
+                    border: '2px solid #000',
+                    boxShadow: 24,
+                    zIndex: 9999,
+                    p: 4,
+                  }}
+                >
+                  <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                  <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Brand?</Typography>
+                  <Stack spacing={2} direction="row">
+                    <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                    <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                  </Stack>
+                </Box>
+              </Modal>
             </div>
           </div>
         </div>
@@ -368,3 +372,9 @@ const AddBrandList = () => {
 }
 
 export default AddBrandList
+
+
+
+
+
+

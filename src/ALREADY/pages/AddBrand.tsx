@@ -182,3 +182,30 @@
 //     </div>
 //     );
 // }
+
+
+// <div className="inventual-input-field-style flex flex-wrap gap-5 relative mb-5">
+//                     <div className="inventual-input-field-file-image image-1">
+//                       <label htmlFor="fileUpload">
+//                         {
+//                           fileUrls.length > 0 ? (
+//                             "Brand Logo Uploaded"
+//                           ) : ("Upload Brand Logo")
+//                         }
+//                       </label>
+//                       <input
+//                         required
+//                         type="file"
+//                         id="fileUpload"
+//                         accept='image/*'
+//                         onChange={handleFileChange}
+//                       />
+//                     </div>
+//                     {/* Display uploaded images */}
+//                     {fileUrls.map((url, index) => (
+//                       <div key={index} className="inventual-drag-product-img">
+//                         <Image width={60} height={60} src={url} alt={`Uploaded Image ${index}`} />
+//                         <button className='inventual-inventual-drag-close' onClick={() => handleRemove(index)}>X</button>
+//                       </div>
+//                     ))}
+//                   </div>
