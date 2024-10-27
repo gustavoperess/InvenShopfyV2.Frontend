@@ -135,7 +135,7 @@ div.inventual-input-type-file-style {
 .inventual-form-field {
     .inventual-input-eye-style {
         input {
-            @apply py-0;
+            @apply py-4;
             &::placeholder {
                 @apply text-body opacity-100 font-primary;
             }

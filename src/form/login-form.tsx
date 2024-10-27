@@ -19,6 +19,7 @@ const LoginForm = () => {
     const [loginUser] = useUserLoginMutation();
     const [isBtnDisable, setBtnDisable] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
+    const [loginError, setLoginError] = useState(''); 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -44,8 +45,7 @@ const LoginForm = () => {
                 setBtnDisable(true)
                 router.push("/dashboard")
             } catch (error: any) {
-                console.log("THIS HERE")
-                toast.warning(error.message);
+                setLoginError("Incorrect username or password"); 
             }
         }
     })
@@ -59,7 +59,8 @@ const LoginForm = () => {
                 <div className="inventual-input-field-style mb-5">
                     <div className="inventual-form-field">
                         <div className="inventual-input-field-style has-icon">
-                            <input type="text"
+                            <input
+                                type="text"
                                 onChange={handleChange}
                                 defaultValue={values.userName}
                                 onBlur={handleBlur}
@@ -73,7 +74,7 @@ const LoginForm = () => {
                         </div>
                     </div>
                 </div>
-                <div className="inventual-input-field-style inventual-input-field-style-eye mb-5">
+                <div className="inventual-input-field-style inventual-input-field-style-eye mb-7">
                     <div className="inventual-form-field">
                         <div className="inventual-input-eye-style">
                             <FilledInput
@@ -101,11 +102,13 @@ const LoginForm = () => {
                         </div>
                     </div>
                 </div>
+                {/* Display login error message */}
+                {loginError && <p className="text-red-500 text-center mb-5">{loginError}</p>}
                 <div className="inventual-login-footer-forgot mb-5">
                     <Link className="text-[16px] inline-block text-primary" href="/forgotpassword">Forgot Password?</Link>
                 </div>
                 <div className="inventual-login-btn mb-7">
-                     <button type="submit" className="inventual-btn w-full" disabled={isBtnDisable}>Log in</button>
+                    <button type="submit" className="inventual-btn w-full" disabled={isBtnDisable}>Log in</button>
                 </div>
                 <div className="inventual-login-footer">
                     <div className="inventual-login-footer-account text-center">

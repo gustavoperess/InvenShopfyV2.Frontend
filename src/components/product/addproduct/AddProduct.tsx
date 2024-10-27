@@ -399,7 +399,9 @@ const AddProduct = () => {
                                 <div {...getRootProps({ className: 'dropzone-two' })}>
                                     <input {...getInputProps()} />
                                     {productImage ? (
-                                        <img src={`data:image/jpeg;base64,${productImage}`} alt="Selected" className="preview-image" />
+                                        <img src={`data:image/jpeg;base64,${productImage}`} alt="Selected" className="preview-image" 
+                                        style={{ maxHeight: '450px', width: 'auto', objectFit: 'contain' }}
+                                        />
                                     ) : (
                                         <>
                                             <h3 className="text-[20px] font-semibold text-heading mb-4">Drop product image here</h3>

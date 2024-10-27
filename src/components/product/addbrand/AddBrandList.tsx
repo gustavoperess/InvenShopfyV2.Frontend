@@ -184,9 +184,14 @@ const AddBrandList = () => {
       formRef.current?.reset();
       toast.success("Brand Created Successfully!")
       refetch();
-    } catch {
-      toast.error("Failed to create brand. Please try again later.")
-    }
+    } catch (error: any) {
+      if (error?.data?.message) {
+          toast.error(error?.data?.message);
+      } else {
+          // Fallback error message
+          toast.error("Failed to create brand. Please try again later.")
+      }
+  }
   }
 
   return (

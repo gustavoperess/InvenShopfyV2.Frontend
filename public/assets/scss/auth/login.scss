@@ -6,20 +6,44 @@
         max-width: inherit;
 	}
 }
+// .inventual-input-field-style {
+//     @apply relative;
+//     .inventual-input-icon {
+//         @apply absolute top-[1px] end-[1px] inline-flex justify-center w-[50px] h-[46px] bg-border text-body items-center;
+//         i {
+//             @apply text-[18px] text-body;
+//         }
+//     }
+//     &.has-icon {
+//         input {
+//             @apply pe-[60px];
+//         }
+//     }
+// }
+// .inventual-input-field-style.has-icon-outline .inventual-input-icon {
+//     @apply bg-transparent border-s border-border text-[15px];
+// }
+
 .inventual-input-field-style {
     @apply relative;
+
     .inventual-input-icon {
+        // Increase height to 56px for more space
         @apply absolute top-[1px] end-[1px] inline-flex justify-center w-[50px] h-[46px] bg-border text-body items-center;
+        
         i {
             @apply text-[18px] text-body;
         }
     }
+
     &.has-icon {
         input {
-            @apply pe-[60px];
+            // Adjust padding or height to match the icon height
+            @apply pe-[60px] h-[46px]; // Use the same height as the icon for consistency
         }
     }
 }
+
 .inventual-input-field-style.has-icon-outline .inventual-input-icon {
     @apply bg-transparent border-s border-border text-[15px];
 }

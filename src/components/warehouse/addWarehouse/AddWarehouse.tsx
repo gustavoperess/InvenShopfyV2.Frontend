@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useCreateWarehouseMutation } from '@/services/Warehouse/Warehouse';
+import { TextField, FormControl } from '@mui/material';
+import { kMaxLength } from 'buffer';
 
 const AddWarehouse = () => {
     const [addWarehouse] = useCreateWarehouseMutation();
@@ -12,6 +14,7 @@ const AddWarehouse = () => {
     const [warehouseCountry, setWarehouseCountry] = useState<string>('');
     const [warehouseZipCode, setWarehouseZipCode] = useState<string>('');
     const [warehouseOpeningNotes, setWarehouseOpeningNotes] = useState<string>('');
+    const [error, setError] = useState(false);
 
     //handle Warehouse data
     const handleWarehosueData = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -27,14 +30,24 @@ const AddWarehouse = () => {
             setWarehouseCountry(''); 
             setWarehouseZipCode(''); 
             setWarehouseOpeningNotes('');
-        } catch {
-            console.log("Error occurred while adding a Warehouse", e);
-            toast.error("Failed to create Warehouse. Please try again later.");
+        } 
+        catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error?.data?.message);
+            } else {
+                // Fallback error message
+                toast.error("Failed to create Warehouse. Please try again later.");
+            }
         }
-
     }
 
 
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const email = e.target.value;
+        setWarehouseEmailAddress(email);
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setError(!emailPattern.test(email));  
+    };
 
 
     return (
@@ -47,13 +60,17 @@ const AddWarehouse = () => {
                                 <div className="inventual-form-field">
                                     <h5>Name</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
+                                    <FormControl fullWidth>
+                                        <TextField 
+                                            fullWidth
+                                            type="text"
                                             required
                                             value={warehouseName}
-                                            onChange={(e) => setWarehouseName(e.target.value)}
-                                            type="text"
-                                            placeholder='Warehouse 1'
-                                        />
+                                            placeholder="Warehouse 1"
+                                            variant="outlined"
+                                            inputProps={{ maxLength: 50 }}
+                                            onChange={(e) => setWarehouseName(e.target.value)}/>
+                                    </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -61,13 +78,17 @@ const AddWarehouse = () => {
                                 <div className="inventual-form-field">
                                     <h5>Phone</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
+                                    <FormControl fullWidth>
+                                        <TextField  // NEED TO CHECK PHONE NUMBER REQUIREMENTS 
+                                            fullWidth
+                                            type="number"
                                             required
                                             value={warehousePhoneNumber}
-                                            onChange={(e) => setWarehousePhoneNumber(e.target.value)}
-                                            type="number"
-                                            placeholder=' +234 23432432'
-                                        />
+                                            placeholder="+234 23432432"
+                                            variant="outlined"
+                                            inputProps={{ maxLength: 80 }}
+                                            onChange={(e) => setWarehousePhoneNumber(e.target.value)}/>
+                                    </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -75,13 +96,20 @@ const AddWarehouse = () => {
                                 <div className="inventual-form-field">
                                     <h5>Email</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
+                                    <FormControl fullWidth>
+                                        <TextField  
+                                            fullWidth
+                                            type="email"
                                             required
                                             value={warehouseEmail}
-                                            onChange={(e) => setWarehouseEmailAddress(e.target.value)}
-                                            type="text"
-                                            placeholder='info@example.com'
-                                        />
+                                            placeholder="Warehouse01@gmail.con"
+                                            variant="outlined"
+                                            inputProps={{ maxLength: 80 }}
+                                            onChange={handleEmailChange}
+                                            error={error}
+                                            helperText={error ? "Please enter a valid email address" : ""}
+                                            />
+                                    </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -89,13 +117,18 @@ const AddWarehouse = () => {
                                 <div className="inventual-form-field">
                                     <h5>City</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
+                                    <FormControl fullWidth>
+                                        <TextField  
+                                            fullWidth
+                                            type="text"
                                             required
                                             value={warehouseCity}
+                                            placeholder="London"
+                                            variant="outlined"
+                                            inputProps={{ maxLength: 80 }}
                                             onChange={(e) => setWarehouseCity(e.target.value)}
-                                            type="text"
-                                            placeholder='London'
-                                        />
+                                            />
+                                    </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -103,13 +136,18 @@ const AddWarehouse = () => {
                                 <div className="inventual-form-field">
                                     <h5>Country</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
+                                    <FormControl fullWidth>
+                                        <TextField  
+                                            fullWidth
+                                            type="text"
                                             required
                                             value={warehouseCountry}
-                                            onChange={(e) => setWarehouseCountry(e.target.value)}
-                                            type="text"
                                             placeholder='United Kingdom'
-                                        />
+                                            variant="outlined"
+                                            inputProps={{ maxLength: 80 }}
+                                            onChange={(e) => setWarehouseCountry(e.target.value)}
+                                            />
+                                    </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -117,27 +155,34 @@ const AddWarehouse = () => {
                                 <div className="inventual-form-field">
                                     <h5>Zip Code</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
+                                    <FormControl fullWidth>
+                                        <TextField  
+                                            fullWidth
+                                            type="text"
                                             required
                                             value={warehouseZipCode}
-                                            onChange={(e) => setWarehouseZipCode(e.target.value)}
-                                            type="number"
                                             placeholder='SE20-5ET'
-                                        />
+                                            variant="outlined"
+                                            inputProps={{ maxLength: 20 }}
+                                            onChange={(e) => setWarehouseZipCode(e.target.value)}
+                                            />
+                                    </FormControl>
                                     </div>
                                 </div>
                             </div>
                             <div className="col-span-12">
-                                <div className="inventual-form-field">
-                                    <h5>Notes</h5>
-                                    <div className="inventual-input-field-style">
-                                        <textarea
-                                            required
+                                <div className="inventual-input-field-style">
+                                    <FormControl fullWidth>
+                                        <TextField  
+                                            fullWidth
+                                            multiline
+                                            rows={4}
                                             value={warehouseOpeningNotes}
-                                            onChange={(e) => setWarehouseOpeningNotes(e.target.value)}
                                             placeholder='Notes....'
-                                        ></textarea>
-                                    </div>
+                                            inputProps={{ maxLength: 500 }}
+                                            onChange={(e) => setWarehouseOpeningNotes(e.target.value)}
+                                            />
+                                    </FormControl>
                                 </div>
                             </div>
                             <div className="col-span-12 flex justify-end">
