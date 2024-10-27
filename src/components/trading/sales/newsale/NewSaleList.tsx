@@ -3,18 +3,160 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import product_data from '@/data/product-data';
 import { TProduct } from '@/interFace/interFace';
-import { MenuItem, TextField } from '@mui/material';
+import { MenuItem, TextField, InputAdornment } from '@mui/material';
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
+import { NumericFormat } from 'react-number-format';
+import { useCreateSaleMutation } from '@/services/Sales/Sales';
+import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
+import { useGetAllCustomersQuery } from '@/services/People/Customer';
+import { useGetAllBillersQuery } from '@/services/People/Biller';
+import { useGetProductByNameQuery } from '@/services/Product/Product';
+
+interface productInterface {
+    id: number;
+    title: string;
+    productImage: string;
+    category: string;
+    productCode: number,
+    stockQuantity: number,
+    subcategory: string,
+    price: number;
+    quantitySold: number;
+    expired: boolean;
+    totalAmountSold: number,
+}
+
+interface warehouseInterface {
+    id: number;
+    warehouseName: string;
+
+}
+
+interface dataInterface {
+    id: number;
+    name: string;
+}
+
 
 
 const NewSaleList = () => {
-    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [saleDate, setSaleDate] = useState(new Date());
+    const [customer, setCustomer] = useState<number | null>();
+    const [warehouse, setWarehouse] = useState<number | null>();
+    const [biller, setBiller] = useState<number | null>();
+
+    const [product, setProduct] = useState<string>("");
+    const [productName, setProductName] = useState<string>("");
+
+    const [shippingCost, setShippingCost] = useState<number | undefined>();
+    const [discount, setDiscount] = useState<number | undefined>();
+    const [saleStatus, setSalesStatus] = useState<string>("");
+    const [paymentStatus, setPaymentStatus] = useState<string>("");
+    const [saleNote, setSaleNote] = useState<string>("");
+    const [staffNote, setStaffNote] = useState<string>("");
+    const [productInformation, setProductInformation] = useState<productInterface[]>([]);
+    const [suggestions, setSuggestions] = useState<productInterface[]>([]);
+
+    // funcitons
+    const debouncedSearchTerm = useDebounce(productName, 500);
+    const formRef = useRef<HTMLFormElement>(null);
+
+    const [addSale] = useCreateSaleMutation();
+
+
+    //datas
+    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+    const [currentPageSize, setCurrentPageSize] = useState(10);
+    const { data: customerData } = useGetAllCustomersQuery(1);
+    const { data: billerData } = useGetAllBillersQuery(1);
+    const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<TProduct[]>([]);
     const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
     const [activeItems, setActiveItems] = useState<TProduct[]>([]);
-    const [shippingAmount, setShippingAmount] = useState(0);
+
+
+
+    //debounce function
+    function useDebounce(value: string, delay: number) {
+        const [debouncedValue, setDebouncedValue] = useState(value);
+
+        useEffect(() => {
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+
+            return () => clearTimeout(handler);
+        }, [value, delay]);
+
+        return debouncedValue;
+    }
+
+
+    const { data: productSuggestionsData, error } = useGetProductByNameQuery(debouncedSearchTerm, {
+        skip: debouncedSearchTerm.trim().length === 0  // Only call API if debounced term is not empty
+    });
+
+
+    useEffect(() => {
+        if (debouncedSearchTerm.trim().length > 0 && productSuggestionsData) {
+            setSuggestions(productSuggestionsData.data);
+        } else {
+            setSuggestions([]);
+        }
+
+        // Handle error scenarios
+        if (error) {
+            console.error("Error fetching product suggestions", error);
+            // You could display a user-friendly message if needed
+        }
+    }, [debouncedSearchTerm, productSuggestionsData, error]);
+
+    useEffect(() => {
+        if (billerData && billerData.data.length > 0 && !biller) {
+            setBiller(billerData.data[0].id);
+        }
+        if (warehouse && warehouseData.data.length > 0 && !warehouse) {
+            setWarehouse(warehouseData.data[0].id);
+        }
+        if (customerData && customerData.data.length > 0 && !customer) {
+            setCustomer(customerData.data[1].id);
+        }
+
+    }, [billerData, biller, warehouseData, warehouse, customerData, customer]);
+
+
+    const selectSuggestion = (suggestion: Omit<productInterface, 'quantitySold' | 'totalAmountSold'>) => {
+        const existingProductIndex = productInformation.findIndex(product => product.title === suggestion.title);
+        if (existingProductIndex !== -1) {
+            setProductInformation(prev => {
+                const updatedProducts = prev.map((product, index) => {
+                    if (index === existingProductIndex && product.stockQuantity > 0) {
+                        return {
+                            ...product,
+                            stockQuantity: product.stockQuantity - 1,
+                            quantitySold: product.quantitySold + 1,
+                            totalAmountSold: product.totalAmountSold + product.price
+                        };
+                    }
+                    return product;
+                });
+                return updatedProducts;
+            });
+        } else {
+            setProductInformation(prev => [
+                ...prev,
+                { ...suggestion, quantitySold: 1, totalAmountSold: suggestion.price }
+            ]);
+        }
+
+        // Additional updates
+        setSuggestions([]);
+        setProduct("");
+    };
+
 
 
     //handle search data from product
@@ -62,25 +204,29 @@ const NewSaleList = () => {
     };
 
     //hendle increament 
-    const handleIncreament = (increaseId: any) => {
-        setActiveItems((prevData) => prevData.map((item) => {
+    const handleIncrement = (increaseId: any, e: React.MouseEvent<HTMLButtonElement>) => {
+        let newQuantity = Number(e.currentTarget.getAttribute('data-quantity')) + 1;
+        setProductInformation((prevData) => prevData.map((item) => {
             if (increaseId === item.id) {
                 return {
                     ...item,
-                    quantity: item.quantity + 1
-                }
+                    quantitySold: newQuantity,
+                    stockQuantity: item.stockQuantity - 1 >= 1 ? item.stockQuantity - 1 : 1
+                }   
             }
             return item
         }))
     };
 
     //handle decreament
-    const handleDecrement = (decreaseId: any) => {
-        setActiveItems((prevData) => prevData.map((item) => {
+    const handleDecrement = (decreaseId: any, e: React.MouseEvent<HTMLButtonElement>) => {
+        let newQuantity = Number(e.currentTarget.getAttribute('data-quantity')) - 1;
+        setProductInformation((prevData) => prevData.map((item) => {
             if (decreaseId === item.id) {
                 return {
                     ...item,
-                    quantity: item.quantity - 1 >= 1 ? item.quantity - 1 : 1
+                    quantitySold: newQuantity,
+                   
                 }
             }
             return item
@@ -90,11 +236,13 @@ const NewSaleList = () => {
 
 
     // calculate order tax
-    const calculateTax = () => {
-        return activeItems.reduce((totalTax, item) => {
-            const itemTax = (item.price * item.tax / 100) * item.quantity;
-            return totalTax + itemTax;
-        }, 0);
+    const calculateTheAmountOfProductsAdded = () => {
+        if (productInformation.length > 0) {
+            return productInformation.reduce((acumulator, current) => acumulator + current.quantitySold,
+                0)
+        } else {
+            return 0
+        }
     }
 
     //claculate discount
@@ -122,9 +270,9 @@ const NewSaleList = () => {
         }, 0);
     }
     // calculate total sum of all subtotals
-    const calculateGrandTotal = () => {
-        return calculateTotal() + shippingAmount + calculateTax() - calculateDiscount();
-    }
+    // const calculateGrandTotal = () => {
+    //     return calculateTotal() + shippingCost + calculateTax() - calculateDiscount();
+    // }
 
     //handle remove row data
     const handleRemoveRowData = (productId: any) => {
@@ -132,11 +280,26 @@ const NewSaleList = () => {
         setActiveItems(remainingItem)
     }
 
+    const handleRemoveProduct = (productId: number) => {
+        setProductInformation((prevProducts) =>
+            prevProducts.filter((product) => product.id !== productId)
+        );
+    };
+
+
     // handle shipping value change
     const handleShippingValue = (event: React.ChangeEvent<HTMLInputElement>) => {
         const amount = parseFloat(event.target.value);
-        setShippingAmount(isNaN(amount) ? 0 : amount)
+        setShippingCost(isNaN(amount) ? 0 : amount)
     }
+    const handleDateChange = (date: Date | null) => {
+        setSaleDate(date || new Date());
+    };
+    const onTypeChangeForProduct = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setProduct(value);
+        setProductName(value);
+    };
 
     //handle New sale 
     const newSaleInputRef = useRef<HTMLInputElement>(null);
@@ -152,7 +315,7 @@ const NewSaleList = () => {
                 newSaleInputRef.current.value = '';
                 setActiveItems([]);
                 setActiveItemIds([]);
-                setStartDate(null);
+                // setSaleDate(null);
                 setSelectCustomer('')
                 setSelectWarehosue('')
                 setSelectBiller('')
@@ -161,6 +324,8 @@ const NewSaleList = () => {
             toast.error("Failed to  create Sale. Please try again later.");
         }
     }
+    console.log(productInformation[0]?.expired)
+    let totalNumberOfProducts = (productInformation.reduce((acumulator, current) => acumulator + current.quantitySold, 0))
 
     return (
         <>
@@ -171,13 +336,13 @@ const NewSaleList = () => {
                             <div className="col-span-12">
                                 <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-                                        <div className="inventual-form-field">
+                                        <div className="inventual-formTwo-field">
                                             <h5>Date</h5>
                                             <div className="inventual-input-field-style">
                                                 <DatePicker
-                                                    selected={startDate}
+                                                    selected={saleDate}
                                                     required
-                                                    onChange={(date) => setStartDate(date)}
+                                                    onChange={handleDateChange}
                                                     showYearDropdown
                                                     showMonthDropdown
                                                     useShortMonthInDropdown
@@ -186,107 +351,109 @@ const NewSaleList = () => {
                                                     dropdownMode="select"
                                                     isClearable
                                                     placeholderText="DD/MM/YYYY"
-                                                    className="w-full"
                                                 />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-                                        <div className="inventual-form-field">
-                                            <h5>Select Customer</h5>
-                                            <div className="inventual-select-field-style">
-                                                <TextField
-                                                    select
-                                                    required
-                                                    label="Select"
-                                                    defaultValue=""
-                                                    value={selectCustomer}
-                                                    onChange={(e) => setSelectCustomer(e.target.value)}
-                                                    SelectProps={{
-                                                        displayEmpty: true,
-                                                        renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Select Customer</em>;
-                                                            }
-                                                            return value;
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">
-                                                        <em>Select Customer</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="Shane Watson">Shane Watson</MenuItem>
-                                                    <MenuItem value="David Warner">David Warner</MenuItem>
-                                                    <MenuItem value="David Miller">David Miller</MenuItem>
-                                                    <MenuItem value="Hashim Amla">Hashim Amla</MenuItem>
-                                                    <MenuItem value="Imran Tahir">Imran Tahir</MenuItem>
-                                                </TextField>
+                                        <div className="inventual-select-field">
+                                            <div className="inventual-form-field">
+                                                <h5>Select Customer</h5>
+                                                <div className="inventual-select-field-style">
+                                                    <TextField
+                                                        select
+                                                        label="Select"
+                                                        required
+                                                        value={selectCustomer}
+                                                        onChange={(e) => setSelectCustomer(e.target.value)}
+                                                        SelectProps={{
+                                                            displayEmpty: true,
+                                                            renderValue: (value: any) => {
+                                                                const selectedCustomer = customerData?.data.find((customer: dataInterface) => customer.id === value);
+                                                                return selectedCustomer ? selectedCustomer.name : <em>Select Customer</em>;
+                                                            },
+                                                        }}>
+                                                        {customerData && customerData.data.length > 0 ? (
+                                                            customerData.data.map((customer: dataInterface) => (
+                                                                <MenuItem key={customer.id} value={customer.id}>
+                                                                    {customer.name}
+                                                                </MenuItem>
+                                                            ))
+                                                        ) : (
+                                                            <MenuItem value="">
+                                                                <em>No Customer Available</em>
+                                                            </MenuItem>
+                                                        )}
+                                                    </TextField>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-                                        <div className="inventual-form-field">
-                                            <h5>Select Warehouse</h5>
-                                            <div className="inventual-select-field-style">
-                                                <TextField
-                                                    select
-                                                    required
-                                                    label="Select"
-                                                    defaultValue=""
-                                                    value={selectWarehouse}
-                                                    onChange={(e)=> setSelectWarehosue(e.target.value)}
-                                                    SelectProps={{
-                                                        displayEmpty: true,
-                                                        renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Select Warehouse</em>;
-                                                            }
-                                                            return value;
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">
-                                                        <em>Select Warehouse</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="United States">United States</MenuItem>
-                                                    <MenuItem value="Canada">Canada</MenuItem>
-                                                    <MenuItem value="Mexico">Mexico</MenuItem>
-                                                    <MenuItem value="France">France</MenuItem>
-                                                    <MenuItem value="Germany">Germany</MenuItem>
-                                                </TextField>
+                                        <div className="inventual-select-field">
+                                            <div className="inventual-form-field">
+                                                <h5>Select Warehouse</h5>
+                                                <div className="inventual-select-field-style">
+                                                    <TextField
+                                                        select
+                                                        label="Select"
+                                                        required
+                                                        value={selectWarehouse}
+                                                        onChange={(e) => setSelectWarehosue(e.target.value)}
+                                                        SelectProps={{
+                                                            displayEmpty: true,
+                                                            renderValue: (value: any) => {
+                                                                const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
+                                                                return selectedWarehouse ? selectedWarehouse.warehouseName : <em>Select Warehouse</em>;
+                                                            },
+                                                        }}>
+                                                        {warehouseData && warehouseData.data.length > 0 ? (
+                                                            warehouseData.data.map((warehouse: warehouseInterface) => (
+                                                                <MenuItem key={warehouse.id} value={warehouse.id}>
+                                                                    {warehouse.warehouseName}
+                                                                </MenuItem>
+                                                            ))
+                                                        ) : (
+                                                            <MenuItem value="">
+                                                                <em>No Warehouse Available</em>
+                                                            </MenuItem>
+                                                        )}
+                                                    </TextField>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-                                        <div className="inventual-form-field">
-                                            <h5>Select Biller</h5>
-                                            <div className="inventual-select-field-style">
-                                                <TextField
-                                                    select
-                                                    required
-                                                    label="Select"
-                                                    defaultValue=""
-                                                    value={selectBiller}
-                                                    onChange={(e)=> setSelectBiller(e.target.value)}
-                                                    SelectProps={{
-                                                        displayEmpty: true,
-                                                        renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Select Biller</em>;
-                                                            }
-                                                            return value;
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">
-                                                        <em>Select Biller</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="Shane Watson">Shane Watson</MenuItem>
-                                                    <MenuItem value="David Warner">David Warner</MenuItem>
-                                                    <MenuItem value="David Miller">David Miller</MenuItem>
-                                                    <MenuItem value="Hashim Amla">Hashim Amla</MenuItem>
-                                                    <MenuItem value="Imran Tahir">Imran Tahir</MenuItem>
-                                                </TextField>
+                                        <div className="inventual-select-field">
+                                            <div className="inventual-form-field">
+                                                <h5>Select Biller</h5>
+                                                <div className="inventual-select-field-style">
+                                                    <TextField
+                                                        select
+                                                        label="Select"
+                                                        required
+                                                        value={selectBiller}
+                                                        onChange={(e) => setSelectBiller(e.target.value)}
+                                                        SelectProps={{
+                                                            displayEmpty: true,
+                                                            renderValue: (value: any) => {
+                                                                const selectedBiller = billerData?.data.find((biller: dataInterface) => biller.id === value);
+                                                                return selectedBiller ? selectedBiller.name : <em>Select Biller</em>;
+                                                            },
+                                                        }}>
+                                                        {billerData && billerData.data.length > 0 ? (
+                                                            billerData.data.map((biller: dataInterface) => (
+                                                                <MenuItem key={biller.id} value={biller.id}>
+                                                                    {biller.name}
+                                                                </MenuItem>
+                                                            ))
+                                                        ) : (
+                                                            <MenuItem value="">
+                                                                <em>No Biller Available</em>
+                                                            </MenuItem>
+                                                        )}
+                                                    </TextField>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -295,33 +462,34 @@ const NewSaleList = () => {
                                             <div className="inventual-form-field">
                                                 <h5>Select Product</h5>
                                                 <div className="inventual-input-field-style search-field">
-                                                    <input
-                                                        type="text"
-                                                        ref={newSaleInputRef}
-                                                        placeholder='Scan / search products by code / name'
-                                                        value={searchQuery}
-                                                        onChange={handleSearchInputChange}
+                                                    <TextField
+                                                        fullWidth
+                                                        placeholder="Macbook..."
+                                                        variant="outlined"
+                                                        value={product}
+                                                        required
+                                                        onChange={onTypeChangeForProduct}
                                                     />
                                                     {
-                                                        searchResults.length > 0 && (
+                                                        suggestions.length > 0 && (
                                                             <div onClick={handleSearchClose} className="search-close">x</div>
                                                         )
                                                     }
 
                                                     {
-                                                        searchResults.length > 0 && (
+                                                        suggestions.length > 0 && (
                                                             <div className='search-dropdown dropdown-scroll'>
                                                                 <ul>
                                                                     {
-                                                                        searchResults.map(product => (
+                                                                        suggestions.map(product => (
                                                                             <li
                                                                                 key={product.id}
                                                                                 id='single-list'
                                                                                 className={activeItemIds.includes(product.id) && activeItems.find(item => item.id === product.id) ? 'active' : ''}
-                                                                                onClick={() => toggleActiveItem(product.id)}
+                                                                                onClick={() => selectSuggestion(product)}
                                                                             >
                                                                                 <div className="search-img">
-                                                                                    <Image src={product.image} width={30} height={30} alt={product.title} />
+                                                                                    <Image src={product?.productImage == "" ? "https://res.cloudinary.com/dououppib/image/upload/v1709830638/PLANTS/placeholder_ry6d8v.webp" : product?.productImage} width={30} height={30} alt={product.title} />
                                                                                 </div>
                                                                                 <p className='title'>{product.title}</p>
                                                                             </li>
@@ -342,47 +510,53 @@ const NewSaleList = () => {
                                                 <table>
                                                     <thead>
                                                         <tr className='bg-lightest'>
+                                                            <th>Id</th>
                                                             <th>Image</th>
-                                                            <th>Products</th>
-                                                            <th>Batch No</th>
-                                                            <th>Unit</th>
+                                                            <th>Product</th>
+                                                            <th>Code</th>
+                                                            <th>Category</th>
+                                                            <th>Sub-Category</th>
                                                             <th>Price</th>
-                                                            <th>Quantity</th>
-                                                            <th>Discount</th>
-                                                            <th>Tax</th>
-                                                            <th>Sub Total</th>
+                                                            <th>Stock Amount</th>
+                                                            <th>Quantity Sold</th>
+                                                            <th>Expired</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            activeItems.length > 0 ? (
-                                                                activeItems.map((product) => <tr key={product.id}>
+                                                            productInformation.length > 0 ? (
+                                                                productInformation.map((product) => <tr key={product.id}>
+                                                                    <td>{product.id}</td>
                                                                     <td>
                                                                         <div className="new-sale-search-img">
-                                                                            <Image src={product.image} width={30} height={30} alt={product.title} />
+                                                                            <Image src={product.productImage} width={30} height={30} alt={product.title} />
                                                                         </div>
                                                                     </td>
                                                                     <td>{product.title}</td>
-                                                                    <td>{product.batchNo}</td>
-                                                                    <td>{product.unit}</td>
+                                                                    <td>{product.productCode}</td>
+                                                                    <td>{product.category}</td>
+                                                                    <td>{product.subcategory}</td>
                                                                     <td>${product.price}</td>
+                                                                    <td>{product.stockQuantity}</td>
                                                                     <td>
                                                                         <div className="inventual-addsale-product-qty">
                                                                             <span className='flex items-center'>
-                                                                                <button type='button' onClick={() => handleDecrement(product.id)}><i className="fa-regular fa-minus"></i></button>
-                                                                                <p>{product.quantity}</p>
-                                                                                <button type='button' onClick={() => handleIncreament(product.id)}><i className="fa-regular fa-plus"></i></button>
+                                                                                <button type='button' data-quantity={product.quantitySold} onClick={(e) => handleDecrement(product.id, e)}>
+                                                                                    <i className="fa-regular fa-minus"></i>
+                                                                                </button>
+                                                                                <p>{product.quantitySold}</p>
+                                                                                <button type='button' data-quantity={product.quantitySold} onClick={(e) => handleIncrement(product.id, e)}>
+                                                                                    <i className="fa-regular fa-plus"></i>
+                                                                                </button>
                                                                             </span>
                                                                         </div>
                                                                     </td>
-                                                                    <td>{product.discount}%</td>
-                                                                    <td>{product.tax}%</td>
-                                                                    <td>${calculateSubtotal(product)}</td>
+                                                                    <td>{product.expired ? "Yes" : "No"}</td>
                                                                     <td>
                                                                         <div className="inventual-addsale-product-action">
                                                                             <button
-                                                                                onClick={() => handleRemoveRowData(product.id)}
+                                                                                onClick={() => handleRemoveProduct(product.id)}
                                                                                 className="product-delete-btn"
                                                                             >
                                                                                 <i className="fa-regular fa-xmark"></i>
@@ -391,7 +565,7 @@ const NewSaleList = () => {
                                                                     </td>
                                                                 </tr>)
                                                             ) : <tr>
-                                                                <td colSpan={10} className='text-center'>Data not found</td>
+                                                                <td colSpan={10} className='text-center'>No product entered yet</td>
                                                             </tr>
                                                         }
                                                     </tbody>
@@ -409,10 +583,10 @@ const NewSaleList = () => {
                                                 </li>
                                                 <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
                                                     <span className="text-[15px] font-normal text-heading w-40 inline-block">
-                                                        Order Tax
+                                                        Number of Products
                                                         <span className="float-end">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-normal text-heading inline-block">+${calculateTax()}</span>
+                                                    <span className="text-[15px] font-normal text-heading inline-block">{calculateTheAmountOfProductsAdded()}</span>
                                                 </li>
                                                 <li className="px-4 py-2.5 border-b border-solid border-border">
                                                     <span className="text-[15px] font-normal text-heading w-40 inline-block">
@@ -426,30 +600,69 @@ const NewSaleList = () => {
                                                         Shipping
                                                         <span className="float-end">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-normal text-heading inline-block">${shippingAmount}</span>
+                                                    <span className="text-[15px] font-normal text-heading inline-block">${shippingCost}</span>
                                                 </li>
                                                 <li className="px-4 py-2.5">
                                                     <span className="text-[15px] font-bold text-heading w-40 inline-block">
                                                         Grand Total
                                                         <span className="float-end font-normal">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-bold text-heading inline-block">${calculateGrandTotal()}</span>
+                                                    <span className="text-[15px] font-bold text-heading inline-block">$</span>
                                                 </li>
                                             </ul>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
                                         <div className="inventual-form-field">
-                                            <h5>Shipping</h5>
-                                            <div className="inventual-input-field-style has-icon-outline">
-                                                <input
-                                                    type="text"
-                                                    placeholder='0'
-                                                    value={shippingAmount}
-                                                    onChange={handleShippingValue}
-                                                />
-                                                <span className='inventual-input-icon'><span>$</span></span>
-                                            </div>
+                                            <h5>Shipping Cost</h5>
+                                            <NumericFormat
+                                                customInput={TextField}
+                                                thousandSeparator=","
+                                                required
+                                                decimalSeparator="."
+                                                decimalScale={2}
+                                                fixedDecimalScale
+                                                value={shippingCost ?? ''}
+                                                onValueChange={(values) => {
+                                                    setShippingCost(values.floatValue);
+                                                }}
+                                                InputProps={{
+                                                    startAdornment: <InputAdornment position="start">£</InputAdornment>,
+                                                }}
+                                                inputProps={{ min: 0.01, max: 1000000 }}
+                                                fullWidth
+                                                variant="outlined"
+                                                placeholder="50.00"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
+                                        <div className="inventual-form-field">
+                                            <h5>Discount</h5>
+                                            <NumericFormat
+                                                customInput={TextField}
+                                                thousandSeparator=","
+                                                required
+                                                decimalSeparator="."
+                                                decimalScale={2}
+                                                fixedDecimalScale
+                                                value={discount ?? ''}
+                                                onValueChange={(values) => {
+                                                    setDiscount(values.floatValue);
+                                                }}
+                                                InputProps={{
+                                                    startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                                                }}
+                                                inputProps={{
+                                                    placeholder: "5",
+                                                }}
+                                                isAllowed={(values) => {
+                                                    const { floatValue } = values;
+                                                    return floatValue === undefined || (floatValue >= 0 && floatValue <= 100);
+                                                }}
+                                                fullWidth
+                                                variant="outlined"
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
@@ -508,28 +721,30 @@ const NewSaleList = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-                                        <div className="inventual-form-field">
-                                            <h5>Image Upload</h5>
-                                            <div className="inventual-input-field-file-choose">
-                                                <input type="file" id="fileUploadN" />
-                                            </div>
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
+                                        <div className="inventual-input-field-style">
+                                            <TextField
+                                                fullWidth
+                                                multiline
+                                                rows={4}
+                                                value={saleNote}
+                                                placeholder='Sale Notes'
+                                                inputProps={{ maxLength: 500 }}
+                                                onChange={(e) => setSaleNote(e.target.value)}
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                                        <div className="inventual-form-field">
-                                            <h5>Sales Note:</h5>
-                                            <div className="inventual-input-field-style">
-                                                <textarea placeholder='Write your message'></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                                        <div className="inventual-form-field">
-                                            <h5>Staff Remark</h5>
-                                            <div className="inventual-input-field-style">
-                                                <textarea placeholder='Write your message'></textarea>
-                                            </div>
+                                        <div className="inventual-input-field-style">
+                                            <TextField
+                                                fullWidth
+                                                multiline
+                                                rows={4}
+                                                value={staffNote}
+                                                placeholder='Staff Notes'
+                                                inputProps={{ maxLength: 500 }}
+                                                onChange={(e) => setStaffNote(e.target.value)}
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-span-12 flex justify-end">
