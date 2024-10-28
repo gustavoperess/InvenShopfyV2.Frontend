@@ -51,6 +51,7 @@ const SaleList = () => {
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [selectedSaleId, setSelectedSaleId] = useState<number | undefined>(); 
   const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetAllSalesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
 
@@ -102,14 +103,14 @@ const SaleList = () => {
   // View Sale Popup Start
   const [openViewSaleDialog, setOpenViewSaleDialog] = useState<boolean>(false);
 
-  const handleViewSale = () => {
+  const handleViewSale = (saleId: number) => {
+    setSelectedSaleId(saleId)
     setOpenViewSaleDialog(true);
   };
   const handleViewSaleDialogClose = () => {
     setOpenViewSaleDialog(false);
+    setSelectedSaleId(undefined); 
   };
-
-
   
 
   // Handlers for sorting
@@ -171,7 +172,7 @@ const SaleList = () => {
     return 0;
   });
 
-  
+
 
   return (
 
@@ -367,7 +368,7 @@ const SaleList = () => {
                                               Action <i className="fa-sharp fa-solid fa-sort-down"></i>
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-eye"></i><span onClick={handleViewSale}>View Sale</span></MenuItem>
+                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-eye"></i><span onClick={() => handleViewSale(sales.id)}>View Sale</span></MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/trading/sales/newsale'>Edit Sale</Link></MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-print"></i><span onClick={handleGenerateInvoiceDialogOpen}>Generate Invoice</span></MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-circle-plus"></i><span onClick={handleAddPaymentDialogOpen}>Add Payment</span></MenuItem>
@@ -403,7 +404,7 @@ const SaleList = () => {
           </div>
         </div>
       </div>
-      <ViewSalePopup open={openViewSaleDialog} handleViewSaleDialogClose={handleViewSaleDialogClose} />
+      <ViewSalePopup saleId={selectedSaleId} open={openViewSaleDialog} handleViewSaleDialogClose={handleViewSaleDialogClose} />
       <TradingSalesListAddPayemnt open={openeAddPaymentDialog} handleAddPaymentDialogClose={handleAddPaymentDialogClose} />
       <TradingSalesListViewPayment open={openeViewPaymentDialog} handleViewPaymentDialogClose={handleViewPaymentDialogClose} />
       <TradingSalesListInvoice open={openeGenerateInvoiceDialog} handleGenerateInvoiceDialogClose={handleGenerateInvoiceDialogClose} />

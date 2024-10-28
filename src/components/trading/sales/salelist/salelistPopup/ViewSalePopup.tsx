@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
+import { useGetSalesBySaleIdQuery, useGetTotalSalesAmountQuery } from '@/services/Sales/Sales';
 import DialogContent from '@mui/material/DialogContent';
 import logo from '../../../../../../public/assets/img/logo/login-logo.png';
 import Image from 'next/image';
@@ -29,7 +30,19 @@ interface GenerateInvoiceListData {
     discount: number;
     subTotal: number;
 }
-const ViewSalePopup = ({ open, handleViewSaleDialogClose }: GenerateInvoicePopupProps) => {
+const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: { open: boolean; saleId: number | undefined; handleViewSaleDialogClose: () => void }) => {
+    const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetSalesBySaleIdQuery(
+        saleId as number, 
+        { skip: saleId === undefined }
+    );
+
+    useEffect(() => {
+        if (saleId !== undefined) {
+            refetch();
+        }
+    }, [saleId, refetch]);
+
+
 
     const sampleData: GenerateInvoiceListData[] = [
         {
@@ -59,6 +72,7 @@ const ViewSalePopup = ({ open, handleViewSaleDialogClose }: GenerateInvoicePopup
     const dummyData = (e: any) => {
         e.preventDefault();
     };
+    console.log(salesData)
 
     return (
         <>
@@ -94,17 +108,17 @@ const ViewSalePopup = ({ open, handleViewSaleDialogClose }: GenerateInvoicePopup
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        sampleData.length > 0 ? (
-                                                            sampleData.map((product, index) => <tr key={index}>
-                                                                <td>{product.sl}</td>
-                                                                <td>{product.product}</td>
-                                                                <td>{product.batchNo}</td>
-                                                                <td>{product.unit}</td>
-                                                                <td>${product.unitPrice}</td>
-                                                                <td>{product.quantity}</td>
-                                                                <td>{product.tax}%</td>
-                                                                <td>{product.discount}%</td>
-                                                                <td>${product.subTotal}</td>
+                                                        salesData?.data != undefined ? (
+                                                            salesData?.data.map((salesDate: any, index: any) => <tr key={index}>
+                                                                <td>{salesDate.productId}</td>
+                                                                <td>{salesDate.productName}</td>
+                                                                <td>{salesDate.referenceNumber}</td>
+                                                                <td>{salesDate.unitShortName}</td>
+                                                                <td>${salesDate.productPrice}</td>
+                                                                <td>{salesDate.totalQuantitySoldPerProduct}</td>
+                                                                <td>{salesDate.tax}%</td>
+                                                                <td>{salesDate.discount}%</td>
+                                                                <td>${salesDate.totalPricePerProduct}</td>
                                                             </tr>)
                                                         ) : <tr>
                                                             <td colSpan={9} className='text-center'>Data not found</td>

@@ -18,23 +18,23 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export const salesApi = createApi({
     reducerPath: 'totalExpenseApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: `${BACKEND_URL}/v2/`,
+        baseUrl: `${BACKEND_URL}/v2/Sale/`,
         credentials: 'include', 
     }),
     endpoints: (builder) => ({
         getTotalSalesAmount: builder.query<any, void>({
-            query: () => 'Sale/totalamount',
+            query: () => 'totalamount',
         }),
         getAllSales:builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
-                url: "Sale/allsales",
+                url: "allsales",
                 method: "GET",
                 params: { pageNumber, pageSize}
             }),
         }),
         deleteSale: builder.mutation<any, number>({
             query: (id) => ({
-                url: `Sale/${id}`,
+                url: `${id}`,
                 method: 'DELETE',
             }),
         }),
@@ -47,7 +47,7 @@ export const salesApi = createApi({
         }),
         getSalesBySaleId: builder.query<any, number>({
             query: (saleId) => ({
-                url: `Sale/${saleId}`,
+                url: `GetBySalesId/${saleId}`,
                 method: 'GET',
             }),
         }),

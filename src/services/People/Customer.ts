@@ -10,9 +10,10 @@ export const customerApi = createApi({
         credentials: 'include',
     }),
     endpoints: (builder) => ({
-        getAllCustomers: builder.query<any, number>({
-            query: (pageNumber) => ({
-                url: `Customer`,
+        getAllCustomers: builder.query<any, { pageNumber: number }>({
+            query: ({ pageNumber }) => ({
+                url: 'Customer',
+                method: 'GET',
                 params: { pageNumber },
             }),
         }),
