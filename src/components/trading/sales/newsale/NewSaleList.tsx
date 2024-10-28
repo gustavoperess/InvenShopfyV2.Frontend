@@ -38,6 +38,10 @@ interface dataInterface {
     name: string;
 }
 
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'GBP',
+});
 
 
 const NewSaleList = () => {
@@ -45,10 +49,8 @@ const NewSaleList = () => {
     const [customer, setCustomer] = useState<number | null>();
     const [warehouse, setWarehouse] = useState<number | null>();
     const [biller, setBiller] = useState<number | null>();
-
     const [product, setProduct] = useState<string>("");
     const [productName, setProductName] = useState<string>("");
-
     const [shippingCost, setShippingCost] = useState<number | undefined>();
     const [discount, setDiscount] = useState<number | undefined>();
     const [saleStatus, setSalesStatus] = useState<string>("");
@@ -57,6 +59,9 @@ const NewSaleList = () => {
     const [staffNote, setStaffNote] = useState<string>("");
     const [productInformation, setProductInformation] = useState<productInterface[]>([]);
     const [suggestions, setSuggestions] = useState<productInterface[]>([]);
+    const [selectCustomer, setSelectCustomer] = useState('')
+    const [selectWarehouse, setSelectWarehosue] = useState('')
+    const [selectBiller, setSelectBiller] = useState('')
 
     // funcitons
     const debouncedSearchTerm = useDebounce(productName, 500);
@@ -157,35 +162,6 @@ const NewSaleList = () => {
         setProduct("");
     };
 
-
-
-    //handle search data from product
-    const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const query = event.target.value;
-        setSearchQuery(query);
-
-        if (query.trim() === '') {
-            setSearchResults([]);
-        } else {
-            const filteredResults = product_data.filter(product =>
-                product.title.toLowerCase().includes(query.toLowerCase())
-            );
-            setSearchResults(filteredResults);
-        }
-    };
-
-    //toggle serch data for active or inactive
-    const toggleActiveItem = (id: number) => {
-        setActiveItemIds(prevState => {
-            if (prevState.includes(id)) {
-                return prevState.filter(itemId => itemId !== id);
-            } else {
-                return [...prevState, id];
-            }
-        });
-        updateActiveItems();
-    };
-
     //
     useEffect(() => {
         updateActiveItems();
@@ -207,6 +183,7 @@ const NewSaleList = () => {
     const handleIncrement = (increaseId: any, e: React.MouseEvent<HTMLButtonElement>) => {
         let newQuantity = Number(e.currentTarget.getAttribute('data-quantity')) + 1;
         setProductInformation((prevData) => prevData.map((item) => {
+
             if (increaseId === item.id) {
                 return {
                     ...item,
@@ -221,16 +198,19 @@ const NewSaleList = () => {
     //handle decreament
     const handleDecrement = (decreaseId: any, e: React.MouseEvent<HTMLButtonElement>) => {
         let newQuantity = Number(e.currentTarget.getAttribute('data-quantity')) - 1;
+        if (newQuantity >= 0) {
         setProductInformation((prevData) => prevData.map((item) => {
             if (decreaseId === item.id) {
                 return {
                     ...item,
                     quantitySold: newQuantity,
+                    stockQuantity: item.stockQuantity + 1
                    
                 }
             }
             return item
         }))
+        }
     };
 
 
@@ -238,47 +218,49 @@ const NewSaleList = () => {
     // calculate order tax
     const calculateTheAmountOfProductsAdded = () => {
         if (productInformation.length > 0) {
-            return productInformation.reduce((acumulator, current) => acumulator + current.quantitySold,
-                0)
+            return productInformation.reduce((accumulator, item) => {
+                return item.stockQuantity > 0 
+                    ? accumulator + item.quantitySold 
+                    : accumulator;
+            }, 0);
         } else {
-            return 0
+            return 0;
         }
-    }
+    };
 
     //claculate discount
     const calculateDiscount = () => {
-        return activeItems.reduce((totalDiscount, item) => {
-            const itemDiscount = (item.price * item.discount / 100) * item.quantity;
-            return totalDiscount + itemDiscount;
+        return productInformation.reduce((totalDiscount, item) => {
+            if (discount != undefined) {
+                let itemDiscount = ((item.price * discount) / 100) * item.quantitySold;
+                return itemDiscount - totalDiscount;
+            } else {
+                return 0;
+            }
         }, 0)
     }
 
-    //calculate subtotal
-    const calculateSubtotal = (product: any) => {
-        let tax = 0;
-        let discount = 0;
-        tax = product.price * product.tax / 100;
-        discount = product.price * product.discount / 100;
-        const subTotal = (product.price + tax - discount) * product.quantity;
-        return subTotal;
-    }
 
     // calculate total sum of all subtotals
     const calculateTotal = () => {
-        return activeItems.reduce((total, item) => {
-            return total + item.price * item.quantity;
+        return productInformation.reduce((total, item) => {
+            if (item.stockQuantity > 0) {
+                return total + item.price * item.quantitySold;
+            } else {
+                return 0;
+            }
+         
         }, 0);
     }
     // calculate total sum of all subtotals
-    // const calculateGrandTotal = () => {
-    //     return calculateTotal() + shippingCost + calculateTax() - calculateDiscount();
-    // }
-
-    //handle remove row data
-    const handleRemoveRowData = (productId: any) => {
-        const remainingItem = activeItems.filter((product) => product.id !== productId);
-        setActiveItems(remainingItem)
+    const calculateGrandTotal = () => {
+        if (shippingCost != undefined) {
+            return calculateTotal() + shippingCost - calculateDiscount();
+        } else {
+            return calculateTotal() - calculateDiscount();
+        }
     }
+
 
     const handleRemoveProduct = (productId: number) => {
         setProductInformation((prevProducts) =>
@@ -301,31 +283,25 @@ const NewSaleList = () => {
         setProductName(value);
     };
 
-    //handle New sale 
-    const newSaleInputRef = useRef<HTMLInputElement>(null);
-    const [selectCustomer, setSelectCustomer] = useState('')
-    const [selectWarehouse, setSelectWarehosue] = useState('')
-    const [selectBiller, setSelectBiller] = useState('')
-
+    //handle new Sale Form submission
     const handleNewSaleForm = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
             toast.success("Sale Created successfully!");
-            if (newSaleInputRef.current) {
-                newSaleInputRef.current.value = '';
-                setActiveItems([]);
-                setActiveItemIds([]);
-                // setSaleDate(null);
-                setSelectCustomer('')
-                setSelectWarehosue('')
-                setSelectBiller('')
-            }
+            // if (newSaleInputRef.current) {
+            //     newSaleInputRef.current.value = '';
+            //     setActiveItems([]);
+            //     setActiveItemIds([]);
+            //     // setSaleDate(null);
+            //     setSelectCustomer('')
+            //     setSelectWarehosue('')
+            //     setSelectBiller('')
+            // }
         } catch {
             toast.error("Failed to  create Sale. Please try again later.");
         }
     }
-    console.log(productInformation[0]?.expired)
-    let totalNumberOfProducts = (productInformation.reduce((acumulator, current) => acumulator + current.quantitySold, 0))
+  
 
     return (
         <>
@@ -540,17 +516,20 @@ const NewSaleList = () => {
                                                                     <td>${product.price}</td>
                                                                     <td>{product.stockQuantity}</td>
                                                                     <td>
-                                                                        <div className="inventual-addsale-product-qty">
-                                                                            <span className='flex items-center'>
-                                                                                <button type='button' data-quantity={product.quantitySold} onClick={(e) => handleDecrement(product.id, e)}>
-                                                                                    <i className="fa-regular fa-minus"></i>
-                                                                                </button>
-                                                                                <p>{product.quantitySold}</p>
-                                                                                <button type='button' data-quantity={product.quantitySold} onClick={(e) => handleIncrement(product.id, e)}>
-                                                                                    <i className="fa-regular fa-plus"></i>
-                                                                                </button>
-                                                                            </span>
-                                                                        </div>
+                                                                    {product.stockQuantity > 0 ? (
+                                                                            <div className="inventual-addsale-product-qty">
+                                                                                <span className='flex items-center'>
+                                                                                    <button type='button' data-quantity={product.quantitySold} onClick={(e) => handleDecrement(product.id, e)}>
+                                                                                        <i className="fa-regular fa-minus"></i>
+                                                                                    </button>
+                                                                                    <p>{product.quantitySold}</p>
+                                                                                    <button type='button' data-quantity={product.quantitySold} onClick={(e) => handleIncrement(product.id, e)}>
+                                                                                        <i className="fa-regular fa-plus"></i>
+                                                                                    </button>
+                                                                                </span>
+                                                                            </div>
+                                                                     ) : ( <p>Product out of stock</p>      
+                                                                     )}
                                                                     </td>
                                                                     <td>{product.expired ? "Yes" : "No"}</td>
                                                                     <td>
@@ -579,7 +558,7 @@ const NewSaleList = () => {
                                                         Total Amount
                                                         <span className="float-end">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-normal text-heading inline-block">${calculateTotal()}</span>
+                                                    <span className="text-[15px] font-normal text-heading inline-block">{MoneyFormat.format(calculateTotal())}</span>
                                                 </li>
                                                 <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
                                                     <span className="text-[15px] font-normal text-heading w-40 inline-block">
@@ -593,21 +572,21 @@ const NewSaleList = () => {
                                                         Discount
                                                         <span className="float-end">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-normal text-heading inline-block">-${calculateDiscount()}</span>
+                                                    <span className="text-[15px] font-normal text-heading inline-block">{MoneyFormat.format(calculateDiscount())}</span>
                                                 </li>
                                                 <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
                                                     <span className="text-[15px] font-normal text-heading w-40 inline-block">
                                                         Shipping
                                                         <span className="float-end">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-normal text-heading inline-block">${shippingCost}</span>
+                                                    <span className="text-[15px] font-normal text-heading inline-block">{MoneyFormat.format(shippingCost || 0)}</span>
                                                 </li>
                                                 <li className="px-4 py-2.5">
                                                     <span className="text-[15px] font-bold text-heading w-40 inline-block">
                                                         Grand Total
                                                         <span className="float-end font-normal">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-bold text-heading inline-block">$</span>
+                                                    <span className="text-[15px] font-bold text-heading inline-block">{MoneyFormat.format(calculateGrandTotal())}</span>
                                                 </li>
                                             </ul>
                                         </div>
