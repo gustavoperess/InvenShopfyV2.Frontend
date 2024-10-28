@@ -45,11 +45,19 @@ export const salesApi = createApi({
                 body,
             }),
         }),
+        getSalesBySaleId: builder.query<any, number>({
+            query: (saleId) => ({
+                url: `Sale/${saleId}`,
+                method: 'GET',
+            }),
+        }),
+       
         getBestSeller: builder.query<any, void>({
             query: () => "Sale/productmostsold"
         })
     }),
+    
 });
 
 
-export const { useGetTotalSalesAmountQuery, useCreateSaleMutation, useGetAllSalesQuery, useDeleteSaleMutation, useGetBestSellerQuery } = salesApi;
+export const { useGetTotalSalesAmountQuery, useCreateSaleMutation, useGetAllSalesQuery, useDeleteSaleMutation, useGetBestSellerQuery, useGetSalesBySaleIdQuery } = salesApi;

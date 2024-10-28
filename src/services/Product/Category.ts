@@ -16,7 +16,7 @@ export const productsCategoryApi = createApi({
             }),
         }),
         getProductById: builder.query<any, number> ({
-        query:(id) => `ProductCategory/${id}`
+            query:(id) => `ProductCategory/${id}`
         }),
         addCategory: builder.mutation<any, any>({
             query: (body) => ({

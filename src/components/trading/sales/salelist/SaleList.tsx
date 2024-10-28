@@ -24,7 +24,7 @@ import ViewSalePopup from './salelistPopup/ViewSalePopup';
 // Define the structure of the data
 interface Data {
   id: number;
-  date: string;
+  salesDate: string;
   customerName: string;
   billerName: string;
   saleStatus: string
@@ -48,8 +48,6 @@ let MoneyFormat = new Intl.NumberFormat('en-US', {
 const SaleList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
@@ -173,7 +171,7 @@ const SaleList = () => {
     return 0;
   });
 
-  console.log(salesData)
+  
 
   return (
 
@@ -205,7 +203,7 @@ const SaleList = () => {
                           </button>
                           <Menu {...bindMenu(popupState)}>
                           <MenuItem onClick={() => {handleRequestSort("id"); popupState.close();}}>Sl</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("date"); popupState.close()}}>Date</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("salesDate"); popupState.close()}}>Date</MenuItem>
                             <MenuItem onClick={() => {handleRequestSort("customerName"); popupState.close()}}>Email</MenuItem>
                             <MenuItem onClick={() => {handleRequestSort("paymentStatus"); popupState.close()}}>Payment Status</MenuItem>
                           </Menu>
@@ -247,9 +245,9 @@ const SaleList = () => {
                               {/* Table headers */}
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'date'}
-                                  direction={orderBy === 'date' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('date')}
+                                  active={orderBy === 'salesDate'}
+                                  direction={orderBy === 'salesDate' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('salesDate')}
                                 >
                                   Date
                                 </TableSortLabel>
