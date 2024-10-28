@@ -25,11 +25,11 @@ export const salesApi = createApi({
         getTotalSalesAmount: builder.query<any, void>({
             query: () => 'Sale/totalamount',
         }),
-        getAllSales: builder.query<any, number>({
-            query: (pageNumber) => ({
+        getAllSales:builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize }) => ({
                 url: "Sale/allsales",
                 method: "GET",
-                params: { pageNumber}
+                params: { pageNumber, pageSize}
             }),
         }),
         deleteSale: builder.mutation<any, number>({

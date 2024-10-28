@@ -15,6 +15,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
+import { useGetAllSalesQuery } from '@/services/Sales/Sales';
 import Link from 'next/link';
 import TradingSalesListAddPayemnt from './salelistPopup/TradingSalesListAddPayemnt';
 import TradingSalesListViewPayment from './salelistPopup/TradingSalesListViewPayment';
@@ -24,233 +25,51 @@ import ViewSalePopup from './salelistPopup/ViewSalePopup';
 interface Data {
   id: number;
   date: string;
-  reference: string;
-  customer: string;
-  warehouse: string;
-  status: string;
-  biller: string;
-  payment: string;
-  grandTotal: string;
-  paid: string;
-  due: string;
-  protein: string;
+  customerName: string;
+  billerName: string;
+  saleStatus: string
+  paymentStatus: string;
+  referenceNumber: string;
+  warehouseName: string;
+  totalQuantitySold: number
+  totalAmount: number;
+
 }
 
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'GBP',
+});
+
+
 // Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'William Prady',
-    warehouse: 'Warehouse 1',
-    status: "Completed",
-    biller: 'Nancy R. Borgman',
-    payment: "Paid",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 2,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Walk - in - customer',
-    warehouse: 'Warehouse 2',
-    status: "Draft",
-    biller: 'Joseph Amarho',
-    payment: "Partial",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '4000',
-    protein: '',
-  },
-  {
-    id: 3,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Pendrio Methus',
-    warehouse: 'Warehouse 3',
-    status: "Ordered",
-    biller: 'Joseph Amarho',
-    payment: "Paid",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 4,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Sharon J. Talbott',
-    warehouse: 'Warehouse 4',
-    status: "Completed",
-    biller: 'Tara Redman',
-    payment: "Unpaid",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '450',
-    protein: '',
-  },
-  {
-    id: 5,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Walk - in - customer',
-    warehouse: 'Warehouse 5',
-    status: "Completed",
-    biller: 'Dean Richards',
-    payment: "Paid",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 6,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Sharon Huls',
-    warehouse: 'Warehouse 6',
-    status: "Draft",
-    biller: 'Dana A. Flanery',
-    payment: "Paid",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 7,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Gladys G. Town',
-    warehouse: 'Warehouse 7',
-    status: "Completed",
-    biller: 'Joseph Amarho',
-    payment: "Partial",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 8,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Steven C. Fossum',
-    warehouse: 'Warehouse 8',
-    status: "Completed",
-    biller: 'Joseph Amarho',
-    payment: "Unpaid",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '1,520',
-    protein: '',
-  },
-  {
-    id: 9,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Kelly B. Dunford',
-    warehouse: 'Warehouse 9',
-    status: "Completed",
-    biller: 'Joseph Amarho',
-    payment: "Paid",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 10,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'George E. Warren',
-    warehouse: 'Warehouse 10',
-    status: "Ordered",
-    biller: 'Dana A. Flanery',
-    payment: "Paid",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '1,520',
-    protein: '',
-  },
-  {
-    id: 11,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Andy J. Johnson',
-    warehouse: 'Warehouse 11',
-    status: "Completed",
-    biller: 'Tara Redman',
-    payment: "Partial",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 12,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Walk - in - customer',
-    warehouse: 'Warehouse 12',
-    status: "Completed",
-    biller: 'Joseph Amarho',
-    payment: "Paid",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 13,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Walk - in - customer',
-    warehouse: 'Warehouse 13',
-    status: "Completed",
-    biller: 'Nancy A. Owens',
-    payment: "Paid",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 14,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Alexis E. Raya',
-    warehouse: 'Warehouse 14',
-    status: "Completed",
-    biller: 'Jorge Griswold',
-    payment: "Partial",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '1,250',
-    protein: '',
-  },
-  {
-    id: 15,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Walk - in - custome',
-    warehouse: 'Warehouse 15',
-    status: "Draft",
-    biller: 'Dana A. Flanery',
-    payment: "Unpaid",
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '250',
-    protein: '',
-  },
-];
+
 
 const SaleList = () => {
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [selected, setSelected] = useState<number[]>([]);
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetAllSalesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+
+
+    // handle pagination 
+    const handlePageChange = (event: unknown, newPage: number) => {
+      setCurrentPageNumber(newPage);
+      refetch();
+    };
+  
+      // handle pagination 
+      const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCurrentPageSize(parseInt(event.target.value, 10));
+        setCurrentPageNumber(1); 
+        refetch();
+      };
+    
+
 
   // AddPayment Popup Start
   const [openeAddPaymentDialog, setOpenAddPaymentDialog] = useState<boolean>(false);
@@ -292,20 +111,8 @@ const SaleList = () => {
     setOpenViewSaleDialog(false);
   };
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [selected, setSelected] = useState<number[]>([]);
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 25));
-    setPage(0);
-  };
+  
 
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
@@ -317,7 +124,7 @@ const SaleList = () => {
   // Handler for selecting/deselecting all items
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(rows.map((row) => row.id));
+      setSelected(salesData?.data.map((sales: any) => sales.id));
     } else {
       setSelected([]);
     }
@@ -348,10 +155,14 @@ const SaleList = () => {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+  const sortedRows = salesData?.data.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof Data]; 
+    const bValue = b[orderBy as keyof Data]; 
+    if (aValue === undefined || bValue === undefined) {
+      return 0; 
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -362,6 +173,7 @@ const SaleList = () => {
     return 0;
   });
 
+  console.log(salesData)
 
   return (
 
@@ -392,12 +204,10 @@ const SaleList = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Date</MenuItem>
-                            <MenuItem onClick={popupState.close}>Customer</MenuItem>
-                            <MenuItem onClick={popupState.close}>Warehouse</MenuItem>
-                            <MenuItem onClick={popupState.close}>Biller</MenuItem>
-                            <MenuItem onClick={popupState.close}>Paid</MenuItem>
-                            <MenuItem onClick={popupState.close}>Due</MenuItem>
+                          <MenuItem onClick={() => {handleRequestSort("id"); popupState.close();}}>Sl</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("date"); popupState.close()}}>Date</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("customerName"); popupState.close()}}>Email</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("paymentStatus"); popupState.close()}}>Payment Status</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -429,8 +239,8 @@ const SaleList = () => {
                               {/* Checkbox for select all */}
                               <TableCell>
                                 <Checkbox
-                                  indeterminate={selected.length > 0 && selected.length < rows.length}
-                                  checked={rows.length > 0 && selected.length === rows.length}
+                                  indeterminate={selected.length > 0 && selected.length < salesData?.data.length}
+                                  checked={salesData?.data.length > 0 && selected.length === salesData?.data.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                                 />
                               </TableCell>
@@ -446,91 +256,70 @@ const SaleList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'reference'}
-                                  direction={orderBy === 'reference' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('reference')}
+                                  active={orderBy === 'referenceNumber'}
+                                  direction={orderBy === 'referenceNumber' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('referenceNumber')}
                                 >
                                   Reference
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'customer'}
-                                  direction={orderBy === 'customer' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('customer')}
+                                  active={orderBy === 'customerName'}
+                                  direction={orderBy === 'customerName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('customerName')}
                                 >
                                   Customer
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'warehouse'}
-                                  direction={orderBy === 'warehouse' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('warehouse')}
+                                  active={orderBy === 'warehouseName'}
+                                  direction={orderBy === 'warehouseName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('warehouseName')}
                                 >
                                   Warehouse
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'status'}
-                                  direction={orderBy === 'status' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('status')}
+                                  active={orderBy === 'paymentStatus'}
+                                  direction={orderBy === 'paymentStatus' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('paymentStatus')}
                                 >
                                   Status
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'biller'}
-                                  direction={orderBy === 'biller' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('biller')}
+                                  active={orderBy === 'billerName'}
+                                  direction={orderBy === 'billerName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('billerName')}
                                 >
                                   biller
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'payment'}
-                                  direction={orderBy === 'payment' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('payment')}
-                                >
-                                  payment
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'grandTotal'}
-                                  direction={orderBy === 'grandTotal' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('grandTotal')}
+                                  active={orderBy === 'totalAmount'}
+                                  direction={orderBy === 'totalAmount' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalAmount')}
                                 >
                                   Grand Total
                                 </TableSortLabel>
                               </TableCell>
+
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'paid'}
-                                  direction={orderBy === 'paid' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('paid')}
+                                  active={orderBy === 'totalQuantitySold'}
+                                  direction={orderBy === 'totalQuantitySold' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalQuantitySold')}
                                 >
-                                  paid
+                                  Quantity Sold
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'due'}
-                                  direction={orderBy === 'due' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('due')}
-                                >
-                                  due
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'protein'}
-                                  direction={orderBy === 'protein' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('protein')}
-                                >
+                                <TableSortLabel>
                                   Action
                                 </TableSortLabel>
                               </TableCell>
@@ -539,52 +328,38 @@ const SaleList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
+                            {sortedRows?.map((sales: any) => (                             
                                 <TableRow
-                                  key={row.id}
+                                  key={sales.id}
                                   hover
-                                  onClick={() => handleClick(row.id)}
+                                  onClick={() => handleClick(sales.id)}
                                   role="checkbox"
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
+                                  aria-checked={isSelected(sales.id)}
+                                  selected={isSelected(sales.id)}
                                 >
                                   {/* Checkbox for row selection */}
                                   <TableCell>
-                                    <Checkbox checked={isSelected(row.id)} />
+                                    <Checkbox checked={isSelected(sales.id)} />
                                   </TableCell>
                                   {/* Data cells */}
-                                  <TableCell>{row.date}</TableCell>
-                                  <TableCell>{row.reference}</TableCell>
-                                  <TableCell>{row.customer}</TableCell>
-                                  <TableCell>{row.warehouse}</TableCell>
+                                  <TableCell>{sales.saleDate}</TableCell>
+                                  <TableCell>{sales.referenceNumber}</TableCell>
+                                  <TableCell>{sales.customerName}</TableCell>
+                                  <TableCell>{sales.warehouseName}</TableCell>
                                   <TableCell>
                                     {
-                                      row.status.toLowerCase() === "completed" ? (
-                                        <span className='badge badge-success'>{row.status}</span>
+                                      sales.paymentStatus.toLowerCase() === "completed" ? (
+                                        <span className='badge badge-success'>{sales.paymentStatus}</span>
                                       ) : (
-                                        row.status.toLowerCase() === "draft" ? (
-                                          <span className='badge badge-warning'>{row.status}</span>
-                                        ) : (<span className='badge badge-teal'>{row.status}</span>)
+                                        sales.paymentStatus.toLowerCase() === "draft" ? (
+                                          <span className='badge badge-warning'>{sales.paymentStatus}</span>
+                                        ) : (<span className='badge badge-teal'>{sales.paymentStatus}</span>)
                                       )
                                     }
                                   </TableCell>
-                                  <TableCell>{row.biller}</TableCell>
-                                  <TableCell>
-                                    {
-                                      row.payment.toLowerCase() === "paid" ? (
-                                        <span className='badge badge-success'>{row.payment}</span>
-                                      ) : (
-                                        row.payment.toLowerCase() === "unpaid" ? (
-                                          <span className='badge badge-danger'>{row.payment}</span>
-                                        ) : (<span className='badge badge-teal'>{row.payment}</span>)
-                                      )
-                                    }
-                                  </TableCell>
-                                  <TableCell>${row.grandTotal}</TableCell>
-                                  <TableCell>${row.paid}</TableCell>
-                                  <TableCell>${row.due}</TableCell>
+                                  <TableCell>{sales.billerName}</TableCell>
+                                  <TableCell>{MoneyFormat.format(sales.totalAmount)}</TableCell>
+                                  <TableCell>{sales.totalQuantitySold}</TableCell>
                                   <TableCell>
                                     <div className="inventual-list-action-style">
                                       <PopupState variant="popover">
@@ -617,12 +392,11 @@ const SaleList = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
+                    count={salesData?.totalCount || 0}
+                    rowsPerPage={currentPageSize}
+                    page={currentPageNumber - 1}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
