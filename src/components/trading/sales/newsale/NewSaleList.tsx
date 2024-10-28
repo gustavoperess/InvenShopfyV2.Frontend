@@ -223,9 +223,7 @@ const NewSaleList = () => {
                     ? accumulator + item.quantitySold 
                     : accumulator;
             }, 0);
-        } else {
-            return 0;
-        }
+        } 
     };
 
     //claculate discount
@@ -235,7 +233,7 @@ const NewSaleList = () => {
                 let itemDiscount = ((item.price * discount) / 100) * item.quantitySold;
                 return itemDiscount - totalDiscount;
             } else {
-                return 0;
+                return totalDiscount;
             }
         }, 0)
     }
@@ -246,10 +244,8 @@ const NewSaleList = () => {
         return productInformation.reduce((total, item) => {
             if (item.stockQuantity > 0) {
                 return total + item.price * item.quantitySold;
-            } else {
-                return 0;
-            }
-         
+            } 
+            return total;
         }, 0);
     }
     // calculate total sum of all subtotals
@@ -513,7 +509,7 @@ const NewSaleList = () => {
                                                                     <td>{product.productCode}</td>
                                                                     <td>{product.category}</td>
                                                                     <td>{product.subcategory}</td>
-                                                                    <td>${product.price}</td>
+                                                                     <td>{MoneyFormat.format(product.price)}</td>
                                                                     <td>{product.stockQuantity}</td>
                                                                     <td>
                                                                     {product.stockQuantity > 0 ? (
