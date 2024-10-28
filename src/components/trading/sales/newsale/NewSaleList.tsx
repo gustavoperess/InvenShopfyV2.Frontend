@@ -151,10 +151,18 @@ const NewSaleList = () => {
                 return updatedProducts;
             });
         } else {
-            setProductInformation(prev => [
-                ...prev,
-                { ...suggestion, quantitySold: 1, totalAmountSold: suggestion.price }
-            ]);
+            if (suggestion.stockQuantity > 0) {
+                setProductInformation(prev => [
+                    ...prev,
+                    { ...suggestion, quantitySold: 1, totalAmountSold: suggestion.price, stockQuantity: suggestion.stockQuantity - 1}
+                ]);
+
+            } else {
+                setProductInformation(prev => [
+                    ...prev,
+                    { ...suggestion, quantitySold: 0, totalAmountSold: suggestion.price }
+                ]);
+            }
         }
 
         // Additional updates
@@ -255,8 +263,8 @@ const NewSaleList = () => {
         } else {
             return calculateTotal() - calculateDiscount();
         }
+    
     }
-
 
     const handleRemoveProduct = (productId: number) => {
         setProductInformation((prevProducts) =>
@@ -264,37 +272,61 @@ const NewSaleList = () => {
         );
     };
 
-
-    // handle shipping value change
-    const handleShippingValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const amount = parseFloat(event.target.value);
-        setShippingCost(isNaN(amount) ? 0 : amount)
-    }
-    const handleDateChange = (date: Date | null) => {
-        setSaleDate(date || new Date());
-    };
     const onTypeChangeForProduct = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setProduct(value);
         setProductName(value);
     };
+    // handle Date
+    const handleDateChange = (date: Date | null) => {
+        setSaleDate(date || new Date());
+    };
+
+    const formatDate = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     //handle new Sale Form submission
     const handleNewSaleForm = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        let productIdPlusQuantity: { [key: number]: number } = {};
+        productInformation.forEach(product => {
+            if (product.quantitySold > 0) {
+                productIdPlusQuantity[product.id] = product.quantitySold; 
+            }
+        });
+        let date = formatDate(saleDate)
+
+        const saleData = {customerId: customer, warehouseId: selectWarehouse, productIdPlusQuantity,
+            billerId: biller, saleDate: date, shippingCost, staffNote, saleNote, paymentStatus, saleStatus, totalAmount: calculateGrandTotal(), discount }
         try {
+            await addSale(saleData).unwrap();
             toast.success("Sale Created successfully!");
-            // if (newSaleInputRef.current) {
-            //     newSaleInputRef.current.value = '';
-            //     setActiveItems([]);
-            //     setActiveItemIds([]);
-            //     // setSaleDate(null);
-            //     setSelectCustomer('')
-            //     setSelectWarehosue('')
-            //     setSelectBiller('')
-            // }
-        } catch {
-            toast.error("Failed to  create Sale. Please try again later.");
+                setActiveItems([]);
+                setActiveItemIds([]);
+                setSaleDate(new Date());
+                setSelectCustomer('')
+                setSelectWarehosue('')
+                setSelectBiller('')
+                setPaymentStatus("")
+                setSalesStatus("")
+                setSaleNote("")
+                setStaffNote("")
+                setProductInformation([])
+                setDiscount(undefined)
+                setShippingCost(undefined)
+        
+        } catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error?.data?.message);
+            } 
+            else {
+                // Fallback error message
+                toast.error("Failed to create Sale. Please try again later.");
+            }
         }
     }
   
@@ -439,7 +471,6 @@ const NewSaleList = () => {
                                                         placeholder="Macbook..."
                                                         variant="outlined"
                                                         value={product}
-                                                        required
                                                         onChange={onTypeChangeForProduct}
                                                     />
                                                     {
@@ -647,7 +678,9 @@ const NewSaleList = () => {
                                                 <TextField
                                                     select
                                                     label="Select"
-                                                    defaultValue=""
+                                                    required
+                                                    value={saleStatus}
+                                                    onChange={(e) => setSalesStatus(e.target.value)}
                                                     SelectProps={{
                                                         displayEmpty: true,
                                                         renderValue: (value: any) => {
@@ -675,7 +708,9 @@ const NewSaleList = () => {
                                                 <TextField
                                                     select
                                                     label="Select"
-                                                    defaultValue=""
+                                                    required
+                                                    value={paymentStatus}
+                                                    onChange={(e) => setPaymentStatus(e.target.value)}
                                                     SelectProps={{
                                                         displayEmpty: true,
                                                         renderValue: (value: any) => {

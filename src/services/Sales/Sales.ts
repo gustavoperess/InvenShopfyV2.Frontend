@@ -18,7 +18,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export const salesApi = createApi({
     reducerPath: 'totalExpenseApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: `${BACKEND_URL}/v2/Sale/`,
+        baseUrl: `${BACKEND_URL}/v2/`,
         credentials: 'include', 
     }),
     endpoints: (builder) => ({
@@ -40,7 +40,7 @@ export const salesApi = createApi({
         }),
         createSale: builder.mutation<any, any>({
             query: (body) => ({
-                url: `Sale`,
+                url: `Sale/create-sale`,
                 method: 'POST',
                 body,
             }),
