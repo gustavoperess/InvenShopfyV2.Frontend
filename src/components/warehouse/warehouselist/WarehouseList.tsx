@@ -79,7 +79,7 @@ const WarehouseList = () => {
         setOpen(false);
         refetch()
       } catch (err) {
-        console.error('Error deleting the category:', err);
+        console.error('Error deleting the warehouse:', err);
       }
     }
   };
