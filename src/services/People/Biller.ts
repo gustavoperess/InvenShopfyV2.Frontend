@@ -10,14 +10,28 @@ export const billerApi = createApi({
         credentials: 'include',
     }),
     endpoints: (builder) => ({
-        getAllBillers: builder.query<any, number>({
-            query: (pageNumber) => ({
+        getAllBillers: builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize }) => ({
                 url: `Biller`,
-                params: { pageNumber },
+                method: "GET",
+                params: { pageNumber, pageSize}
+            }),
+        }),
+        addBiller: builder.mutation<any, any>({
+            query: (body) => ({
+                url: `Biller`,
+                method: 'POST',
+                body,
+            }),
+        }),
+        deleteBiller: builder.mutation<any, number>({
+            query: (id) => ({
+                url: `Biller/${id}`,
+                method: 'DELETE',
             }),
         }),
     }),
 });
 
 // Export auto-generated hooks for functional components
-export const { useGetAllBillersQuery } = billerApi;
+export const { useGetAllBillersQuery, useAddBillerMutation, useDeleteBillerMutation } = billerApi;

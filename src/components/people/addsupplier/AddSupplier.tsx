@@ -24,7 +24,6 @@ const AddSupplier = () => {
             name: supplierName, email, phoneNumber: phone, city, country, address, zipCode,
             supplierCode, company
         }
-        console.log(supplierData)
         try {
             await addSupplier(supplierData).unwrap();
             toast.success("Supplier Created successfully!");

@@ -13,11 +13,17 @@ import {
   TableSortLabel,
   Menu,
   MenuItem,
+  Modal,
+  Box,
+  Stack,
+  Button,
+  Typography,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
 import { billedList } from '@/interFace/interFace';
 import tableList_data from '@/data/Table-list-data';
+import { useGetAllBillersQuery, useDeleteBillerMutation } from '@/services/People/Biller';
 
 const BillerList = () => {
 

@@ -72,11 +72,10 @@ const NewSaleList = () => {
 
 
     //datas
-    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-    const [currentPageSize, setCurrentPageSize] = useState(10);
-    const { data: customerData } = useGetAllCustomersQuery({pageNumber: 1 });
-    const { data: billerData } = useGetAllBillersQuery(1);
-    const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+
+    const { data: customerData } = useGetAllCustomersQuery({ pageNumber: 1, pageSize: 25 });
+    const { data: billerData } = useGetAllBillersQuery({ pageNumber: 1, pageSize: 25 });
+    const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: 1, pageSize: 25 });
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<TProduct[]>([]);
     const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
