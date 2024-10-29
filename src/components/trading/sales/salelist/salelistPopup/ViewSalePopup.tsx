@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
-import { useGetSalesBySaleIdQuery, useGetTotalSalesAmountQuery } from '@/services/Sales/Sales';
+import { useGetSalesBySaleIdQuery } from '@/services/Sales/Sales';
 import DialogContent from '@mui/material/DialogContent';
 import logo from '../../../../../../public/assets/img/logo/login-logo.png';
 import Image from 'next/image';
@@ -41,11 +41,6 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: { open: bool
 
 
 
-
-    const dummyData = (e: any) => {
-        e.preventDefault();
-    };
-
     const totalAmountBeforeTax =  salesData?.data.reduce((accumulator: any, data: any) => {
             accumulator.totalAmountBeforeTax += data.totalPricePerProduct;
             return accumulator 
@@ -64,7 +59,7 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: { open: bool
                 >
                     <DialogContent dividers className='no-border'>
                         <div className='inventual-common-modal-width width-full'>
-                            <form onSubmit={dummyData}>
+                        
                                 <div className="inventual-invoice-popup-area">
                                     <div className="inventual-invoice-popup-logo text-center mt-7 mb-10">
                                         <Image src={logo} style={{ width: 'auto', height: 'auto' }} alt="logo img" />
@@ -161,7 +156,6 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: { open: bool
                                         </button>
                                     </div>
                                 </div>
-                            </form>
                         </div>
                     </DialogContent> 
                 </BootstrapDialog>

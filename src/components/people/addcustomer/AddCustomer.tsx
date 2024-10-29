@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
-import { MenuItem, TextField } from '@mui/material';
+import { MenuItem, TextField, FormControl } from '@mui/material';
+import { useAddCustomerMutation } from '@/services/People/Customer';
 import { toast } from 'react-toastify';
 
 const AddCustomer = () => {
@@ -13,10 +14,18 @@ const AddCustomer = () => {
     const [address, setAddress] = useState('')
     const [zipCode, setZipCode] = useState('')
     const [rewardPoint, setRewardPoint] = useState('')
+    const [error, setError] = useState(false);
+    const [addCustomer] = useAddCustomerMutation();
 
-    const handleAddCustomer = (e: any) => {
+    const handleAddCustomer = async (e: any) => {
+        const customerData = {
+            name: customerName, email, phoneNumber: phone, city, country, address, zipCode,
+            rewardPoint, customerGroup
+        }
+    
         e.preventDefault();
         try {
+            await addCustomer(customerData).unwrap();
             toast.success("Customer Created successfully!");
             setCustomerName('');
             setCustomerGroup('');
@@ -27,11 +36,23 @@ const AddCustomer = () => {
             setAddress('');
             setZipCode('');
             setRewardPoint('');
-        } catch {
-            toast.error("Failed to create Customer. Please try again later.");
+        } catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error?.data?.message);
+            } else {
+                // Fallback error message
+                toast.error("Failed to create Customer. Please try again later.");
+            }
         }
-
     }
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const email = e.target.value;
+        setEmail(email);
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setError(!emailPattern.test(email));
+    };
+
 
     return (
         <>
@@ -43,13 +64,17 @@ const AddCustomer = () => {
                                 <div className="inventual-form-field">
                                     <h5>Customer Name</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={customerName}
-                                            onChange={(e) => setCustomerName(e.target.value)}
-                                            type="name"
-                                            placeholder='Walk - in - customer'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="text"
+                                                required
+                                                value={customerName}
+                                                placeholder='Walk - in - customer'
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 150 }}
+                                                onChange={(e) => setCustomerName(e.target.value)} />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -89,13 +114,17 @@ const AddCustomer = () => {
                                 <div className="inventual-form-field">
                                     <h5>Phone</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={phone}
-                                            onChange={(e) => setPhone(e.target.value)}
-                                            type="tel"
-                                            placeholder='00 000 000 000'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField  // NEED TO CHECK PHONE NUMBER REQUIREMENTS 
+                                                fullWidth
+                                                type="number"
+                                                required
+                                                value={phone}
+                                                placeholder="+234 23432432"
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 80 }}
+                                                onChange={(e) => setPhone(e.target.value)} />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -103,13 +132,20 @@ const AddCustomer = () => {
                                 <div className="inventual-form-field">
                                     <h5>Email</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            type="email"
-                                            placeholder='joseph@example.com'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="email"
+                                                required
+                                                value={email}
+                                                placeholder="customer01@gmail.con"
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 80 }}
+                                                onChange={handleEmailChange}
+                                                error={error}
+                                                helperText={error ? "Please enter a valid email address" : ""}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -117,13 +153,18 @@ const AddCustomer = () => {
                                 <div className="inventual-form-field">
                                     <h5>Country</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={country}
-                                            onChange={(e) => setCountry(e.target.value)}
-                                            type="text"
-                                            placeholder='United States'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="text"
+                                                required
+                                                value={country}
+                                                placeholder="United Kindgom"
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 30 }}
+                                                onChange={(e) => setCountry(e.target.value)}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -131,13 +172,18 @@ const AddCustomer = () => {
                                 <div className="inventual-form-field">
                                     <h5>City</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={city}
-                                            onChange={(e) => setCity(e.target.value)}
-                                            type="text"
-                                            placeholder='New York'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="text"
+                                                required
+                                                value={city}
+                                                placeholder="London"
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 80 }}
+                                                onChange={(e) => setCity(e.target.value)}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -145,13 +191,18 @@ const AddCustomer = () => {
                                 <div className="inventual-form-field">
                                     <h5>Address</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={address}
-                                            onChange={(e) => setAddress(e.target.value)}
-                                            type="text"
-                                            placeholder='New York'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="text"
+                                                required
+                                                value={address}
+                                                placeholder='Boulevard 101'
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 160 }}
+                                                onChange={(e) => setAddress(e.target.value)}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -159,13 +210,18 @@ const AddCustomer = () => {
                                 <div className="inventual-form-field">
                                     <h5>Zip Code</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={zipCode}
-                                            onChange={(e) => setZipCode(e.target.value)}
-                                            type="text"
-                                            placeholder='48756'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="text"
+                                                required
+                                                value={zipCode}
+                                                placeholder='SE20-5ET'
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 20 }}
+                                                onChange={(e) => setZipCode(e.target.value)}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -173,13 +229,17 @@ const AddCustomer = () => {
                                 <div className="inventual-form-field">
                                     <h5>Reward Point</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={rewardPoint}
-                                            onChange={(e) => setRewardPoint(e.target.value)}
-                                            type="number"
-                                            placeholder='456'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="number"
+                                                value={rewardPoint}
+                                                placeholder='456'
+                                                variant="outlined"
+                                                inputProps={{ min: 1, max: 1000, maxLength: 30 }}
+                                                onChange={(e) => setRewardPoint(e.target.value)}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>

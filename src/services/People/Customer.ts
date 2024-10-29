@@ -17,8 +17,15 @@ export const customerApi = createApi({
                 params: { pageNumber },
             }),
         }),
+        addCustomer: builder.mutation<any, any>({
+            query: (body) => ({
+                url: `Customer`,
+                method: 'POST',
+                body,
+            }),
+        }),
     }),
 });
 
 // Export auto-generated hooks for functional components
-export const { useGetAllCustomersQuery } = customerApi;
+export const { useGetAllCustomersQuery, useAddCustomerMutation } = customerApi;
