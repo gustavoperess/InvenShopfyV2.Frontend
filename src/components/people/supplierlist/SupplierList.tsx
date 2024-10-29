@@ -13,154 +13,77 @@ import {
   TableSortLabel,
   Menu,
   MenuItem,
+  Modal,
+  Box,
+  Stack,
+  Button,
+  Typography,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
+import { useGetAllSuppliersQuery, useDeleteSupplierMutation } from '@/services/People/Supplier';
 
 // Define the structure of the data
 interface Data {
   id: number;
-  code: number;
   name: string;
-  phone: string;
+  phoneNumber: string;
   email: string;
-  group: string;
-  rewardPoints: string;
-  adress: string;
-  protein: string;
+  country: string;
+  supplierCode: string;
+  city: string;
+  address: string;
+  zipCode: string;
+  company: string;
 }
 
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    code: 100,
-    name: 'Walk - in -customer',
-    phone: '+02 585 369 202',
-    email: 'Joseph@example.com',
-    group: 'General',
-    rewardPoints: '256',
-    adress: 'Halmate Station, NY, USA',
-    protein: '',
-  },
-  {
-    id: 2,
-    code: 102,
-    name: 'Paul Freeman',
-    phone: '+02 585 369 201',
-    email: '  paul@example.com',
-    group: 'Distributor',
-    rewardPoints: 'N/A',
-    adress: 'Halmate Station, NY, USA',
-    protein: '',
-  },
-  {
-    id: 3,
-    code: 103,
-    name: 'Matthew Smallwood',
-    phone: '+02 585 369 202',
-    email: 'matthew@example.com',
-    group: 'Reseller',
-    rewardPoints: 'N/A',
-    adress: 'Andell Road, Gallatin, TN',
-    protein: '',
-  },
-  {
-    id: 4,
-    code: 104,
-    name: 'Danyelle Lundy',
-    phone: '+02 585 369 202',
-    email: 'lundy@example.com',
-    group: 'Distributor',
-    rewardPoints: 'N/A',
-    adress: 'North Avenue, Norfolk, NE',
-    protein: '',
-  },
-  {
-    id: 5,
-    code: 105,
-    name: 'Glenn Weiner',
-    phone: '+02 369 282 301',
-    email: 'glenn@example.com',
-    group: 'General',
-    rewardPoints: '1056',
-    adress: 'Tenmile, San Diego, CA',
-    protein: '',
-  },
-  {
-    id: 6,
-    code: 106,
-    name: 'crow - in -customer',
-    phone: '+02 585 369 202',
-    email: 'crow@example.com',
-    group: 'General',
-    rewardPoints: 'N/A',
-    adress: 'White Lane, Fort Valley, GA',
-    protein: '',
-  },
-  {
-    id: 7,
-    code: 107,
-    name: 'Rosemary Clark',
-    phone: '+02 585 369 202',
-    email: 'clark@example.com',
-    group: 'General',
-    rewardPoints: '962',
-    adress: 'Cabell Avenue, Lorton, VA',
-    protein: '',
-  },
-  {
-    id: 8,
-    code: 108,
-    name: 'Jennifer Carver',
-    phone: '02 585 369 202',
-    email: 'Joseph@example.com',
-    group: 'General',
-    rewardPoints: '3540',
-    adress: 'Private Lane, Albany, GA',
-    protein: '',
-  },
-  {
-    id: 9,
-    code: 109,
-    name: 'boser - in -customer',
-    phone: '+02 585 369 202',
-    email: 'boser@example.com',
-    group: 'General',
-    rewardPoints: 'N/A',
-    adress: 'Marigold Lane, Miami, FL',
-    protein: '',
-  },
-  {
-    id: 10,
-    code: 110,
-    name: 'Maria Cavallo',
-    phone: '+02 585 369 202',
-    email: 'maria@example.com',
-    group: 'General',
-    rewardPoints: '256',
-    adress: 'Wood Street, Metairie, LA',
-    protein: '',
-  },
-];
 
 const SupplierList = () => {
-
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [supplier, setSupplier] = useState<number>(0);
+  const [open, setOpen] = React.useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [deleteSupplier] = useDeleteSupplierMutation();
+  const { data: supplierData, error: supplierError, isLoading: supplierLoading, refetch } = useGetAllSuppliersQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
   // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1);
+    refetch();
   };
 
+  // handle opening delete modal
+  const handleOpenDelete = (supplierId: number) => {
+    setSupplier(supplierId);
+    setOpen(true);
+  };
+  // handle closing delete modal
+  const handleCloseDelete = () => {
+    setOpen(false);
+  }
+
+  // handle delete submission
+  const handleDelete = async () => {
+    if (supplier > 0) {
+      try {
+        await deleteSupplier(supplier);
+        setOpen(false);
+        refetch()
+      } catch (err) {
+        console.error('Error deleting the supplier:', err);
+      }
+    }
+  };
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -171,7 +94,7 @@ const SupplierList = () => {
   // Handler for selecting/deselecting all items
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(rows.map((row) => row.id));
+      setSelected(supplierData?.data.map((supplier: any) => supplier.id));
     } else {
       setSelected([]);
     }
@@ -202,10 +125,14 @@ const SupplierList = () => {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+  const sortedRows = supplierData?.data.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof Data];
+    const bValue = b[orderBy as keyof Data];
+    if (aValue === undefined || bValue === undefined) {
+      return 0;
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -215,6 +142,7 @@ const SupplierList = () => {
     }
     return 0;
   });
+  console.log(supplierData)
 
   return (
 
@@ -254,9 +182,11 @@ const SupplierList = () => {
                           </button>
                           <Menu {...bindMenu(popupState)}>
                             <MenuItem onClick={popupState.close}>Code</MenuItem>
-                            <MenuItem onClick={popupState.close}>Name</MenuItem>
                             <MenuItem onClick={popupState.close}>Company</MenuItem>
-                            <MenuItem onClick={popupState.close}>Address</MenuItem>
+                            <MenuItem onClick={popupState.close}>Country</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("supplierCode"); popupState.close(); }}>Code</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("company"); popupState.close(); }}>Company</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("country"); popupState.close(); }}>Country</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -285,18 +215,18 @@ const SupplierList = () => {
                             <TableRow>
                               <TableCell>
                                 <Checkbox
-                                  indeterminate={selected.length > 0 && selected.length < rows.length}
-                                  checked={rows.length > 0 && selected.length === rows.length}
+                                  indeterminate={selected.length > 0 && selected.length < supplierData?.data.length}
+                                  checked={supplierData?.data.length > 0 && selected.length === supplierData?.data.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                                 />
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'code'}
-                                  direction={orderBy === 'code' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('code')}
+                                  active={orderBy === 'supplierCode'}
+                                  direction={orderBy === 'supplierCode' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('supplierCode')}
                                 >
-                                  Code
+                                  Supplier Code
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -310,9 +240,9 @@ const SupplierList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'phone'}
-                                  direction={orderBy === 'phone' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('phone')}
+                                  active={orderBy === 'phoneNumber'}
+                                  direction={orderBy === 'phoneNumber' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('phoneNumber')}
                                 >
                                   Phone
                                 </TableSortLabel>
@@ -325,86 +255,71 @@ const SupplierList = () => {
                                 >
                                   email
                                 </TableSortLabel>
+                                
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'group'}
-                                  direction={orderBy === 'group' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('group')}
+                                  active={orderBy === 'company'}
+                                  direction={orderBy === 'company' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('company')}
                                 >
-                                  group
+                                  Company
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'rewardPoints'}
-                                  direction={orderBy === 'rewardPoints' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('rewardPoints')}
+                                  active={orderBy === 'address'}
+                                  direction={orderBy === 'address' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('address')}
                                 >
-                                  rewardPoints
+                                  Address
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'adress'}
-                                  direction={orderBy === 'adress' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('adress')}
-                                >
-                                  adress
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'protein'}
-                                  direction={orderBy === 'protein' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('protein')}
-                                >
+                                <TableSortLabel>
                                   Action
                                 </TableSortLabel>
                               </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
-                                <TableRow
-                                  key={row.id}
-                                  hover
-                                  onClick={() => handleClick(row.id)}
-                                  role="checkbox"
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
-                                >
-                                  <TableCell>
-                                    <Checkbox checked={isSelected(row.id)} />
-                                  </TableCell>
-                                  <TableCell>{row.code}</TableCell>
-                                  <TableCell>{row.name}</TableCell>
-                                  <TableCell>{row.phone}</TableCell>
-                                  <TableCell>{row.email}</TableCell>
-                                  <TableCell>{row.group}</TableCell>
-                                  <TableCell>{row.rewardPoints}</TableCell>
-                                  <TableCell>{row.adress}</TableCell>
-                                  <TableCell>
-                                    <div className="inventual-list-action-style">
-                                      <PopupState variant="popover">
-                                        {(popupState: any) => (
-                                          <React.Fragment>
-                                            <button className='' type='button' {...bindTrigger(popupState)}>
-                                              Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                            </button>
-                                            <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                            </Menu>
-                                          </React.Fragment>
-                                        )}
-                                      </PopupState>
-                                    </div>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
+                            {sortedRows?.map((supplier: any) => (
+                              <TableRow
+                                key={supplier.id}
+                                hover
+                                onClick={() => handleClick(supplier.id)}
+                                role="checkbox"
+                                aria-checked={isSelected(supplier.id)}
+                                selected={isSelected(supplier.id)}
+                              >
+                                <TableCell>
+                                  <Checkbox checked={isSelected(supplier.id)} />
+                                </TableCell>
+                                <TableCell>{supplier.supplierCode}</TableCell>
+                                <TableCell>{supplier.name}</TableCell>
+                                <TableCell>{supplier.phoneNumber}</TableCell>
+                                <TableCell>{supplier.email}</TableCell>
+                                <TableCell>{supplier.company}</TableCell>
+                                <TableCell>{supplier.city} {supplier.country} {supplier.zipCode}</TableCell>
+                                <TableCell>
+                                  <div className="inventual-list-action-style">
+                                    <PopupState variant="popover">
+                                      {(popupState: any) => (
+                                        <React.Fragment>
+                                          <button className='' type='button' {...bindTrigger(popupState)}>
+                                            Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                          </button>
+                                          <Menu {...bindMenu(popupState)}>
+                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
+                                            <MenuItem onClick={() => handleOpenDelete(supplier.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                          </Menu>
+                                        </React.Fragment>
+                                      )}
+                                    </PopupState>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
                           </TableBody>
                         </Table>
                       </TableContainer>
@@ -413,17 +328,38 @@ const SupplierList = () => {
                 </div>
                 <div className="inventual-pagination-area">
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
+                    count={supplierData?.totalCount || 0}
+                    rowsPerPage={currentPageSize}
+                    page={currentPageNumber - 1}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
               </div>
             </div>
+            <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  bgcolor: 'background.paper',
+                  border: '2px solid #000',
+                  boxShadow: 24,
+                  zIndex: 9999,
+                  p: 4,
+                }}
+              >
+                <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Supplier?</Typography>
+                <Stack spacing={2} direction="row">
+                  <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                  <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                </Stack>
+              </Box>
+            </Modal>
           </div>
         </div>
       </div>

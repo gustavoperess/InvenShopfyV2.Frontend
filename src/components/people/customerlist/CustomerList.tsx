@@ -43,10 +43,6 @@ const CustomerList = () => {
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [customer, setCustomer] =  useState<number>(0);
   const [open, setOpen] = React.useState(false);
-
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
@@ -66,8 +62,8 @@ const CustomerList = () => {
     };
 
       // handle opening delete modal
-  const handleOpenDelete = (warehouseId: number) => {
-    setCustomer(warehouseId);
+  const handleOpenDelete = (customerId: number) => {
+    setCustomer(customerId);
     setOpen(true);
   };
      // handle closing delete modal
@@ -149,7 +145,6 @@ const CustomerList = () => {
     return 0;
   });
 
-  console.log(customerData)
 
   return (
 
@@ -284,7 +279,7 @@ const CustomerList = () => {
                                   direction={orderBy === 'address' ? order : 'asc'}
                                   onClick={() => handleRequestSort('address')}
                                 >
-                                  adress
+                                  Address
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
