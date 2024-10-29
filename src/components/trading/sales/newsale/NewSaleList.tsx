@@ -12,6 +12,7 @@ import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetAllCustomersQuery } from '@/services/People/Customer';
 import { useGetAllBillersQuery } from '@/services/People/Biller';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
+import page from '@/app/[...not_found]/page';
 
 interface productInterface {
     id: number;
@@ -73,10 +74,9 @@ const NewSaleList = () => {
     //datas
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
     const [currentPageSize, setCurrentPageSize] = useState(10);
-    const { data: customerData } = useGetAllCustomersQuery(1);
+    const { data: customerData } = useGetAllCustomersQuery({pageNumber: 1 });
     const { data: billerData } = useGetAllBillersQuery(1);
     const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
-
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<TProduct[]>([]);
     const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
@@ -236,10 +236,13 @@ const NewSaleList = () => {
 
     //claculate discount
     const calculateDiscount = () => {
-        return productInformation.reduce((totalDiscount, item) => {
+        return productInformation.reduce((totalDiscount) => {
             if (discount != undefined) {
-                let itemDiscount = ((item.price * discount) / 100) * item.quantitySold;
-                return itemDiscount - totalDiscount;
+                if(shippingCost != undefined) {
+                    return ((calculateTotal() + shippingCost ) * discount ) / 100
+                } else {
+                    return ((calculateTotal()) * discount ) / 100
+                }
             } else {
                 return totalDiscount;
             }

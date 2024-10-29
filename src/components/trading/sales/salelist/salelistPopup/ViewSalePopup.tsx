@@ -19,17 +19,14 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-interface GenerateInvoiceListData {
-    sl: string;
-    product: string;
-    batchNo: string;
-    unit: string;
-    unitPrice: number;
-    quantity: number;
-    tax: number;
-    discount: number;
-    subTotal: number;
-}
+
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'GBP',
+  });
+  
+
+
 const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: { open: boolean; saleId: number | undefined; handleViewSaleDialogClose: () => void }) => {
     const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetSalesBySaleIdQuery(
         saleId as number, 
@@ -44,35 +41,18 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: { open: bool
 
 
 
-    const sampleData: GenerateInvoiceListData[] = [
-        {
-            sl: '01',
-            product: '3D Cannon Camera',
-            batchNo: '30566205',
-            unit: 'Pc',
-            unitPrice: 25,
-            quantity: 1,
-            tax: 10,
-            discount: 5,
-            subTotal: 23,
-        },
-        {
-            sl: '02',
-            product: 'Green Lemon',
-            batchNo: '30566206',
-            unit: 'Kg',
-            unitPrice: 70,
-            quantity: 1,
-            tax: 0,
-            discount: 0,
-            subTotal: 60,
-        },
-    ]
 
     const dummyData = (e: any) => {
         e.preventDefault();
     };
-    console.log(salesData)
+
+    const totalAmountBeforeTax =  salesData?.data.reduce((accumulator: any, data: any) => {
+            accumulator.totalAmountBeforeTax += data.totalPricePerProduct;
+            return accumulator 
+            
+    }, {totalAmountBeforeTax: 0})
+
+
 
     return (
         <>
@@ -101,8 +81,6 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: { open: bool
                                                         <th>Unit</th>
                                                         <th>Unit Price</th>
                                                         <th>Qty</th>
-                                                        <th>Tax</th>
-                                                        <th>Discount</th>
                                                         <th>Sub Total</th>
                                                     </tr>
                                                 </thead>
@@ -116,38 +94,39 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: { open: bool
                                                                 <td>{salesDate.unitShortName}</td>
                                                                 <td>${salesDate.productPrice}</td>
                                                                 <td>{salesDate.totalQuantitySoldPerProduct}</td>
-                                                                <td>{salesDate.tax}%</td>
-                                                                <td>{salesDate.discount}%</td>
-                                                                <td>${salesDate.totalPricePerProduct}</td>
+                                                                <td>{MoneyFormat.format(salesDate.totalPricePerProduct)}</td>
                                                             </tr>)
                                                         ) : <tr>
                                                             <td colSpan={9} className='text-center'>Data not found</td>
-                                                        </tr>
+                                                        </tr> 
                                                     }
                                                     <tr>
-                                                        <td colSpan={6}><span className='font-semibold text-heading'>Total = </span></td>
-                                                        <td><span className='font-semibold text-heading'>8.00</span></td>
-                                                        <td><span className='font-semibold text-heading'>10.00</span></td>
-                                                        <td><span className='font-semibold text-heading'>93.00</span></td>
+                                                        <td colSpan={5}><span className='font-semibold text-heading'>Total = </span></td>
+                                                        <td><span className='font-semibold text-heading'></span></td>
+                                                        <td><span className='font-semibold text-heading'>{MoneyFormat.format(totalAmountBeforeTax?.totalAmountBeforeTax)}</span></td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}>Order Discount : </td>
-                                                        <td>-0.00</td>
+                                                        <td colSpan={6}>Shipping Cost : </td>
+                                                        <td>{MoneyFormat.format(salesData?.data[0].shippingCost)}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}>Order Tax : </td>
+                                                        <td colSpan={6}>Order Discount : </td>
+                                                        <td>{salesData?.data[0].discount}%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colSpan={6}>Order Tax : </td>
                                                         <td>+3 (2%)</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}><span className='font-semibold text-heading'>Grand Total : </span></td>
-                                                        <td> <span className='font-semibold text-heading'>96.00</span></td>
+                                                        <td colSpan={6}><span className='font-semibold text-heading'>Grand Total : </span></td>
+                                                        <td> <span className='font-semibold text-heading'>{MoneyFormat.format(salesData?.data[0].totalAmount)}</span></td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}>Paid Amount : </td>
-                                                        <td>96.00</td>
+                                                        <td colSpan={6}>Paid Amount : </td>
+                                                        <td>{MoneyFormat.format(salesData?.data[0].totalAmount)}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}>Due Amount : </td>
+                                                        <td colSpan={6}>Due Amount : </td>
                                                         <td>0.00</td>
                                                     </tr>
                                                 </tbody>
@@ -158,10 +137,10 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: { open: bool
                                     <div className="inventual-invoice-popup-address pt-5 pb-1">
                                         <div className="inventual-invoice-popup-address-inner text-start">
                                             <ul>
-                                                <li>Sales Note : <span>N/A</span></li>
-                                                <li >Remarks : <span>N/A</span></li>
-                                                <li>Created by : <span>Richard Joseph</span></li>
-                                                <li><span>info@example.com</span></li>
+                                                <li>Sales Note : <span>{salesData?.data[0].saleNote}</span></li>
+                                                <li >Remarks : <span>{salesData?.data[0].staffNote}</span></li>
+                                                <li>Created by : <span>{salesData?.data[0].billerName}</span></li>
+                                                <li><span>{salesData?.data[0].billerEmail}</span></li> 
                                             </ul>
                                         </div>
                                     </div>
@@ -184,7 +163,7 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: { open: bool
                                 </div>
                             </form>
                         </div>
-                    </DialogContent>
+                    </DialogContent> 
                 </BootstrapDialog>
             </div>
         </>

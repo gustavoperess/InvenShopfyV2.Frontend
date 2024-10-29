@@ -203,9 +203,8 @@ const SaleList = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                          <MenuItem onClick={() => {handleRequestSort("id"); popupState.close();}}>Sl</MenuItem>
                             <MenuItem onClick={() => {handleRequestSort("salesDate"); popupState.close()}}>Date</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("customerName"); popupState.close()}}>Email</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("customerName"); popupState.close()}}>Customer Name</MenuItem>
                             <MenuItem onClick={() => {handleRequestSort("paymentStatus"); popupState.close()}}>Payment Status</MenuItem>
                           </Menu>
                         </React.Fragment>
@@ -351,10 +350,27 @@ const SaleList = () => {
                                         <span className='badge badge-success'>{sales.paymentStatus}</span>
                                       ) : (
                                         sales.paymentStatus.toLowerCase() === "draft" ? (
-                                          <span className='badge badge-warning'>{sales.paymentStatus}</span>
+                                          <span className='badge badge-warning'>{sales.paymentStatus}</span> 
                                         ) : (<span className='badge badge-teal'>{sales.paymentStatus}</span>)
                                       )
                                     }
+{/* 
+                                <div className="inventual-list-action-style is-filter teal-btn">
+                                                    <PopupState variant="popover">
+                                                      {(popupState: any) => (
+                                                        <React.Fragment>
+                                                          <button className='' type='button' {...bindTrigger(popupState)}>
+                                                            <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
+                                                          </button>
+                                                          <Menu {...bindMenu(popupState)}>
+                                                            <MenuItem onClick={() => {handleRequestSort("salesDate"); popupState.close()}}>Date</MenuItem>
+                                                            <MenuItem onClick={() => {handleRequestSort("customerName"); popupState.close()}}>Customer Name</MenuItem>
+                                                            <MenuItem onClick={() => {handleRequestSort("paymentStatus"); popupState.close()}}>Payment Status</MenuItem>
+                                                          </Menu>
+                                                        </React.Fragment>
+                                                      )}
+                                                    </PopupState>
+                                                  </div> */}
                                   </TableCell>
                                   <TableCell>{sales.billerName}</TableCell>
                                   <TableCell>{MoneyFormat.format(sales.totalAmount)}</TableCell>
@@ -368,11 +384,11 @@ const SaleList = () => {
                                               Action <i className="fa-sharp fa-solid fa-sort-down"></i>
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-eye"></i><span onClick={() => handleViewSale(sales.id)}>View Sale</span></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/trading/sales/newsale'>Edit Sale</Link></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-print"></i><span onClick={handleGenerateInvoiceDialogOpen}>Generate Invoice</span></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-circle-plus"></i><span onClick={handleAddPaymentDialogOpen}>Add Payment</span></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-money-check-dollar"></i><span onClick={handleViewPaymentDialogOpen}>View Payment</span></MenuItem>
+                                              <MenuItem onClick={() => {handleViewSale(sales.id);  popupState.close()}}> <i className="fa-regular fa-eye"></i>View Sale</MenuItem>
+                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/trading/sales/newsale'>Add Sale</Link></MenuItem>
+                                              <MenuItem onClick={() => {handleGenerateInvoiceDialogOpen();  popupState.close()}}> <i className="fa-regular fa-print"></i>Generate Invoice</MenuItem>
+                                              <MenuItem onClick={() => {handleAddPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-circle-plus"></i>Add Payment</MenuItem>
+                                              <MenuItem onClick={() => {handleViewPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-money-check-dollar"></i>View Payment</MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
                                           </React.Fragment>

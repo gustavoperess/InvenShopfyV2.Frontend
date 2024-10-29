@@ -40,7 +40,7 @@ export const salesApi = createApi({
         }),
         createSale: builder.mutation<any, any>({
             query: (body) => ({
-                url: `Sale/create-sale`,
+                url: `create-sale`,
                 method: 'POST',
                 body,
             }),
