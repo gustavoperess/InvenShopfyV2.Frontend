@@ -13,17 +13,16 @@ const AddCustomer = () => {
     const [city, setCity] = useState('')
     const [address, setAddress] = useState('')
     const [zipCode, setZipCode] = useState('')
-    const [rewardPoint, setRewardPoint] = useState('')
+    const [rewardPoint, setRewardPoint] = useState<number | undefined>(undefined);
     const [error, setError] = useState(false);
     const [addCustomer] = useAddCustomerMutation();
 
     const handleAddCustomer = async (e: any) => {
+        e.preventDefault();
         const customerData = {
             name: customerName, email, phoneNumber: phone, city, country, address, zipCode,
             rewardPoint, customerGroup
         }
-    
-        e.preventDefault();
         try {
             await addCustomer(customerData).unwrap();
             toast.success("Customer Created successfully!");
@@ -35,7 +34,7 @@ const AddCustomer = () => {
             setCity('');
             setAddress('');
             setZipCode('');
-            setRewardPoint('');
+            setRewardPoint(undefined);
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);
@@ -46,12 +45,25 @@ const AddCustomer = () => {
         }
     }
 
+
+    const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) {
+            setRewardPoint(value === '' ? undefined : Number(value)); 
+        }
+    };
+
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const email = e.target.value;
         setEmail(email);
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         setError(!emailPattern.test(email));
     };
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
+            e.preventDefault();
+        }
+    }
 
 
     return (
@@ -230,15 +242,16 @@ const AddCustomer = () => {
                                     <h5>Reward Point</h5>
                                     <div className="inventual-input-field-style">
                                         <FormControl fullWidth>
-                                            <TextField
-                                                fullWidth
-                                                type="number"
-                                                value={rewardPoint}
-                                                placeholder='456'
-                                                variant="outlined"
-                                                inputProps={{ min: 1, max: 1000, maxLength: 30 }}
-                                                onChange={(e) => setRewardPoint(e.target.value)}
-                                            />
+                                         <TextField
+                                            fullWidth
+                                            type="number"
+                                            value={rewardPoint !== undefined ? rewardPoint : ''} 
+                                            placeholder="456"
+                                            variant="outlined"
+                                            inputProps={{ min: 1, max: 100000}} 
+                                            onChange={handleChangeName}
+                                            onKeyDown={handleKeyDown}
+                                        />
                                         </FormControl>
                                     </div>
                                 </div>

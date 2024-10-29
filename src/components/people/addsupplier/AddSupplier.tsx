@@ -1,10 +1,10 @@
 "use client"
 import React, { useState } from 'react';
+import { MenuItem, TextField, FormControl } from '@mui/material';
+import { useAddSupplierMutation } from '@/services/People/Supplier';
 import { toast } from 'react-toastify';
 
 const AddSupplier = () => {
-
-
     const [supplierName, setSupplierName] = useState('')
     const [phone, setPhone] = useState('')
     const [email, setEmail] = useState('')
@@ -14,10 +14,19 @@ const AddSupplier = () => {
     const [zipCode, setZipCode] = useState('')
     const [company, setCompany] = useState('')
     const [supplierCode, setSupplierCode] = useState('')
+    const [error, setError] = useState(false);
+    const [addSupplier] = useAddSupplierMutation();
+
     //handle form
-    const handleSupplierForm = (e: any) => {
+    const handleSupplierForm =  async(e: any) => {
         e.preventDefault();
+        const supplierData = {
+            name: supplierName, email, phoneNumber: phone, city, country, address, zipCode,
+            supplierCode, company
+        }
+        console.log(supplierData)
         try {
+            await addSupplier(supplierData).unwrap();
             toast.success("Supplier Created successfully!");
             setSupplierName('');
             setSupplierCode('');
@@ -28,12 +37,24 @@ const AddSupplier = () => {
             setAddress('');
             setZipCode('');
             setCompany('');
-            setSupplierCode('');
-        } catch {
-            toast.error("Failed to create Supplier. Please try again later.");
+        } catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error?.data?.message);
+            } else {
+                // Fallback error message
+                toast.error("Failed to create Supplier. Please try again later.");
+            }
         }
 
     };
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const email = e.target.value;
+        setEmail(email);
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setError(!emailPattern.test(email));
+    };
+
 
     return (
         <>
@@ -45,13 +66,17 @@ const AddSupplier = () => {
                                 <div className="inventual-form-field">
                                     <h5>Supplier Name</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={supplierName}
-                                            onChange={(e) => setSupplierName(e.target.value)}
-                                            type="name"
-                                            placeholder='Joseph Tylor'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="name"
+                                                required
+                                                value={supplierName}
+                                                placeholder='Supplier 01'
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 150 }}
+                                                onChange={(e) => setSupplierName(e.target.value)} />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -59,13 +84,17 @@ const AddSupplier = () => {
                                 <div className="inventual-form-field">
                                     <h5>Phone</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={phone}
-                                            onChange={(e) => setPhone(e.target.value)}
-                                            type="tel"
-                                            placeholder='00 000 000 000'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField  // NEED TO CHECK PHONE NUMBER REQUIREMENTS 
+                                                fullWidth
+                                                type="number"
+                                                required
+                                                value={phone}
+                                                placeholder="+234 23432432"
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 80 }}
+                                                onChange={(e) => setPhone(e.target.value)} />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -73,13 +102,20 @@ const AddSupplier = () => {
                                 <div className="inventual-form-field">
                                     <h5>Email</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            type="email"
-                                            placeholder='joseph@example.com'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="email"
+                                                required
+                                                value={email}
+                                                placeholder="supplier01@gmail.con"
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 80 }}
+                                                onChange={handleEmailChange}
+                                                error={error}
+                                                helperText={error ? "Please enter a valid email address" : ""}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -87,13 +123,18 @@ const AddSupplier = () => {
                                 <div className="inventual-form-field">
                                     <h5>Country</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={country}
-                                            onChange={(e) => setCountry(e.target.value)}
-                                            type="text"
-                                            placeholder='United States'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="text"
+                                                required
+                                                value={country}
+                                                placeholder="United Kindgom"
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 30 }}
+                                                onChange={(e) => setCountry(e.target.value)}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -101,13 +142,18 @@ const AddSupplier = () => {
                                 <div className="inventual-form-field">
                                     <h5>City</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={city}
-                                            onChange={(e) => setCity(e.target.value)}
-                                            type="text"
-                                            placeholder='New York'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="text"
+                                                required
+                                                value={city}
+                                                placeholder="London"
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 80 }}
+                                                onChange={(e) => setCity(e.target.value)}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -115,13 +161,18 @@ const AddSupplier = () => {
                                 <div className="inventual-form-field">
                                     <h5>Address</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={address}
-                                            onChange={(e) => setAddress(e.target.value)}
-                                            type="text"
-                                            placeholder='Malmate Station'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="text"
+                                                required
+                                                value={address}
+                                                placeholder='Boulevard 101'
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 160 }}
+                                                onChange={(e) => setAddress(e.target.value)}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -129,13 +180,18 @@ const AddSupplier = () => {
                                 <div className="inventual-form-field">
                                     <h5>Zip Code</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={zipCode}
-                                            onChange={(e) => setZipCode(e.target.value)}
-                                            type="text"
-                                            placeholder='48756'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="text"
+                                                required
+                                                value={zipCode}
+                                                placeholder='SE20-5ET'
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 20 }}
+                                                onChange={(e) => setZipCode(e.target.value)}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -143,13 +199,18 @@ const AddSupplier = () => {
                                 <div className="inventual-form-field">
                                     <h5>Company</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={company}
-                                            onChange={(e) => setCompany(e.target.value)}
-                                            type="text"
-                                            placeholder='Topylo Technology'
-                                        />
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="text"
+                                                required
+                                                value={company}
+                                                placeholder='Apple'
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 160 }}
+                                                onChange={(e) => setCompany(e.target.value)}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
@@ -157,12 +218,25 @@ const AddSupplier = () => {
                                 <div className="inventual-form-field">
                                     <h5>Supplier Code</h5>
                                     <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={supplierCode}
-                                            onChange={(e) => setSupplierCode(e.target.value)}
+                                        <TextField
+                                            fullWidth
                                             type="number"
-                                            placeholder='101'
+                                            value={supplierCode}
+                                            placeholder="456"
+                                            variant="outlined"
+                                            inputProps={{ min: 1, max: 100000}} 
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                              
+                                                if (/^\d*$/.test(value)) {
+                                                    setSupplierCode(value);
+                                                }
+                                            }}
+                                            onKeyDown={(e) => {
+                                                if (!/[0-9]/.test(e.key) && e.key !== "Backspace") {
+                                                    e.preventDefault();
+                                                }
+                                            }}
                                         />
                                     </div>
                                 </div>

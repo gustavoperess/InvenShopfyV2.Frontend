@@ -10,14 +10,28 @@ export const supplierApi = createApi({
         credentials: 'include',
     }),
     endpoints: (builder) => ({
-        getAllSuppliers: builder.query<any, number>({
-            query: (pageNumber) => ({
+        getAllSuppliers: builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize }) => ({
                 url: `Supplier`,
-                params: { pageNumber },
+                method: "GET",
+                params: { pageNumber, pageSize}
+            }),
+        }),
+        addSupplier: builder.mutation<any, any>({
+            query: (body) => ({
+                url: `Supplier`,
+                method: 'POST',
+                body,
+            }),
+        }),
+        deleteSupplier: builder.mutation<any, number>({
+            query: (id) => ({
+                url: `Supplier/${id}`,
+                method: 'DELETE',
             }),
         }),
     }),
 });
 
 // Export auto-generated hooks for functional components
-export const { useGetAllSuppliersQuery } = supplierApi;
+export const { useGetAllSuppliersQuery, useAddSupplierMutation, useDeleteSupplierMutation } = supplierApi;
