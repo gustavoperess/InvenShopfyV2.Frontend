@@ -217,8 +217,7 @@ const AddProduct = () => {
                                                                 const selectedSubCategory = subCategories.find((subCategory) => subCategory === value);
                                                                 return selectedSubCategory ? selectedSubCategory : <em>Select Sub-Category</em>;
                                                             },
-                                                        }}
-                                                    >
+                                                        }}>
                                                         {subCategories.length > 0 ? (
                                                             subCategories.map((subCategory) => (
                                                                 <MenuItem key={subCategory} value={subCategory}>

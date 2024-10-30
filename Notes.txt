@@ -1,2 +1,4 @@
 [FIX] - Fix the Phone number type for all pages 
 [IMPROVEMENTS] - Check if it is possible to track if user is currently online/logged in the account
+[Add] - add enpoint to delete current user
+[add] - add enpoint for the roles to add in the adduser and registration-form pages

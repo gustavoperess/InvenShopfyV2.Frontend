@@ -1,10 +1,9 @@
 "use client"
-
 import React, { useState } from 'react';
 import logo from '../../public/assets/img/logo/login-logo.png'
 import FilledInput from '@mui/material/FilledInput';
 import InputAdornment from '@mui/material/InputAdornment';
-import { IconButton, MenuItem, TextField } from '@mui/material';
+import { IconButton, MenuItem, TextField,FormControl } from '@mui/material';
 import Image from 'next/image';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Link from 'next/link'
@@ -13,12 +12,20 @@ import { signup_schema } from '@/utils/validation-schema';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import ErrorMassage from './input-form-error';
-import { useUserRegisterMutation, useUserRegisterTwoMutation } from '@/services/Authentication/Authentication';
+import { useUserRegisterMutation } from '@/services/Authentication/Authentication';
+import { useGetAllRolesQuery } from '@/services/Role/Role';
+
+interface roleData {
+    id: number;
+    name: string;
+}
+
 
 const RegistrationFrom = () => {
-    const [registerUser] = useUserRegisterTwoMutation();
+    const [registerUser] = useUserRegisterMutation();
     const router = useRouter()
-    const [addRole, setAddRole] = useState("")
+    const [role, setRole] = useState("")
+    const { data: rolesData } = useGetAllRolesQuery();
 
     //form password field
     const [showPassword, setShowPassword] = useState(false);
@@ -45,7 +52,7 @@ const RegistrationFrom = () => {
                 Email: values.email,
                 PasswordHash: values.password,
                 PhoneNumber: values.phone,
-                RoleName: addRole
+                RoleName: role
             };
             try {
                 await registerUser(credentials).unwrap();
@@ -58,9 +65,7 @@ const RegistrationFrom = () => {
             }
         }
     })
-    const handleRoleChange = (event: any) => {
-        setAddRole(event.target.value);
-    };
+
 
     return (
         <>
@@ -139,28 +144,38 @@ const RegistrationFrom = () => {
                             </div>
                         </div>
                         <div className="inventual-select-field-style mb-5">
-                            <TextField
-                                select
-                                label="Select"
-                                value={addRole} // Use value instead of defaultValue
-                                onChange={handleRoleChange}
-                                SelectProps={{
-                                    displayEmpty: true,
-                                    renderValue: (value: any) => {
-                                        if (value === '') {
-                                            return <em>Select Role</em>;
-                                        }
-                                        return value;
-                                    },
-                                }}
-                            >
-                                <MenuItem value="">
-                                    <em>Select Role</em>
-                                </MenuItem>
-                                <MenuItem value="Admin">Admin</MenuItem>
-                                <MenuItem value="Staff">Staff</MenuItem>
-                                <MenuItem value="Customer">Customer</MenuItem>
-                            </TextField>
+                            <FormControl fullWidth>
+                                <TextField
+                                    label="Select"
+                                    select
+                                    required
+                                    helperText="Please select a Role"
+                                    value={role}
+                                    onChange={(e) => setRole(e.target.value)}
+                                    fullWidth
+                                    InputLabelProps={{ shrink: true }}
+                                    SelectProps={{
+                                        displayEmpty: true,
+                                        renderValue: (value) => {
+                                            const selectedRole = rolesData?.find(
+                                                (role: roleData) => role.id === Number(value)
+                                            );
+                                            return selectedRole ? selectedRole.name : <em>Select Role</em>;
+                                        },
+                                    }}>
+                                    {rolesData && rolesData.length > 0 ? (
+                                        rolesData.map((role: roleData) => (
+                                            <MenuItem key={role.id} value={role.id}>
+                                                {role.name}
+                                            </MenuItem>
+                                        ))
+                                    ) : (
+                                        <MenuItem value="">
+                                            <em>No roles Available</em>
+                                        </MenuItem>
+                                    )}
+                                </TextField>
+                            </FormControl>
                         </div>
                         <div className="inventual-input-field-style inventual-input-field-style-eye mb-5">
                             <div className="inventual-form-field">

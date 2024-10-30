@@ -24,15 +24,6 @@ export const authApi = createApi({
         userRegister: builder.mutation({
             query: (credentials) => {
                 return {
-                    url: '/identity/register',
-                    method: 'POST',
-                    body: credentials,
-                }
-            }
-        }),
-        userRegisterTwo: builder.mutation({
-            query: (credentials) => {
-                return {
                     url: '/identity/register-custom',
                     method: 'POST',
                     body: credentials,
@@ -53,4 +44,4 @@ export const authApi = createApi({
 });
 
 // Export the mutation hook
-export const { useUserLoginMutation, useUserRegisterMutation, useUserLogOutMutation, useUserRegisterTwoMutation } = authApi;
+export const { useUserLoginMutation, useUserRegisterMutation, useUserLogOutMutation } = authApi;

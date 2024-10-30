@@ -1,12 +1,37 @@
 "use client"
-import React, { useState } from 'react';
-import { MenuItem, TextField } from '@mui/material';
+import React, { useState, useCallback } from 'react';
+import { MenuItem, TextField, FormControl } from '@mui/material';
 import { FilledInput, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Accept, useDropzone } from "react-dropzone";
 import Image from 'next/image';
+import { useGetAllRolesQuery } from '@/services/Role/Role';
+import { useUserRegisterMutation } from '@/services/Authentication/Authentication';
 import { toast } from 'react-toastify';
 
+
+
+interface roleData {
+    id: number;
+    name: string;
+}
+
+
+
 const AddUserList = () => {
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [gender, setGender] = useState('');
+    const [userName, setUserName] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [userImage, setUserImage] = useState<string | null>(null);
+    const [role, setRole] = useState('');
+    const [error, setError] = useState(false);
+    const [registerUser] = useUserRegisterMutation()
+    const [passwordError, setPasswordError] = useState(false);
+    const { data: rolesData } = useGetAllRolesQuery();
 
     // form password field
     const [showPassword, setShowPassword] = useState(false);
@@ -14,49 +39,76 @@ const AddUserList = () => {
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    // form password field
+
+    const [showConfirmPassowrd, setShowConfirmPassowrd] = useState(false);
+    const handleClickConfirmShowPassword = () => setShowConfirmPassowrd((show) => !show);
+    const handleMouseDownConfirmPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+
+
 
     // uploaded images
-    const [fileUrl, setFileUrl] = useState<string>('');
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        if (acceptedFiles.length > 0) {
+            const file = acceptedFiles[0];
+            const reader = new FileReader();
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const fileId = URL.createObjectURL(file);
-            setFileUrl(fileId);
+            reader.onloadend = () => {
+                const base64String = reader.result as string; // Cast to string
+                const base64WithoutPrefix = base64String.split(',')[1];
+                setUserImage(base64WithoutPrefix);
+                // setProductImage(`data:${dataUrl}`);
+            };
+
+            reader.readAsDataURL(file); // Read the file as Data URL (Base64)
         }
+    }, []);
+
+    const accept: Accept = {
+        'image/*': []
+    };
+    const { getRootProps, getInputProps } = useDropzone({ onDrop, accept });
+
+
+    // handle email change 
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const email = e.target.value;
+        setEmail(email);
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setError(!emailPattern.test(email));
+    };
+    // handle password change 
+    const handleConfirmPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setConfirmPassword(value);
+        setPasswordError(password !== value);  
     };
 
-    const handleRemove = () => {
-        setFileUrl('');
-    };
-
-
-    // handle user form data
-    const [supplierName, setSupplierName] = useState('');
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
-    const [gender, setGender] = useState('');
-    const [userName, setUserName] = useState('');
-    const [password, setPassword] = useState('');
-    const [role, setRole] = useState('');
-
-    const handleUserData = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleUserData = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        try {
-            toast.success("User Created successfully!");
-            setSupplierName('');
-            setPhone('');
-            setEmail('');
-            setGender('');
-            setUserName('');
-            setPassword('');
-            setRole('');
-            setFileUrl('');
-        } catch {
-            toast.error("Failed to create User. Please try again later.");
+        if(password == confirmPassword) {
+            const userData = {name, email, phoneNumber: phone, profilePicture: userImage, roleName: "Owner", userName, password}
+            console.log(userData)
+            try {
+                await registerUser(userData).unwrap();
+                toast.success("User Created successfully!");
+                // setPhone('');
+                // setEmail('');
+                // setGender('');
+                // setUserName('');
+                // setPassword('');
+                // setRole('');
+            } catch {
+                toast.error("Failed to create User. Please try again later.");
+            }
+        } else {
+
+            toast.error("Passwords don't match");
         }
+  
     };
+
 
     return (
         <>
@@ -64,185 +116,255 @@ const AddUserList = () => {
                 <div className="inventual-adduser-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
                     <form onSubmit={handleUserData}>
                         <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
-                            <div className="col-span-12">
-                                <div className="inventual-input-field-style flex maxSm:flex-wrap gap-5 relative">
-                                    <div className="inventual-input-field-file-image image-1">
-                                        <label htmlFor="fileUpload">
-                                            {fileUrl ? "Image Uploaded" : "Upload Profile Image"}
-                                        </label>
-                                        <input
-                                            type="file"
-                                            id="fileUpload"
-                                            accept="image/*"
-                                            onChange={handleFileChange}
-                                        />
-                                    </div>
-                                    {fileUrl && (
-                                        <div className="inventual-drag-product-img">
-                                            <Image src={fileUrl} width={60} height={60} alt="Uploaded Image" className="object-cover" />
-                                            <button type="button" className='inventual-inventual-drag-close' onClick={handleRemove}>X</button>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Supplier Name</h5>
-                                    <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={supplierName}
-                                            onChange={(e) => setSupplierName(e.target.value)}
-                                            type="text"
-                                            placeholder='Joseph Tylor'
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-select-field">
-                                    <div className="inventual-form-field">
-                                        <h5>Phone</h5>
-                                        <div className="inventual-input-field-style">
-                                            <input
-                                                required
-                                                value={phone}
-                                                onChange={(e) => setPhone(e.target.value)}
-                                                type="tel"
-                                                placeholder='00 000 000 000'
+                            <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-4">
+                                <div className="inventual-product-dragdrop ngx-file-drop__drop-zone text-center border border-dashed border-primary bg-[#F8FAFF] p-4"
+                                    style={{ padding: '10px', marginBottom: '10px' }}>
+                                    <div {...getRootProps({ className: 'dropzone-two' })}>
+                                        <input {...getInputProps()} />
+                                        {userImage ? (
+                                            <img src={`data:image/jpeg;base64,${userImage}`} alt="Selected" className="preview-image"
+                                                style={{ maxHeight: '300px', width: 'auto', objectFit: 'contain' }}
                                             />
+                                        ) : (
+                                            <>
+                                                <h3 className="text-[20px] font-semibold text-heading mb-4">Drop User's image here</h3>
+                                                <span className="block text-[20px] font-semibold text-heading mb-7">Or</span>
+                                                <button type="submit" className="inventual-btn">Browse Picture</button>
+                                                <span className="text-[14px] text-heading font-medium block pt-7">Allowed JPEG, JPG & PNG format  |  Max 100 mb</span>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-8">
+                                <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
+                                    <div className="col-span-12 md:col-span-6 xl:col-span-12">
+                                        <div className="inventual-form-field">
+                                            <h5>Full Name</h5>
+                                            <div className="inventual-input-field-style">
+                                                <FormControl fullWidth>
+                                                    <TextField
+                                                        fullWidth
+                                                        placeholder="Joseph"
+                                                        variant="outlined"
+                                                        type="text"
+                                                        value={name}
+                                                        required
+                                                        inputProps={{ maxLength: 80 }}
+                                                        onChange={(e) => setName(e.target.value)}
+                                                    />
+                                                </FormControl>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-select-field">
-                                    <div className="inventual-form-field">
-                                        <h5>Email</h5>
-                                        <div className="inventual-input-field-style">
-                                            <input
-                                                required
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                                type="email"
-                                                placeholder='joseph@example.com'
-                                            />
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
+                                        <div className="inventual-select-field">
+                                            <div className="inventual-form-field">
+                                                <h5>Username</h5>
+                                                <div className="inventual-input-field-style">
+                                                    <FormControl fullWidth>
+                                                        <TextField
+                                                            fullWidth
+                                                            placeholder="Joseph"
+                                                            variant="outlined"
+                                                            type="text"
+                                                            value={userName}
+                                                            required
+                                                            inputProps={{ maxLength: 80 }}
+                                                            onChange={(e) => setUserName(e.target.value)}
+                                                        />
+                                                    </FormControl>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Gender</h5>
-                                    <div className="inventual-select-field-style">
-                                        <TextField
-                                            select
-                                            label="Select"
-                                            required
-                                            value={gender}
-                                            onChange={(e) => setGender(e.target.value)}
-                                            defaultValue=""
-                                            SelectProps={{
-                                                displayEmpty: true,
-                                                renderValue: (value: any) => {
-                                                    if (value === '') {
-                                                        return <em>Select Type</em>;
-                                                    }
-                                                    return value;
-                                                },
-                                            }}
-                                        >
-                                            <MenuItem value="">
-                                                <em>Select Type</em>
-                                            </MenuItem>
-                                            <MenuItem value="Male">Male</MenuItem>
-                                            <MenuItem value="Female">Female</MenuItem>
-                                        </TextField>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-select-field">
-                                    <div className="inventual-form-field">
-                                        <h5>Username</h5>
-                                        <div className="inventual-input-field-style">
-                                            <input
-                                                required
-                                                value={userName}
-                                                onChange={(e) => setUserName(e.target.value)}
-                                                type="text"
-                                                placeholder='Tylor Biller'
-                                            />
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
+                                        <div className="inventual-select-field">
+                                            <div className="inventual-form-field">
+                                                <h5>Email</h5>
+                                                <div className="inventual-input-field-style">
+                                                    <FormControl fullWidth>
+                                                        <TextField
+                                                            fullWidth
+                                                            type="email"
+                                                            required
+                                                            value={email}
+                                                            placeholder="Joseph@invenShopfy.com"
+                                                            variant="outlined"
+                                                            inputProps={{ maxLength: 80 }}
+                                                            onChange={handleEmailChange}
+                                                            error={error}
+                                                            helperText={error ? "Please enter a valid email address" : ""}
+                                                        />
+                                                    </FormControl>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-input-field-style inventual-input-field-style-eye">
-                                    <div className="inventual-form-field">
-                                        <h5>Password</h5>
-                                        <div className="inventual-input-eye-style">
-                                            <FilledInput
-                                                type={showPassword ? 'text' : 'password'}
-                                                name='password'
-                                                required
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                                placeholder="Enter your password"
-                                                endAdornment={
-                                                    <InputAdornment position="end">
-                                                        <IconButton
-                                                            aria-label="toggle password visibility"
-                                                            onClick={handleClickShowPassword}
-                                                            onMouseDown={handleMouseDownPassword}
-                                                            edge="end"
-                                                        >
-                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                }
-                                            />
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
+                                        <div className="inventual-select-field">
+                                            <div className="inventual-form-field">
+                                                <h5>Phone</h5>
+                                                <div className="inventual-input-field-style">
+                                                    <FormControl fullWidth>
+                                                        <TextField  // NEED TO CHECK PHONE NUMBER REQUIREMENTS 
+                                                            fullWidth
+                                                            type="number"
+                                                            required
+                                                            value={phone}
+                                                            placeholder="+234 23432432"
+                                                            variant="outlined"
+                                                            inputProps={{ maxLength: 80 }}
+                                                            onChange={(e) => setPhone(e.target.value)} />
+                                                    </FormControl>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Role</h5>
-                                    <div className="inventual-select-field-style">
-                                        <TextField
-                                            select
-                                            label="Select"
-                                            defaultValue=""
-                                            required
-                                            value={role}
-                                            onChange={(e) => setRole(e.target.value)}
-                                            SelectProps={{
-                                                displayEmpty: true,
-                                                renderValue: (value: any) => {
-                                                    if (value === '') {
-                                                        return <em>Select Role</em>;
-                                                    }
-                                                    return value;
-                                                },
-                                            }}
-                                        >
-                                            <MenuItem value="">
-                                                <em>Select Role</em>
-                                            </MenuItem>
-                                            <MenuItem value="Supervisor">Supervisor</MenuItem>
-                                            <MenuItem value="Officer">Officer</MenuItem>
-                                            <MenuItem value="Manager">Manager</MenuItem>
-                                        </TextField>
+
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
+                                        <div className="inventual-form-field">
+                                            <h5>Gender</h5>
+                                            <div className="inventual-select-field-style">
+                                                <TextField
+                                                    select
+                                                    label="Select"
+                                                    required
+                                                    value={gender}
+                                                    onChange={(e) => setGender(e.target.value)}
+                                                    defaultValue=""
+                                                    SelectProps={{
+                                                        displayEmpty: true,
+                                                        renderValue: (value: any) => {
+                                                            if (value === '') {
+                                                                return <em>Select Type</em>;
+                                                            }
+                                                            return value;
+                                                        },
+                                                    }}
+                                                >
+                                                    <MenuItem value="">
+                                                        <em>Select Type</em>
+                                                    </MenuItem>
+                                                    <MenuItem value="Male">Male</MenuItem>
+                                                    <MenuItem value="Female">Female</MenuItem>
+                                                </TextField>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
+                                        <div className="inventual-form-field">
+                                            <h5>Role</h5>
+                                            <div className="inventual-select-field-style">
+                                                <FormControl fullWidth>
+                                                    <TextField
+                                                        label="Select"
+                                                        select
+                                                        required
+                                                        helperText="Please select a Role"
+                                                        value={role}
+                                                        onChange={(e) => setRole(e.target.value)}
+                                                        fullWidth
+                                                        InputLabelProps={{ shrink: true }}
+                                                        SelectProps={{
+                                                            displayEmpty: true,
+                                                            renderValue: (value) => {
+                                                                const selectedRole = rolesData?.find(
+                                                                    (role: roleData) => role.id === Number(value)
+                                                                );
+                                                                return selectedRole ? selectedRole.name : <em>Select Role</em>;
+                                                            },
+                                                        }}>
+                                                        {rolesData && rolesData.length > 0 ? (
+                                                            rolesData.map((role: roleData) => (
+                                                                <MenuItem key={role.id} value={role.id}>
+                                                                    {role.name}
+                                                                </MenuItem>
+                                                            ))
+                                                        ) : (
+                                                            <MenuItem value="">
+                                                                <em>No roles Available</em>
+                                                            </MenuItem>
+                                                        )}
+                                                    </TextField>
+                                                </FormControl>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
+                                        <div className="inventual-input-field-style inventual-input-field-style-eye">
+                                            <div className="inventual-form-field">
+                                                <h5>Password</h5>
+                                                <div className="inventual-input-eye-style">
+                                                    <FilledInput
+                                                        type={showPassword ? 'text' : 'password'}
+                                                        name='password'
+                                                        required
+                                                        value={password}
+                                                        onChange={(e) => setPassword(e.target.value)}
+                                                        placeholder="Enter your password"
+                                                        endAdornment={
+                                                            <InputAdornment position="end">
+                                                                <IconButton
+                                                                    aria-label="toggle password visibility"
+                                                                    onClick={handleClickShowPassword}
+                                                                    onMouseDown={handleMouseDownPassword}
+                                                                    edge="end"
+                                                                >
+                                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                                </IconButton>
+                                                            </InputAdornment>
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
+                                        <div className="inventual-input-field-style inventual-input-field-style-eye">
+                                            <div className="inventual-form-field">
+                                                <h5>Confirm Password</h5>
+                                                <div className="inventual-input-eye-style">
+                                                <FormControl fullWidth>
+                                                    <TextField
+                                                        type={showConfirmPassowrd ? 'text' : 'password'}
+                                                        name="password"
+                                                        required
+                                                        value={confirmPassword}
+                                                        onChange={handleConfirmPassword}
+                                                        error={passwordError}
+                                                        helperText={passwordError ? "Passwords do not match" : ""}
+                                                        placeholder="Confirm your password"
+                                                        variant="filled"
+                                                        InputProps={{
+                                                            endAdornment: (
+                                                                <InputAdornment position="end">
+                                                                    <IconButton
+                                                                        aria-label="toggle password visibility"
+                                                                        onClick={handleClickConfirmShowPassword}
+                                                                        onMouseDown={handleMouseDownConfirmPassword}
+                                                                        edge="end"
+                                                                    >
+                                                                        {showConfirmPassowrd ? <VisibilityOff /> : <Visibility />}
+                                                                    </IconButton>
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
+                                                    />
+                                                </FormControl>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 flex justify-end">
+                                        <button type="submit" className="inventual-btn">Create Now</button>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="col-span-12 flex justify-end">
-                                <button type="submit" className="inventual-btn">Create Now</button>
                             </div>
                         </div>
                     </form>
                 </div>
+
             </div>
         </>
     );
