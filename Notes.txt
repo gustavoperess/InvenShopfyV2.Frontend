@@ -1,1 +1,2 @@
 [FIX] - Fix the Phone number type for all pages 
+[IMPROVEMENTS] - Check if it is possible to track if user is currently online/logged in the account

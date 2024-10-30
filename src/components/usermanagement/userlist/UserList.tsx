@@ -13,143 +13,91 @@ import {
   TableSortLabel,
   Menu,
   MenuItem,
+  Modal,
+  Box,
+  Stack,
+  Button,
+  Typography,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
+import { useGetAllUsersQuery, useDeleteUsersMutation } from '@/services/User/User';
 
 // Define the structure of the data
 interface Data {
-  id: number;
-  name: string;
-  phone: string;
-  email: string;
-  role: string;
+  userId: number;
+  userName: string;
+  phoneNumber: string;
+  roleName: string;
   status: string;
-  address: string;
+  dateOfJoin: string;
+  email: string;
 }
 
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    name: 'Joseph Tylor',
-    phone: '+342345345',
-    email: 'joseph34@gmail.com',
-    role: 'Owner',
-    status: 'online',
-    address: '34342 Green Avenue, Oakland, CA 87687'
-  },
-  {
-    id: 2,
-    name: 'Emma Johnson',
-    phone: '+342346346',
-    email: 'emma.j@gmail.com',
-    role: 'Admin',
-    status: 'offline',
-    address: '12345 Maple Street, San Francisco, CA 94121'
-  },
-  {
-    id: 3,
-    name: 'Liam Smith',
-    phone: '+342347347',
-    email: 'liam.smith@gmail.com',
-    role: 'Admin',
-    status: 'online',
-    address: '67890 Elm Street, Los Angeles, CA 90001'
-  },
-  {
-    id: 4,
-    name: 'Olivia Brown',
-    phone: '+342348348',
-    email: 'olivia.b@gmail.com',
-    role: 'Biller',
-    status: 'offline',
-    address: '11122 Oak Avenue, San Diego, CA 92101'
-  },
-  {
-    id: 5,
-    name: 'Noah Davis',
-    phone: '+342349349',
-    email: 'noah.davis@gmail.com',
-    role: 'Biller',
-    status: 'Online',
-    address: '33344 Pine Street, Sacramento, CA 95814'
-  },
-  {
-    id: 6,
-    name: 'Ava Martinez',
-    phone: '+342340340',
-    email: 'ava.martinez@gmail.com',
-    role: 'Biller',
-    status: 'Online',
-    address: '55566 Cedar Avenue, Fresno, CA 93720'
-  },
-  {
-    id: 7,
-    name: 'Sophia Hernandez',
-    phone: '+342341341',
-    email: 'sophia.h@gmail.com',
-    role: 'Supervisor',
-    status: 'offline',
-    address: '77788 Birch Street, Long Beach, CA 90802'
-  },
-  {
-    id: 8,
-    name: 'James Wilson',
-    phone: '+342342342',
-    email: 'james.wilson@gmail.com',
-    role: 'Maneger',
-    status: 'online',
-    address: '99900 Ash Avenue, Bakersfield, CA 93301'
-  },
-  {
-    id: 9,
-    name: 'Isabella Garcia',
-    phone: '+342343343',
-    email: 'isabella.garcia@gmail.com',
-    role: 'Admin',
-    status: 'offline',
-    address: '11223 Redwood Street, Anaheim, CA 92805'
-  },
-  {
-    id: 10,
-    name: 'Mason Lee',
-    phone: '+342344344',
-    email: 'mason.lee@gmail.com',
-    role: 'Super Admin',
-    status: 'online',
-    address: '33445 Spruce Avenue, Santa Ana, CA 92705'
-  }
-];
+
 
 const UserList = () => {
-
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
   const [page, setPage] = useState(0);
+  const [user, setUser] = useState<number>(0);
+  const [open, setOpen] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof Data>('userId');
+  const [deleteUser] = useDeleteUsersMutation();
+  const { data: userData, error: userError, isLoading: userLoading, refetch } = useGetAllUsersQuery();
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
-  // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
 
+    // handle pagination 
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setCurrentPageSize(parseInt(event.target.value, 10));
+      setCurrentPageNumber(1); 
+      refetch();
+    };
+  
+  // handle opening delete modal
+  const handleOpenDelete = (warehouseId: number) => {
+    setUser(warehouseId);
+    setOpen(true);
+  };
+
+   // handle closing delete modal
+  const handleCloseDelete = () => {
+    setOpen(false);
+  }
+
+   // handle delete submission
+  const handleDelete = async () => {
+    if (user > 0) {
+      try {
+        await deleteUser(user);
+        setOpen(false);
+        refetch()
+      } catch (err) {
+        console.error('Error deleting the user:', err);
+      }
+    }
+  };
+
+    // Handlers for sorting
+    const handleRequestSort = (property: keyof Data) => {
+      const isAsc = orderBy === property && order === 'asc';
+      setOrder(isAsc ? 'desc' : 'asc');
+      setOrderBy(property);
+    };
+  
   // Handler for selecting/deselecting all items
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(rows.map((row) => row.id));
+      setSelected(userData?.map((warehouse: any) => warehouse.id));
     } else {
       setSelected([]);
     }
@@ -179,22 +127,26 @@ const UserList = () => {
   // Check if a particular item is selected
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-  // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
-    const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    // Function to sort data
+    const sortedRows = userData?.slice().sort((a: any, b: any) => {
+      if (!orderBy) return 0;
+      const isAsc = order === 'asc';
+      const aValue = a[orderBy as keyof Data]; 
+      const bValue = b[orderBy as keyof Data]; 
+      if (aValue === undefined || bValue === undefined) {
+        return 0; 
+      }
+  
+      if (aValue < bValue) {
+        return isAsc ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return isAsc ? 1 : -1;
+      }
+      return 0;
+    });
 
-    if (aValue < bValue) {
-      return isAsc ? -1 : 1;
-    }
-    if (aValue > bValue) {
-      return isAsc ? 1 : -1;
-    }
-    return 0;
-  });
-
-
+    console.log(userData)
   return (
 
     <>
@@ -221,9 +173,9 @@ const UserList = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Name</MenuItem>
-                            <MenuItem onClick={popupState.close}>Email</MenuItem>
-                            <MenuItem onClick={popupState.close}>Role</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("userName"); popupState.close();}}>Name</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("email"); popupState.close()}}>Email</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("roleName"); popupState.close()}}>Role</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -252,34 +204,34 @@ const UserList = () => {
                             <TableRow>
                               <TableCell>
                                 <Checkbox
-                                  indeterminate={selected.length > 0 && selected.length < rows.length}
-                                  checked={rows.length > 0 && selected.length === rows.length}
+                                  indeterminate={selected.length > 0 && selected.length < userData?.length}
+                                  checked={userData?.length > 0 && selected.length === userData?.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                                 />
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'id'}
-                                  direction={orderBy === 'id' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('id')}
+                                  active={orderBy === 'userId'}
+                                  direction={orderBy === 'userId' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('userId')}
                                 >
-                                  sl
+                                  Id
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'name'}
-                                  direction={orderBy === 'name' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('name')}
+                                  active={orderBy === 'userName'}
+                                  direction={orderBy === 'userName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('userName')}
                                 >
                                   Name
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'phone'}
-                                  direction={orderBy === 'phone' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('phone')}
+                                  active={orderBy === 'phoneNumber'}
+                                  direction={orderBy === 'phoneNumber' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('phoneNumber')}
                                 >
                                   Phone
                                 </TableSortLabel>
@@ -295,11 +247,20 @@ const UserList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'role'}
-                                  direction={orderBy === 'role' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('role')}
+                                  active={orderBy === 'roleName'}
+                                  direction={orderBy === 'roleName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('roleName')}
                                 >
                                   Role
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'dateOfJoin'}
+                                  direction={orderBy === 'dateOfJoin' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('dateOfJoin')}
+                                >
+                                  Joining Date
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -312,52 +273,39 @@ const UserList = () => {
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'address'}
-                                  direction={orderBy === 'address' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('address')}
-                                >
-                                  Address
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                >
+                                <TableSortLabel>
                                   Action
                                 </TableSortLabel>
                               </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
+                          {sortedRows?.map((user: any) => (
                                 <TableRow
-                                  key={row.id}
+                                  key={user.userId}
                                   hover
-                                  onClick={() => handleClick(row.id)}
+                                  onClick={() => handleClick(user.userId)}
                                   role="checkbox"
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
-                                >
+                                  aria-checked={isSelected(user.userId)}
+                                  selected={isSelected(user.userId)}>
                                   <TableCell>
-                                    <Checkbox checked={isSelected(row.id)} />
+                                    <Checkbox checked={isSelected(user.userId)} />
                                   </TableCell>
-                                  <TableCell>{row.id}</TableCell>
-                                  <TableCell>{row.name}</TableCell>
-                                  <TableCell>{row.phone}</TableCell>
-                                  <TableCell>{row.email}</TableCell>
-                                  <TableCell>{row.role}</TableCell>
+                                  <TableCell>{user.userId}</TableCell>
+                                  <TableCell>{user.userName}</TableCell>
+                                  <TableCell>{user.phoneNumber}</TableCell>
+                                  <TableCell>{user.email}</TableCell>
+                                  <TableCell>{user.roleName}</TableCell>
+                                  <TableCell>{user.dateOfJoin.split("T")[0]}</TableCell>
                                   <TableCell>
                                     {
-                                      row.status.toLowerCase() === 'online' ? (
-                                        <span className='badge-stroke badge-success'>{row.status}</span>
+                                      user.roleName === 'Owner' ? (
+                                        <span className='badge-stroke badge-success'>Online</span>
                                       ) : (
-                                        <span className='badge-stroke badge-warning'>{row.status}</span>
+                                        <span className='badge-stroke badge-warning'>Offline</span>
                                       )
                                     }
                                   </TableCell>
-                                  <TableCell>{row.address}</TableCell>
                                   <TableCell>
                                     <div className="inventual-list-action-style">
                                       <PopupState variant="popover">
@@ -368,7 +316,7 @@ const UserList = () => {
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href="/client/adduser">Edit</Link></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                              <MenuItem onClick={() => handleOpenDelete(user.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
                                           </React.Fragment>
                                         )}
@@ -386,17 +334,38 @@ const UserList = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
+                    count={userData?.totalCount || 0}
+                    rowsPerPage={currentPageSize}
+                    page={currentPageNumber - 1}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
               </div>
             </div>
+            <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    bgcolor: 'background.paper',
+                    border: '2px solid #000',
+                    boxShadow: 24,
+                    zIndex: 9999,
+                    p: 4,
+                  }}
+                >
+                  <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                  <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this User?</Typography>
+                  <Stack spacing={2} direction="row">
+                    <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                    <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                  </Stack>
+                </Box>
+              </Modal>
           </div>
         </div>
       </div>

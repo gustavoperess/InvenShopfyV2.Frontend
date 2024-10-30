@@ -42,7 +42,7 @@ const WarehouseList = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<string>();
+  const [orderBy, setOrderBy] = useState<keyof Data>('id');
   const [deleteWarehouse] = useDeleteWarehouseMutation();
   const { data: warehouseData, error: warehouseError, isLoading: warehouseLoading, refetch } = useGetAllWarehousesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -85,7 +85,7 @@ const WarehouseList = () => {
   };
 
   // Handlers for sorting
-  const handleRequestSort = (property: string) => {
+  const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -180,7 +180,7 @@ const WarehouseList = () => {
                           </button>
                           <Menu {...bindMenu(popupState)}>
                             <MenuItem onClick={() => {handleRequestSort("id"); popupState.close();}}>Sl</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("warehouseName"); popupState.close()}}>Warehouse</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("warehouse"); popupState.close()}}>Warehouse</MenuItem>
                             <MenuItem onClick={() => {handleRequestSort("email"); popupState.close()}}>Email</MenuItem>
                             <MenuItem onClick={() => {handleRequestSort("address"); popupState.close()}}>Address</MenuItem>
                           </Menu>
@@ -225,11 +225,11 @@ const WarehouseList = () => {
                                   Sl
                                 </TableSortLabel>
                               </TableCell>
-                              <TableCell sortDirection={orderBy === 'warehouseName' ? order : false}>
+                              <TableCell sortDirection={orderBy === 'warehouse' ? order : false}>
                                 <TableSortLabel
-                                  active={orderBy === 'warehouseName'}
-                                  direction={orderBy === 'warehouseName' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('warehouseName')}
+                                  active={orderBy === 'warehouse'}
+                                  direction={orderBy === 'warehouse' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('warehouse')}
                                 >
                                   Warehouse
                                 </TableSortLabel>
