@@ -1,48 +1,89 @@
 "use client"
-import React, { useState } from 'react';
-import { Checkbox, Menu, MenuItem, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField } from '@mui/material';
+import React, { useState, useRef, useCallback } from 'react';
+import {
+    Checkbox,
+    Menu,
+    MenuItem,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+    TableSortLabel,
+    Typography,
+    Modal,
+    Box,
+    Stack,
+    Button,
+    FormControl,
+    TextField
+
+} from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import { toast } from 'react-toastify';
+import { useGetAllRolesQuery, useCreateRoleMutation, useDeleteRoleMutation } from '@/services/Role/Role';
 
 // Define the structure of the data
 interface Data {
     id: number;
-    role: string;
-    description: string;
-    protein: number;
+    roleTitle: string;
+    roleDescription: string;
 }
 
-// Sample data
-const rows: Data[] = [
-    { id: 1, role: 'Owener', description: 'The owner can control all the access', protein: 4.3 },
-    { id: 2, role: 'Super Admin', description: 'The Supper admin can control all the access', protein: 4.3 },
-    { id: 3, role: 'Admin', description: 'The admin can control all the access', protein: 4.3 },
-    { id: 4, role: 'Manager', description: 'Manager has specific access', protein: 4.3 },
-    { id: 5, role: 'Supervisor', description: 'Supervisor has little access', protein: 4.3 },
-    { id: 6, role: 'Biller', description: 'Biller has limited access', protein: 4.3 },
-    { id: 7, role: 'Biller', description: 'Biller has limited access', protein: 4.3 },
-    { id: 8, role: 'Staff', description: 'Staff has specific access', protein: 4.3 },
-    { id: 9, role: 'Biller', description: 'Biller has limited access', protein: 4.3 },
-];
-
 const CreateRoleList = () => {
+    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+    const [currentPageSize, setCurrentPageSize] = useState(10);
+    const [open, setOpen] = React.useState(false);
+    const [roleTitle, setRoleTitle] = useState<string>("");
+    const [roleDescription, setRoleDescription] = useState<string>("");
+    const [role, setRole] = useState<number>(0);
+    const formRef = useRef<HTMLFormElement>(null);
 
     // State variables
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [selected, setSelected] = useState<number[]>([]);
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof Data>('id');
+    const [deleteRole] = useDeleteRoleMutation();
+    const [createRole] = useCreateRoleMutation();
+    const { data: roleData, error: roleError, isLoading: roleLoading, refetch } = useGetAllRolesQuery();
 
-    // Handlers for pagination
-    const handleChangePage = (event: unknown, newPage: number) => {
-        setPage(newPage);
+    // handle pagination 
+    const handlePageChange = (event: unknown, newPage: number) => {
+        setCurrentPageNumber(newPage);
+        refetch();
     };
+
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
+        setCurrentPageSize(parseInt(event.target.value, 10));
+        setCurrentPageNumber(1);
+        refetch();
     };
 
+    // handle opening delete modal
+    const handleOpenDelete = (roleId: number) => {
+        setRole(roleId);
+        setOpen(true);
+    };
+    // handle closing delete modal
+    const handleCloseDelete = () => {
+        setOpen(false);
+    }
+
+    // handle delete submission
+    const handleDelete = async () => {
+        if (role > 0) {
+            try {
+                await deleteRole(role);
+                setOpen(false);
+                refetch()
+            } catch (err) {
+                console.error('Error deleting the Role:', err);
+            }
+        }
+    };
     // Handlers for sorting
     const handleRequestSort = (property: keyof Data) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -53,11 +94,13 @@ const CreateRoleList = () => {
     // Handler for selecting/deselecting all items
     const handleSelectAllClick = (checked: boolean) => {
         if (checked) {
-            setSelected(rows.map((row) => row.id));
+            setSelected(roleData?.map((role: any) => role.id));
         } else {
             setSelected([]);
         }
     };
+
+
 
     // Handler for selecting/deselecting a single item
     const handleClick = (id: number) => {
@@ -84,30 +127,44 @@ const CreateRoleList = () => {
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
     // Function to sort data
-    const sortedRows = rows.slice().sort((a, b) => {
+    const sortedRows = roleData?.slice().sort((a: any, b: any) => {
+        if (!orderBy) return 0;
         const isAsc = order === 'asc';
-        if (a[orderBy] < b[orderBy]) {
+        const aValue = a[orderBy as keyof Data];
+        const bValue = b[orderBy as keyof Data];
+        if (aValue === undefined || bValue === undefined) {
+            return 0;
+        }
+
+        if (aValue < bValue) {
             return isAsc ? -1 : 1;
         }
-        if (a[orderBy] > b[orderBy]) {
+        if (aValue > bValue) {
             return isAsc ? 1 : -1;
         }
         return 0;
     });
 
-    const [role, setRole] = useState('');
-    const [description, setDescription] = useState('');
-    //handle role data
-    const handleRoleData = (e: any) => {
-        e.preventDefault();
-        try {
-            toast.success("Role Created successfully!");
-            setRole('');
-            setDescription('');
-        } catch {
-            toast.error("Failed to create Role. Please try again later.");
-        }
 
+    //handle role data
+    const handleRoleData =  async (e: any) => {
+        e.preventDefault();
+        const roleDataToSubmit = { roleName: roleTitle, description: roleDescription };
+        try {
+            await createRole(roleDataToSubmit).unwrap();
+            setRoleTitle('');
+            setRoleDescription('');
+            formRef.current?.reset();
+            refetch();
+            toast.success("Role Created successfully!");
+        } catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error?.data?.message);
+            } else {
+                // Fallback error message
+                toast.error("Failed to create role. Please try again later.")
+            }
+        }
     }
 
 
@@ -123,13 +180,18 @@ const CreateRoleList = () => {
                                         <div className="inventual-form-field">
                                             <h5>Role</h5>
                                             <div className="inventual-input-field-style">
-                                                <input
-                                                    required
-                                                    value={role}
-                                                    onChange={(e) => setRole(e.target.value)}
-                                                    type="name"
-                                                    placeholder='Admin'
-                                                />
+                                                <FormControl fullWidth>
+                                                    <TextField
+                                                        fullWidth
+                                                        placeholder="Admin*"
+                                                        variant="outlined"
+                                                        type="text"
+                                                        value={roleTitle}
+                                                        required
+                                                        inputProps={{ maxLength: 80 }}
+                                                        onChange={(e) => setRoleTitle(e.target.value)}
+                                                    />
+                                                </FormControl>
                                             </div>
                                         </div>
                                     </div>
@@ -138,13 +200,18 @@ const CreateRoleList = () => {
                                             <div className="inventual-form-field">
                                                 <h5>Description</h5>
                                                 <div className="inventual-input-field-style">
-                                                    <input
-                                                        required
-                                                        value={description}
-                                                        onChange={(e) => setDescription(e.target.value)}
-                                                        type="text"
-                                                        placeholder='The admin can control all the access'
-                                                    />
+                                                    <FormControl fullWidth>
+                                                        <TextField
+                                                            fullWidth
+                                                            placeholder='The admin can control all the access'
+                                                            variant="outlined"
+                                                            type="text"
+                                                            value={roleDescription}
+                                                            required
+                                                            inputProps={{ maxLength: 80 }}
+                                                            onChange={(e) => setRoleDescription(e.target.value)}
+                                                        />
+                                                    </FormControl>
                                                 </div>
                                             </div>
                                         </div>
@@ -169,94 +236,109 @@ const CreateRoleList = () => {
                                                         {/* Checkbox for select all */}
                                                         <TableCell>
                                                             <Checkbox
-                                                                indeterminate={selected.length > 0 && selected.length < rows.length}
-                                                                checked={rows.length > 0 && selected.length === rows.length}
+                                                                indeterminate={selected.length > 0 && selected.length < roleData?.length}
+                                                                checked={roleData?.length > 0 && selected.length === roleData?.length}
                                                                 onChange={(e) => handleSelectAllClick(e.target.checked)}
                                                             />
                                                         </TableCell>
                                                         {/* Table headers */}
                                                         <TableCell>
                                                             <TableSortLabel
-                                                                active={orderBy === 'role'}
-                                                                direction={orderBy === 'role' ? order : 'asc'}
-                                                                onClick={() => handleRequestSort('role')}
+                                                                active={orderBy === 'roleTitle'}
+                                                                direction={orderBy === 'roleTitle' ? order : 'asc'}
+                                                                onClick={() => handleRequestSort('roleTitle')}
                                                             >
                                                                 role
                                                             </TableSortLabel>
                                                         </TableCell>
                                                         <TableCell>
                                                             <TableSortLabel
-                                                                active={orderBy === 'description'}
-                                                                direction={orderBy === 'description' ? order : 'asc'}
-                                                                onClick={() => handleRequestSort('description')}
+                                                                active={orderBy === 'roleDescription'}
+                                                                direction={orderBy === 'roleDescription' ? order : 'asc'}
+                                                                onClick={() => handleRequestSort('roleDescription')}
                                                             >
                                                                 Description
                                                             </TableSortLabel>
                                                         </TableCell>
                                                         <TableCell>
-                                                            <TableSortLabel
-                                                                active={orderBy === 'protein'}
-                                                                direction={orderBy === 'protein' ? order : 'asc'}
-                                                                onClick={() => handleRequestSort('protein')}
-                                                            >
+                                                            <TableSortLabel>
                                                                 Action
                                                             </TableSortLabel>
                                                         </TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                    {sortedRows
-                                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                        .map((row) => (
-                                                            <TableRow
-                                                                key={row.id}
-                                                                hover
-                                                                onClick={() => handleClick(row.id)}
-                                                                role="checkbox"
-                                                                aria-checked={isSelected(row.id)}
-                                                                selected={isSelected(row.id)}
-                                                            >
-                                                                <TableCell>
-                                                                    <Checkbox checked={isSelected(row.id)} />
-                                                                </TableCell>
-                                                                <TableCell>{row.role}</TableCell>
-                                                                <TableCell>{row.description}</TableCell>
-                                                                <TableCell>
-                                                                    <div className="inventual-list-action-style">
-                                                                        <PopupState variant="popover">
-                                                                            {(popupState: any) => (
-                                                                                <React.Fragment>
-                                                                                    <button className='' type='button' {...bindTrigger(popupState)}>
-                                                                                        Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                                                                    </button>
-                                                                                    <Menu {...bindMenu(popupState)}>
-                                                                                        <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
-                                                                                        <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                                                                    </Menu>
-                                                                                </React.Fragment>
-                                                                            )}
-                                                                        </PopupState>
-                                                                    </div>
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        ))}
+                                                    {sortedRows?.map((role: any) => (
+                                                        <TableRow
+                                                            key={role.id}
+                                                            hover
+                                                            onClick={() => handleClick(role.id)}
+                                                            role="checkbox"
+                                                            aria-checked={isSelected(role.id)}
+                                                            selected={isSelected(role.id)}
+                                                        >
+                                                            <TableCell>
+                                                                <Checkbox checked={isSelected(role.id)} />
+                                                            </TableCell>
+                                                            <TableCell>{role.name}</TableCell>
+                                                            <TableCell>{role.description}</TableCell>
+                                                            <TableCell>
+                                                                <div className="inventual-list-action-style">
+                                                                    <PopupState variant="popover">
+                                                                        {(popupState: any) => (
+                                                                            <React.Fragment>
+                                                                                <button className='' type='button' {...bindTrigger(popupState)}>
+                                                                                    Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                                                                </button>
+                                                                                <Menu {...bindMenu(popupState)}>
+                                                                                    <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
+                                                                                    <MenuItem onClick={() => handleOpenDelete(role.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                                                                </Menu>
+                                                                            </React.Fragment>
+                                                                        )}
+                                                                    </PopupState>
+                                                                </div>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>
                                         {/* Pagination */}
                                         <TablePagination
-                                            rowsPerPageOptions={[5, 10, 25]}
                                             component="div"
-                                            count={rows.length}
-                                            rowsPerPage={rowsPerPage}
-                                            page={page}
-                                            onPageChange={handleChangePage}
+                                            count={roleData?.totalCount || 0}
+                                            rowsPerPage={currentPageSize}
+                                            page={currentPageNumber - 1}
+                                            onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
                                             onRowsPerPageChange={handleChangeRowsPerPage}
                                         />
                                     </Paper>
                                 </div>
                             </div>
                         </div>
+                        <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    bgcolor: 'background.paper',
+                                    border: '2px solid #000',
+                                    boxShadow: 24,
+                                    zIndex: 9999,
+                                    p: 4,
+                                }}
+                            >
+                                <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Role?</Typography>
+                                <Stack spacing={2} direction="row">
+                                    <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                                    <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                                </Stack>
+                            </Box>
+                        </Modal>
                     </div>
                 </div>
             </div>

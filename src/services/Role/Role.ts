@@ -10,7 +10,7 @@ export const roleApi = createApi({
         credentials: 'include', 
     }),
     endpoints: (builder) => ({
-        getAllRoles: builder.query<any, number>({
+        getAllRoles: builder.query<any, void>({
             query: () => ({
                 url: "get-role-custom",
                 method: "GET",
@@ -26,7 +26,7 @@ export const roleApi = createApi({
         }),
         deleteRole: builder.mutation<any, number>({
             query: (id) => ({
-                url: `Purchase/${id}`,
+                url: `delete-role-custom/${id}`,
                 method: 'DELETE',
             }),
         }),

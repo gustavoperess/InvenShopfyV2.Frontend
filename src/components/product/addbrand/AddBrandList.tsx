@@ -25,9 +25,6 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import { Accept, useDropzone } from "react-dropzone";
 import { useGetAllProductsBrandQuery, useDeleteBrandMutation, useAddBrandMutation } from '@/services/Product/Brand';
-
-
-
 import { toast } from 'react-toastify';
 
 // Define the structure of the data
@@ -176,7 +173,6 @@ const AddBrandList = () => {
   const handleBrandForm = async (event: any) => {
     event.preventDefault()
     const brandData = { title, brandImage };
-    console.log(brandData)
     try {
       await addBrand(brandData).unwrap();
       setTitle('');

@@ -21,6 +21,7 @@ const peopleApis = [billerApi, customerApi, supplierApi]
 const purchaseApis = [purchaseApi]
 const roleApis = [roleApi]
 
+
 // Combine all APIs into a single array
 const apis = [...salesApis, ...warehouseApis, ...productsApis, ...authApis, ...peopleApis, ...purchaseApis, ...roleApis];
 

@@ -22,28 +22,74 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
 import { billedList } from '@/interFace/interFace';
-import tableList_data from '@/data/Table-list-data';
+// import tableList_data from '@/data/Table-list-data';
 import { useGetAllBillersQuery, useDeleteBillerMutation } from '@/services/People/Biller';
 
-const BillerList = () => {
 
+
+
+interface Data {
+  id: number;
+  name: string;
+  DateOfJoint: string;
+  email: string;
+  phoneNumber: string;
+  identification: string;
+  address: string;
+  country: string;
+  zipCode: string;
+  billerCode: string;
+  warehouse: string;
+}
+
+const BillerList = () => {
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [biller, setBiller] = useState<number>(0);
+  const [open, setOpen] = React.useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof billedList>('id');
+  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [deleteBiller] = useDeleteBillerMutation();
+  const { data: billerData, error: billerError, isLoading: billerLoading, refetch } = useGetAllBillersQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
   // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1);
+    refetch();
+  };
+  // handle opening delete modal
+  const handleOpenDelete = (billerId: number) => {
+    setBiller(billerId);
+    setOpen(true);
+  };
+  // handle closing delete modal
+  const handleCloseDelete = () => {
+    setOpen(false);
+  }
+
+  // handle delete submission
+  const handleDelete = async () => {
+    if (biller > 0) {
+      try {
+        await deleteBiller(biller);
+        setOpen(false);
+        refetch()
+      } catch (err) {
+        console.error('Error deleting the Biller:', err);
+      }
+    }
   };
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof billedList) => {
+  const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -52,7 +98,7 @@ const BillerList = () => {
   // Handler for selecting/deselecting all items
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(tableList_data.slice(0, 10).map((row) => row.id));
+      setSelected(billerData?.data.map((supplier: any) => supplier.id));
     } else {
       setSelected([]);
     }
@@ -83,10 +129,15 @@ const BillerList = () => {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // Function to sort data
-  const sortedRows = tableList_data.slice(0, 10).sort((a, b) => {
+  // Function to sort data
+  const sortedRows = billerData?.data.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof Data];
+    const bValue = b[orderBy as keyof Data];
+    if (aValue === undefined || bValue === undefined) {
+      return 0;
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -96,7 +147,7 @@ const BillerList = () => {
     }
     return 0;
   });
-
+  console.log(billerData)
 
   return (
 
@@ -135,9 +186,9 @@ const BillerList = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Name</MenuItem>
-                            <MenuItem onClick={popupState.close}>Code</MenuItem>
-                            <MenuItem onClick={popupState.close}>Address</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("billerCode"); popupState.close(); }}>Name</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("warehouse"); popupState.close(); }}>Code</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("country"); popupState.close(); }}>Address</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -169,8 +220,8 @@ const BillerList = () => {
                               {/* Checkbox for select all */}
                               <TableCell>
                                 <Checkbox
-                                  indeterminate={selected.length > 0 && selected.length < tableList_data.length}
-                                  checked={tableList_data.length > 0 && selected.length === tableList_data.length}
+                                  indeterminate={selected.length > 0 && selected.length < billerData?.data.length}
+                                  checked={billerData?.data.length > 0 && selected.length === billerData?.data.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                                 />
                               </TableCell>
@@ -186,9 +237,9 @@ const BillerList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'phone'}
-                                  direction={orderBy === 'phone' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('phone')}
+                                  active={orderBy === 'phoneNumber'}
+                                  direction={orderBy === 'phoneNumber' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('phoneNumber')}
                                 >
                                   Phone
                                 </TableSortLabel>
@@ -213,19 +264,24 @@ const BillerList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'adress'}
-                                  direction={orderBy === 'adress' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('adress')}
+                                  active={orderBy === 'warehouse'}
+                                  direction={orderBy === 'warehouse' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('warehouse')}
                                 >
-                                  adress
+                                  Warehouse
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'protein'}
-                                  direction={orderBy === 'protein' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('protein')}
+                                  active={orderBy === 'address'}
+                                  direction={orderBy === 'address' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('address')}
                                 >
+                                  Address
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel>
                                   Action
                                 </TableSortLabel>
                               </TableCell>
@@ -234,27 +290,26 @@ const BillerList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
+                            {sortedRows?.map((biller: any) => (
                                 <TableRow
-                                  key={row.id}
+                                  key={biller.id}
                                   hover
-                                  onClick={() => handleClick(row.id)}
+                                  onClick={() => handleClick(biller.id)}
                                   role="checkbox"
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
+                                  aria-checked={isSelected(biller.id)}
+                                  selected={isSelected(biller.id)}
                                 >
                                   {/* Checkbox for row selection */}
                                   <TableCell>
-                                    <Checkbox checked={isSelected(row.id)} />
+                                    <Checkbox checked={isSelected(biller.id)} />
                                   </TableCell>
                                   {/* Data cells */}
-                                  <TableCell>{row.name}</TableCell>
-                                  <TableCell>{row.phone}</TableCell>
-                                  <TableCell>{row.email}</TableCell>
-                                  <TableCell>{row.billerCode}</TableCell>
-                                  <TableCell>{row.adress}</TableCell>
+                                  <TableCell>{biller.name}</TableCell>
+                                  <TableCell>{biller.phoneNumber}</TableCell>
+                                  <TableCell>{biller.email}</TableCell>
+                                  <TableCell>{biller.billerCode}</TableCell>
+                                  <TableCell>{biller.warehouseName}</TableCell>
+                                  <TableCell>{biller.address} {biller.country} {biller.zipCode}</TableCell>
                                   <TableCell>
                                     <div className="inventual-list-action-style">
                                       <PopupState variant="popover">
@@ -265,7 +320,7 @@ const BillerList = () => {
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/people/addbiller'>Edit</Link></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                              <MenuItem onClick={() => handleOpenDelete(biller.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
                                           </React.Fragment>
                                         )}
@@ -283,17 +338,38 @@ const BillerList = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={tableList_data.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
+                    count={billerData?.totalCount || 0}
+                    rowsPerPage={currentPageSize}
+                    page={currentPageNumber - 1}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
               </div>
             </div>
+            <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  bgcolor: 'background.paper',
+                  border: '2px solid #000',
+                  boxShadow: 24,
+                  zIndex: 9999,
+                  p: 4,
+                }}
+              >
+                <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Biller?</Typography>
+                <Stack spacing={2} direction="row">
+                  <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                  <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                </Stack>
+              </Box>
+            </Modal>
           </div>
         </div>
       </div>
