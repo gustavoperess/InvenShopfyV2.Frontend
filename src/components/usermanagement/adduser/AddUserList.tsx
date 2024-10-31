@@ -97,17 +97,16 @@ const AddUserList = () => {
     const handleUserData = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (password == confirmPassword) {
-            const userData = { name, email, phoneNumber: phone, profilePicture: userImage, roleName: role, userName, passwordHash: password }
-            // console.log(userData)
+            const userData = { name, email, gender, phoneNumber: phone, profilePicture: userImage, roleName: role, userName, passwordHash: password }
             try {
                 await registerUser(userData).unwrap();
                 toast.success("User Created successfully!");
-                // setPhone('');
-                // setEmail('');
-                // setGender('');
-                // setUserName('');
-                // setPassword('');
-                // setRole('');
+                setPhone('');
+                setEmail('');
+                setGender('');
+                setUserName('');
+                setPassword('');
+                setRole('');
             } catch (error: any) {
                 if (error?.data) {
                     toast.error(error?.data);

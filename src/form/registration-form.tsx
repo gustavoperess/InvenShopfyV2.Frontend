@@ -262,6 +262,7 @@ const RegistrationFrom = () => {
                                             value={password}
                                             onChange={handlePasswordChange}
                                             placeholder="Enter your password"
+                                            variant="filled"
                                             error={passwordErrorTwo}
                                             helperText={
                                                 passwordErrorTwo
@@ -308,8 +309,7 @@ const RegistrationFrom = () => {
                                                             aria-label="toggle password visibility"
                                                             onClick={handleClickConfirmShowPassword}
                                                             onMouseDown={handleMouseDownConfirmPassword}
-                                                            edge="end"
-                                                        >
+                                                            edge="end">
                                                             {showConfirmPassowrd ? <VisibilityOff /> : <Visibility />}
                                                         </IconButton>
                                                     </InputAdornment>

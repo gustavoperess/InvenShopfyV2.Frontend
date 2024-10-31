@@ -1,25 +1,25 @@
 "use client"
-import { FilledInput, IconButton, InputAdornment } from '@mui/material';
+import { FilledInput, IconButton, InputAdornment, FormControl, TextField } from '@mui/material';
 import { Password, Visibility, VisibilityOff } from '@mui/icons-material';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import logo from '../../public/assets/img/logo/login-logo.png';
-import { useFormik } from 'formik';
-import { login_schema } from '@/utils/validation-schema';
 import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation'
-import ErrorMassage from './input-form-error';
 import { useUserLoginMutation } from '@/services/Authentication/Authentication';
-import { string } from 'yup';
+
 
 const LoginForm = () => {
     //form password field
     const router = useRouter()
     const [loginUser] = useUserLoginMutation();
+    const [userName, setUsername] = useState("")
     const [isBtnDisable, setBtnDisable] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
-    const [loginError, setLoginError] = useState(''); 
+    const [loginError, setLoginError] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -27,28 +27,33 @@ const LoginForm = () => {
     };
     //form password field
 
-    const { handleSubmit,handleChange, handleBlur, values, errors, touched, resetForm } = useFormik({
-        initialValues: {
-            userName: '',
-            password: ''
-        },
-        validationSchema: login_schema,
-        onSubmit: async (values) => {
-            try {
-                const credentials = {
-                    UserName: values.userName,
-                    Password: values.password
-                };
-                await loginUser(credentials).unwrap();
-                resetForm();
-                toast.success("Login Successfully");
-                setBtnDisable(true)
-                router.push("/dashboard")
-            } catch (error: any) {
-                setLoginError("Incorrect username or password"); 
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const password = e.target.value;
+        setPassword(password);
+        const passwordPatern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+        setPasswordError(!passwordPatern.test(password));
+    }
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const userData = { userName, password }
+        try {
+            await loginUser(userData).unwrap();
+            toast.success("Login Successfully");
+            setUsername('');
+            setPassword('');
+            router.push("/dashboard")
+        } catch (error: any) {
+            if (error?.data) {
+                toast.error(error?.data);
+            } else {
+                // Fallback error message
+                toast.error("Failed Log In. Please try again later.")
             }
         }
-    })
+    }
+
+
 
     return (
         <>
@@ -59,46 +64,56 @@ const LoginForm = () => {
                 <div className="inventual-input-field-style mb-5">
                     <div className="inventual-form-field">
                         <div className="inventual-input-field-style has-icon">
-                            <input
-                                type="text"
-                                onChange={handleChange}
-                                defaultValue={values.userName}
-                                onBlur={handleBlur}
-                                name='userName'
-                                id='userName'
-                                placeholder='User name'
-                                required
-                            />
-                            {touched.userName && <ErrorMassage ErrorMsg={errors.userName} />}
-                            <span className='inventual-input-icon'><i className="fa-regular fa-user"></i></span>
+                            <FormControl fullWidth>
+                                <TextField
+                                    fullWidth
+                                    placeholder="Email or username"
+                                    variant="outlined"
+                                    type="text"
+                                    value={userName}
+                                    required
+                                    inputProps={{ maxLength: 80 }}
+                                    onChange={(e) => setUsername(e.target.value)}
+
+                                />
+                                <span className='inventual-input-icon'><i className="fa-regular fa-user"></i></span>
+                            </FormControl>
                         </div>
                     </div>
                 </div>
-                <div className="inventual-input-field-style inventual-input-field-style-eye mb-7">
+                <div className="inventual-input-field-style inventual-input-field-style-eye mb-5">
                     <div className="inventual-form-field">
                         <div className="inventual-input-eye-style">
-                            <FilledInput
-                                type={showPassword ? 'text' : 'password'}
-                                name='password'
-                                onChange={handleChange}
-                                defaultValue={values.password}
-                                onBlur={handleBlur}
-                                placeholder="Enter your password"
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={handleClickShowPassword}
-                                            onMouseDown={handleMouseDownPassword}
-                                            edge="end"
-                                        >
-                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                required
-                            />
-                            {touched.password && <ErrorMassage ErrorMsg={errors.password} />}
+                            <FormControl fullWidth>
+                                <TextField
+                                    type={showPassword ? 'text' : 'password'}
+                                    name="password"
+                                    required
+                                    value={password}
+                                    onChange={handlePasswordChange}
+                                    placeholder="Enter your password"
+                                    variant="filled"
+                                    error={passwordError}
+                                    helperText={
+                                        passwordError
+                                            ? "Password must be at least eight characters, including at least one letter, one number, and one special character."
+                                            : ""
+                                    }
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end">
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                            </FormControl>
                         </div>
                     </div>
                 </div>
