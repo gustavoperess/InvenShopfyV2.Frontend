@@ -12,7 +12,7 @@ import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetAllCustomersQuery } from '@/services/People/Customer';
 import { useGetAllBillersQuery } from '@/services/People/Biller';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
-import page from '@/app/[...not_found]/page';
+
 
 interface productInterface {
     id: number;
@@ -66,7 +66,7 @@ const NewSaleList = () => {
 
     // funcitons
     const debouncedSearchTerm = useDebounce(productName, 500);
-    const formRef = useRef<HTMLFormElement>(null);
+
 
     const [addSale] = useCreateSaleMutation();
 

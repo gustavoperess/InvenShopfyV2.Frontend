@@ -1,47 +1,135 @@
 "use client"
 import React, { useEffect, useRef, useState } from 'react';
-import { MenuItem, TextField } from '@mui/material';
+import { MenuItem, TextField, InputAdornment } from '@mui/material';
 import DatePicker from "react-datepicker";
 import product_data from '@/data/product-data';
 import { TProduct } from '@/interFace/interFace';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
+import { NumericFormat } from 'react-number-format';
+import { useGetProductByNameQuery } from '@/services/Product/Product';
+import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
+import { useGetAllSuppliersQuery } from '@/services/People/Supplier';
 
+interface productInterface {
+    id: number;
+    title: string;
+    productImage: string;
+    category: string;
+    productCode: number,
+    stockQuantity: number,
+    subcategory: string,
+    price: number;
+    expired: boolean;
+    totalAmountbougth: number,
+    quantityBought: number | undefined;
+}
+
+interface warehouseInterface {
+    id: number;
+    warehouseName: string;
+
+}
+
+interface supplierInterface {
+    id: number;
+    name: string;
+
+}
+
+interface dataInterface {
+    id: number;
+    name: string;
+}
+
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'GBP',
+});
 
 const AddPurchaseList = () => {
-    const [startDate, setStartDate] = useState<Date | null>(null);
-    const [searchQuery, setSearchQuery] = useState<string>('');
-    const [searchResults, setSearchResults] = useState<TProduct[]>([]);
+    const [purchaseDate, setPurchaseDate] = useState(new Date());
+    const [warehouse, setWarehouse] = useState<number | null>();
+    const [selectWarehouse, setSelectWarehosue] = useState('')
     const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
     const [activeItems, setActiveItems] = useState<TProduct[]>([]);
+    const [purchaseStatus, setPurchaseStatus] = useState<string>("");
+    const [productName, setProductName] = useState<string>("");
+    const [purchaseNote, setPurchaseNote] = useState<string>("");
+    const [shippingCost, setShippingCost] = useState<number | undefined>();
+    const [supplier, setSupplier] = useState('')
+    const [productInformation, setProductInformation] = useState<productInterface[]>([]);
+    const [suggestions, setSuggestions] = useState<productInterface[]>([]);
+    const [product, setProduct] = useState<string>("");
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [searchResults, setSearchResults] = useState<TProduct[]>([]);
+
+
     const [shippingAmount, setShippingAmount] = useState(0);
+    const { data: supplierData } = useGetAllSuppliersQuery({ pageNumber: 1, pageSize: 25 });
+    const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: 1, pageSize: 25 });
 
-    //handle search data from product
-    const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const query = event.target.value;
-        setSearchQuery(query);
+    const debouncedSearchTerm = useDebounce(productName, 500);
 
-        if (query.trim() === '') {
-            setSearchResults([]);
+
+    //debounce function
+    function useDebounce(value: string, delay: number) {
+        const [debouncedValue, setDebouncedValue] = useState(value);
+
+        useEffect(() => {
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+
+            return () => clearTimeout(handler);
+        }, [value, delay]);
+
+        return debouncedValue;
+    }
+
+
+    const { data: productSuggestionsData, error } = useGetProductByNameQuery(debouncedSearchTerm, {
+        skip: debouncedSearchTerm.trim().length === 0  // Only call API if debounced term is not empty
+    });
+
+    useEffect(() => {
+        if (debouncedSearchTerm.trim().length > 0 && productSuggestionsData) {
+            setSuggestions(productSuggestionsData.data);
         } else {
-            const filteredResults = product_data.filter(product =>
-                product.title.toLowerCase().includes(query.toLowerCase())
-            );
-            setSearchResults(filteredResults);
+            setSuggestions([]);
         }
-    };
 
-    //toggle serch data for active or inactive
-    const toggleActiveItem = (id: number) => {
-        setActiveItemIds(prevState => {
-            if (prevState.includes(id)) {
-                return prevState.filter(itemId => itemId !== id);
-            } else {
-                return [...prevState, id];
-            }
-        });
-        updateActiveItems();
-    };
+        // Handle error scenarios
+        if (error) {
+            console.error("Error fetching product suggestions", error);
+            // You could display a user-friendly message if needed
+        }
+    }, [debouncedSearchTerm, productSuggestionsData, error]);
+
+    useEffect(() => {
+        if (supplierData && supplierData.data.length > 0 && !supplier) {
+            setSupplier(supplierData.data[0].id);
+        }
+        if (warehouse && warehouseData.data.length > 0 && !warehouse) {
+            setWarehouse(warehouseData.data[0].id);
+        }
+
+
+    }, [warehouseData, warehouse, supplierData, supplier]);
+
+
+
+  
+    // // calculate order tax
+    // const calculateTheAmountOfProductsAdded = () => {
+    //     if (productInformation.length > 0) {
+    //         return productInformation.reduce((accumulator, item) => {
+    //             return item.stockQuantity > 0
+    //                 ? accumulator + item.quantityBought
+    //                 : accumulator;
+    //         }, 0);
+    //     }
+    // };
 
     //
     useEffect(() => {
@@ -60,31 +148,37 @@ const AddPurchaseList = () => {
         setSearchResults([]);
     };
 
-    //hendle increament 
-    const handleIncreament = (increaseId: any) => {
-        setActiveItems((prevData) => prevData.map((item) => {
-            if (increaseId === item.id) {
-                return {
-                    ...item,
-                    quantity: item.quantity + 1
-                }
-            }
-            return item
-        }))
+
+    const handleRemoveProduct = (productId: number) => {
+        setProductInformation((prevProducts) =>
+            prevProducts.filter((product) => product.id !== productId)
+        );
     };
 
-    //handle decreament
-    const handleDecrement = (decreaseId: any) => {
-        setActiveItems((prevData) => prevData.map((item) => {
-            if (decreaseId === item.id) {
-                return {
-                    ...item,
-                    quantity: item.quantity - 1 >= 1 ? item.quantity - 1 : 1
-                }
-            }
-            return item
-        }))
+    //handle search data from product
+    const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const query = event.target.value;
+        setSearchQuery(query);
+
+        if (query.trim() === '') {
+            setSearchResults([]);
+        } else {
+            const filteredResults = product_data.filter(product =>
+                product.title.toLowerCase().includes(query.toLowerCase())
+            );
+            setSearchResults(filteredResults);
+        }
     };
+
+
+
+    //
+    useEffect(() => {
+        updateActiveItems();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeItemIds]);
+
+
 
 
 
@@ -103,6 +197,8 @@ const AddPurchaseList = () => {
             return totalDiscount + itemDiscount;
         }, 0)
     }
+
+
 
     //calculate subtotal
     const calculateSubtotal = (product: any) => {
@@ -136,32 +232,75 @@ const AddPurchaseList = () => {
         const amount = parseFloat(event.target.value);
         setShippingAmount(isNaN(amount) ? 0 : amount)
     }
+    // handle Date
+    const handleDateChange = (date: Date | null) => {
+        setPurchaseDate(date || new Date());
+    };
 
-    //handle New sale 
-    const addPurchaseInputRef = useRef<HTMLInputElement>(null);
-    const [selectWarehouse, setSelectWarehosue] = useState('')
-    const [selectBiller, setSelectBiller] = useState('')
-    const [selectStatus, setSeelctStatus] = useState('')
+    const onTypeChangeForProduct = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setProduct(value);
+        setProductName(value);
+    };
+
+
 
     const handleNewSaleForm = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
             toast.success("Purchase Created successfully!");
-            if (addPurchaseInputRef.current) {
-                addPurchaseInputRef.current.value = '';
-                setActiveItems([]);
-                setActiveItemIds([]);
-                setStartDate(null);
-                setSelectWarehosue('')
-                setSelectBiller('')
-                setSeelctStatus('')
-                setShippingAmount(0)
-            }
+
         } catch {
             toast.error("Failed to  create Purchase. Please try again later.");
         }
     }
 
+    const selectSuggestion = (suggestion: productInterface) => {
+        const existingProductIndex = productInformation.findIndex(product => product.title === suggestion.title);
+        if (existingProductIndex !== -1) {
+            setProductInformation(prev => {
+                const updatedProducts = prev.map((product, index) => {
+                    if (index === existingProductIndex) {
+                        return {
+                            ...product,
+                            totalAmountbougth: product.totalAmountbougth  * product.price
+                        };
+                    }
+                    return product;
+                });
+                return updatedProducts;
+            });
+        } else {
+            setProductInformation(prev => [...prev,{ ...suggestion, quantityBougth: 0, totalAmountbougth: suggestion.price }]);
+        }
+
+        // Additional updates
+        setSuggestions([]);
+        setProduct("");
+    };
+
+
+    const handleAmountChange = (increaseId: any, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const inputValue = event.target.value;
+        const newQuantity = inputValue === "" ? undefined : Number(inputValue);
+    
+        setProductInformation((prevData) =>
+            prevData.map((item) => {
+                if (increaseId === item.id) {
+                    const adjustedStock = item.quantityBought !== undefined 
+                        ? item.stockQuantity + ((newQuantity || 0) - (item.quantityBought || 0))
+                        : item.stockQuantity + (newQuantity || 0);
+    
+                    return {
+                        ...item,
+                        quantityBought: newQuantity,
+                        stockQuantity: Math.max(adjustedStock, 0),
+                    };
+                }
+                return item;
+            })
+        );
+    };
 
     return (
         <>
@@ -172,13 +311,13 @@ const AddPurchaseList = () => {
                             <div className="col-span-12">
                                 <div className="grid grid-cols-12 gap-y-5 sm:gap-7">
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-form-field">
+                                        <div className="inventual-formTwo-field">
                                             <h5>Date</h5>
                                             <div className="inventual-input-field-style">
                                                 <DatePicker
-                                                    selected={startDate}
+                                                    selected={purchaseDate}
                                                     required
-                                                    onChange={(date) => setStartDate(date)}
+                                                    onChange={handleDateChange}
                                                     showYearDropdown
                                                     showMonthDropdown
                                                     useShortMonthInDropdown
@@ -187,77 +326,76 @@ const AddPurchaseList = () => {
                                                     dropdownMode="select"
                                                     isClearable
                                                     placeholderText="DD/MM/YYYY"
-                                                    className="w-full"
                                                 />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                         <div className="inventual-form-field">
-                                            <h5>Select Warehouse</h5>
-                                            <div className="inventual-select-field-style">
-                                                <TextField
-                                                    select
-                                                    required
-                                                    value={selectWarehouse}
-                                                    onChange={(e) => setSelectWarehosue(e.target.value)}
-                                                    label="Select"
-                                                    defaultValue=""
-                                                    SelectProps={{
-                                                        displayEmpty: true,
-                                                        renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Select Expense</em>;
-                                                            }
-                                                            return value;
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">
-                                                        <em>Select Expense</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="United States">United States</MenuItem>
-                                                    <MenuItem value="Canada">Canada</MenuItem>
-                                                    <MenuItem value="Mexico">Mexico</MenuItem>
-                                                    <MenuItem value="France">France</MenuItem>
-                                                    <MenuItem value="Germany">Germany</MenuItem>
-                                                </TextField>
+                                            <div className="inventual-select-field">
+                                                <h5>Select Warehouse</h5>
+                                                <div className="inventual-select-field-style">
+                                                    <TextField
+                                                        select
+                                                        label="Select"
+                                                        required
+                                                        value={selectWarehouse}
+                                                        onChange={(e) => setSelectWarehosue(e.target.value)}
+                                                        SelectProps={{
+                                                            displayEmpty: true,
+                                                            renderValue: (value: any) => {
+                                                                const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
+                                                                return selectedWarehouse ? selectedWarehouse.warehouseName : <em>Select Warehouse</em>;
+                                                            },
+                                                        }}>
+                                                        {warehouseData && warehouseData.data.length > 0 ? (
+                                                            warehouseData.data.map((warehouse: warehouseInterface) => (
+                                                                <MenuItem key={warehouse.id} value={warehouse.id}>
+                                                                    {warehouse.warehouseName}
+                                                                </MenuItem>
+                                                            ))
+                                                        ) : (
+                                                            <MenuItem value="">
+                                                                <em>No Warehouse Available</em>
+                                                            </MenuItem>
+                                                        )}
+                                                    </TextField>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-form-field">
-                                            <h5>Select Biller</h5>
-                                            <div className="inventual-select-field-style">
-                                                <TextField
-                                                    select
-                                                    label="Select"
-                                                    defaultValue=""
-                                                    required
-                                                    value={selectBiller}
-                                                    onChange={(e) => setSelectBiller(e.target.value)}
-                                                    SelectProps={{
-                                                        displayEmpty: true,
-                                                        renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Select Type</em>;
-                                                            }
-                                                            return value;
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">
-                                                        <em>Select Type</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="Shane Watson">Shane Watson</MenuItem>
-                                                    <MenuItem value="David Warner">David Warner</MenuItem>
-                                                    <MenuItem value="David Miller">David Miller</MenuItem>
-                                                    <MenuItem value="Hashim Amla">Hashim Amla</MenuItem>
-                                                    <MenuItem value="Imran Tahir">Imran Tahir</MenuItem>
-                                                    <MenuItem value="JP Duminy">JP Duminy</MenuItem>
-                                                    <MenuItem value="Kagiso Rabada">Kagiso Rabada</MenuItem>
-                                                    <MenuItem value="Kagiso Rabada">Stuart Broad</MenuItem>
-                                                </TextField>
+                                        <div className="inventual-select-field">
+                                            <div className="inventual-form-field">
+                                                <h5>Select Supplier</h5>
+                                                <div className="inventual-select-field-style">
+                                                    <TextField
+                                                        select
+                                                        label="Select"
+                                                        required
+                                                        value={supplier}
+                                                        onChange={(e) => setSupplier(e.target.value)}
+                                                        SelectProps={{
+                                                            displayEmpty: true,
+                                                            renderValue: (value: any) => {
+                                                                const selectedSupplier = supplierData?.data.find((supplier: supplierInterface) => supplier.id === value);
+                                                                return selectedSupplier ? selectedSupplier.name : <em>Select Supplier</em>;
+                                                            },
+                                                        }}>
+                                                        {supplierData && supplierData.data.length > 0 ? (
+                                                            supplierData.data.map((supplier: supplierInterface) => (
+                                                                <MenuItem key={supplier.id} value={supplier.id}>
+                                                                    {supplier.name}
+                                                                </MenuItem>
+                                                            ))
+                                                        ) : (
+                                                            <MenuItem value="">
+                                                                <em>No Suppliers Available</em>
+                                                            </MenuItem>
+                                                        )}
+                                                    </TextField>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -266,33 +404,33 @@ const AddPurchaseList = () => {
                                             <div className="inventual-form-field">
                                                 <h5>Select Product</h5>
                                                 <div className="inventual-input-field-style search-field">
-                                                    <input
-                                                        type="text"
-                                                        ref={addPurchaseInputRef}
-                                                        placeholder='Scan / search products by code / name'
-                                                        value={searchQuery}
-                                                        onChange={handleSearchInputChange}
+                                                    <TextField
+                                                        fullWidth
+                                                        placeholder="Macbook..."
+                                                        variant="outlined"
+                                                        value={product}
+                                                        onChange={onTypeChangeForProduct}
                                                     />
                                                     {
-                                                        searchResults.length > 0 && (
+                                                        suggestions.length > 0 && (
                                                             <div onClick={handleSearchClose} className="search-close">x</div>
                                                         )
                                                     }
 
                                                     {
-                                                        searchResults.length > 0 && (
+                                                        suggestions.length > 0 && (
                                                             <div className='search-dropdown dropdown-scroll'>
                                                                 <ul>
                                                                     {
-                                                                        searchResults.map(product => (
+                                                                        suggestions.map(product => (
                                                                             <li
                                                                                 key={product.id}
                                                                                 id='single-list'
                                                                                 className={activeItemIds.includes(product.id) && activeItems.find(item => item.id === product.id) ? 'active' : ''}
-                                                                                onClick={() => toggleActiveItem(product.id)}
+                                                                                onClick={() => selectSuggestion(product)}
                                                                             >
                                                                                 <div className="search-img">
-                                                                                    <Image src={product.image} width={30} height={30} alt={product.title} />
+                                                                                    <Image src={product?.productImage == "" ? "https://res.cloudinary.com/dououppib/image/upload/v1709830638/PLANTS/placeholder_ry6d8v.webp" : product?.productImage} width={30} height={30} alt={product.title} />
                                                                                 </div>
                                                                                 <p className='title'>{product.title}</p>
                                                                             </li>
@@ -313,56 +451,58 @@ const AddPurchaseList = () => {
                                                 <table>
                                                     <thead>
                                                         <tr className='bg-lightest'>
+                                                            <th>Id</th>
                                                             <th>Image</th>
-                                                            <th>Products</th>
-                                                            <th>Batch No</th>
-                                                            <th>Unit</th>
+                                                            <th>Product</th>
+                                                            <th>Code</th>
+                                                            <th>Category</th>
+                                                            <th>Sub-Category</th>
                                                             <th>Price</th>
+                                                            <th>Stock</th>
                                                             <th>Quantity</th>
-                                                            <th>Discount</th>
-                                                            <th>Tax</th>
-                                                            <th>Sub Total</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         {
-                                                            activeItems.length > 0 ? (
-                                                                activeItems.map((product) => <tr key={product.id}>
+                                                            productInformation.length > 0 ? (
+                                                                productInformation.map((product) => <tr key={product.id}>
+                                                                    <td>{product.id}</td>
                                                                     <td>
                                                                         <div className="new-sale-search-img">
-                                                                            <Image src={product.image} width={30} height={30} alt={product.title} />
+                                                                            <Image src={product.productImage} width={30} height={30} alt={product.title} />
                                                                         </div>
                                                                     </td>
                                                                     <td>{product.title}</td>
-                                                                    <td>{product.batchNo}</td>
-                                                                    <td>{product.unit}</td>
-                                                                    <td>${product.price}</td>
+                                                                    <td>{product.productCode}</td>
+                                                                    <td>{product.category}</td>
+                                                                    <td>{product.subcategory}</td>
+                                                                    <td>{MoneyFormat.format(product.price)}</td>
+                                                                    <td>{product.stockQuantity}</td>
                                                                     <td>
-                                                                        <div className="inventual-addsale-product-qty">
-                                                                            <span className='flex items-center'>
-                                                                                <button type='button' onClick={() => handleDecrement(product.id)}><i className="fa-regular fa-minus"></i></button>
-                                                                                <p>{product.quantity}</p>
-                                                                                <button type='button' onClick={() => handleIncreament(product.id)}><i className="fa-regular fa-plus"></i></button>
-                                                                            </span>
-                                                                        </div>
+                                                                        <TextField
+                                                                            fullWidth
+                                                                            type='number'
+                                                                            placeholder="Enter quantity"
+                                                                            variant="outlined"
+                                                                            value={product.quantityBought !== undefined ? product.quantityBought : ""}
+                                                                            onChange={(e) => handleAmountChange(product.id, e)}
+                                                                        />
                                                                     </td>
-                                                                    <td>{product.discount}%</td>
-                                                                    <td>{product.tax}%</td>
-                                                                    <td>${calculateSubtotal(product)}</td>
                                                                     <td>
                                                                         <div className="inventual-addsale-product-action">
                                                                             <button
-                                                                                onClick={() => handleRemoveRowData(product.id)}
+                                                                                onClick={() => handleRemoveProduct(product.id)}
                                                                                 className="product-delete-btn"
                                                                             >
                                                                                 <i className="fa-regular fa-xmark"></i>
                                                                             </button>
                                                                         </div>
                                                                     </td>
+
                                                                 </tr>)
                                                             ) : <tr>
-                                                                <td colSpan={10} className='text-center'>Data not found</td>
+                                                                <td colSpan={10} className='text-center'>No product entered yet</td>
                                                             </tr>
                                                         }
                                                     </tbody>
@@ -371,97 +511,105 @@ const AddPurchaseList = () => {
                                         </div>
                                         <div className="inventual-addsale-product-cost text-end pt-9 pb-9 border border-t-0 border-border">
                                             <ul>
-                                                <li className="px-4 py-2.5 border-b border-solid border-border">
+                                                <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
                                                     <span className="text-[15px] font-normal text-heading w-40 inline-block">
                                                         Total Amount
                                                         <span className="float-end">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-normal text-heading inline-block">${calculateTotal()}</span>
+                                                    <span className="text-[15px] font-normal text-heading inline-block">{MoneyFormat.format(calculateTotal())}</span>
                                                 </li>
-                                                <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
+                                                {/* <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
                                                     <span className="text-[15px] font-normal text-heading w-40 inline-block">
-                                                        Order Tax
+                                                        Number of Products
                                                         <span className="float-end">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-normal text-heading inline-block">+${calculateTax()}</span>
-                                                </li>
-                                                <li className="px-4 py-2.5 border-b border-solid border-border">
-                                                    <span className="text-[15px] font-normal text-heading w-40 inline-block">
-                                                        Discount
-                                                        <span className="float-end">:</span>
-                                                    </span>
-                                                    <span className="text-[15px] font-normal text-heading inline-block">-${calculateDiscount()}</span>
-                                                </li>
+                                                    <span className="text-[15px] font-normal text-heading inline-block">{calculateTheAmountOfProductsAdded()}</span>
+                                                </li> */}
                                                 <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
                                                     <span className="text-[15px] font-normal text-heading w-40 inline-block">
                                                         Shipping
                                                         <span className="float-end">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-normal text-heading inline-block">${shippingAmount}</span>
+                                                    <span className="text-[15px] font-normal text-heading inline-block">{MoneyFormat.format(shippingCost || 0)}</span>
                                                 </li>
                                                 <li className="px-4 py-2.5">
                                                     <span className="text-[15px] font-bold text-heading w-40 inline-block">
                                                         Grand Total
                                                         <span className="float-end font-normal">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-bold text-heading inline-block">${calculateGrandTotal()}</span>
+                                                    <span className="text-[15px] font-bold text-heading inline-block">{MoneyFormat.format(calculateGrandTotal())}</span>
                                                 </li>
                                             </ul>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
                                         <div className="inventual-form-field">
-                                            <h5>Shipping</h5>
-                                            <div className="inventual-input-field-style has-icon-outline">
-                                                <input
-                                                    type="text"
-                                                    required
-                                                    placeholder='0'
-                                                    value={shippingAmount}
-                                                    onChange={handleShippingValue}
-                                                />
-                                                <span className='inventual-input-icon'><span>$</span></span>
-                                            </div>
+                                            <h5>Shipping Cost</h5>
+                                            <NumericFormat
+                                                customInput={TextField}
+                                                thousandSeparator=","
+                                                required
+                                                decimalSeparator="."
+                                                decimalScale={2}
+                                                fixedDecimalScale
+                                                value={shippingCost ?? ''}
+                                                onValueChange={(values) => {
+                                                    setShippingCost(values.floatValue);
+                                                }}
+                                                InputProps={{
+                                                    startAdornment: <InputAdornment position="start">£</InputAdornment>,
+                                                }}
+                                                inputProps={{ min: 0.01, max: 1000000 }}
+                                                fullWidth
+                                                variant="outlined"
+                                                placeholder="50.00"
+                                            />
                                         </div>
                                     </div>
-                                    <div className="col-span-12 md:col-span-6">
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
                                         <div className="inventual-form-field">
-                                            <h5>Sale Status</h5>
+                                            <h5>Purchase Status</h5>
                                             <div className="inventual-select-field-style">
                                                 <TextField
                                                     select
                                                     label="Select"
                                                     required
-                                                    defaultValue=""value={selectStatus}
-                                                    onChange={(e) => setSeelctStatus(e.target.value)}
+                                                    value={purchaseStatus}
+                                                    onChange={(e) => setPurchaseStatus(e.target.value)}
                                                     SelectProps={{
                                                         displayEmpty: true,
                                                         renderValue: (value: any) => {
                                                             if (value === '') {
-                                                                return <em>Select Status</em>;
+                                                                return <em>Purchase Status</em>;
                                                             }
                                                             return value;
                                                         },
                                                     }}
                                                 >
                                                     <MenuItem value="">
-                                                        <em>Select Status</em>
+                                                        <em>Purchase Status</em>
                                                     </MenuItem>
                                                     <MenuItem value="Complete">Complete</MenuItem>
+                                                    <MenuItem value="Incomplete">Incomplete</MenuItem>
                                                     <MenuItem value="Drafts">Drafts</MenuItem>
-                                                    <MenuItem value="Ordered">Ordered</MenuItem>
                                                 </TextField>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-span-12">
-                                        <div className="inventual-form-field">
-                                            <h5>Purchase Note:</h5>
-                                            <div className="inventual-input-field-style">
-                                                <textarea placeholder='Write your message'></textarea>
-                                            </div>
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
+                                        <div className="inventual-input-field-style">
+                                            <TextField
+                                                fullWidth
+                                                multiline
+                                                rows={4}
+                                                value={purchaseNote}
+                                                placeholder='Staff Notes'
+                                                inputProps={{ maxLength: 500 }}
+                                                onChange={(e) => setPurchaseNote(e.target.value)}
+                                            />
                                         </div>
                                     </div>
+
                                     <div className="col-span-12 flex justify-end">
                                         <button type="submit" className="inventual-btn">Create Purchase</button>
                                     </div>
