@@ -10,6 +10,7 @@ import { NumericFormat } from 'react-number-format';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
 import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetAllSuppliersQuery } from '@/services/People/Supplier';
+import { useCreatePurchaseMutation } from '@/services/Purchase/Purchase';
 
 interface productInterface {
     id: number;
@@ -30,16 +31,10 @@ interface warehouseInterface {
     warehouseName: string;
 
 }
-
 interface supplierInterface {
     id: number;
     name: string;
 
-}
-
-interface dataInterface {
-    id: number;
-    name: string;
 }
 
 let MoneyFormat = new Intl.NumberFormat('en-US', {
@@ -63,9 +58,7 @@ const AddPurchaseList = () => {
     const [product, setProduct] = useState<string>("");
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<TProduct[]>([]);
-
-
-    const [shippingAmount, setShippingAmount] = useState(0);
+    const [addPurchase] = useCreatePurchaseMutation();
     const { data: supplierData } = useGetAllSuppliersQuery({ pageNumber: 1, pageSize: 25 });
     const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: 1, pageSize: 25 });
 
@@ -119,17 +112,19 @@ const AddPurchaseList = () => {
 
 
 
-  
-    // // calculate order tax
-    // const calculateTheAmountOfProductsAdded = () => {
-    //     if (productInformation.length > 0) {
-    //         return productInformation.reduce((accumulator, item) => {
-    //             return item.stockQuantity > 0
-    //                 ? accumulator + item.quantityBought
-    //                 : accumulator;
-    //         }, 0);
-    //     }
-    // };
+
+    // calculate order tax
+    const calculateTheAmountOfProductsAdded = () => {
+        if (productInformation.length > 0) {
+            return productInformation.reduce((accumulator, item) => {
+                return item.quantityBought != undefined
+                    ? accumulator + item.quantityBought
+                    : accumulator;
+
+            }, 0);
+
+        }
+    };
 
     //
     useEffect(() => {
@@ -155,83 +150,31 @@ const AddPurchaseList = () => {
         );
     };
 
-    //handle search data from product
-    const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const query = event.target.value;
-        setSearchQuery(query);
 
-        if (query.trim() === '') {
-            setSearchResults([]);
+    // calculate total sum of all subtotals
+    const calculateGrandTotal = () => {
+        if (shippingCost != undefined) {
+            return calculateTotal() + shippingCost;
         } else {
-            const filteredResults = product_data.filter(product =>
-                product.title.toLowerCase().includes(query.toLowerCase())
-            );
-            setSearchResults(filteredResults);
+            return calculateTotal();
         }
-    };
-
-
-
-    //
-    useEffect(() => {
-        updateActiveItems();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeItemIds]);
-
-
-
-
-
-    // calculate order tax
-    const calculateTax = () => {
-        return activeItems.reduce((totalTax, item) => {
-            const itemTax = (item.price * item.tax / 100) * item.quantity;
-            return totalTax + itemTax;
-        }, 0);
-    }
-
-    //claculate discount
-    const calculateDiscount = () => {
-        return activeItems.reduce((totalDiscount, item) => {
-            const itemDiscount = (item.price * item.discount / 100) * item.quantity;
-            return totalDiscount + itemDiscount;
-        }, 0)
     }
 
 
 
-    //calculate subtotal
-    const calculateSubtotal = (product: any) => {
-        let tax = 0;
-        let discount = 0;
-        tax = product.price * product.tax / 100;
-        discount = product.price * product.discount / 100;
-        const subTotal = (product.price + tax - discount) * product.quantity;
-        return subTotal;
-    }
+
+
 
     // calculate total sum of all subtotals
     const calculateTotal = () => {
-        return activeItems.reduce((total, item) => {
-            return total + item.price * item.quantity;
+        return productInformation.reduce((total, item) => {
+            if (item.quantityBought != undefined) {
+                return total + item.price * item.quantityBought;
+            }
+            return total;
         }, 0);
     }
-    // calculate total sum of all subtotals
-    const calculateGrandTotal = () => {
-        return calculateTotal() + shippingAmount + calculateTax() - calculateDiscount();
-    }
 
-    //handle remove row data
-    const handleRemoveRowData = (productId: any) => {
-        const remainingItem = activeItems.filter((product) => product.id !== productId);
-        setActiveItems(remainingItem)
-    }
-
-    // handle shipping value change
-    const handleShippingValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const amount = parseFloat(event.target.value);
-        setShippingAmount(isNaN(amount) ? 0 : amount)
-    }
     // handle Date
     const handleDateChange = (date: Date | null) => {
         setPurchaseDate(date || new Date());
@@ -243,11 +186,27 @@ const AddPurchaseList = () => {
         setProductName(value);
     };
 
+    
+    const formatDate = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
 
 
     const handleNewSaleForm = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        let date = formatDate(purchaseDate)
+        let productIdPlusQuantity: { [key: number]: number | undefined} = {};
+        productInformation.forEach(product => {
+            productIdPlusQuantity[product.id] = product.quantityBought; 
+        });
+        const formData = {purchaseDate: date, productIdPlusQuantity, totalNumberOfProducts: calculateTheAmountOfProductsAdded(), 
+            warehouseId: selectWarehouse, supplier, purchaseStatus, shippingCost, purchaseNote, TotalAmountBought: calculateGrandTotal() }
         try {
+            await addPurchase(formData).unwrap();
             toast.success("Purchase Created successfully!");
 
         } catch {
@@ -263,7 +222,7 @@ const AddPurchaseList = () => {
                     if (index === existingProductIndex) {
                         return {
                             ...product,
-                            totalAmountbougth: product.totalAmountbougth  * product.price
+                            totalAmountbougth: product.totalAmountbougth * product.price
                         };
                     }
                     return product;
@@ -271,7 +230,7 @@ const AddPurchaseList = () => {
                 return updatedProducts;
             });
         } else {
-            setProductInformation(prev => [...prev,{ ...suggestion, quantityBougth: 0, totalAmountbougth: suggestion.price }]);
+            setProductInformation(prev => [...prev, { ...suggestion, quantityBougth: 0, totalAmountbougth: suggestion.price }]);
         }
 
         // Additional updates
@@ -283,14 +242,14 @@ const AddPurchaseList = () => {
     const handleAmountChange = (increaseId: any, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const inputValue = event.target.value;
         const newQuantity = inputValue === "" ? undefined : Number(inputValue);
-    
+
         setProductInformation((prevData) =>
             prevData.map((item) => {
                 if (increaseId === item.id) {
-                    const adjustedStock = item.quantityBought !== undefined 
+                    const adjustedStock = item.quantityBought !== undefined
                         ? item.stockQuantity + ((newQuantity || 0) - (item.quantityBought || 0))
                         : item.stockQuantity + (newQuantity || 0);
-    
+
                     return {
                         ...item,
                         quantityBought: newQuantity,
@@ -518,13 +477,13 @@ const AddPurchaseList = () => {
                                                     </span>
                                                     <span className="text-[15px] font-normal text-heading inline-block">{MoneyFormat.format(calculateTotal())}</span>
                                                 </li>
-                                                {/* <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
+                                                <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
                                                     <span className="text-[15px] font-normal text-heading w-40 inline-block">
                                                         Number of Products
                                                         <span className="float-end">:</span>
                                                     </span>
                                                     <span className="text-[15px] font-normal text-heading inline-block">{calculateTheAmountOfProductsAdded()}</span>
-                                                </li> */}
+                                                </li>
                                                 <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
                                                     <span className="text-[15px] font-normal text-heading w-40 inline-block">
                                                         Shipping
@@ -542,7 +501,7 @@ const AddPurchaseList = () => {
                                             </ul>
                                         </div>
                                     </div>
-                                    <div className="col-span-12 md:col-span-6">
+                                    <div className="col-span-12 md:col-span-3">
                                         <div className="inventual-form-field">
                                             <h5>Shipping Cost</h5>
                                             <NumericFormat

@@ -101,6 +101,7 @@
 
 //     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 //         e.preventDefault();
+
 //         let productIdPlusQuantity: { [key: number]: number } = {};
 //         productInformation.forEach(product => {
 //             productIdPlusQuantity[product.id] = product.quantityBought; 
