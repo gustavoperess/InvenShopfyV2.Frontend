@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import logo from '../../public/assets/img/logo/login-logo.png'
 import FilledInput from '@mui/material/FilledInput';
 import InputAdornment from '@mui/material/InputAdornment';
-import { IconButton, MenuItem, TextField,FormControl } from '@mui/material';
+import { IconButton, MenuItem, TextField, FormControl } from '@mui/material';
 import Image from 'next/image';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Link from 'next/link'
@@ -23,9 +23,19 @@ interface roleData {
 
 const RegistrationFrom = () => {
     const [registerUser] = useUserRegisterMutation();
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [gender, setGender] = useState('');
+    const [userName, setUserName] = useState('');
     const router = useRouter()
     const [role, setRole] = useState("")
     const { data: rolesData } = useGetAllRolesQuery();
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordErrorTwo, setPasswordErrorTwo] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
 
     //form password field
     const [showPassword, setShowPassword] = useState(false);
@@ -33,38 +43,68 @@ const RegistrationFrom = () => {
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    //form password field
 
-    const { handleSubmit, handleBlur, handleChange, values, errors, touched, resetForm } = useFormik({
-        initialValues: {
-            name: "",
-            userName: "",
-            email: "",
-            password: "",
-            phone: "",
-            selectRole: ""
-        },
-        validationSchema: signup_schema,
-        onSubmit: async (values) => {
-            const credentials = {
-                Name: values.name,
-                UserName: values.userName,
-                Email: values.email,
-                PasswordHash: values.password,
-                PhoneNumber: values.phone,
-                RoleName: role
-            };
+    // handle password change 
+    const handleConfirmPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setConfirmPassword(value);
+        setPasswordError(password !== value);
+    };
+
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const password = e.target.value;
+        setPassword(password);
+        const passwordPatern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+        setPasswordErrorTwo(!passwordPatern.test(password));
+    }
+
+    // handle email change 
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const email = e.target.value;
+        setEmail(email);
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setEmailError(!emailPattern.test(email));
+    };
+
+
+    const [showConfirmPassowrd, setShowConfirmPassowrd] = useState(false);
+    const handleClickConfirmShowPassword = () => setShowConfirmPassowrd((show) => !show);
+    const handleMouseDownConfirmPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
+
+    const handleUserData = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (password == confirmPassword) {
+            const userData = { name, email, phoneNumber: phone, roleName: role, gender, userName, passwordHash: password }
+            console.log(userData)
             try {
-                await registerUser(credentials).unwrap();
-                resetForm();
-                toast.success("Register Successfully");
-                router.push("/")
-
+                await registerUser(userData).unwrap();
+                toast.success("User Created successfully!");
+                setPhone('');
+                setEmail('');
+                setName("")
+                setGender('');
+                setUserName('');
+                setPassword('');
+                setRole('');
             } catch (error: any) {
-                toast.warning(error.message);
+                if (error?.data) {
+                    toast.error(error?.data);
+                } else {
+                    // Fallback error message
+                    toast.error("Failed to create User. Please try again later.")
+                }
             }
+        } else {
+
+            toast.error("Passwords don't match");
         }
-    })
+
+    };
+
+
 
 
     return (
@@ -74,98 +114,132 @@ const RegistrationFrom = () => {
                     <div className="inventual-login-logo text-center mb-12">
                         <Image src={logo} style={{ width: 'auto', height: "73px" }} alt="logo img" />
                     </div>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleUserData}>
                         <div className="inventual-input-field-style mb-5">
                             <div className="inventual-form-field">
                                 <div className="inventual-input-field-style has-icon">
-                                    <input type="text"
-                                        onChange={handleChange}
-                                        defaultValue={values.userName}
-                                        onBlur={handleBlur}
-                                        name='name'
-                                        id='name'
-                                        placeholder='Name'
-                                        required
-                                    />
-                                    <span className='inventual-input-icon'><i className="fa-regular fa-user"></i></span>
+                                    <FormControl fullWidth>
+                                        <TextField
+                                            fullWidth
+                                            placeholder="Full Name"
+                                            variant="outlined"
+                                            type="text"
+                                            value={name}
+                                            required
+                                            inputProps={{ maxLength: 80 }}
+                                            onChange={(e) => setName(e.target.value)}
+                                        />
+                                        <span className='inventual-input-icon'><i className="fa-regular fa-user"></i></span>
+                                    </FormControl>
                                 </div>
-                                {touched.name && <ErrorMassage ErrorMsg={errors.name} />}
                             </div>
                         </div>
                         <div className="inventual-input-field-style mb-5">
                             <div className="inventual-form-field">
                                 <div className="inventual-input-field-style has-icon">
-                                    <input type="text"
-                                        onChange={handleChange}
-                                        defaultValue={values.userName}
-                                        onBlur={handleBlur}
-                                        name='userName'
-                                        id='userName'
-                                        placeholder='Username'
-                                        required
-                                    />
-                                    <span className='inventual-input-icon'><i className="fa-regular fa-user"></i></span>
+                                    <FormControl fullWidth>
+                                        <TextField
+                                            fullWidth
+                                            placeholder="Username"
+                                            variant="outlined"
+                                            type="text"
+                                            value={userName}
+                                            required
+                                            inputProps={{ maxLength: 80 }}
+                                            onChange={(e) => setUserName(e.target.value)}
+                                        />
+                                        <span className='inventual-input-icon'><i className="fa-regular fa-user"></i></span>
+                                    </FormControl>
                                 </div>
-                                {touched.userName && <ErrorMassage ErrorMsg={errors.userName} />}
+
                             </div>
                         </div>
                         <div className="inventual-input-field-style mb-5">
                             <div className="inventual-form-field">
                                 <div className="inventual-input-field-style has-icon">
-                                    <input type="email"
-                                        onChange={handleChange}
-                                        defaultValue={values.email}
-                                        onBlur={handleBlur}
-                                        name='email'
-                                        id='email'
-                                        placeholder='Email'
-                                        required
-                                    />
-                                    <span className='inventual-input-icon'><i className="far fa-envelope"></i></span>
+                                    <FormControl fullWidth>
+                                        <TextField
+                                            fullWidth
+                                            type="email"
+                                            required
+                                            value={email}
+                                            placeholder="Email"
+                                            variant="outlined"
+                                            inputProps={{ maxLength: 80 }}
+                                            onChange={handleEmailChange}
+                                            error={emailError}
+                                            helperText={emailError ? "Please enter a valid email address" : ""}
+                                        />
+                                        <span className='inventual-input-icon'><i className="far fa-envelope"></i></span>
+                                    </FormControl>
                                 </div>
-                                {touched.email && <ErrorMassage ErrorMsg={errors.email} />}
                             </div>
                         </div>
                         <div className="inventual-input-field-style mb-5">
-                            <div className="inventual-form-field">
+                            <div className="inventual-select-field">
                                 <div className="inventual-input-field-style has-icon">
-                                    <input type="tel"
-                                        onChange={handleChange}
-                                        defaultValue={values.phone}
-                                        onBlur={handleBlur}
-                                        name='phone'
-                                        id='phone'
-                                        placeholder='Phone'
-                                        required
-                                    />
-                                    <span className='inventual-input-icon'><i className="far fa-phone-alt"></i></span>
+                                    <FormControl fullWidth>
+                                        <TextField  // NEED TO CHECK PHONE NUMBER REQUIREMENTS 
+                                            fullWidth
+                                            type="number"
+                                            required
+                                            value={phone}
+                                            placeholder="+234 23432432"
+                                            variant="outlined"
+                                            inputProps={{ maxLength: 80 }}
+                                            onChange={(e) => setPhone(e.target.value)}
+                                        />
+                                        <span className='inventual-input-icon'><i className="far fa-phone-alt"></i></span>
+                                    </FormControl>
                                 </div>
-                                {touched.phone && <ErrorMassage ErrorMsg={errors.phone} />}
                             </div>
                         </div>
+                        <div className="inventual-input-field-style mb-5">
+                            <div className="inventual-select-field">
+                                <div className="inventual-select-field-style">
+                                    <TextField
+                                        select
+                                        label="Select"
+                                        required
+                                        value={gender}
+                                        onChange={(e) => setGender(e.target.value)}
+                                        defaultValue=""
+                                        SelectProps={{
+                                            displayEmpty: true,
+                                            renderValue: (value: any) => {
+                                                if (value === '') {
+                                                    return <em>Select Gender</em>;
+                                                }
+                                                return value;
+                                            },
+                                        }}>
+                                        <MenuItem value="">
+                                            <em>Select Gender</em>
+                                        </MenuItem>
+                                        <MenuItem value="Male">Male</MenuItem>
+                                        <MenuItem value="Female">Female</MenuItem>
+                                    </TextField>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="inventual-select-field-style mb-5">
                             <FormControl fullWidth>
                                 <TextField
                                     label="Select"
                                     select
                                     required
-                                    helperText="Please select a Role"
                                     value={role}
                                     onChange={(e) => setRole(e.target.value)}
                                     fullWidth
                                     InputLabelProps={{ shrink: true }}
                                     SelectProps={{
                                         displayEmpty: true,
-                                        renderValue: (value) => {
-                                            const selectedRole = rolesData?.find(
-                                                (role: roleData) => role.id === Number(value)
-                                            );
-                                            return selectedRole ? selectedRole.name : <em>Select Role</em>;
-                                        },
+                                        renderValue: (value) => (value ? (value as string) : <em>Select Role</em>),
                                     }}>
                                     {rolesData && rolesData.length > 0 ? (
                                         rolesData.map((role: roleData) => (
-                                            <MenuItem key={role.id} value={role.id}>
+                                            <MenuItem key={role.id} value={role.name}>
                                                 {role.name}
                                             </MenuItem>
                                         ))
@@ -180,28 +254,69 @@ const RegistrationFrom = () => {
                         <div className="inventual-input-field-style inventual-input-field-style-eye mb-5">
                             <div className="inventual-form-field">
                                 <div className="inventual-input-eye-style">
-                                    <FilledInput
-                                        type={showPassword ? 'text' : 'password'}
-                                        name='password'
-                                        onChange={handleChange}
-                                        defaultValue={values.password}
-                                        onBlur={handleBlur}
-                                        placeholder="Enter your password"
-                                        endAdornment={
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    aria-label="toggle password visibility"
-                                                    onClick={handleClickShowPassword}
-                                                    onMouseDown={handleMouseDownPassword}
-                                                    edge="end"
-                                                >
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        }
-                                        required
-                                    />
-                                    {touched.password && <ErrorMassage ErrorMsg={errors.password} />}
+                                    <FormControl fullWidth>
+                                        <TextField
+                                            type={showPassword ? 'text' : 'password'}
+                                            name="password"
+                                            required
+                                            value={password}
+                                            onChange={handlePasswordChange}
+                                            placeholder="Enter your password"
+                                            error={passwordErrorTwo}
+                                            helperText={
+                                                passwordErrorTwo
+                                                    ? "Password must be at least eight characters, including at least one letter, one number, and one special character."
+                                                    : ""
+                                            }
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleClickShowPassword}
+                                                            onMouseDown={handleMouseDownPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
+                                    </FormControl>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="inventual-input-field-style inventual-input-field-style-eye mb-5">
+                            <div className="inventual-form-field">
+                                <div className="inventual-input-eye-style">
+                                    <FormControl fullWidth>
+                                        <TextField
+                                            type={showConfirmPassowrd ? 'text' : 'password'}
+                                            name="password"
+                                            required
+                                            value={confirmPassword}
+                                            onChange={handleConfirmPassword}
+                                            error={passwordError}
+                                            helperText={passwordError ? "Passwords do not match" : ""}
+                                            placeholder="Confirm your password"
+                                            variant="filled"
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={handleClickConfirmShowPassword}
+                                                            onMouseDown={handleMouseDownConfirmPassword}
+                                                            edge="end"
+                                                        >
+                                                            {showConfirmPassowrd ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
+                                    </FormControl>
                                 </div>
                             </div>
                         </div>
@@ -223,7 +338,7 @@ const RegistrationFrom = () => {
                     <div className="inventual-login-footer">
                         <div className="inventual-login-footer-account text-center">
                             <span className="text-[16px] inline-block text-body">
-                                Have not an account? <Link className="text-[16px] text-primary" href="/">Login</Link>
+                                Already have an account? <Link className="text-[16px] text-primary" href="/">Login</Link>
                             </span>
                         </div>
                     </div>
@@ -232,7 +347,9 @@ const RegistrationFrom = () => {
         </>
 
     );
-
 };
 
 export default RegistrationFrom;
+
+
+

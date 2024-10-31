@@ -28,7 +28,9 @@ const AddUserList = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [userImage, setUserImage] = useState<string | null>(null);
     const [role, setRole] = useState('');
-    const [error, setError] = useState(false);
+
+    const [emailError, setEmailError] = useState(false);
+    const [passwordErrorTwo, setPasswordErrorTwo] = useState(false);
     const [registerUser] = useUserRegisterMutation()
     const [passwordError, setPasswordError] = useState(false);
     const { data: rolesData } = useGetAllRolesQuery();
@@ -76,20 +78,27 @@ const AddUserList = () => {
         const email = e.target.value;
         setEmail(email);
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        setError(!emailPattern.test(email));
+        setEmailError(!emailPattern.test(email));
     };
     // handle password change 
     const handleConfirmPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setConfirmPassword(value);
-        setPasswordError(password !== value);  
+        setPasswordError(password !== value);
     };
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const password = e.target.value;
+        setPassword(password);
+        const passwordPatern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+        setPasswordErrorTwo(!passwordPatern.test(password));
+    }
 
     const handleUserData = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if(password == confirmPassword) {
-            const userData = {name, email, phoneNumber: phone, profilePicture: userImage, roleName: "Owner", userName, password}
-            console.log(userData)
+        if (password == confirmPassword) {
+            const userData = { name, email, phoneNumber: phone, profilePicture: userImage, roleName: role, userName, passwordHash: password }
+            // console.log(userData)
             try {
                 await registerUser(userData).unwrap();
                 toast.success("User Created successfully!");
@@ -99,14 +108,19 @@ const AddUserList = () => {
                 // setUserName('');
                 // setPassword('');
                 // setRole('');
-            } catch {
-                toast.error("Failed to create User. Please try again later.");
+            } catch (error: any) {
+                if (error?.data) {
+                    toast.error(error?.data);
+                } else {
+                    // Fallback error message
+                    toast.error("Failed to create User. Please try again later.")
+                }
             }
         } else {
 
             toast.error("Passwords don't match");
         }
-  
+
     };
 
 
@@ -193,8 +207,8 @@ const AddUserList = () => {
                                                             variant="outlined"
                                                             inputProps={{ maxLength: 80 }}
                                                             onChange={handleEmailChange}
-                                                            error={error}
-                                                            helperText={error ? "Please enter a valid email address" : ""}
+                                                            error={emailError}
+                                                            helperText={emailError ? "Please enter a valid email address" : ""}
                                                         />
                                                     </FormControl>
                                                 </div>
@@ -268,16 +282,11 @@ const AddUserList = () => {
                                                         InputLabelProps={{ shrink: true }}
                                                         SelectProps={{
                                                             displayEmpty: true,
-                                                            renderValue: (value) => {
-                                                                const selectedRole = rolesData?.find(
-                                                                    (role: roleData) => role.id === Number(value)
-                                                                );
-                                                                return selectedRole ? selectedRole.name : <em>Select Role</em>;
-                                                            },
+                                                            renderValue: (value) => (value ? (value as string) : <em>Select Role</em>),
                                                         }}>
                                                         {rolesData && rolesData.length > 0 ? (
                                                             rolesData.map((role: roleData) => (
-                                                                <MenuItem key={role.id} value={role.id}>
+                                                                <MenuItem key={role.id} value={role.name}>
                                                                     {role.name}
                                                                 </MenuItem>
                                                             ))
@@ -296,26 +305,36 @@ const AddUserList = () => {
                                             <div className="inventual-form-field">
                                                 <h5>Password</h5>
                                                 <div className="inventual-input-eye-style">
-                                                    <FilledInput
-                                                        type={showPassword ? 'text' : 'password'}
-                                                        name='password'
-                                                        required
-                                                        value={password}
-                                                        onChange={(e) => setPassword(e.target.value)}
-                                                        placeholder="Enter your password"
-                                                        endAdornment={
-                                                            <InputAdornment position="end">
-                                                                <IconButton
-                                                                    aria-label="toggle password visibility"
-                                                                    onClick={handleClickShowPassword}
-                                                                    onMouseDown={handleMouseDownPassword}
-                                                                    edge="end"
-                                                                >
-                                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                                </IconButton>
-                                                            </InputAdornment>
-                                                        }
-                                                    />
+                                                    <FormControl fullWidth>
+                                                        <TextField
+                                                            type={showPassword ? 'text' : 'password'}
+                                                            name="password"
+                                                            required
+                                                            value={password}
+                                                            onChange={handlePasswordChange}
+                                                            placeholder="Enter your password"
+                                                            error={passwordErrorTwo}
+                                                            helperText={
+                                                                passwordErrorTwo
+                                                                    ? "Password must be at least eight characters, including at least one letter, one number, and one special character."
+                                                                    : ""
+                                                            }
+                                                            InputProps={{
+                                                                endAdornment: (
+                                                                    <InputAdornment position="end">
+                                                                        <IconButton
+                                                                            aria-label="toggle password visibility"
+                                                                            onClick={handleClickShowPassword}
+                                                                            onMouseDown={handleMouseDownPassword}
+                                                                            edge="end"
+                                                                        >
+                                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                                        </IconButton>
+                                                                    </InputAdornment>
+                                                                ),
+                                                            }}
+                                                        />
+                                                    </FormControl>
                                                 </div>
                                             </div>
                                         </div>
@@ -325,33 +344,33 @@ const AddUserList = () => {
                                             <div className="inventual-form-field">
                                                 <h5>Confirm Password</h5>
                                                 <div className="inventual-input-eye-style">
-                                                <FormControl fullWidth>
-                                                    <TextField
-                                                        type={showConfirmPassowrd ? 'text' : 'password'}
-                                                        name="password"
-                                                        required
-                                                        value={confirmPassword}
-                                                        onChange={handleConfirmPassword}
-                                                        error={passwordError}
-                                                        helperText={passwordError ? "Passwords do not match" : ""}
-                                                        placeholder="Confirm your password"
-                                                        variant="filled"
-                                                        InputProps={{
-                                                            endAdornment: (
-                                                                <InputAdornment position="end">
-                                                                    <IconButton
-                                                                        aria-label="toggle password visibility"
-                                                                        onClick={handleClickConfirmShowPassword}
-                                                                        onMouseDown={handleMouseDownConfirmPassword}
-                                                                        edge="end"
-                                                                    >
-                                                                        {showConfirmPassowrd ? <VisibilityOff /> : <Visibility />}
-                                                                    </IconButton>
-                                                                </InputAdornment>
-                                                            ),
-                                                        }}
-                                                    />
-                                                </FormControl>
+                                                    <FormControl fullWidth>
+                                                        <TextField
+                                                            type={showConfirmPassowrd ? 'text' : 'password'}
+                                                            name="password"
+                                                            required
+                                                            value={confirmPassword}
+                                                            onChange={handleConfirmPassword}
+                                                            error={passwordError}
+                                                            helperText={passwordError ? "Passwords do not match" : ""}
+                                                            placeholder="Confirm your password"
+                                                            variant="filled"
+                                                            InputProps={{
+                                                                endAdornment: (
+                                                                    <InputAdornment position="end">
+                                                                        <IconButton
+                                                                            aria-label="toggle password visibility"
+                                                                            onClick={handleClickConfirmShowPassword}
+                                                                            onMouseDown={handleMouseDownConfirmPassword}
+                                                                            edge="end"
+                                                                        >
+                                                                            {showConfirmPassowrd ? <VisibilityOff /> : <Visibility />}
+                                                                        </IconButton>
+                                                                    </InputAdornment>
+                                                                ),
+                                                            }}
+                                                        />
+                                                    </FormControl>
                                                 </div>
                                             </div>
                                         </div>

@@ -39,7 +39,7 @@
     &.has-icon {
         input {
             // Adjust padding or height to match the icon height
-            @apply pe-[60px] h-[46px]; // Use the same height as the icon for consistency
+            @apply pe-[60px] h-[15px]; // Use the same height as the icon for consistency
         }
     }
 }
