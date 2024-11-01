@@ -20,258 +20,76 @@ import PaymentManageListPopup from './managePopup/PaymentManageListPopup';
 import PaymentViewListPopup from './managePopup/PaymentViewListPopup';
 import TradingPurchaseListInvoice from './managePopup/TradingPurchaseListInvoice';
 import ViewPurchasePopup from './managePopup/ViewPurchasePopup';
+import { useGetAllPurchasesQuery } from '@/services/Purchase/Purchase';
 
 // Define the structure of the data
 interface Data {
   id: number;
-  date: string;
-  reference: string;
-  customer: string;
+  purchaseDate: string;
   warehouse: string;
-  status: string;
-  biller: string;
-  payment: string;
-  grandTotal: string;
-  paid: string;
-  due: string;
-  protein: string;
+  supplier: string;
+  reference: string;
+  purchaseNote: string;
+  shippingCost: number;
+  grandTotal: number;
+  purchaseStatus: string;
+  totalNumberOfProductsBougth: number;
+
 }
 
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'William Prady',
-    warehouse: 'Warehouse 1',
-    status: 'Completed',
-    biller: '	Nancy R. Borgman',
-    payment: 'Paid',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 2,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Walk - in - customer',
-    warehouse: 'Warehouse 2',
-    status: 'Draft',
-    biller: '	Joseph Amarho',
-    payment: 'Partial',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 3,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Pendrio Methus',
-    warehouse: 'Warehouse 3',
-    status: 'Ordered',
-    biller: '	Joseph Amarho',
-    payment: 'Paid',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 4,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Sharon J. Talbott',
-    warehouse: 'Warehouse 4',
-    status: 'Completed',
-    biller: '	Tara Redman',
-    payment: 'Unpaid',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 5,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Walk - in - customer',
-    warehouse: 'Warehouse 5',
-    status: 'Completed',
-    biller: 'Dean Richards',
-    payment: 'Paid',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 6,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Sharon Huls',
-    warehouse: 'Warehouse 6',
-    status: 'Draft',
-    biller: '	Dana A. Flanery',
-    payment: 'Paid',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 7,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Gladys G. Town',
-    warehouse: 'Warehouse 7',
-    status: 'Completed',
-    biller: '	Joseph Amarho',
-    payment: 'Partial',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 8,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Steven C. Fossum',
-    warehouse: 'Warehouse 8',
-    status: 'Completed',
-    biller: '	Joseph Amarho',
-    payment: 'Unpaid',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 9,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Kelly B. Dunford',
-    warehouse: 'Warehouse 9',
-    status: 'Completed',
-    biller: 'Dana A. Flanery',
-    payment: 'Paid',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 10,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'George E. Warren',
-    warehouse: 'Warehouse 10',
-    status: 'Ordered',
-    biller: 'Tara Redman',
-    payment: 'Paid',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 11,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Andy J. Johnson',
-    warehouse: 'Warehouse 11',
-    status: 'Ordered',
-    biller: 'oseph Amarho',
-    payment: 'Partial',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 12,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Walk - in - customer',
-    warehouse: 'Warehouse 12',
-    status: 'Completed',
-    biller: 'Nancy A. Owens',
-    payment: 'Paid',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 13,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Walk - in - customer',
-    warehouse: 'Warehouse 13',
-    status: 'Completed',
-    biller: '	Jorge Griswold',
-    payment: 'Paid',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 14,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Alexis E. Raya',
-    warehouse: 'Warehouse 14',
-    status: 'Completed',
-    biller: '	Dana A. Flanery',
-    payment: 'Partial',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-  {
-    id: 15,
-    date: '30/12/2023',
-    reference: 'S-326564580710',
-    customer: 'Walk - in - customer',
-    warehouse: 'Warehouse 15',
-    status: 'Draft',
-    biller: 'Nancy R. Borgman',
-    payment: 'Unpaid',
-    grandTotal: '4,250',
-    paid: '4,250',
-    due: '0',
-    protein: '',
-  },
-];
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'GBP',
+});
+
+
 
 const ManagePurchaseList = () => {
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [selected, setSelected] = useState<number[]>([]);
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [selectedPurchaseId, setSelectedPurchaseId] = useState<number | undefined>();
+  const { data: purchaseData, error: pruchaseError, isLoading: purchaseLoading, refetch } = useGetAllPurchasesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
+  };
+
+  // handle pagination 
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1);
+    refetch();
+  };
+
 
   // View Purchase Popup Start
   const [openViewPurchaseDialog, setOpenViewPurchaseDialog] = useState<boolean>(false);
 
-  const handleViewPurchaseDialogOpen = () => {
+  const handleViewPurchaseDialogOpen = (purchaseId: number) => {
+    setSelectedPurchaseId(purchaseId)
     setOpenViewPurchaseDialog(true);
   };
   const handleViewPurchaseDialogClose = () => {
+    setSelectedPurchaseId(undefined); 
     setOpenViewPurchaseDialog(false);
   };
 
-   // GenerateInvoice Popup Start
-   const [openeGenerateInvoiceDialog, setOpenGenerateInvoiceDialog] = useState<boolean>(false);
+  // GenerateInvoice Popup Start
+  const [openeGenerateInvoiceDialog, setOpenGenerateInvoiceDialog] = useState<boolean>(false);
 
-   const handleGenerateInvoiceDialogOpen = () => {
-     setOpenGenerateInvoiceDialog(true);
-   };
-   const handleGenerateInvoiceDialogClose = () => {
-     setOpenGenerateInvoiceDialog(false);
-   };
+  const handleGenerateInvoiceDialogOpen = (purchaseId: number) => {
+    setSelectedPurchaseId(purchaseId)
+    setOpenGenerateInvoiceDialog(true);
+  };
+  const handleGenerateInvoiceDialogClose = () => {
+    setOpenGenerateInvoiceDialog(false);
+    setSelectedPurchaseId(undefined); 
+  };
 
   // AddPayment Popup Start
   const [openeAddPaymentDialog, setOpenAddPaymentDialog] = useState<boolean>(false);
@@ -286,27 +104,15 @@ const ManagePurchaseList = () => {
   // ViewPayment Popup Start
   const [openeViewPaymentDialog, setOpenViewPaymentDialog] = useState<boolean>(false);
 
-  const handleViewPaymentDialogOpen = () => {
+  const handleViewPaymentDialogOpen = (purchaseId: number) => {
+    setSelectedPurchaseId(purchaseId)
     setOpenViewPaymentDialog(true);
   };
   const handleViewPaymentDialogClose = () => {
     setOpenViewPaymentDialog(false);
+    setSelectedPurchaseId(undefined)
   };
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [selected, setSelected] = useState<number[]>([]);
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
-
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 25));
-    setPage(0);
-  };
 
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
@@ -316,13 +122,14 @@ const ManagePurchaseList = () => {
   };
 
   // Handler for selecting/deselecting all items
-  const handleSelectAllClick = (checked: boolean) => {
-    if (checked) {
-      setSelected(rows.map((row) => row.id));
-    } else {
-      setSelected([]);
-    }
-  };
+    // Handler for selecting/deselecting all items
+    const handleSelectAllClick = (checked: boolean) => {
+      if (checked) {
+        setSelected(purchaseData?.data.map((purchase: any) => purchase.id));
+      } else {
+        setSelected([]);
+      }
+    };
 
   // Handler for selecting/deselecting a single item
   const handleClick = (id: number) => {
@@ -348,20 +155,24 @@ const ManagePurchaseList = () => {
   // Check if a particular item is selected
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-  // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
-    const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+ // Function to sort data
+ const sortedRows = purchaseData?.data.slice().sort((a: any, b: any) => {
+  if (!orderBy) return 0;
+  const isAsc = order === 'asc';
+  const aValue = a[orderBy as keyof Data]; 
+  const bValue = b[orderBy as keyof Data]; 
+  if (aValue === undefined || bValue === undefined) {
+    return 0; 
+  }
 
-    if (aValue < bValue) {
-      return isAsc ? -1 : 1;
-    }
-    if (aValue > bValue) {
-      return isAsc ? 1 : -1;
-    }
-    return 0;
-  });
+  if (aValue < bValue) {
+    return isAsc ? -1 : 1;
+  }
+  if (aValue > bValue) {
+    return isAsc ? 1 : -1;
+  }
+  return 0;
+});
 
   return (
 
@@ -392,11 +203,9 @@ const ManagePurchaseList = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Date</MenuItem>
-                            <MenuItem onClick={popupState.close}>Supplier</MenuItem>
-                            <MenuItem onClick={popupState.close}>Warehouse</MenuItem>
-                            <MenuItem onClick={popupState.close}>Paid</MenuItem>
-                            <MenuItem onClick={popupState.close}>Due</MenuItem>
+                          <MenuItem onClick={() => {handleRequestSort("purchaseDate"); popupState.close()}}>Date</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("totalNumberOfProductsBougth"); popupState.close()}}>Products Bought</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("grandTotal"); popupState.close()}}>Total Amount</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -428,17 +237,17 @@ const ManagePurchaseList = () => {
                               {/* Checkbox for select all */}
                               <TableCell>
                                 <Checkbox
-                                  indeterminate={selected.length > 0 && selected.length < rows.length}
-                                  checked={rows.length > 0 && selected.length === rows.length}
+                                  indeterminate={selected.length > 0 && selected.length < purchaseData?.data.length}
+                                  checked={purchaseData?.data.length > 0 && selected.length === purchaseData?.data.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                                 />
                               </TableCell>
                               {/* Table headers */}
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'date'}
-                                  direction={orderBy === 'date' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('date')}
+                                  active={orderBy === 'purchaseDate'}
+                                  direction={orderBy === 'purchaseDate' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('purchaseDate')}
                                 >
                                   Date
                                 </TableSortLabel>
@@ -454,11 +263,11 @@ const ManagePurchaseList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'customer'}
-                                  direction={orderBy === 'customer' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('customer')}
+                                  active={orderBy === 'purchaseStatus'}
+                                  direction={orderBy === 'purchaseStatus' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('purchaseStatus')}
                                 >
-                                  Customer
+                                  Status
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -472,29 +281,20 @@ const ManagePurchaseList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'status'}
-                                  direction={orderBy === 'status' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('status')}
+                                  active={orderBy === 'supplier'}
+                                  direction={orderBy === 'supplier' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('supplier')}
                                 >
-                                  Status
-                                </TableSortLabel>
+                                  Supplier                                </TableSortLabel>
                               </TableCell>
+                              
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'biller'}
-                                  direction={orderBy === 'biller' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('biller')}
+                                  active={orderBy === 'totalNumberOfProductsBougth'}
+                                  direction={orderBy === 'totalNumberOfProductsBougth' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalNumberOfProductsBougth')}
                                 >
-                                  biller
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'payment'}
-                                  direction={orderBy === 'payment' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('payment')}
-                                >
-                                  payment
+                                  Total Bought
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -503,33 +303,11 @@ const ManagePurchaseList = () => {
                                   direction={orderBy === 'grandTotal' ? order : 'asc'}
                                   onClick={() => handleRequestSort('grandTotal')}
                                 >
-                                  grandTotal
+                                  Total
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'paid'}
-                                  direction={orderBy === 'paid' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('paid')}
-                                >
-                                  paid
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'due'}
-                                  direction={orderBy === 'due' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('due')}
-                                >
-                                  due
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'protein'}
-                                  direction={orderBy === 'protein' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('protein')}
-                                >
+                                <TableSortLabel>
                                   Action
                                 </TableSortLabel>
                               </TableCell>
@@ -538,52 +316,38 @@ const ManagePurchaseList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
+                             {sortedRows?.map((purchase: any) => (         
                                 <TableRow
-                                  key={row.id}
+                                  key={purchase.id}
                                   hover
-                                  onClick={() => handleClick(row.id)}
+                                  onClick={() => handleClick(purchase.id)}
                                   role="checkbox"
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
+                                  aria-checked={isSelected(purchase.id)}
+                                  selected={isSelected(purchase.id)}
                                 >
                                   {/* Checkbox for row selection */}
                                   <TableCell>
-                                    <Checkbox checked={isSelected(row.id)} />
+                                    <Checkbox checked={isSelected(purchase.id)} />
                                   </TableCell>
                                   {/* Data cells */}
-                                  <TableCell>{row.date}</TableCell>
-                                  <TableCell>{row.reference}</TableCell>
-                                  <TableCell>{row.customer}</TableCell>
-                                  <TableCell>{row.warehouse}</TableCell>
+                                  <TableCell>{purchase.purchaseDate}</TableCell>
+                                  <TableCell>{purchase.referenceNumber}</TableCell>
                                   <TableCell>
                                     {
-                                      row.status.toLowerCase() === "completed" ? (
-                                        <span className='badge badge-success'>{row.status}</span>
+                                      purchase.purchaseStatus.toLowerCase() === "completed" ? (
+                                        <span className='badge badge-success'>{purchase.purchaseStatus}</span>
                                       ) : (
-                                        row.status.toLowerCase() === "draft" ? (
-                                          <span className='badge badge-danger'>{row.status}</span>
-                                        ) : (<span className='badge badge-teal'>{row.status}</span>)
+                                        purchase.purchaseStatus.toLowerCase() === "draft" ? (
+                                          <span className='badge badge-danger'>{purchase.purchaseStatus}</span>
+                                        ) : (<span className='badge badge-teal'>{purchase.purchaseStatus}</span>)
                                       )
                                     }
                                   </TableCell>
-                                  <TableCell>{row.biller}</TableCell>
-                                  <TableCell>
-                                    {
-                                      row.payment.toLowerCase() === "paid" ? (
-                                        <span className='badge badge-success'>{row.payment}</span>
-                                      ) : (
-                                        row.payment.toLowerCase() === "unpaid" ? (
-                                          <span className='badge badge-danger'>{row.payment}</span>
-                                        ) : (<span className='badge badge-teal'>{row.payment}</span>)
-                                      )
-                                    }
-                                  </TableCell>
-                                  <TableCell>${row.grandTotal}</TableCell>
-                                  <TableCell>${row.paid}</TableCell>
-                                  <TableCell>${row.due}</TableCell>
+                                  <TableCell>{purchase.warehouseName}</TableCell>
+                                  <TableCell>{purchase.supplierName}</TableCell>
+                                  <TableCell>{purchase.totalNumberOfProductsBought}</TableCell>
+                                  <TableCell>{MoneyFormat.format(purchase.totalAmountBought)}</TableCell>
+                                  
                                   <TableCell>
                                     <div className="inventual-list-action-style">
                                       <PopupState variant="popover">
@@ -593,11 +357,11 @@ const ManagePurchaseList = () => {
                                               Action <i className="fa-sharp fa-solid fa-sort-down"></i>
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-eye"></i><span onClick={handleViewPurchaseDialogOpen}>View Purchase</span></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/trading/purchase/addpurchase'>View Purchase</Link></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><span onClick={handleGenerateInvoiceDialogOpen}>Generate Invoice</span></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-circle-plus"></i><span onClick={handleAddPaymentDialogOpen}>Add Payment</span></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-money-check-dollar"></i><span onClick={handleViewPaymentDialogOpen}>View Payment</span></MenuItem>
+                                              <MenuItem onClick={() => {handleViewPurchaseDialogOpen(purchase.id);  popupState.close()}}> <i className="fa-regular fa-eye"></i>View Purchase</MenuItem>
+                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/trading/sales/newsale'>View Purchase</Link></MenuItem>
+                                              {/* <MenuItem onClick={() => {handleGenerateInvoiceDialogOpen();  popupState.close()}}> <i className="fa-regular fa-print"></i>Generate Invoice</MenuItem>
+                                              <MenuItem onClick={() => {handleAddPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-circle-plus"></i>Add Purchase</MenuItem>
+                                              <MenuItem onClick={() => {handleViewPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-money-check-dollar"></i>View Payment</MenuItem> */}
                                               <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
                                           </React.Fragment>
@@ -616,13 +380,12 @@ const ManagePurchaseList = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                   component="div"
+                   count={purchaseData?.totalCount || 0}
+                   rowsPerPage={currentPageSize}
+                   page={currentPageNumber - 1}
+                   onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
+                   onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
               </div>
@@ -630,7 +393,7 @@ const ManagePurchaseList = () => {
           </div>
         </div>
       </div>
-      <ViewPurchasePopup open={openViewPurchaseDialog} handleViewPurchaseDialogClose={handleViewPurchaseDialogClose} />
+      <ViewPurchasePopup  purchaseId={selectedPurchaseId} open={openViewPurchaseDialog} handleViewPurchaseDialogClose={handleViewPurchaseDialogClose} />
       <TradingPurchaseListInvoice open={openeGenerateInvoiceDialog} handleGenerateInvoiceDialogClose={handleGenerateInvoiceDialogClose} />
       <PaymentManageListPopup open={openeAddPaymentDialog} handleAddPaymentDialogClose={handleAddPaymentDialogClose} />
       <PaymentViewListPopup open={openeViewPaymentDialog} handleViewPaymentDialogClose={handleViewPaymentDialogClose} />

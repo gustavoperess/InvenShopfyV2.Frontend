@@ -7,6 +7,7 @@ import Image from 'next/image';
 
 interface GenerateInvoicePopupProps {
     open: boolean;
+    purchaseId: number | undefined;
     handleViewPurchaseDialogClose: () => void;
 }
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -29,7 +30,7 @@ interface GenerateInvoiceListData {
     discount: number;
     subTotal: number;
 }
-const ViewPurchasePopup = ({ open, handleViewPurchaseDialogClose }: GenerateInvoicePopupProps) => {
+const ViewPurchasePopup = ({ open, purchaseId, handleViewPurchaseDialogClose }: GenerateInvoicePopupProps) => {
 
     const sampleData: GenerateInvoiceListData[] = [
         {

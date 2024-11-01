@@ -10,11 +10,11 @@ export const purchaseApi = createApi({
         credentials: 'include', 
     }),
     endpoints: (builder) => ({
-        getAllPurchases: builder.query<any, number>({
-            query: (pageNumber) => ({
-                url: "allpurchases",
+        getAllPurchases:builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize }) => ({
+                url: "",
                 method: "GET",
-                params: { pageNumber}
+                params: { pageNumber, pageSize}
             }),
         }),
         createPurchase: builder.mutation<any, any>({

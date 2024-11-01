@@ -8,6 +8,7 @@ import Image from 'next/image';
 
 interface GenerateInvoicePopupProps {
     open: boolean;
+    saleId: number | undefined;
     handleViewSaleDialogClose: () => void;
 }
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -27,7 +28,7 @@ let MoneyFormat = new Intl.NumberFormat('en-US', {
   
 
 
-const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: { open: boolean; saleId: number | undefined; handleViewSaleDialogClose: () => void }) => {
+const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: GenerateInvoicePopupProps) => {
     const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetSalesBySaleIdQuery(
         saleId as number, 
         { skip: saleId === undefined }
