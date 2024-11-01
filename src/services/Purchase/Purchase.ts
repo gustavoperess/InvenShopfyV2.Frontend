@@ -12,14 +12,14 @@ export const purchaseApi = createApi({
     endpoints: (builder) => ({
         getAllPurchases: builder.query<any, number>({
             query: (pageNumber) => ({
-                url: "Purchase",
+                url: "allpurchases",
                 method: "GET",
                 params: { pageNumber}
             }),
         }),
         createPurchase: builder.mutation<any, any>({
             query: (body) => ({
-                url: `Purchase`,
+                url: `create-purchase`,
                 method: 'POST',
                 body,
             }),

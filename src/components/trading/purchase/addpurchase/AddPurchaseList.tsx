@@ -46,6 +46,7 @@ const AddPurchaseList = () => {
     const [purchaseDate, setPurchaseDate] = useState(new Date());
     const [warehouse, setWarehouse] = useState<number | null>();
     const [selectWarehouse, setSelectWarehosue] = useState('')
+    const [selectedSupplier, setSelectedSupplier] = useState('')
     const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
     const [activeItems, setActiveItems] = useState<TProduct[]>([]);
     const [purchaseStatus, setPurchaseStatus] = useState<string>("");
@@ -160,11 +161,6 @@ const AddPurchaseList = () => {
         }
     }
 
-
-
-
-
-
     // calculate total sum of all subtotals
     const calculateTotal = () => {
         return productInformation.reduce((total, item) => {
@@ -204,9 +200,17 @@ const AddPurchaseList = () => {
             productIdPlusQuantity[product.id] = product.quantityBought; 
         });
         const formData = {purchaseDate: date, productIdPlusQuantity, totalNumberOfProducts: calculateTheAmountOfProductsAdded(), 
-            warehouseId: selectWarehouse, supplier, purchaseStatus, shippingCost, purchaseNote, TotalAmountBought: calculateGrandTotal() }
+            warehouseId: selectWarehouse, supplierId: selectedSupplier, purchaseStatus, shippingCost, purchaseNote, TotalAmountBought: calculateGrandTotal() }
+      
         try {
             await addPurchase(formData).unwrap();
+            setPurchaseDate(new Date())
+            setSelectWarehosue("")
+            setSelectedSupplier("")
+            setShippingCost(undefined)
+            setPurchaseStatus("")
+            setProductInformation([])
+            setPurchaseNote("")
             toast.success("Purchase Created successfully!");
 
         } catch {
@@ -333,8 +337,8 @@ const AddPurchaseList = () => {
                                                         select
                                                         label="Select"
                                                         required
-                                                        value={supplier}
-                                                        onChange={(e) => setSupplier(e.target.value)}
+                                                        value={selectedSupplier}
+                                                        onChange={(e) => setSelectedSupplier(e.target.value)}
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
