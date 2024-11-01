@@ -1,4 +1,4 @@
-import AddExpenseList from '@/components/expesne/addexpense/AddExpenseList';
+import ExpenseList from '@/components/expense/expenselist/ExpenseList';
 import BreadCrumb from '@/components/sharedComponents/BreadCrumb';
 import Wrapper from '@/layout/DefaultWrapper';
 import React from 'react';
@@ -8,8 +8,8 @@ const page = () => {
         <>
             <Wrapper>
                 <main>
-                    <BreadCrumb title='Add Expense' subTitleOne='Expense' subTitleTwo='Add Expense' />
-                    <AddExpenseList />
+                    <BreadCrumb title='Expense List' subTitleOne='Sale' subTitleTwo='Expense List' />
+                    <ExpenseList/>
                 </main>
             </Wrapper>
         </>

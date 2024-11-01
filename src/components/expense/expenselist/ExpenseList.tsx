@@ -280,7 +280,7 @@ const ExpenseList = () => {
       <div className="inventual-content-area px-4 sm:px-7">
         <div className="inventual-report-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
           <div className="inventual-product-top-btn flex flex-wrap gap-5 mb-7">
-            <Link className='inventual-btn secondary-btn' href="/expesne/addexpense"><span><i className="fa-regular fa-circle-plus"></i></span>Add Expense</Link>
+            <Link className='inventual-btn secondary-btn' href="/expense/addexpense"><span><i className="fa-regular fa-circle-plus"></i></span>Add Expense</Link>
           </div>
           <div className="inventual-table-header-search-area">
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">
@@ -471,7 +471,7 @@ const ExpenseList = () => {
                                               Action <i className="fa-sharp fa-solid fa-sort-down"></i>
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/expesne/addexpense'>Edit</Link></MenuItem>
+                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/expense/addexpense'>Edit</Link></MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-circle-plus"></i><span onClick={handleAddPaymentDialogOpen}>Add Payment</span></MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-money-check-dollar"></i><span onClick={handleViewPaymentDialogOpen}>View Payment</span></MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>

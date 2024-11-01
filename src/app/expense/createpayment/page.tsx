@@ -1,4 +1,4 @@
-import CreatePayment from '@/components/expesne/createpayment/CreatePayment';
+import CreatePayment from '@/components/expense/createpayment/CreatePayment';
 import BreadCrumb from '@/components/sharedComponents/BreadCrumb';
 import Wrapper from '@/layout/DefaultWrapper';
 import React from 'react';

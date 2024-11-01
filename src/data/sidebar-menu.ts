@@ -95,25 +95,25 @@ export const menuData: MenuItem[] = [
         ],
     },
     {
-        label: "Expesne",
+        label: "Expense",
         routeLink: "#",
         iconClas: "fa-light fa-ballot",
         subItems: [
             {
                 label: "Add Expense",
-                routeLink: "/expesne/addexpense",
+                routeLink: "/expense/addexpense",
             },
             {
                 label: "Expense List",
-                routeLink: "/expesne/expenselist",
+                routeLink: "/expense/expenselist",
             },
             {
                 label: "Expense Category",
-                routeLink: "/expesne/expensecategory",
+                routeLink: "/expense/expensecategory",
             },
             {
                 label: "Payment Expense",
-                routeLink: "/expesne/createpayment",
+                routeLink: "/expense/createpayment",
             },
         ],
     },

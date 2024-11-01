@@ -1,7 +1,7 @@
 import React from 'react';
 import BreadCrumb from '@/components/sharedComponents/BreadCrumb';
 import Wrapper from '@/layout/DefaultWrapper';
-import ExpenseCategory from './../../../components/expesne/expensecategory/ExpenseCategory';
+import ExpenseCategory from './../../../components/expense/expensecategory/ExpenseCategory';
 
 const page = () => {
     return (
