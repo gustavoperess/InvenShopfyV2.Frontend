@@ -24,6 +24,12 @@ export const purchaseApi = createApi({
                 body,
             }),
         }),
+        getPurchaseById: builder.query<any, number>({
+            query: (purchaseId) => ({
+                url: `${purchaseId}`,
+                method: 'GET',
+            }),
+        }),
         deletePurchase: builder.mutation<any, number>({
             query: (id) => ({
                 url: `Purchase/${id}`,
@@ -34,4 +40,4 @@ export const purchaseApi = createApi({
 });
 
 
-export const { useCreatePurchaseMutation, useGetAllPurchasesQuery, useDeletePurchaseMutation } = purchaseApi;
+export const { useCreatePurchaseMutation, useGetAllPurchasesQuery, useDeletePurchaseMutation, useGetPurchaseByIdQuery } = purchaseApi;

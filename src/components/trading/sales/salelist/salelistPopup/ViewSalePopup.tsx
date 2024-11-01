@@ -48,7 +48,7 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: GenerateInvo
             
     }, {totalAmountBeforeTax: 0})
 
-
+    console.log(salesData)
 
     return (
         <>

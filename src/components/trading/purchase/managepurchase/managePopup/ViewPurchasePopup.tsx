@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import logo from '../../../../../../public/assets/img/logo/login-logo.png';
 import Image from 'next/image';
+import { useGetPurchaseByIdQuery } from '@/services/Purchase/Purchase';
 
 interface GenerateInvoicePopupProps {
     open: boolean;
@@ -19,48 +20,27 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-interface GenerateInvoiceListData {
-    sl: string;
-    product: string;
-    batchNo: string;
-    unit: string;
-    unitPrice: number;
-    quantity: number;
-    tax: number;
-    discount: number;
-    subTotal: number;
-}
+
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'GBP',
+  });
+  
+
 const ViewPurchasePopup = ({ open, purchaseId, handleViewPurchaseDialogClose }: GenerateInvoicePopupProps) => {
+    const { data: purchaseData, error: purchaseErrorError, isLoading: purchaseLoading, refetch } = useGetPurchaseByIdQuery(
+        purchaseId as number, 
+        { skip: purchaseId === undefined }
+    );
 
-    const sampleData: GenerateInvoiceListData[] = [
-        {
-            sl: '01',
-            product: '3D Cannon Camera',
-            batchNo: '30566205',
-            unit: 'Pc',
-            unitPrice: 25,
-            quantity: 1,
-            tax: 10,
-            discount: 5,
-            subTotal: 23,
-        },
-        {
-            sl: '02',
-            product: 'Green Lemon',
-            batchNo: '30566206',
-            unit: 'Kg',
-            unitPrice: 70,
-            quantity: 1,
-            tax: 0,
-            discount: 0,
-            subTotal: 60,
-        },
-    ]
+    useEffect(() => {
+        if (purchaseId !== undefined) {
+            refetch();
+        }
+    }, [purchaseId, refetch]);
+    
 
-    const dummyData = (e: any) => {
-        e.preventDefault();
-    };
-
+ 
     return (
         <>
             <div className='inventual-common-modal'>
@@ -71,7 +51,6 @@ const ViewPurchasePopup = ({ open, purchaseId, handleViewPurchaseDialogClose }: 
                 >
                     <DialogContent dividers className='no-border'>
                         <div className='inventual-common-modal-width width-full'>
-                            <form onSubmit={dummyData}>
                                 <div className="inventual-invoice-popup-area">
                                     <div className="inventual-invoice-popup-logo text-center mt-7 mb-10">
                                         <Image src={logo} style={{ width: 'auto', height: 'auto' }} alt="logo img" />
@@ -88,53 +67,43 @@ const ViewPurchasePopup = ({ open, purchaseId, handleViewPurchaseDialogClose }: 
                                                         <th>Unit</th>
                                                         <th>Unit Price</th>
                                                         <th>Qty</th>
-                                                        <th>Tax</th>
-                                                        <th>Discount</th>
                                                         <th>Sub Total</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        sampleData.length > 0 ? (
-                                                            sampleData.map((product, index) => <tr key={index}>
-                                                                <td>{product.sl}</td>
-                                                                <td>{product.product}</td>
-                                                                <td>{product.batchNo}</td>
-                                                                <td>{product.unit}</td>
-                                                                <td>${product.unitPrice}</td>
-                                                                <td>{product.quantity}</td>
-                                                                <td>{product.tax}%</td>
-                                                                <td>{product.discount}%</td>
-                                                                <td>${product.subTotal}</td>
+                                                        purchaseData?.data != undefined ? (
+                                                            purchaseData?.data.map((purchaseDate: any, index: any) => <tr key={index}>
+                                                                <td>{purchaseDate.productId}</td>
+                                                                <td>{purchaseDate.productName}</td>
+                                                                <td>{purchaseDate.referenceNumber}</td>
+                                                                <td>{purchaseDate.unitShortName}</td>
+                                                                <td>${purchaseDate.productPrice}</td>
+                                                                <td>{purchaseDate.totalQuantityBoughtPerProduct}</td>
+                                                                <td>{MoneyFormat.format(purchaseDate.totalPricePaidPerProduct)}</td>
                                                             </tr>)
                                                         ) : <tr>
                                                             <td colSpan={9} className='text-center'>Data not found</td>
                                                         </tr>
                                                     }
                                                     <tr>
-                                                        <td colSpan={6}><span className='font-semibold text-heading'>Total = </span></td>
-                                                        <td><span className='font-semibold text-heading'>$8.00</span></td>
-                                                        <td><span className='font-semibold text-heading'>$10.00</span></td>
-                                                        <td><span className='font-semibold text-heading'>$93.00</span></td>
+                                                        <td colSpan={6}>Shipping Cost : </td>
+                                                        <td>{MoneyFormat.format(purchaseData?.data[0].shippingCost)}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}>Order Discount : </td>
-                                                        <td>$-0.00</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colSpan={8}>Order Tax : </td>
+                                                        <td colSpan={6}>Order Tax : </td>
                                                         <td>$3 (2%)</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}><span className='font-semibold text-heading'>Grand Total : </span></td>
-                                                        <td> <span className='font-semibold text-heading'>$96.00</span></td>
+                                                        <td colSpan={6}><span className='font-semibold text-heading'>Grand Total : </span></td>
+                                                        <td> <span className='font-semibold text-heading'>{MoneyFormat.format(purchaseData?.data[0].totalAmount)}</span></td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}>Paid Amount : </td>
-                                                        <td>$96.00</td>
+                                                        <td colSpan={6}>Paid Amount : </td>
+                                                        <td>{MoneyFormat.format(purchaseData?.data[0].totalAmount)}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}>Due Amount : </td>
+                                                        <td colSpan={6}>Due Amount : </td>
                                                         <td>$0.00</td>
                                                     </tr>
                                                 </tbody>
@@ -145,10 +114,10 @@ const ViewPurchasePopup = ({ open, purchaseId, handleViewPurchaseDialogClose }: 
                                     <div className="inventual-invoice-popup-address pt-5 pb-1">
                                         <div className="inventual-invoice-popup-address-inner text-start">
                                             <ul>
-                                                <li>Sales Note : <span>N/A</span></li>
-                                                <li >Remarks : <span>N/A</span></li>
-                                                <li>Created by : <span>Richard Joseph</span></li>
-                                                <li>Email : <span>info@example.com</span></li>
+                                                <li>Sales Note : <span>{purchaseData?.data[0].purchaseNote}</span></li>
+                                                <li >Remarks : <span>{purchaseData?.data[0].purchaseNote}</span></li>
+                                                <li>Created by : <span>{purchaseData?.data[0].supplierName}</span></li>
+                                                <li><span>{purchaseData?.data[0].supplierEmail}</span></li> 
                                             </ul>
                                         </div>
                                     </div>
@@ -169,7 +138,6 @@ const ViewPurchasePopup = ({ open, purchaseId, handleViewPurchaseDialogClose }: 
                                         </button>
                                     </div>
                                 </div>
-                            </form>
                         </div>
                     </DialogContent>
                 </BootstrapDialog>

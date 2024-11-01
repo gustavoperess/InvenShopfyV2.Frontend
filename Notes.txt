@@ -2,3 +2,4 @@
 [IMPROVEMENTS] - Check if it is possible to track if user is currently online/logged in the account
 [Add] - add enpoint to delete current user
 [add] - add enpoint for the roles to add in the adduser and registration-form pages
+[FIX] - Fix the backend Sale search by ID, it is returning  list instead of an array
