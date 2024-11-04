@@ -23,6 +23,7 @@ module.exports = {
         'teal': '#611BCB',
         'danger': '#FF5066',
         'warning': '#FF9720',
+        "grayTwo": {100: '#e0e0e0',  500: '#6b7280'}
     },
     },
 

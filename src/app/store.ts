@@ -3,6 +3,7 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import { productsApi } from '@/services/Product/Product';
 import { authApi } from '@/services/Authentication/Authentication';
 import { salesApi } from '@/services/Sales/Sales';
+import { salesReturnApi } from '@/services/Sales/SaleReturn';
 import { warehouse } from '@/services/Warehouse/Warehouse';
 import { productsUnitApi } from '@/services/Product/Unit';
 import {productsBrandApi} from "@/services/Product/Brand";
@@ -17,7 +18,7 @@ import { usersApi } from '@/services/User/User';
 const authApis = [authApi]; 
 const warehouseApis = [warehouse];
 const productsApis = [productsApi, productsUnitApi, productsBrandApi, productsCategoryApi];
-const salesApis = [salesApi];
+const salesApis = [salesApi, salesReturnApi];
 const peopleApis = [billerApi, customerApi, supplierApi]
 const purchaseApis = [purchaseApi]
 const roleApis = [roleApi]
