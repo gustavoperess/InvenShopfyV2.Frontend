@@ -14,13 +14,14 @@ import { purchaseApi } from '@/services/Purchase/Purchase';
 import { supplierApi } from '@/services/People/Supplier';
 import { roleApi } from '@/services/Role/Role';
 import { usersApi } from '@/services/User/User';
+import { purchaseReturnApi } from '@/services/Purchase/PurchaseReturn';
 
 const authApis = [authApi]; 
 const warehouseApis = [warehouse];
 const productsApis = [productsApi, productsUnitApi, productsBrandApi, productsCategoryApi];
 const salesApis = [salesApi, salesReturnApi];
 const peopleApis = [billerApi, customerApi, supplierApi]
-const purchaseApis = [purchaseApi]
+const purchaseApis = [purchaseApi, purchaseReturnApi]
 const roleApis = [roleApi]
 const userApis = [usersApi]
 
