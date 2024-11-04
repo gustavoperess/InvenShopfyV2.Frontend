@@ -9,6 +9,7 @@ export const purchaseApi = createApi({
         baseUrl: `${BACKEND_URL}/v2/Purchase/`,
         credentials: 'include', 
     }),
+    tagTypes: ['Purchases'],  
     endpoints: (builder) => ({
         getAllPurchases:builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
@@ -16,6 +17,7 @@ export const purchaseApi = createApi({
                 method: "GET",
                 params: { pageNumber, pageSize}
             }),
+            providesTags: ['Purchases'], 
         }),
         createPurchase: builder.mutation<any, any>({
             query: (body) => ({
@@ -23,6 +25,7 @@ export const purchaseApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['Purchases'],  
         }),
         getPurchaseById: builder.query<any, number>({
             query: (purchaseId) => ({

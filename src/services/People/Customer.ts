@@ -9,6 +9,7 @@ export const customerApi = createApi({
         baseUrl: `${BACKEND_URL}/v2/people`,
         credentials: 'include',
     }),
+    tagTypes: ['Customers'],  
     endpoints: (builder) => ({
         getAllCustomers: builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
@@ -16,6 +17,7 @@ export const customerApi = createApi({
                 method: "GET",
                 params: { pageNumber, pageSize}
             }),
+            providesTags: ['Customers'], 
         }),
         addCustomer: builder.mutation<any, any>({
             query: (body) => ({
@@ -23,6 +25,7 @@ export const customerApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['Customers'],  
         }),
         deleteCustomer: builder.mutation<any, number>({
             query: (id) => ({

@@ -9,6 +9,7 @@ export const supplierApi = createApi({
         baseUrl: `${BACKEND_URL}/v2/people`,
         credentials: 'include',
     }),
+    tagTypes: ['Suppliers'],  
     endpoints: (builder) => ({
         getAllSuppliers: builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
@@ -16,6 +17,7 @@ export const supplierApi = createApi({
                 method: "GET",
                 params: { pageNumber, pageSize}
             }),
+            providesTags: ['Suppliers'], 
         }),
         addSupplier: builder.mutation<any, any>({
             query: (body) => ({
@@ -23,6 +25,7 @@ export const supplierApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['Suppliers'],  
         }),
         deleteSupplier: builder.mutation<any, number>({
             query: (id) => ({

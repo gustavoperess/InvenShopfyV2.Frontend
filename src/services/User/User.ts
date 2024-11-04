@@ -8,12 +8,14 @@ export const usersApi = createApi({
         baseUrl: `${BACKEND_URL}/v2/identity/`,
         credentials: 'include', 
     }),
+    tagTypes: ['Users'],  
     endpoints: (builder) => ({
         getAllUsers:builder.query<any, void>({
             query: () => ({
                 url: "get-user-custom",
                 method: "GET",
             }),
+            providesTags: ['Users'], 
         }),
         deleteUsers: builder.mutation<any, number>({
             query: (id) => ({
@@ -27,6 +29,7 @@ export const usersApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['Users'],  
         }),
     }),
     

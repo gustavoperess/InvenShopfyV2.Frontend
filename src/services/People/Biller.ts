@@ -9,6 +9,7 @@ export const billerApi = createApi({
         baseUrl: `${BACKEND_URL}/v2/people`,
         credentials: 'include',
     }),
+    tagTypes: ['Billers'],  
     endpoints: (builder) => ({
         getAllBillers: builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
@@ -16,6 +17,7 @@ export const billerApi = createApi({
                 method: "GET",
                 params: { pageNumber, pageSize}
             }),
+            providesTags: ['Billers'], 
         }),
         addBiller: builder.mutation<any, any>({
             query: (body) => ({
@@ -23,6 +25,7 @@ export const billerApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['Billers'],  
         }),
         deleteBiller: builder.mutation<any, number>({
             query: (id) => ({
