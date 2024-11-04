@@ -119,14 +119,14 @@ const NewSaleList = () => {
     }, [debouncedSearchTerm, productSuggestionsData, error]);
 
     useEffect(() => {
-        if (billerData && billerData.data.length > 0 && !biller) {
-            setBiller(billerData.data[0].id);
+        if (billerData && billerData?.data.length > 0 && !biller) {
+            setBiller(billerData?.data[0].id);
         }
-        if (warehouse && warehouseData.data.length > 0 && !warehouse) {
-            setWarehouse(warehouseData.data[0].id);
+        if (warehouse && warehouseData?.data.length > 0 && !warehouse) {
+            setWarehouse(warehouseData?.data[0].id);
         }
-        if (customerData && customerData.data.length > 0 && !customer) {
-            setCustomer(customerData.data[1].id);
+        if (customerData && customerData?.data.length > 0 && !customer) {
+            setCustomer(customerData?.data[0].id);
         }
 
     }, [billerData, biller, warehouseData, warehouse, customerData, customer]);

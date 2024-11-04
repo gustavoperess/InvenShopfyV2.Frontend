@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Paper,
   Table,
@@ -45,6 +45,12 @@ const WarehouseList = () => {
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
   const [deleteWarehouse] = useDeleteWarehouseMutation();
   const { data: warehouseData, error: warehouseError, isLoading: warehouseLoading, refetch } = useGetAllWarehousesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+  
+  useEffect(() => {
+    if (warehouseData) {
+      setWarehouse(warehouseData.data);
+    }
+  }, [warehouseData]);
 
 
   // handle pagination 
