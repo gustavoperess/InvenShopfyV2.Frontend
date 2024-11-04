@@ -9,12 +9,14 @@ export const productsApi = createApi({
         baseUrl: `${BACKEND_URL}/v2/products`,
         credentials: 'include',
     }),
+    tagTypes: ['Products'],  
     endpoints: (builder) => ({
             getAllProducts: builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
                 url: `Product`,
                 params: { pageNumber, pageSize },
             }),
+            providesTags: ['Products'], 
         }),
         addProduct: builder.mutation<any, any>({
             query: (body) => ({
@@ -22,6 +24,7 @@ export const productsApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['Products']
         }),
         deleteProduct: builder.mutation<any, number>({
             query: (id) => ({

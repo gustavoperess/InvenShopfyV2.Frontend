@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Paper,
   Table,
@@ -51,6 +51,7 @@ const SaleList = () => {
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
   const [selectedSaleId, setSelectedSaleId] = useState<number | undefined>(); 
   const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetAllSalesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+
 
 
     // handle pagination 

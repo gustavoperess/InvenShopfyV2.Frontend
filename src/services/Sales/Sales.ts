@@ -8,6 +8,7 @@ export const salesApi = createApi({
         baseUrl: `${BACKEND_URL}/v2/Sale/`,
         credentials: 'include', 
     }),
+    tagTypes: ['Sales'],  
     endpoints: (builder) => ({
         getTotalSalesAmount: builder.query<any, void>({
             query: () => 'totalamount',
@@ -18,6 +19,7 @@ export const salesApi = createApi({
                 method: "GET",
                 params: { pageNumber, pageSize}
             }),
+            providesTags: ['Sales'], 
         }),
         deleteSale: builder.mutation<any, number>({
             query: (id) => ({
@@ -31,6 +33,7 @@ export const salesApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['Sales'],  
         }),
         getSalesBySaleId: builder.query<any, number>({
             query: (saleId) => ({

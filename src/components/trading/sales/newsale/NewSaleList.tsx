@@ -220,8 +220,6 @@ const NewSaleList = () => {
         }
     };
 
-
-
     // calculate order tax
     const calculateTheAmountOfProductsAdded = () => {
         if (productInformation.length > 0) {
@@ -320,6 +318,7 @@ const NewSaleList = () => {
                 setProductInformation([])
                 setDiscount(undefined)
                 setShippingCost(undefined)
+                
         
         } catch (error: any) {
             if (error?.data?.message) {
