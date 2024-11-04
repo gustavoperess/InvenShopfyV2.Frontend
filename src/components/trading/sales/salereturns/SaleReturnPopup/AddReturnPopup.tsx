@@ -22,6 +22,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 interface AddReturnPopupProps {
     open: boolean;
     handleReturnDialogClose: () => void;
+    refetch: () => void;
 }
 
 interface ReferenceInterface {
@@ -34,7 +35,7 @@ interface ReferenceInterface {
 }
 
 
-const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialogClose }) => {
+const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialogClose, refetch }) => {
     const [referenceNumber, setReferenceNumber] = useState<string>("");
     const [billerName, setBillerName] = useState<string>("");
     const [warehouseName, setWarehouseName] = useState<string>("");
@@ -120,6 +121,7 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
                 seTotalAmount("")
                 setRemarkStatus("")
                 setReturnNote("")
+                refetch();
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);

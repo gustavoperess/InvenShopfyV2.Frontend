@@ -21,10 +21,22 @@ export const salesReturnApi = createApi({
                 body,
             }),
         }),
-
+        getAllSalesReturn:builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize }) => ({
+                url: "",
+                method: "GET",
+                params: { pageNumber, pageSize}
+            }),
+        }),
+        deleteSalesReturn: builder.mutation<any, number>({
+            query: (id) => ({
+                url: `${id}`,
+                method: 'DELETE',
+            }),
+        }),
     }),
     
 });
 
 
-export const { useGetSalesReturnByNameQuery, useCreateSaleReturnMutation } = salesReturnApi;
+export const { useGetSalesReturnByNameQuery, useCreateSaleReturnMutation, useGetAllSalesReturnQuery, useDeleteSalesReturnMutation } = salesReturnApi;
