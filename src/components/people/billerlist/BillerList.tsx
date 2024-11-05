@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Paper,
   Table,
@@ -47,8 +47,6 @@ const BillerList = () => {
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [biller, setBiller] = useState<number>(0);
   const [open, setOpen] = React.useState(false);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
@@ -147,7 +145,7 @@ const BillerList = () => {
     }
     return 0;
   });
-  console.log(billerData)
+
 
   return (
 

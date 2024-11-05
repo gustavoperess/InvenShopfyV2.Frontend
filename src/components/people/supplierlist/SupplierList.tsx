@@ -142,8 +142,7 @@ const SupplierList = () => {
     }
     return 0;
   });
-  console.log(supplierData)
-
+  
   return (
 
     <>

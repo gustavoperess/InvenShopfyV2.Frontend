@@ -186,7 +186,6 @@ const PurchaseReturnsList = () => {
     return 0;
   });
 
-  console.log(purchaseReturnData)
   return (
 
     <>

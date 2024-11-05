@@ -146,7 +146,6 @@ const UserList = () => {
       return 0;
     });
 
-    console.log(userData)
   return (
 
     <>

@@ -318,8 +318,6 @@ const NewSaleList = () => {
                 setProductInformation([])
                 setDiscount(undefined)
                 setShippingCost(undefined)
-                
-        
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);

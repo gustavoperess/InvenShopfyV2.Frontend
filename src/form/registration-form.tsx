@@ -78,7 +78,7 @@ const RegistrationFrom = () => {
         e.preventDefault();
         if (password == confirmPassword) {
             const userData = { name, email, phoneNumber: phone, roleName: role, gender, userName, passwordHash: password }
-            console.log(userData)
+        
             try {
                 await registerUser(userData).unwrap();
                 toast.success("User Created successfully!");

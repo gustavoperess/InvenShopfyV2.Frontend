@@ -1,43 +1,102 @@
 "use client"
-import React, { useState } from 'react';
-import { MenuItem, TextField } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { MenuItem, TextField, FormControl, InputAdornment } from '@mui/material';
+import { NumericFormat } from 'react-number-format';
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
+import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
+import { useGetAllExpenseCategoriesQuery, useGetExpenseCategoryByIdQuery } from '@/services/Expense/ExpenseCategory';
+import { useAddExpenseMutation } from '@/services/Expense/Expense';
+
+
+interface warehouseInterface {
+    id: number;
+    warehouseName: string;
+
+}
+interface mainCategoryData {
+    category: string;
+    id: number;
+    subCategory: string;
+}
+
 
 const AddExpenseList = () => {
-    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [startDate, setStartDate] = useState(new Date());
     const [expense, setExpense] = useState<string>('');
     const [selectWarehouse, setSelectWarehouse] = useState<string>('');
-    const [selectExpenseType, setSelectExpenseType] = useState<string>('');
-    const [selectCategory, setSelectCategory] = useState<string>('');
-    const [voucherNo, setVoucherNo] = useState<string>('');
-    const [amount, setAmount] = useState<number>(0);
+    const [voucherNo, setVoucherNo] = useState<number | ''>('');
+    const [expenseNote, setExpenseNote] = useState<string>("");
     const [selectStatus, setSelectStatus] = useState('');
-    const [selectTax, setSelectTax] = useState<number>(0);
-    const [shipping, setShipping] = useState<number>(0);
+    const [selectedPrice, setSelectedPrice] = useState<number | undefined>();
+    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+    const [currentPageSize, setCurrentPageSize] = useState(25);
+    const [shippingCost, setShippingCost] = useState<number | undefined>();
+    const [selectedCategory, setSelectedCategory] = useState<number | string>("");
+    const [subCategories, setSubCategories] = useState<string[]>([]);
+    const [selectSubCategory, setSelectSubCategory] = useState<string>("");
+    const { data: totalCategoryData } = useGetAllExpenseCategoriesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+    const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+    const { data: subCategoryData } = useGetExpenseCategoryByIdQuery(Number(selectedCategory) || 0, { skip: !selectedCategory });
+    const [createExpense] = useAddExpenseMutation();
 
-    //handle shipping value
-    const handleShippingValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const shippingAmount = parseFloat(event.target.value);
-        setShipping(isNaN(shippingAmount)? 0 : shippingAmount);
-    }
+    useEffect(() => {
+        if (subCategoryData) {
+            setSubCategories(subCategoryData.data.subCategory || []);
+            setSelectSubCategory('');
+        }
+    }, [subCategoryData]);
 
-    const handleExpenseListData = (event: any) => {
+
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedCategory(e.target.value as string);
+
+        if (!subCategories.some(subCategory => subCategory === selectSubCategory)) {
+            setSelectSubCategory('');
+        }
+    };
+    // handle Date
+    const handleDateChange = (date: Date | null) => {
+        setStartDate(date || new Date());
+    };
+    const formatDate = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+
+    const handleExpenseListData = async (event: any) => {
         event.preventDefault();
+        let date = formatDate(startDate)
+
+        const expenseDatatoSubmit = {
+            warehouseId: selectWarehouse, date, expenseDescription: expense, expenseCategoryId: selectedCategory, expenseType: selectSubCategory, voucherNumber: voucherNo, expenseCost: selectedPrice, expenseNote,shippingCost
+        };
+        
         try {
+            await createExpense(expenseDatatoSubmit).unwrap();
             toast.success("Expense Created successfully!");
-            setStartDate(null);
+            setStartDate(new Date());
             setExpense('');
             setSelectWarehouse('');
-            setSelectExpenseType('');
-            setSelectCategory('');
-            setVoucherNo('');
-            setAmount(0);
+            setExpense("")
+            setSelectSubCategory("")
+            setSelectSubCategory("")
+            setVoucherNo("")
+            setSelectedPrice(undefined)
+            setExpenseNote("")
+            setShippingCost(undefined)
             setSelectStatus('');
-            setSelectTax(0);
-            setShipping(0);
-        } catch {
-            toast.error("Failed to create Expense. Please try again later.");
+        } catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error?.data?.message);
+            } 
+            else {
+                // Fallback error message
+                toast.error("Failed to create Expense. Please try again later.");
+            }
         }
     }
 
@@ -48,13 +107,13 @@ const AddExpenseList = () => {
                     <form onSubmit={handleExpenseListData}>
                         <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="inventual-formTwo-field">
                                     <h5>Date</h5>
                                     <div className="inventual-input-field-style">
                                         <DatePicker
                                             selected={startDate}
                                             required
-                                            onChange={(date) => setStartDate(date)}
+                                            onChange={handleDateChange}
                                             showYearDropdown
                                             showMonthDropdown
                                             useShortMonthInDropdown
@@ -63,145 +122,186 @@ const AddExpenseList = () => {
                                             dropdownMode="select"
                                             isClearable
                                             placeholderText="DD/MM/YYYY"
-                                            className="w-full"
                                         />
                                     </div>
                                 </div>
                             </div>
+
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Expense</h5>
-                                    <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            type="text"
-                                            value={expense}
-                                            onChange={(e) => setExpense(e.target.value)}
-                                            placeholder='LED Bulb'
-                                        />
+                                <div className="inventual-select-field">
+                                    <div className="inventual-form-field">
+                                        <h5>Expense Name</h5>
+                                        <div className="inventual-input-field-style">
+                                            <FormControl fullWidth>
+                                                <TextField
+                                                    fullWidth
+                                                    placeholder="Incandescent light bulb"
+                                                    value={expense}
+                                                    required
+                                                    inputProps={{ maxLength: 80 }}
+                                                    onChange={(e) => setExpense(e.target.value)}
+                                                />
+                                            </FormControl>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Warehouse</h5>
-                                    <div className="inventual-select-field-style">
-                                        <TextField
-                                            select
-                                            required
-                                            label="Select"
-                                            value={selectWarehouse}
-                                            onChange={(e) => setSelectWarehouse(e.target.value)}
-                                            defaultValue=""
-                                            SelectProps={{
-                                                displayEmpty: true,
-                                                renderValue: (value: any) => {
-                                                    if (value === '') {
-                                                        return <em>Select Warehouse</em>;
-                                                    }
-                                                    return value;
-                                                },
-                                            }}
-                                        >
-                                            <MenuItem value="">
-                                                <em>Select Warehouse</em>
-                                            </MenuItem>
-                                            <MenuItem value="Canada">Canada</MenuItem>
-                                            <MenuItem value="Mexico">Mexico</MenuItem>
-                                            <MenuItem value="France">France</MenuItem>
-                                            <MenuItem value="Germany">Germany</MenuItem>
-                                        </TextField>
+                                <div className="inventual-select-field">
+                                    <div className="inventual-form-field">
+                                        <h5>Select Warehouse</h5>
+                                        <div className="inventual-select-field-style">
+                                            <TextField
+                                                select
+                                                label="Select"
+                                                required
+                                                value={selectWarehouse}
+                                                onChange={(e) => setSelectWarehouse(e.target.value)}
+                                                SelectProps={{
+                                                    displayEmpty: true,
+                                                    renderValue: (value: any) => {
+                                                        const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
+                                                        return selectedWarehouse ? selectedWarehouse.warehouseName : <em>Select Warehouse</em>;
+                                                    },
+                                                }}>
+                                                {warehouseData && warehouseData.data.length > 0 ? (
+                                                    warehouseData.data.map((warehouse: warehouseInterface) => (
+                                                        <MenuItem key={warehouse.id} value={warehouse.id}>
+                                                            {warehouse.warehouseName}
+                                                        </MenuItem>
+                                                    ))
+                                                ) : (
+                                                    <MenuItem value="">
+                                                        <em>No Warehouse Available</em>
+                                                    </MenuItem>
+                                                )}
+                                            </TextField>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Expense Type</h5>
-                                    <div className="inventual-select-field-style">
-                                        <TextField
-                                            select
-                                            required
-                                            label="Select"
-                                            value={selectExpenseType}
-                                            onChange={(e) => setSelectExpenseType(e.target.value)}
-                                            defaultValue=""
-                                            SelectProps={{
-                                                displayEmpty: true,
-                                                renderValue: (value: any) => {
-                                                    if (value === '') {
-                                                        return <em>Select Expense</em>;
-                                                    }
-                                                    return value;
-                                                },
-                                            }}
-                                        >
-                                            <MenuItem value="">
-                                                <em>Select Expense</em>
-                                            </MenuItem>
-                                            <MenuItem value="Direct Expense">Direct Expense</MenuItem>
-                                            <MenuItem value="Draft Expense">Draft Expense</MenuItem>
-                                        </TextField>
+
+                            <div className="col-span-12 xl:col-span-4 md:col-span-6">
+                                <div className="inventual-select-field">
+                                    <div className="inventual-form-field">
+                                        <h5>Expense Type</h5>
+                                        <div className="inventual-select-field-style">
+                                            <FormControl fullWidth>
+                                                <TextField
+                                                    label="Select"
+                                                    select
+                                                    required
+                                                    helperText="Please select a category"
+                                                    value={selectedCategory}
+                                                    onChange={handleCategoryChange}
+                                                    fullWidth
+                                                    InputLabelProps={{ shrink: true }}
+                                                    SelectProps={{
+                                                        displayEmpty: true,
+                                                        renderValue: (value) => {
+                                                            const selectedCategoryItem = totalCategoryData?.data.find(
+                                                                (category: mainCategoryData) => category.id === Number(value)
+                                                            );
+                                                            return selectedCategoryItem ? selectedCategoryItem.category : <em>Select Category</em>;
+                                                        },
+                                                    }}
+                                                >
+                                                    {totalCategoryData && totalCategoryData.data.length > 0 ? (
+                                                        totalCategoryData.data.map((mainCategory: mainCategoryData) => (
+                                                            <MenuItem key={mainCategory.id} value={mainCategory.id}>
+                                                                {mainCategory.category}
+                                                            </MenuItem>
+                                                        ))
+                                                    ) : (
+                                                        <MenuItem value="">
+                                                            <em>No Categories Available</em>
+                                                        </MenuItem>
+                                                    )}
+                                                </TextField>
+                                            </FormControl>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Category</h5>
-                                    <div className="inventual-select-field-style">
-                                        <TextField
-                                            select
-                                            required
-                                            label="Select"
-                                            value={selectCategory}
-                                            onChange={(e) => setSelectCategory(e.target.value)}
-                                            defaultValue=""
-                                            SelectProps={{
-                                                displayEmpty: true,
-                                                renderValue: (value: any) => {
-                                                    if (value === '') {
-                                                        return <em>Select Type</em>;
-                                                    }
-                                                    return value;
-                                                },
-                                            }}
-                                        >
-                                            <MenuItem value="">
-                                                <em>Select Type</em>
-                                            </MenuItem>
-                                            <MenuItem value="Shoe">Shoe</MenuItem>
-                                            <MenuItem value="Cloth">Cloth</MenuItem>
-                                            <MenuItem value="Bag">Bag</MenuItem>
-                                            <MenuItem value="Computer">Computer</MenuItem>
-                                            <MenuItem value="Laptop">Laptop</MenuItem>
-                                        </TextField>
+                            <div className="col-span-12 xl:col-span-4 md:col-span-6">
+                                <div className="inventual-select-field">
+                                    <div className="inventual-form-field">
+                                        <h5>Sub-Category</h5>
+                                        <div className="inventual-select-field-style">
+                                            <TextField
+                                                select
+                                                label="Select"
+                                                required
+                                                value={selectSubCategory}
+                                                onChange={(e) => setSelectSubCategory(e.target.value)}
+
+                                                SelectProps={{
+                                                    displayEmpty: true,
+                                                    renderValue: (value: any) => {
+                                                        const selectedSubCategory = subCategories.find((subCategory) => subCategory === value);
+                                                        return selectedSubCategory ? selectedSubCategory : <em>Select Sub-Category</em>;
+                                                    },
+                                                }}>
+                                                {subCategories.length > 0 ? (
+                                                    subCategories.map((subCategory) => (
+                                                        <MenuItem key={subCategory} value={subCategory}>
+                                                            {subCategory}
+                                                        </MenuItem>
+                                                    ))
+                                                ) : (
+                                                    <MenuItem value="">
+                                                        <em>No Sub-Categories Available</em>
+                                                    </MenuItem>
+                                                )}
+                                            </TextField>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Voucher No</h5>
-                                    <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={voucherNo}
-                                            onChange={(e) => setVoucherNo(e.target.value)}
-                                            type="number"
-                                            placeholder='748'
-                                        />
+                            <div className="col-span-12 xl:col-span-4 md:col-span-6">
+                                <div className="inventual-select-field">
+                                    <div className="inventual-form-field">
+                                        <h5>Voucher Number</h5>
+                                        <div className="inventual-input-field-style">
+                                            <FormControl fullWidth>
+                                                <TextField
+                                                    fullWidth
+                                                    type="number"
+                                                    required
+                                                    placeholder="2453"
+                                                    variant="outlined"
+                                                    value={voucherNo} 
+                                                    inputProps={{ min: 1, max: 10000000 }}
+                                                    onChange={(e) => setVoucherNo(Number(e.target.value))} />
+                                            </FormControl>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Amount</h5>
-                                    <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={amount}
-                                            onChange={(e) => setAmount(Number(e.target.value))}
-                                            type="number"
-                                            placeholder='4,470'
-                                        />
+                            <div className="col-span-12 xl:col-span-4 md:col-span-6">
+                                <div className="inventual-select-field">
+                                    <div className="inventual-form-field">
+                                        <h5>Expense Cost</h5>
+                                        <div className="inventual-input-field-style">
+                                            <NumericFormat
+                                                customInput={TextField}
+                                                thousandSeparator=","
+                                                required
+                                                decimalSeparator="."
+                                                decimalScale={2}
+                                                fixedDecimalScale
+                                                value={selectedPrice ?? ''} // Display empty if `selectedPrice` is null
+                                                onValueChange={(values) => {
+                                                    setSelectedPrice(values.floatValue);
+                                                }}
+                                                InputProps={{
+                                                    startAdornment: <InputAdornment position="start">£</InputAdornment>,
+                                                }}
+                                                fullWidth
+                                                variant="outlined"
+                                                placeholder="100.00"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -238,58 +338,41 @@ const AddExpenseList = () => {
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                 <div className="inventual-form-field">
-                                    <h5>Tax</h5>
-                                    <div className="inventual-select-field-style">
-                                        <TextField
-                                            select
-                                            required
-                                            label="Select"
-                                            value={selectTax}
-                                            onChange={(e) => setSelectTax(Number(e.target.value))}
-                                            defaultValue=""
-                                            SelectProps={{
-                                                displayEmpty: true,
-                                                renderValue: (value: any) => {
-                                                    if (value === '') {
-                                                        return <em>Select Tax</em>;
-                                                    }
-                                                    return value;
-                                                },
-                                            }}
-                                        >
-                                            <MenuItem value="">
-                                                <em>Select Tax</em>
-                                            </MenuItem>
-                                            <MenuItem value={5}>Vat (5%)</MenuItem>
-                                            <MenuItem value={8}>Vat (8%)</MenuItem>
-                                            <MenuItem value={10}>Vat (10%)</MenuItem>
-                                            <MenuItem value={15}>Vat (15%)</MenuItem>
-                                        </TextField>
-                                    </div>
+                                    <h5>Shipping Cost</h5>
+                                    <NumericFormat
+                                        customInput={TextField}
+                                        thousandSeparator=","
+                                        required
+                                        decimalSeparator="."
+                                        decimalScale={2}
+                                        fixedDecimalScale
+                                        value={shippingCost ?? ''}
+                                        onValueChange={(values) => {
+                                            setShippingCost(values.floatValue);
+                                        }}
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">£</InputAdornment>,
+                                        }}
+                                        inputProps={{ min: 0.01, max: 1000000 }}
+                                        fullWidth
+                                        variant="outlined"
+                                        placeholder="50.00"
+                                    />
                                 </div>
                             </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Shipping</h5>
-                                    <div className="inventual-input-field-style has-icon-outline">
-                                        <input
-                                            required
-                                            value={shipping}
-                                            onChange={handleShippingValue}
-                                            type="text"
-                                            placeholder='0'
-                                        />
+                            <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
+                                        <div className="inventual-input-field-style">
+                                            <TextField
+                                                fullWidth
+                                                multiline
+                                                rows={4}
+                                                value={expenseNote}
+                                                placeholder='Expense Notes'
+                                                inputProps={{ maxLength: 500 }}
+                                                onChange={(e) => setExpenseNote(e.target.value)}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="col-span-12">
-                                <div className="inventual-form-field ">
-                                    <h5>Expense Note:</h5>
-                                    <div className="inventual-input-field-style">
-                                        <textarea placeholder='Write your message'></textarea>
-                                    </div>
-                                </div>
-                            </div>
                             <div className="col-span-12 flex justify-end">
                                 <button type="submit" className="inventual-btn">Create Expense</button>
                             </div>

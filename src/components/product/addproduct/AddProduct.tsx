@@ -56,7 +56,7 @@ const AddProduct = () => {
     useEffect(() => {
         if (subCategoryData) {
             setSubCategories(subCategoryData.data.subCategory || []);
-            setSelectSubCategory(''); 
+            setSelectSubCategory('');
         }
     }, [subCategoryData]);
 
@@ -102,7 +102,7 @@ const AddProduct = () => {
         setSelectedCategory(e.target.value as string);
 
         if (!subCategories.some(subCategory => subCategory === selectSubCategory)) {
-            setSelectSubCategory(''); 
+            setSelectSubCategory('');
         }
     };
 
@@ -113,7 +113,7 @@ const AddProduct = () => {
 
             reader.onloadend = () => {
                 const base64String = reader.result as string; // Cast to string
-                const base64WithoutPrefix = base64String.split(',')[1]; 
+                const base64WithoutPrefix = base64String.split(',')[1];
                 setProductImage(base64WithoutPrefix);
                 // setProductImage(`data:${dataUrl}`);
             };
@@ -140,10 +140,10 @@ const AddProduct = () => {
                                     <div className="col-span-12 xl:col-span-12 lg:col-span-12">
                                         <div className="inventual-select-field">
                                             <div className="inventual-form-field">
-                                            <h5>Product Name</h5>
-                                            <div className="inventual-input-field-style">
+                                                <h5>Product Name</h5>
+                                                <div className="inventual-input-field-style">
                                                     <FormControl fullWidth>
-                                                        <TextField 
+                                                        <TextField
                                                             fullWidth
                                                             placeholder="Macbook Pro*"
                                                             variant="outlined"
@@ -151,10 +151,10 @@ const AddProduct = () => {
                                                             required
                                                             inputProps={{ maxLength: 80 }}
                                                             onChange={(e) => setSelectedTitle(e.target.value)}
-                                                             />
+                                                        />
                                                     </FormControl>
+                                                </div>
                                             </div>
-                                        </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
@@ -210,7 +210,7 @@ const AddProduct = () => {
                                                         required
                                                         value={selectSubCategory}
                                                         onChange={(e) => setSelectSubCategory(e.target.value)}
-                                                     
+
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
@@ -240,14 +240,14 @@ const AddProduct = () => {
                                                 <h5>Product Code</h5>
                                                 <div className="inventual-input-field-style">
                                                     <FormControl fullWidth>
-                                                        <TextField 
+                                                        <TextField
                                                             fullWidth
                                                             type="number"
                                                             required
                                                             placeholder="8952202236"
                                                             variant="outlined"
                                                             inputProps={{ min: 1, max: 10000000 }}
-                                                            onChange={(e) => setSelectedCode(Number(e.target.value))}/>
+                                                            onChange={(e) => setSelectedCode(Number(e.target.value))} />
                                                     </FormControl>
                                                 </div>
                                             </div>
@@ -326,7 +326,7 @@ const AddProduct = () => {
                                             <div className="inventual-form-field">
                                                 <h5>Product Price</h5>
                                                 <div className="inventual-input-field-style">
-                                                     <NumericFormat
+                                                    <NumericFormat
                                                         customInput={TextField}
                                                         thousandSeparator=","
                                                         required
@@ -335,7 +335,7 @@ const AddProduct = () => {
                                                         fixedDecimalScale
                                                         value={selectedPrice ?? ''} // Display empty if `selectedPrice` is null
                                                         onValueChange={(values) => {
-                                                            setSelectedPrice(values.floatValue); 
+                                                            setSelectedPrice(values.floatValue);
                                                         }}
                                                         InputProps={{
                                                             startAdornment: <InputAdornment position="start">£</InputAdornment>,
@@ -398,8 +398,8 @@ const AddProduct = () => {
                                 <div {...getRootProps({ className: 'dropzone-two' })}>
                                     <input {...getInputProps()} />
                                     {productImage ? (
-                                        <img src={`data:image/jpeg;base64,${productImage}`} alt="Selected" className="preview-image" 
-                                        style={{ maxHeight: '450px', width: 'auto', objectFit: 'contain' }}
+                                        <img src={`data:image/jpeg;base64,${productImage}`} alt="Selected" className="preview-image"
+                                            style={{ maxHeight: '450px', width: 'auto', objectFit: 'contain' }}
                                         />
                                     ) : (
                                         <>

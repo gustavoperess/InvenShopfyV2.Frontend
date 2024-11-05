@@ -32,7 +32,7 @@ export const authApi = createApi({
         }),
         userLogOut: builder.mutation({
             query: () => {
-                console.log('Credentials being sent to the backend:');
+        
                 return {
                     url: '/identity/logout-custom',
                     method: 'POST',

@@ -1,8 +1,8 @@
 "use client"
 import React, { useState } from 'react';
-import { MenuItem } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
+import { useAddExepenseCategoryMutation, useGetAllExpenseCategoriesQuery, useDeleteExpenseCategoryMutation } from '@/services/Expense/ExpenseCategory';
 
 import {
   Paper,
@@ -15,91 +15,74 @@ import {
   TableRow,
   TableSortLabel,
   Menu,
+  MenuItem,
+  FormControl,
+  TextField,
+  Typography,
+  Modal,
+  Box,
+  Stack,
+  Button,
 } from '@mui/material';
 import { toast } from 'react-toastify';
 
 interface Data {
   id: number;
-  voucherNo: string;
-  details: string;
-  protein: string;
+  category: string;
+  subCategory: string[];
 }
 
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    voucherNo: 'Hospital/Medical',
-    details: 'Furniture',
-    protein: '',
-  },
-  {
-    id: 2,
-    voucherNo: 'Office Decoration',
-    details: 'Internal Expense',
-    protein: '',
-  },
-  {
-    id: 3,
-    voucherNo: 'Electrics',
-    details: 'Medicines',
-    protein: '',
-  },
-  {
-    id: 4,
-    voucherNo: 'Electronics',
-    details: 'Current',
-    protein: '',
-  },
-  {
-    id: 5,
-    voucherNo: 'Office Appliance',
-    details: 'Speaker',
-    protein: '',
-  },
-  {
-    id: 6,
-    voucherNo: 'Security',
-    details: 'Salary',
-    protein: '',
-  },
-  {
-    id: 7,
-    voucherNo: 'Accessories',
-    details: 'Watch man',
-    protein: '',
-  },
-  {
-    id: 8,
-    voucherNo: 'Transportation',
-    details: 'Computer',
-    protein: '',
-  },
-  {
-    id: 9,
-    voucherNo: 'Miscellaneous',
-    details: 'Sale/Purchase',
-    protein: '',
-  },
-];
 
 const ExpenseCategory = () => {
-
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [open, setOpen] = React.useState(false);
+  const [expenseCategory, setExepenseCategory] = useState<number>(0);
+  const [expenseCategoryMainCategory, setExpenseCategoryMainCategory] = useState<string>("");
+  const [expenseCategorySubCategory, setExpenseCategorySubCategory] = useState<string>("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [deleteExpenseCategory] = useDeleteExpenseCategoryMutation();
+  const [addExpenseCategory] = useAddExepenseCategoryMutation();
+  const { data: expenseCategoryData, refetch } = useGetAllExpenseCategoriesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1);
+    refetch();
   };
 
+  // handle opening delete modal
+  const handleOpenDelete = (expenseCategoryId: number) => {
+    setExepenseCategory(expenseCategoryId);
+    setOpen(true);
+  };
+  // handle closing delete modal
+  const handleCloseDelete = () => {
+    setOpen(false);
+  }
+
+  // handle delete submission
+  const handleDelete = async () => {
+    if (expenseCategory > 0) {
+      try {
+        await deleteExpenseCategory(expenseCategory);
+        setOpen(false);
+        refetch()
+      } catch (err) {
+        console.error('Error deleting the expenseCategory:', err);
+      }
+    }
+  };
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -110,7 +93,7 @@ const ExpenseCategory = () => {
   // Handler for selecting/deselecting all items
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(rows.map((row) => row.id));
+      setSelected(expenseCategoryData?.data.map((brand: any) => brand.id));
     } else {
       setSelected([]);
     }
@@ -141,10 +124,14 @@ const ExpenseCategory = () => {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+  const sortedRows = expenseCategoryData?.data.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof Data];
+    const bValue = b[orderBy as keyof Data];
+    if (aValue === undefined || bValue === undefined) {
+      return 0;
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -155,55 +142,74 @@ const ExpenseCategory = () => {
     return 0;
   });
 
-  //form submit
-  const [category, setCategory] = useState('');
-  const [subCategory, setSubCategory] = useState('');
 
-  const handleExpenseCategory = (e: any) => {
-    e.preventDefault();
+  //hanle unit form
+  const handleExpenseCategory = async (event: any) => {
+    event.preventDefault();
+    const subCategoryArray = expenseCategorySubCategory.split(',').map((item) => item.trim());
+    const expenseCategoryDataToSubmit = { category: expenseCategoryMainCategory, subCategory: subCategoryArray }
     try {
+      await addExpenseCategory(expenseCategoryDataToSubmit).unwrap();
       toast.success("Category Created successfully!");
-      setCategory('');
-      setSubCategory('');
-
-    } catch {
-      toast.error("Failed to create Category. Please try again later.");
+      setExpenseCategoryMainCategory('');
+      setExpenseCategorySubCategory('');
+      refetch();
+    }
+    catch (error: any) {
+      if (error?.data?.message) {
+        toast.error(error?.data?.message);
+      } else {
+        // Fallback error message
+        toast.error("Failed to create Category. Please try again later.");
+      }
     }
   }
 
   return (
     <>
       <div className="inventual-content-area px-4 sm:px-7">
-        <div className="inventual-expense-category-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
-          <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
-            <div className="col-span-12 lg:col-span-6">
+        <div className="inventual-product-unit-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+          <div className="grid grid-cols-12 gap-7 maxSm:gap-x-0">
+            <div className="col-span-12 lg:col-span-4">
               <form onSubmit={handleExpenseCategory}>
-                <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
+                <div className="grid grid-cols-12 gap-7 maxSm:gap-x-0">
                   <div className="col-span-12 md:col-span-6 lg:col-span-12">
-                    <div className="inventual-form-field">
-                      <h5>Category</h5>
-                      <div className="inventual-input-field-style">
-                        <input
-                          required
-                          value={category}
-                          onChange={(e) => setCategory(e.target.value)}
-                          type="text"
-                          placeholder='Office Decoration'
-                        />
+                    <div className="inventual-select-field">
+                      <div className="inventual-form-field">
+                        <h5>Expense Category</h5>
+                        <div className="inventual-input-field-style">
+                          <FormControl fullWidth>
+                            <TextField
+                              fullWidth
+                              placeholder="Office supply"
+                              variant="outlined"
+                              type="text"
+                              value={expenseCategoryMainCategory}
+                              required
+                              inputProps={{ maxLength: 180 }}
+                              onChange={(e) => setExpenseCategoryMainCategory(e.target.value)}
+                            />
+                          </FormControl>
+                        </div>
                       </div>
                     </div>
                   </div>
                   <div className="col-span-12 md:col-span-6 lg:col-span-12">
-                    <div className="inventual-form-field">
-                      <h5>Sub-Category</h5>
-                      <div className="inventual-input-field-style">
-                        <input
-                          required
-                          value={subCategory}
-                          onChange={(e) => setSubCategory(e.target.value)}
-                          type="text"
-                          placeholder='Furniture'
-                        />
+                    <div className="inventual-select-field">
+                      <div className="inventual-form-field">
+                        <h5>Expense Sub-Category</h5>
+                        <FormControl fullWidth>
+                          <TextField
+                            fullWidth
+                            placeholder="Furniture*"
+                            variant="outlined"
+                            type="text"
+                            value={expenseCategorySubCategory}
+                            required
+                            inputProps={{ maxLength: 180 }}
+                            onChange={(e) => setExpenseCategorySubCategory(e.target.value)}
+                          />
+                        </FormControl>
                       </div>
                     </div>
                   </div>
@@ -213,109 +219,125 @@ const ExpenseCategory = () => {
                 </div>
               </form>
             </div>
-            <div className="col-span-12 lg:col-span-6">
-              <div className="inventual-manageproduct-table-area">
-                <div className="inventual-common-mat-list w-full mt-0.5">
+            <div className="col-span-12 lg:col-span-8">
+              <div className="inventual-common-mat-list w-full mt-0.5">
+                <div className='w-full'>
                   <Paper sx={{ width: '100%', mb: 2 }}>
+
                     <TableContainer>
                       <Table aria-label="enhanced table" size="medium">
                         <TableHead className='bg-lightest'>
                           <TableRow>
                             <TableCell>
                               <Checkbox
-                                indeterminate={selected.length > 0 && selected.length < rows.length}
-                                checked={rows.length > 0 && selected.length === rows.length}
+                                indeterminate={selected.length > 0 && selected.length < expenseCategoryData?.data.length}
+                                checked={expenseCategoryData?.data.length > 0 && selected.length === expenseCategoryData?.data.length}
                                 onChange={(e) => handleSelectAllClick(e.target.checked)}
                               />
                             </TableCell>
 
                             <TableCell>
                               <TableSortLabel
-                                active={orderBy === 'voucherNo'}
-                                direction={orderBy === 'voucherNo' ? order : 'asc'}
-                                onClick={() => handleRequestSort('voucherNo')}
+                                active={orderBy === 'category'}
+                                direction={orderBy === 'category' ? order : 'asc'}
+                                onClick={() => handleRequestSort('category')}
                               >
-                                Vucher No
+                                Category
                               </TableSortLabel>
                             </TableCell>
                             <TableCell>
                               <TableSortLabel
-                                active={orderBy === 'details'}
-                                direction={orderBy === 'details' ? order : 'asc'}
-                                onClick={() => handleRequestSort('details')}
+                                active={orderBy === 'subCategory'}
+                                direction={orderBy === 'subCategory' ? order : 'asc'}
+                                onClick={() => handleRequestSort('subCategory')}
                               >
-                                details
+                                Sub-Cateogry
                               </TableSortLabel>
                             </TableCell>
+
                             <TableCell>
-                              <TableSortLabel
-                                active={orderBy === 'protein'}
-                                direction={orderBy === 'protein' ? order : 'asc'}
-                                onClick={() => handleRequestSort('protein')}
-                              >
+                              <TableSortLabel>
                                 Action
                               </TableSortLabel>
                             </TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {sortedRows
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => (
-                              <TableRow
-                                key={row.id}
-                                hover
-                                onClick={() => handleClick(row.id)}
-                                role="checkbox"
-                                aria-checked={isSelected(row.id)}
-                                selected={isSelected(row.id)}
-                              >
-                                <TableCell>
-                                  <Checkbox checked={isSelected(row.id)} />
-                                </TableCell>
-                                <TableCell>{row.voucherNo}</TableCell>
-                                <TableCell>{row.details}</TableCell>
-                                <TableCell>
-                                  <div className="inventual-list-action-style">
-                                    <PopupState variant="popover">
-                                      {(popupState: any) => (
-                                        <React.Fragment>
-                                          <button className='' type='button' {...bindTrigger(popupState)}>
-                                            Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                          </button>
-                                          <Menu {...bindMenu(popupState)}>
-                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i> Edit</MenuItem>
-                                            <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                          </Menu>
-                                        </React.Fragment>
-                                      )}
-                                    </PopupState>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                          {sortedRows?.map((expenseCategory: any) => (
+                            <TableRow
+                              key={expenseCategory.id}
+                              hover
+                              onClick={() => handleClick(expenseCategory.id)}
+                              role="checkbox"
+                              aria-checked={isSelected(expenseCategory.id)}
+                              selected={isSelected(expenseCategory.id)}>
+                              <TableCell>
+                                <Checkbox checked={isSelected(expenseCategory.id)} />
+                              </TableCell>
+                              <TableCell>{expenseCategory.category}</TableCell>
+                              <TableCell>{Array.isArray(expenseCategory?.subCategory) ? expenseCategory.subCategory.join(', ') : expenseCategory?.subCategory}</TableCell>
+                              <TableCell>
+                                <div className="inventual-list-action-style">
+                                  <PopupState variant="popover">
+                                    {(popupState: any) => (
+                                      <React.Fragment>
+                                        <button className='' type='button' {...bindTrigger(popupState)}>
+                                          Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                        </button>
+                                        <Menu {...bindMenu(popupState)}>
+                                          <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i> Edit</MenuItem>
+                                          <MenuItem onClick={() => handleOpenDelete(expenseCategory.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                        </Menu>
+                                      </React.Fragment>
+                                    )}
+                                  </PopupState>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
                         </TableBody>
                       </Table>
                     </TableContainer>
                   </Paper>
-                  <div className="inventual-pagination-area">
-                    {/* Pagination */}
-                    <TablePagination
-                      rowsPerPageOptions={[5, 10, 25]}
-                      component="div"
-                      count={rows.length}
-                      rowsPerPage={rowsPerPage}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                  </div>
+
+                  {/* Pagination */}
+                  <TablePagination
+                    component="div"
+                    count={expenseCategoryData?.totalCount || 0}
+                    rowsPerPage={currentPageSize}
+                    page={currentPageNumber - 1}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
                 </div>
               </div>
             </div>
+            <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  bgcolor: 'background.paper',
+                  border: '2px solid #000',
+                  boxShadow: 24,
+                  zIndex: 9999,
+                  p: 4,
+                }}
+              >
+                <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Expense Car?</Typography>
+                <Stack spacing={2} direction="row">
+                  <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                  <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                </Stack>
+              </Box>
+            </Modal>
           </div>
         </div>
       </div>
+
     </>
   );
 };
