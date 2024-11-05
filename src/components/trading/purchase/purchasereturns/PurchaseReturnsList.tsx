@@ -23,7 +23,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import AddReturnPopup from './PurchaseRetunPopup/AddReturnPopup';
 import PurchaseReturnPopup from './PurchaseRetunPopup/SaleReturnPopup';
-import { useGetAllPurchasesQuery, useDeletePurchaseMutation } from '@/services/Purchase/Purchase';
+import { useGetAllPurchaseReturnQuery, useDeletePurchaseReturnMutation } from '@/services/Purchase/PurchaseReturn';
 
 
 // Define the structure of the data
@@ -53,9 +53,8 @@ const PurchaseReturnsList = () => {
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
-  const [deletePurchaseReturn] = useDeletePurchaseMutation();
-  const { data: purchaseReturnData, refetch } = useGetAllPurchasesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
-
+  const [deletePurchaseReturn] = useDeletePurchaseReturnMutation();
+  const { data: purchaseReturnData, refetch } = useGetAllPurchaseReturnQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
    // View Sale return Popup Start
    const [openPurchaseReturnDialog, setOpenPurchaseReturnDialog] = useState<boolean>(false);
@@ -314,15 +313,6 @@ const PurchaseReturnsList = () => {
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'totalNumberOfProductsBought'}
-                                  direction={orderBy === 'totalNumberOfProductsBought' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('totalNumberOfProductsBought')}
-                                >
-                                  Total Number Bought
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
                                 <TableSortLabel>
                                   Action
                                 </TableSortLabel>
@@ -350,9 +340,8 @@ const PurchaseReturnsList = () => {
                                   <TableCell>{purchaseReturn.referenceNumber}</TableCell>
                                   <TableCell>{purchaseReturn.warehouseName}</TableCell>
                                   <TableCell>{purchaseReturn.supplierName}</TableCell>
-                                  <TableCell>{MoneyFormat.format(purchaseReturn.totalAmountBought)}</TableCell>
-                                  <TableCell>{purchaseReturn.purchaseStatus}</TableCell>
-                                  <TableCell>{purchaseReturn.totalNumberOfProductsBought}</TableCell>
+                                  <TableCell>{MoneyFormat.format(purchaseReturn.totalAmount)}</TableCell>
+                                  <TableCell>{purchaseReturn.remarkStatus}</TableCell>
                                   <TableCell>
                                     <div className="inventual-list-action-style">
                                       <PopupState variant="popover">
