@@ -13,181 +13,48 @@ import {
   TableSortLabel,
   Menu,
   MenuItem,
+  Typography,
+  Modal,
+  Box,
+  Stack,
+  Button,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
 import ExpenseViewListPopup from './expenseListPopup/ExpenseViewListPopup';
 import AddExpenseListPopup from './expenseListPopup/AddExpenseListPopup';
+import { useGetAllExpensesQuery, useDeleteExpenseMutation } from '@/services/Expense/Expense';
+import exp from 'constants';
 
 // Define the structure of the data
 interface Data {
   id: number;
+  expenseDescription: string;
   date: string;
-  voucherNo: string;
-  details: string;
-  category: string;
-  amount: string;
-  payment: string;
-  paymentBadgeContent: string;
-  expenseType: string;
   warehouse: string;
-  protein: string;
+  expenseType: string;
+  expenseCategory: string;
+  voucherNumber: number;
+  expenseCost: number;
+  expenseNote: string;
+  shippingCost: string;
 }
 
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    date: '01/01/2023',
-    voucherNo: '785',
-    details: 'Current bill',
-    category: 'Office Accessories',
-    amount: '$585.00',
-    payment: 'Quantity (q)',
-    paymentBadgeContent: "Paid",
-    expenseType: 'Direct',
-    warehouse: 'Warehouse 1',
-    protein: '',
-  },
-  {
-    id: 2,
-    date: '01/01/2023',
-    voucherNo: '775',
-    details: 'Multi-plugs',
-    category: 'Electric',
-    amount: '$58.00',
-    payment: 'Quantity (q)',
-    paymentBadgeContent: "Partial",
-    expenseType: 'Direct',
-    warehouse: 'Warehouse 2',
-    protein: '',
-  },
-  {
-    id: 3,
-    date: '01/01/2023',
-    voucherNo: '384',
-    details: 'Electric bulb',
-    category: 'Electric',
-    amount: '$369.00',
-    payment: 'Quantity (q)',
-    paymentBadgeContent: "Paid",
-    expenseType: 'Indirect',
-    warehouse: 'Warehouse 3',
-    protein: '',
-  },
-  {
-    id: 4,
-    date: '01/01/2023',
-    voucherNo: '384',
-    details: ' Electric bulb',
-    category: 'Electric',
-    amount: '$369.00',
-    payment: 'Quantity (q)',
-    paymentBadgeContent: "Unpaid",
-    expenseType: 'Indirect',
-    warehouse: 'Warehouse 4',
-    protein: '',
-  },
-  {
-    id: 5,
-    date: '01/01/2023',
-    voucherNo: '385',
-    details: 'Desktop repair',
-    category: 'Electronics',
-    amount: '$672.00',
-    payment: 'Quantity (q)',
-    paymentBadgeContent: "Paid",
-    expenseType: 'Indirect',
-    warehouse: 'Warehouse 5',
-    protein: '',
-  },
-  {
-    id: 6,
-    date: '01/01/2023',
-    voucherNo: '485',
-    details: 'Table',
-    category: 'Decoration',
-    amount: '$850.00',
-    payment: 'Quantity (q)',
-    paymentBadgeContent: "Paid",
-    expenseType: 'Indirect',
-    warehouse: 'Warehouse 6',
-    protein: '',
-  },
-  {
-    id: 7,
-    date: '01/01/2023',
-    voucherNo: '455',
-    details: 'Chair repair',
-    category: 'Repair',
-    amount: '$850.00',
-    payment: 'Quantity (q)',
-    paymentBadgeContent: "Partial",
-    expenseType: 'Indirect',
-    warehouse: 'Warehouse 7',
-    protein: '',
-  },
-  {
-    id: 8,
-    date: '01/01/2023',
-    voucherNo: '405',
-    details: 'Employee salary',
-    category: 'Salary',
-    amount: '$265,380.00',
-    payment: 'Quantity (q)',
-    paymentBadgeContent: "Unpaid",
-    expenseType: 'direct',
-    warehouse: 'Warehouse 8',
-    protein: '',
-  },
-  {
-    id: 9,
-    date: '01/01/2023',
-    voucherNo: '982',
-    details: 'Medical bill',
-    category: 'Medical',
-    amount: '$45,302.00',
-    payment: 'Quantity (q)',
-    paymentBadgeContent: "Paid",
-    expenseType: 'direct',
-    warehouse: 'Warehouse 9',
-    protein: '',
-  },
-  {
-    id: 10,
-    date: '01/01/2023',
-    voucherNo: '767',
-    details: 'Office rent',
-    category: 'Rent',
-    amount: '$85,482.00',
-    payment: 'Quantity (q)',
-    paymentBadgeContent: "Paid",
-    expenseType: 'direct',
-    warehouse: 'Warehouse 10',
-    protein: '',
-  },
-  {
-    id: 11,
-    date: '01/01/2023',
-    voucherNo: '742',
-    details: 'Watch man bill',
-    category: 'Miscellaneous',
-    amount: '$12,580.00',
-    payment: 'Quantity (q)',
-    paymentBadgeContent: "Partial",
-    expenseType: 'direct',
-    warehouse: 'Warehouse 11',
-    protein: '',
-  },
-];
+
 
 const ExpenseList = () => {
-
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [open, setOpen] = React.useState(false);
+  const [expense, setExpense] = useState<number>(0);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [deleteExpense] = useDeleteExpenseMutation();
+  const { data: expenseData, refetch } = useGetAllExpensesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+
 
   
   // AddPayment Popup Start
@@ -210,14 +77,41 @@ const ExpenseList = () => {
     setOpenViewPaymentDialog(false);
   };
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  //  handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 25));
-    setPage(0);
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1); 
+    refetch();
   };
+
+   // handle opening delete modal
+   const handleOpenDelete = (productId: number) => {
+    setExpense(productId);
+    setOpen(true);
+  };
+
+    // handle closing delete modal
+    const handleCloseDelete = () => {
+    setOpen(false);
+  }
+
+    // handle delete submission
+    const handleDelete = async () => {
+      if (expense > 0) {
+        try {
+          await deleteExpense(expense);
+          setOpen(false);
+          refetch()
+        } catch (err) {
+          console.error('Error deleting the expense:', err);
+        }
+      }
+    };
+
 
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
@@ -226,10 +120,10 @@ const ExpenseList = () => {
     setOrderBy(property);
   };
 
-  // Handler for selecting/deselecting all items
-  const handleSelectAllClick = (checked: boolean) => {
+   // Handler for selecting/deselecting all items
+   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(rows.map((row) => row.id));
+      setSelected(expenseData?.data.map((product: any) => product.id));
     } else {
       setSelected([]);
     }
@@ -260,10 +154,14 @@ const ExpenseList = () => {
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+  const sortedRows = expenseData?.data.slice().sort((a : any, b : any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof Data]; 
+    const bValue = b[orderBy as keyof Data]; 
+    if (aValue === undefined || bValue === undefined) {
+      return 0; 
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -274,6 +172,7 @@ const ExpenseList = () => {
     return 0;
   });
 
+  console.log(expenseData)
   return (
 
     <>
@@ -300,11 +199,9 @@ const ExpenseList = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Date</MenuItem>
-                            <MenuItem onClick={popupState.close}>Category</MenuItem>
-                            <MenuItem onClick={popupState.close}>Status</MenuItem>
-                            <MenuItem onClick={popupState.close}>Type</MenuItem>
-                            <MenuItem onClick={popupState.close}>Warehouse</MenuItem>
+                          <MenuItem onClick={() => {handleRequestSort("date"); popupState.close()}}>Date</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("expenseCost"); popupState.close()}}>Cost</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("expenseCategory"); popupState.close()}}>Category</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -336,8 +233,8 @@ const ExpenseList = () => {
                               {/* Checkbox for select all */}
                               <TableCell>
                                 <Checkbox
-                                  indeterminate={selected.length > 0 && selected.length < rows.length}
-                                  checked={rows.length > 0 && selected.length === rows.length}
+                                  indeterminate={selected.length > 0 && selected.length < expenseData?.data.length}
+                                  checked={expenseData?.data.length > 0 && selected.length === expenseData?.data.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                                 />
                               </TableCell>
@@ -351,58 +248,57 @@ const ExpenseList = () => {
                                   Date
                                 </TableSortLabel>
                               </TableCell>
+
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'voucherNo'}
-                                  direction={orderBy === 'voucherNo' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('voucherNo')}
-                                >
+                                  active={orderBy === 'expenseDescription'}
+                                  direction={orderBy === 'expenseDescription' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('expenseDescription')}>
+                                  Desription
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'voucherNumber'}
+                                  direction={orderBy === 'voucherNumber' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('voucherNumber')}>
                                   Vucher No
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'details'}
-                                  direction={orderBy === 'details' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('details')}
+                                  active={orderBy === 'expenseDescription'}
+                                  direction={orderBy === 'expenseDescription' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('expenseDescription')}
                                 >
                                   details
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'category'}
-                                  direction={orderBy === 'category' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('category')}
+                                  active={orderBy === 'expenseCategory'}
+                                  direction={orderBy === 'expenseCategory' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('expenseCategory')}
                                 >
                                   Category
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'amount'}
-                                  direction={orderBy === 'amount' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('amount')}
+                                  active={orderBy === 'expenseCost'}
+                                  direction={orderBy === 'expenseCost' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('expenseCost')}
                                 >
-                                  amount
+                                  Cost
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'payment'}
-                                  direction={orderBy === 'payment' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('payment')}
+                                  active={orderBy === 'expenseNote'}
+                                  direction={orderBy === 'expenseNote' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('expenseNote')}
                                 >
                                   payment
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'expenseType'}
-                                  direction={orderBy === 'expenseType' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('expenseType')}
-                                >
-                                  Expense Type
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -415,11 +311,7 @@ const ExpenseList = () => {
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'protein'}
-                                  direction={orderBy === 'protein' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('protein')}
-                                >
+                                <TableSortLabel>
                                   Action
                                 </TableSortLabel>
                               </TableCell>
@@ -428,40 +320,38 @@ const ExpenseList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
+                            {sortedRows?.map((expense: any) => (
                                 <TableRow
-                                  key={row.id}
+                                  key={expense.id}
                                   hover
-                                  onClick={() => handleClick(row.id)}
+                                  onClick={() => handleClick(expense.id)}
                                   role="checkbox"
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
+                                  aria-checked={isSelected(expense.id)}
+                                  selected={isSelected(expense.id)}
                                 >
                                   {/* Checkbox for row selection */}
                                   <TableCell>
-                                    <Checkbox checked={isSelected(row.id)} />
+                                    <Checkbox checked={isSelected(expense.id)} />
                                   </TableCell>
                                   {/* Data cells */}
-                                  <TableCell>{row.date}</TableCell>
-                                  <TableCell>{row.voucherNo}</TableCell>
-                                  <TableCell>{row.details}</TableCell>
-                                  <TableCell>{row.category}</TableCell>
-                                  <TableCell>{row.amount}</TableCell>
+                                  <TableCell>{expense.date}</TableCell>
+                                  <TableCell>{expense.expenseDescription}</TableCell>
+                                  <TableCell>{expense.voucherNumber}</TableCell>
+                                  <TableCell>{expense.expenseCategory}</TableCell>
+                                  <TableCell>{expense.expenseType}</TableCell>
+                                  <TableCell>{expense.expenseCost}</TableCell>
                                   <TableCell>
                                     {
-                                      row.paymentBadgeContent.toLowerCase() === "paid" ? (
-                                        <span className='badge badge-success'>{row.paymentBadgeContent}</span>
+                                      expense.expenseType.toLowerCase() === "paid" ? (
+                                        <span className='badge badge-success'>{expense.expenseType}</span>
                                       ) : (
-                                        row.paymentBadgeContent.toLowerCase() === "partial" ? (
-                                          <span className='badge badge-warning'>{row.paymentBadgeContent}</span>
-                                        ) : (<span className='badge badge-danger'>{row.paymentBadgeContent}</span>)
+                                        expense.expenseType.toLowerCase() === "partial" ? (
+                                          <span className='badge badge-warning'>{expense.expenseType}</span>
+                                        ) : (<span className='badge badge-danger'>{expense.expenseType}</span>)
                                       )
                                     }
                                   </TableCell>
-                                  <TableCell>{row.expenseType}</TableCell>
-                                  <TableCell>{row.warehouse}</TableCell>
+                                  <TableCell>{expense.warehouseName}</TableCell>
                                   <TableCell>
                                     <div className="inventual-list-action-style">
                                       <PopupState variant="popover">
@@ -474,7 +364,7 @@ const ExpenseList = () => {
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/expense/addexpense'>Edit</Link></MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-circle-plus"></i><span onClick={handleAddPaymentDialogOpen}>Add Payment</span></MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-money-check-dollar"></i><span onClick={handleViewPaymentDialogOpen}>View Payment</span></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                              <MenuItem onClick={() => handleOpenDelete(expense.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
                                           </React.Fragment>
                                         )}
@@ -492,17 +382,38 @@ const ExpenseList = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
+                   component="div"
+                   count={expenseData?.totalCount || 0}
+                   page={currentPageNumber - 1}
+                   rowsPerPage={currentPageSize}
+                   onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
+                   onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
               </div>
             </div>
+            <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  bgcolor: 'background.paper',
+                  border: '2px solid #000',
+                  boxShadow: 24,
+                  zIndex: 9999,
+                  p: 4,
+                }}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Expense?</Typography>
+                <Stack spacing={2} direction="row">
+                  <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                  <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                </Stack>
+              </Box>
+            </Modal>
+
           </div>
         </div>
       </div>
