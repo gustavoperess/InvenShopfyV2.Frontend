@@ -43,7 +43,7 @@ export const salesApi = createApi({
         }),
        
         getBestSeller: builder.query<any, void>({
-            query: () => "Sale/productmostsold"
+            query: () => "productmostsold"
         })
     }),
     

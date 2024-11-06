@@ -31,6 +31,7 @@ interface Data {
   zipcode: string;
   email: string;
   address: string;
+  quantityOfItems: number;
 }
 
 
@@ -130,6 +131,7 @@ const WarehouseList = () => {
   // Check if a particular item is selected
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
+  
 
   // Function to sort data
   const sortedRows = warehouseData?.data.slice().sort((a: any, b: any) => {
@@ -187,7 +189,7 @@ const WarehouseList = () => {
                           <Menu {...bindMenu(popupState)}>
                             <MenuItem onClick={() => {handleRequestSort("id"); popupState.close();}}>Sl</MenuItem>
                             <MenuItem onClick={() => {handleRequestSort("warehouse"); popupState.close()}}>Warehouse</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("email"); popupState.close()}}>Email</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("quantityOfItems"); popupState.close()}}>Quantity</MenuItem>
                             <MenuItem onClick={() => {handleRequestSort("address"); popupState.close()}}>Address</MenuItem>
                           </Menu>
                         </React.Fragment>
@@ -263,6 +265,15 @@ const WarehouseList = () => {
                                   Address
                                 </TableSortLabel>
                               </TableCell>
+                              <TableCell sortDirection={orderBy === 'quantityOfItems' ? order : false}>
+                                <TableSortLabel
+                                  active={orderBy === 'quantityOfItems'}
+                                  direction={orderBy === 'quantityOfItems' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('quantityOfItems')}
+                                >
+                                  № of products
+                                </TableSortLabel>
+                              </TableCell>
                               <TableCell>
                                 <TableSortLabel>
                                   Action
@@ -285,6 +296,7 @@ const WarehouseList = () => {
                                 <TableCell>{warehouse.warehousePhoneNumber}</TableCell>
                                 <TableCell>{warehouse.warehouseEmail}</TableCell>
                                 <TableCell>{warehouse.warehouseZipCode} {warehouse.warehouseCountry} {warehouse.warehouseCity}</TableCell>
+                                <TableCell>{warehouse.quantityOfItems}</TableCell>
                                 <TableCell>
                                   <div className="inventual-list-action-style">
                                     <PopupState variant="popover">

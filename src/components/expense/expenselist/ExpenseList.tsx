@@ -172,7 +172,6 @@ const ExpenseList = () => {
     return 0;
   });
 
-  console.log(expenseData)
   return (
 
     <>

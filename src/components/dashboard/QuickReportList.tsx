@@ -1,6 +1,9 @@
 import React from 'react';
+import { useGetWarehouseQuantityQuery } from '@/services/Warehouse/Warehouse';
 
 const QuickReportList = () => {
+    const { data: warehouseQuantityData } = useGetWarehouseQuantityQuery();
+
     return (
         <>
             <div className="invention-quickreport-wrapper">
@@ -80,7 +83,7 @@ const QuickReportList = () => {
                             </div>
                             <div className="invention-quickreport-text">
                                 <span className="text-[16px] font-semibold block mb-2">Warehouse</span>
-                                <h5 className="text-[20px] text-heading font-bold">9</h5>
+                                <h5 className="text-[20px] text-heading font-bold">{warehouseQuantityData?.data}</h5>
                             </div>
                         </div>
                     </div>
