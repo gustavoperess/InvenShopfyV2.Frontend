@@ -25,6 +25,12 @@ export const warehouse = createApi({
                 method: 'DELETE',
             }),
         }),
+        getTotalQuantityByProductAndWarehouseId: builder.query<any, { warehouseId: number; productId: number }>({
+            query: ({ warehouseId, productId }) => ({
+                url: `getTotalamount-${warehouseId}-${productId}`,
+                method: 'GET',
+            }),
+        }),
         createWarehouse: builder.mutation<any, any>({
             query: (body) => ({
                 url: `Warehouse`,

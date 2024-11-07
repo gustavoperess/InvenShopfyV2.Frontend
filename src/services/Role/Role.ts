@@ -17,6 +17,13 @@ export const roleApi = createApi({
     
             }),
         }),
+        getMangerAdminUsers: builder.query<any, void>({
+            query: () => ({
+                url: "get-manager-admin-custom",
+                method: "GET",
+    
+            }),
+        }),
         createRole: builder.mutation<any, any>({
             query: (body) => ({
                 url: `create-role-custom`,
@@ -34,4 +41,4 @@ export const roleApi = createApi({
 });
 
 
-export const { useCreateRoleMutation, useGetAllRolesQuery, useDeleteRoleMutation } = roleApi;
+export const { useCreateRoleMutation, useGetAllRolesQuery, useDeleteRoleMutation, useGetMangerAdminUsersQuery } = roleApi;
