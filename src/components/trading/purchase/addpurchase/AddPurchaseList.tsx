@@ -572,7 +572,6 @@ const AddPurchaseList = () => {
                                             />
                                         </div>
                                     </div>
-
                                     <div className="col-span-12 flex justify-end">
                                         <button type="submit" className="inventual-btn">Create Purchase</button>
                                     </div>

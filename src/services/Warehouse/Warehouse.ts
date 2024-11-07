@@ -27,7 +27,7 @@ export const warehouse = createApi({
         }),
         getTotalQuantityByProductAndWarehouseId: builder.query<any, { warehouseId: number; productId: number }>({
             query: ({ warehouseId, productId }) => ({
-                url: `getTotalamount-${warehouseId}-${productId}`,
+                url: `Warehouse/getTotalamount-${warehouseId}-${productId}`,
                 method: 'GET',
             }),
         }),
@@ -42,4 +42,4 @@ export const warehouse = createApi({
 });
 
 // Export auto-generated hooks for functional components
-export const { useGetWarehouseQuantityQuery, useGetAllWarehousesQuery, useCreateWarehouseMutation, useDeleteWarehouseMutation } = warehouse;
+export const { useGetWarehouseQuantityQuery, useGetAllWarehousesQuery, useCreateWarehouseMutation, useDeleteWarehouseMutation, useGetTotalQuantityByProductAndWarehouseIdQuery } = warehouse;

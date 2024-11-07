@@ -3,9 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { MenuItem, TextField } from '@mui/material';
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
-import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
+import { useGetAllWarehousesQuery, useGetTotalQuantityByProductAndWarehouseIdQuery } from '@/services/Warehouse/Warehouse';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
 import { useGetMangerAdminUsersQuery } from '@/services/Role/Role';
+import { useCreateTransferMutation } from '@/services/Transfer/Transfer';
+import { stat } from 'fs';
+import AdminUser from '@/components/dashboard/AdminUser';
 
 
 interface ReferenceInterface {
@@ -20,8 +23,6 @@ interface warehouseInterface {
     warehouseName: string;
 
 }
-
-
 interface userAdminInterface {
     userId: number;
     userName: string;
@@ -30,27 +31,26 @@ interface userAdminInterface {
 
 
 const AddTransfer = () => {
-
     const [transferDate, setTransferDate] = useState(new Date());
-    const [reference, setReference] = useState('');
     const [productName, setProductName] = useState('');
     const [productCode, setProductCode] = useState('');
-    const [warehouse, setWarehouse] = useState<number | null>();
     const [productId, setProductId] = useState<number | null>();
-    const [productQuantityInStock, setProductQuantityInStock] = useState<number | null>();
-    const [selectWarehouse, setSelectWarehosue] = useState('')
-    const [quantity, setQuantity] = useState(0);
-    const [authorize, setAuthorize] = useState('');
+    const [quantity, setQuantity] = useState("");
     const [reason, setReason] = useState('');
     const [fromWarehouse, setFromWarehouse] = useState('');
     const [toWarhouse, setToWarehouse] = useState('');
+    const [transferNote, setTransferNote] = useState('');
     const [status, setStatus] = useState('');
+    const [userAdmin, setUserAdmin] = useState({ userId: '', userName: '' });
+    const [suggestions, setSuggestions] = useState<ReferenceInterface[]>([]);
     const [fetchSuggestions, setFetchSuggestions] = useState(true);
     const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: 1, pageSize: 25 });
-    const [userAdmin, setUserAdmin] = useState('')
+    const { data: quantityByWarehouseData } = useGetTotalQuantityByProductAndWarehouseIdQuery(
+        { warehouseId: Number(fromWarehouse) ?? 0, productId: productId ?? 0 },
+        { skip: !fromWarehouse || !productId }
+    );
+    const [createTransfer] = useCreateTransferMutation();
     const { data: userAdminData } = useGetMangerAdminUsersQuery();
-
-    const [suggestions, setSuggestions] = useState<ReferenceInterface[]>([]);
 
 
     //debounce function
@@ -71,7 +71,7 @@ const AddTransfer = () => {
     const { data: productSuggestionsData, error } = useGetProductByNameQuery(debouncedSearchTerm, {
         skip: !debouncedSearchTerm.trim().length || !fetchSuggestions, // Skip API call if fetchSuggestions is false
     });
-   
+
 
     useEffect(() => {
         if (productSuggestionsData) {
@@ -87,38 +87,11 @@ const AddTransfer = () => {
     const handleSuggestionSelect = (suggestion: ReferenceInterface) => {
         setProductName(suggestion.title);
         setProductId(suggestion.id)
-        setProductQuantityInStock(suggestion.stockQuantity)
         setProductCode(suggestion.productCode)
         setSuggestions([]);
         setFetchSuggestions(false);
     };
 
-
-    useEffect(() => {
-        if (warehouse && warehouseData.data.length > 0 && !warehouse) {
-            setWarehouse(warehouseData.data[0].id);
-        }
-    }, [warehouseData, warehouse]);
-
-
-
-    //handle transfer data
-    const handleTransferData = (e: any) => {
-        e.preventDefault();
-        try {
-            toast.success("Transfer Created successfully!");
-            setTransferDate(new Date())
-            setReference('');
-            setProductName('');
-            setQuantity(0);
-            setReason('');
-            setFromWarehouse('');
-            setToWarehouse('');
-            setStatus('');
-        } catch {
-            toast.error("Failed to create Transfer. Please try again later.");
-        }
-    }
     const formatDate = (date: Date) => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
@@ -129,20 +102,55 @@ const AddTransfer = () => {
     const handleDateChange = (date: Date | null) => {
         setTransferDate(date || new Date());
     };
-    
-    const handleSuggestionQuantity = () => {
-   
-        if (productId != undefined && productId > 0) {
-            console.log(productName)
-            console.log(productId)
-            console.log(productQuantityInStock)
-            console.log(warehouseData)
+
+
+    const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedUserId = e.target.value;
+        const selectedUser = userAdminData.find((user: any) => user.userId === selectedUserId);
+
+        if (selectedUser) {
+            setUserAdmin({ userId: selectedUser.userId, userName: selectedUser.userName });
         }
-        // if (productSuggestionsData.data.length > 0) {
-        //   
-        // }
+
     }
-    handleSuggestionQuantity()
+
+    //handle transfer data
+    const handleTransferData = async (e: any) => {
+        e.preventDefault();
+        let date = formatDate(transferDate)
+
+        const transferDataForm = {
+            transferDate: date, fromWarehouseId: fromWarehouse, toWarehouseId: toWarhouse, quantity, reason,
+            productId, transferNote, transferStatus: status, authorizedBy: userAdmin.userName
+        }
+        console.log(transferDataForm)
+        try {
+            await createTransfer(transferDataForm).unwrap();
+            toast.success("Transfer Created successfully!");
+            // setTransferDate(new Date())
+            // setProductCode('');
+            // setProductName('');
+            // setUserAdmin('')
+            // setTransferNote('')
+            // setProductCode('')
+            // setToWarehouse('')
+            // setFromWarehouse("")
+            // setQuantity('')
+            // setReason('');
+            // setStatus('');
+        } catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error?.data?.message);
+            } else {
+                // Fallback error message
+                toast.error("Failed to create Transfer. Please try again later.");
+            }
+        }
+    }
+
+
+ 
+
     return (
         <>
             <div className="inventual-content-area px-4 sm:px-7">
@@ -221,18 +229,17 @@ const AddTransfer = () => {
                                                 select
                                                 label="Select"
                                                 required
-                                                value={userAdmin}
+                                                value={userAdmin.userId}
                                                 helperText="Please select a manager that authorized the transfer"
-                                                onChange={(e) => setUserAdmin(e.target.value)}
+                                                onChange={handleUserChange}
                                                 SelectProps={{
                                                     displayEmpty: true,
-                                                    renderValue: (value: any) => {
-                                                        const selectedUserAdmin = userAdminData?.find((userAdmin: userAdminInterface) => userAdmin.userId === value);
-                                                        return selectedUserAdmin ? selectedUserAdmin.userName : <em>Select Admin/Manager</em>;
+                                                    renderValue: () => {
+                                                        return userAdmin.userName ? userAdmin.userName : <em>Select Admin/Manager</em>;
                                                     },
                                                 }}>
                                                 {userAdminData && userAdminData.length > 0 ? (
-                                                    userAdminData.map((userAdmin: userAdminInterface) => (
+                                                    userAdminData.map((userAdmin: any) => (
                                                         <MenuItem key={userAdmin.userId} value={userAdmin.userId}>
                                                             {userAdmin.userName}
                                                         </MenuItem>
@@ -244,11 +251,10 @@ const AddTransfer = () => {
                                                 )}
                                             </TextField>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-3">
+                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
                                 <div className="inventual-form-field">
                                     <div className="inventual-select-field">
                                         <h5>From Warehouse</h5>
@@ -257,8 +263,8 @@ const AddTransfer = () => {
                                                 select
                                                 label="Select"
                                                 required
-                                                value={selectWarehouse}
-                                                onChange={(e) => setSelectWarehosue(e.target.value)}
+                                                value={fromWarehouse}
+                                                onChange={(e) => setFromWarehouse(e.target.value)}
                                                 SelectProps={{
                                                     displayEmpty: true,
                                                     renderValue: (value: any) => {
@@ -292,8 +298,8 @@ const AddTransfer = () => {
                                                 select
                                                 label="Select"
                                                 required
-                                                value={selectWarehouse}
-                                                onChange={(e) => setSelectWarehosue(e.target.value)}
+                                                value={toWarhouse}
+                                                onChange={(e) => setToWarehouse(e.target.value)}
                                                 SelectProps={{
                                                     displayEmpty: true,
                                                     renderValue: (value: any) => {
@@ -320,15 +326,21 @@ const AddTransfer = () => {
                             </div>
                             <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-3">
                                 <div className="inventual-form-field">
-                                    <h5>Quantity</h5>
-                                    <div className="inventual-input-field-style">
-                                        <input
-                                            required
-                                            value={quantity}
-                                            onChange={(e) => setQuantity(Number(e.target.value))}
-                                            type="number"
-                                            placeholder='1500'
-                                        />
+                                    <div className="inventual-select-field">
+                                        <h5>Quantity</h5>
+                                        <div className="inventual-input-field-style">
+                                            <TextField
+                                                fullWidth
+                                                type="number"
+                                                required
+                                                placeholder='20'
+                                                value={quantity}
+                                                variant="outlined"
+                                                inputProps={{ min: 1, max: quantityByWarehouseData?.data.quantity }}
+                                                onChange={(e) => setQuantity(e.target.value)}
+
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -336,23 +348,23 @@ const AddTransfer = () => {
                                 <div className="inventual-formTree-field">
                                     <h5>Quantity in stock</h5>
                                     <div className="inventual-input-field-style">
-                                        {/* <TextField
-                                                required
-                                                value={billerName}
-                                                disabled={billerName !== ''}
-                                                style={{
-                                                    backgroundColor: billerName !== '' ? '#e0e0e0' : 'inherit',
-                                                    color: billerName !== '' ? '#757575' : 'inherit',
-                                                    width: '100%',
-                                                }}>
-                                            </TextField> */}
+                                        <TextField
+                                            required
+                                            value={quantityByWarehouseData?.data.quantity || ""}
+                                            disabled={quantityByWarehouseData?.data.quantity !== undefined}
+                                            style={{
+                                                backgroundColor: quantityByWarehouseData?.data.quantity !== undefined ? '#e0e0e0' : 'inherit',
+                                                color: quantityByWarehouseData?.data.quantity !== undefined ? '#757575' : 'inherit',
+                                                width: '100%',
+                                            }}>
+                                        </TextField>
                                     </div>
                                 </div>
                             </div>
-                        
+
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
                                 <div className="inventual-form-field">
-                                <h5>Reason</h5>
+                                    <h5>Reason</h5>
                                     <div className="inventual-input-field-style search-field">
                                         <TextField
                                             fullWidth
@@ -391,18 +403,24 @@ const AddTransfer = () => {
                                                 </MenuItem>
                                                 <MenuItem value="Completed">Completed</MenuItem>
                                                 <MenuItem value="Pending">Pending</MenuItem>
-                                                <MenuItem value="Sent">Sent</MenuItem>
+                                                <MenuItem value="InTransit">In Transit</MenuItem>
                                             </TextField>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-span-12">
-                                <div className="inventual-form-field">
-                                    <h5>Transfer Note:</h5>
-                                    <div className="inventual-input-field-style">
-                                        <textarea placeholder='Type Note...'></textarea>
-                                    </div>
+
+                            <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
+                                <div className="inventual-input-field-style">
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={4}
+                                        value={transferNote}
+                                        placeholder='Transfer Notes...'
+                                        inputProps={{ maxLength: 500 }}
+                                        onChange={(e) => setTransferNote(e.target.value)}
+                                    />
                                 </div>
                             </div>
                             <div className="col-span-12 flex justify-end">

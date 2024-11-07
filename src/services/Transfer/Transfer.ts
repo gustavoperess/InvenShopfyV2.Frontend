@@ -33,18 +33,15 @@ export const transfersApi = createApi({
             invalidatesTags: ['Transfer'],  
         }),
         getTransferById: builder.query<any, number>({
-            query: (saleId) => ({
+            query: (transferId) => ({
                 url: ``,
                 method: 'GET',
             }),
         }),
        
-        getBestSeller: builder.query<any, void>({
-            query: () => "productmostsold"
-        })
     }),
     
 });
 
 
-export const {  } = transfersApi;
+export const { useCreateTransferMutation, useDeleteTransferMutation, useGetAllTransfersQuery } = transfersApi;
