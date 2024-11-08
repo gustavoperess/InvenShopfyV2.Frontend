@@ -19,6 +19,15 @@ export const customerApi = createApi({
             }),
             providesTags: ['Customers'], 
         }),
+
+        getCustomerNames: builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize }) => ({
+                url: `Customer/customers/name`,
+                method: "GET",
+                params: { pageNumber, pageSize}
+            }),
+            providesTags: ['Customers'], 
+        }),
         addCustomer: builder.mutation<any, any>({
             query: (body) => ({
                 url: `Customer`,
@@ -37,4 +46,4 @@ export const customerApi = createApi({
 });
 
 // Export auto-generated hooks for functional components
-export const { useGetAllCustomersQuery, useAddCustomerMutation, useDeleteCustomerMutation } = customerApi;
+export const { useGetAllCustomersQuery, useAddCustomerMutation, useDeleteCustomerMutation, useGetCustomerNamesQuery } = customerApi;

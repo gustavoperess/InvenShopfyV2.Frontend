@@ -45,7 +45,7 @@ export const warehouse = createApi({
         // Get just the warehouse name and id
         getWarehouseNames: builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
-                url: `Warehouse/warehousename`,
+                url: `Warehouse/warehouses/name`,
                 method: 'GET',
                 params: { pageNumber, pageSize }
             }),

@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { NumericFormat } from 'react-number-format';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
 import { useGetWarehouseNamesQuery } from '@/services/Warehouse/Warehouse';
-import { useGetAllSuppliersQuery } from '@/services/People/Supplier';
+import { useGetSuppliersNameQuery } from '@/services/People/Supplier';
 import { useCreatePurchaseMutation } from '@/services/Purchase/Purchase';
 
 interface productInterface {
@@ -60,7 +60,7 @@ const AddPurchaseList = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<TProduct[]>([]);
     const [addPurchase] = useCreatePurchaseMutation();
-    const { data: supplierData } = useGetAllSuppliersQuery({ pageNumber: 1, pageSize: 25 });
+    const { data: supplierData } = useGetSuppliersNameQuery({ pageNumber: 1, pageSize: 25 });
     const { data: warehouseData } = useGetWarehouseNamesQuery({ pageNumber: 1, pageSize: 25 });
 
     const debouncedSearchTerm = useDebounce(productName, 500);

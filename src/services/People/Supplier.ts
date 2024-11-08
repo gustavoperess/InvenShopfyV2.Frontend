@@ -19,6 +19,14 @@ export const supplierApi = createApi({
             }),
             providesTags: ['Suppliers'], 
         }),
+        getSuppliersName: builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize }) => ({
+                url: `Supplier/suppliers/name`,
+                method: "GET",
+                params: { pageNumber, pageSize}
+            }),
+            providesTags: ['Suppliers'], 
+        }),
         addSupplier: builder.mutation<any, any>({
             query: (body) => ({
                 url: `Supplier`,
@@ -37,4 +45,4 @@ export const supplierApi = createApi({
 });
 
 // Export auto-generated hooks for functional components
-export const { useGetAllSuppliersQuery, useAddSupplierMutation, useDeleteSupplierMutation } = supplierApi;
+export const { useGetAllSuppliersQuery, useAddSupplierMutation, useDeleteSupplierMutation, useGetSuppliersNameQuery } = supplierApi;

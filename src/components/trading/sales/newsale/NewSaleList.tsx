@@ -9,8 +9,8 @@ import { toast } from 'react-toastify';
 import { NumericFormat } from 'react-number-format';
 import { useCreateSaleMutation } from '@/services/Sales/Sales';
 import { useGetWarehouseNamesQuery } from '@/services/Warehouse/Warehouse';
-import { useGetAllCustomersQuery } from '@/services/People/Customer';
-import { useGetAllBillersQuery } from '@/services/People/Biller';
+import { useGetCustomerNamesQuery } from '@/services/People/Customer';
+import { useGetBillerNamesQuery } from '@/services/People/Biller';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
 
 
@@ -73,8 +73,8 @@ const NewSaleList = () => {
 
     //datas
 
-    const { data: customerData } = useGetAllCustomersQuery({ pageNumber: 1, pageSize: 25 });
-    const { data: billerData } = useGetAllBillersQuery({ pageNumber: 1, pageSize: 25 });
+    const { data: customerData } = useGetCustomerNamesQuery({ pageNumber: 1, pageSize: 25 });
+    const { data: billerData } = useGetBillerNamesQuery({ pageNumber: 1, pageSize: 25 });
     const { data: warehouseData } = useGetWarehouseNamesQuery({ pageNumber: 1, pageSize: 25 });
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<TProduct[]>([]);
