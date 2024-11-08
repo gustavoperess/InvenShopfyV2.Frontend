@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { NumericFormat } from 'react-number-format';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
-import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
+import { useGetWarehouseNamesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetAllSuppliersQuery } from '@/services/People/Supplier';
 import { useCreatePurchaseMutation } from '@/services/Purchase/Purchase';
 
@@ -28,7 +28,7 @@ interface productInterface {
 
 interface warehouseInterface {
     id: number;
-    warehouseName: string;
+    warehouseTitle: string;
 
 }
 interface supplierInterface {
@@ -61,7 +61,7 @@ const AddPurchaseList = () => {
     const [searchResults, setSearchResults] = useState<TProduct[]>([]);
     const [addPurchase] = useCreatePurchaseMutation();
     const { data: supplierData } = useGetAllSuppliersQuery({ pageNumber: 1, pageSize: 25 });
-    const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: 1, pageSize: 25 });
+    const { data: warehouseData } = useGetWarehouseNamesQuery({ pageNumber: 1, pageSize: 25 });
 
     const debouncedSearchTerm = useDebounce(productName, 500);
 
@@ -308,13 +308,13 @@ const AddPurchaseList = () => {
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
                                                                 const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
-                                                                return selectedWarehouse ? selectedWarehouse.warehouseName : <em>Select Warehouse</em>;
+                                                                return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                             },
                                                         }}>
                                                         {warehouseData && warehouseData.data.length > 0 ? (
                                                             warehouseData.data.map((warehouse: warehouseInterface) => (
                                                                 <MenuItem key={warehouse.id} value={warehouse.id}>
-                                                                    {warehouse.warehouseName}
+                                                                    {warehouse.warehouseTitle}
                                                                 </MenuItem>
                                                             ))
                                                         ) : (

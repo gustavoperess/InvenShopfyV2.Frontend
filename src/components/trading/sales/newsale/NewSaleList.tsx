@@ -8,7 +8,7 @@ import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
 import { NumericFormat } from 'react-number-format';
 import { useCreateSaleMutation } from '@/services/Sales/Sales';
-import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
+import { useGetWarehouseNamesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetAllCustomersQuery } from '@/services/People/Customer';
 import { useGetAllBillersQuery } from '@/services/People/Biller';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
@@ -30,7 +30,7 @@ interface productInterface {
 
 interface warehouseInterface {
     id: number;
-    warehouseName: string;
+    warehouseTitle: string;
 
 }
 
@@ -75,13 +75,13 @@ const NewSaleList = () => {
 
     const { data: customerData } = useGetAllCustomersQuery({ pageNumber: 1, pageSize: 25 });
     const { data: billerData } = useGetAllBillersQuery({ pageNumber: 1, pageSize: 25 });
-    const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: 1, pageSize: 25 });
+    const { data: warehouseData } = useGetWarehouseNamesQuery({ pageNumber: 1, pageSize: 25 });
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<TProduct[]>([]);
     const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
     const [activeItems, setActiveItems] = useState<TProduct[]>([]);
 
-
+    
 
     //debounce function
     function useDebounce(value: string, delay: number) {
@@ -407,13 +407,13 @@ const NewSaleList = () => {
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
                                                                 const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
-                                                                return selectedWarehouse ? selectedWarehouse.warehouseName : <em>Select Warehouse</em>;
+                                                                return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                             },
                                                         }}>
                                                         {warehouseData && warehouseData.data.length > 0 ? (
                                                             warehouseData.data.map((warehouse: warehouseInterface) => (
                                                                 <MenuItem key={warehouse.id} value={warehouse.id}>
-                                                                    {warehouse.warehouseName}
+                                                                    {warehouse.warehouseTitle}
                                                                 </MenuItem>
                                                             ))
                                                         ) : (

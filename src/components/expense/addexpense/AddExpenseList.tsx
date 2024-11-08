@@ -4,14 +4,14 @@ import { MenuItem, TextField, FormControl, InputAdornment } from '@mui/material'
 import { NumericFormat } from 'react-number-format';
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
-import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
+import { useGetWarehouseNamesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetAllExpenseCategoriesQuery, useGetExpenseCategoryByIdQuery } from '@/services/Expense/ExpenseCategory';
 import { useAddExpenseMutation } from '@/services/Expense/Expense';
 
 
 interface warehouseInterface {
     id: number;
-    warehouseName: string;
+    warehouseTitle: string;
 
 }
 interface mainCategoryData {
@@ -36,7 +36,7 @@ const AddExpenseList = () => {
     const [subCategories, setSubCategories] = useState<string[]>([]);
     const [selectSubCategory, setSelectSubCategory] = useState<string>("");
     const { data: totalCategoryData } = useGetAllExpenseCategoriesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
-    const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+    const { data: warehouseData } = useGetWarehouseNamesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const { data: subCategoryData } = useGetExpenseCategoryByIdQuery(Number(selectedCategory) || 0, { skip: !selectedCategory });
     const [createExpense] = useAddExpenseMutation();
 
@@ -161,13 +161,13 @@ const AddExpenseList = () => {
                                                     displayEmpty: true,
                                                     renderValue: (value: any) => {
                                                         const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
-                                                        return selectedWarehouse ? selectedWarehouse.warehouseName : <em>Select Warehouse</em>;
+                                                        return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                     },
                                                 }}>
                                                 {warehouseData && warehouseData.data.length > 0 ? (
                                                     warehouseData.data.map((warehouse: warehouseInterface) => (
                                                         <MenuItem key={warehouse.id} value={warehouse.id}>
-                                                            {warehouse.warehouseName}
+                                                            {warehouse.warehouseTitle}
                                                         </MenuItem>
                                                     ))
                                                 ) : (

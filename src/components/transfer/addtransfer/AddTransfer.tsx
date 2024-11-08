@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { MenuItem, TextField } from '@mui/material';
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
-import { useGetAllWarehousesQuery, useGetTotalQuantityByProductAndWarehouseIdQuery } from '@/services/Warehouse/Warehouse';
+import { useGetWarehouseNamesQuery, useGetTotalQuantityByProductAndWarehouseIdQuery } from '@/services/Warehouse/Warehouse';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
 import { useGetMangerAdminUsersQuery } from '@/services/Role/Role';
 import { useCreateTransferMutation } from '@/services/Transfer/Transfer';
@@ -20,7 +20,7 @@ interface ReferenceInterface {
 
 interface warehouseInterface {
     id: number;
-    warehouseName: string;
+    warehouseTitle: string;
 
 }
 interface userAdminInterface {
@@ -44,7 +44,7 @@ const AddTransfer = () => {
     const [userAdmin, setUserAdmin] = useState({ userId: '', userName: '' });
     const [suggestions, setSuggestions] = useState<ReferenceInterface[]>([]);
     const [fetchSuggestions, setFetchSuggestions] = useState(true);
-    const { data: warehouseData } = useGetAllWarehousesQuery({ pageNumber: 1, pageSize: 25 });
+    const { data: warehouseData } = useGetWarehouseNamesQuery({ pageNumber: 1, pageSize: 25 });
     const { data: quantityByWarehouseData } = useGetTotalQuantityByProductAndWarehouseIdQuery(
         { warehouseId: Number(fromWarehouse) ?? 0, productId: productId ?? 0 },
         { skip: !fromWarehouse || !productId }
@@ -123,21 +123,20 @@ const AddTransfer = () => {
             transferDate: date, fromWarehouseId: fromWarehouse, toWarehouseId: toWarhouse, quantity, reason,
             productId, transferNote, transferStatus: status, authorizedBy: userAdmin.userName
         }
-        console.log(transferDataForm)
         try {
             await createTransfer(transferDataForm).unwrap();
             toast.success("Transfer Created successfully!");
-            // setTransferDate(new Date())
-            // setProductCode('');
-            // setProductName('');
-            // setUserAdmin('')
-            // setTransferNote('')
-            // setProductCode('')
-            // setToWarehouse('')
-            // setFromWarehouse("")
-            // setQuantity('')
-            // setReason('');
-            // setStatus('');
+            setTransferDate(new Date())
+            setProductCode('');
+            setProductName('');
+            setUserAdmin({ userId: '', userName: '' })
+            setTransferNote('')
+            setProductCode('')
+            setToWarehouse('')
+            setFromWarehouse("")
+            setQuantity('')
+            setReason('');
+            setStatus('');
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);
@@ -269,13 +268,13 @@ const AddTransfer = () => {
                                                     displayEmpty: true,
                                                     renderValue: (value: any) => {
                                                         const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
-                                                        return selectedWarehouse ? selectedWarehouse.warehouseName : <em>Select Warehouse</em>;
+                                                        return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                     },
                                                 }}>
                                                 {warehouseData && warehouseData.data.length > 0 ? (
                                                     warehouseData.data.map((warehouse: warehouseInterface) => (
                                                         <MenuItem key={warehouse.id} value={warehouse.id}>
-                                                            {warehouse.warehouseName}
+                                                            {warehouse.warehouseTitle}
                                                         </MenuItem>
                                                     ))
                                                 ) : (
@@ -304,13 +303,13 @@ const AddTransfer = () => {
                                                     displayEmpty: true,
                                                     renderValue: (value: any) => {
                                                         const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
-                                                        return selectedWarehouse ? selectedWarehouse.warehouseName : <em>Select Warehouse</em>;
+                                                        return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                     },
                                                 }}>
                                                 {warehouseData && warehouseData.data.length > 0 ? (
                                                     warehouseData.data.map((warehouse: warehouseInterface) => (
                                                         <MenuItem key={warehouse.id} value={warehouse.id}>
-                                                            {warehouse.warehouseName}
+                                                            {warehouse.warehouseTitle}
                                                         </MenuItem>
                                                     ))
                                                 ) : (
@@ -350,7 +349,7 @@ const AddTransfer = () => {
                                     <div className="inventual-input-field-style">
                                         <TextField
                                             required
-                                            value={quantityByWarehouseData?.data.quantity || ""}
+                                            value={quantityByWarehouseData?.data.quantity !== undefined ? quantityByWarehouseData.data.quantity : ""}
                                             disabled={quantityByWarehouseData?.data.quantity !== undefined}
                                             style={{
                                                 backgroundColor: quantityByWarehouseData?.data.quantity !== undefined ? '#e0e0e0' : 'inherit',
