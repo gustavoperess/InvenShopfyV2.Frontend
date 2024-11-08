@@ -2,13 +2,20 @@
 import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import { useGetSalesDashBoardQuery } from '@/services/Sales/Sales';
+import { useGetPurchaseDashboardQuery } from '@/services/Purchase/Purchase';
 
 interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
     value: number;
 }
-
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'GBP',
+  });
+  
+  
 function CustomTabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
     return (
@@ -111,7 +118,9 @@ const expenseRows: Data[] = [
     { id: 8, date: '28/12/2023', voucher: '850394', name: 'Furniture purchase', status: 'Completed', amount: '$6,582', category: 'Office Furniture' },
 ];
 
-const TransactionReport = () => {
+const TransactionReport = () => {useGetPurchaseDashboardQuery
+    const { data: salesData, refetch } = useGetSalesDashBoardQuery();
+    const { data: purchaseData } = useGetPurchaseDashboardQuery();
     const [value, setValue] = React.useState(0);
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -139,7 +148,7 @@ const TransactionReport = () => {
                                 <th>Date</th>
                                 <th>Reference</th>
                                 <th>Customer</th>
-                                <th>Payment</th>
+                                <th>Nº bought</th>
                                 <th>Status</th>
                                 <th>Grand Total</th>
                             </tr>
@@ -147,24 +156,24 @@ const TransactionReport = () => {
                         <tbody>
                             {
                                 rows.length > 0 ? (
-                                    rows.map(row => (
-                                        <tr key={row.id}>
-                                            <td>{row.date}</td>
-                                            <td>{row.reference}</td>
-                                            <td>{row.customer}</td>
-                                            <td>{row.payment}</td>
-                                            {row.status && (
+                                    salesData?.data?.map((sales: any) => (         
+                                        <tr key={sales.id}>
+                                            <td>{sales.saleDate}</td>
+                                            <td>{sales.referenceNumber}</td>
+                                            <td>{sales.customer}</td>
+                                            <td>{sales.totalQuantitySold}</td>
+                                            {sales.paymentStatus && (
                                                 <td>
-                                                    {row.status.toLowerCase() === "completed" ? (
-                                                        <span className='badge badge-success'>{row.status}</span>
-                                                    ) : (row.status.toLowerCase() === "partial" ? (
-                                                        <span className='badge badge-teal'>{row.status}</span>
-                                                    ) : (<span className='badge badge-danger'>{row.status}</span>)
+                                                    {sales.paymentStatus.toLowerCase() === "completed" ? (
+                                                        <span className='badge badge-success'>{sales.paymentStatus}</span>
+                                                    ) : (sales.paymentStatus.toLowerCase() === "partial" ? (
+                                                        <span className='badge badge-teal'>{sales.paymentStatus}</span>
+                                                    ) : (<span className='badge badge-danger'>{sales.paymentStatus}</span>)
                                                     )}
                                                 </td>
                                             )}
 
-                                            <td>{row.grandTotal}</td>
+                                            <td>{MoneyFormat.format(sales.totalAmount)}</td>
                                         </tr>
                                     ))
                                 ) : <tr>
@@ -183,7 +192,7 @@ const TransactionReport = () => {
                                 <th>Date</th>
                                 <th>Reference</th>
                                 <th>Supplier</th>
-                                <th>Payment</th>
+                                <th>Nº bought</th>
                                 <th>Status</th>
                                 <th>Grand Total</th>
                             </tr>
@@ -191,24 +200,24 @@ const TransactionReport = () => {
                         <tbody>
                             {
                                 rows.length > 0 ? (
-                                    rows.map(row => (
-                                        <tr key={row.id}>
-                                            <td>{row.date}</td>
-                                            <td>{row.reference}</td>
-                                            <td>{row.supplier}</td>
-                                            <td>{row.payment}</td>
-                                            {row.status && (
+                                    purchaseData?.data?.map((purchase: any) => (     
+                                        <tr key={purchase.id}>
+                                            <td>{purchase.purchaseDate}</td>
+                                            <td>{purchase.referenceNumber}</td>
+                                            <td>{purchase.supplier}</td>
+                                            <td>{purchase.totalNumberOfProductsBought}</td>
+                                            {purchase.purchaseStatus && (
                                                 <td>
-                                                    {row.status.toLowerCase() === "completed" ? (
-                                                        <span className='badge badge-success'>{row.status}</span>
-                                                    ) : (row.status.toLowerCase() === "partial" ? (
-                                                        <span className='badge badge-teal'>{row.status}</span>
-                                                    ) : (<span className='badge badge-danger'>{row.status}</span>)
+                                                    {purchase.purchaseStatus.toLowerCase() === "completed" ? (
+                                                        <span className='badge badge-success'>{purchase.purchaseStatus}</span>
+                                                    ) : (purchase.purchaseStatus.toLowerCase() === "partial" ? (
+                                                        <span className='badge badge-teal'>{purchase.purchaseStatus}</span>
+                                                    ) : (<span className='badge badge-danger'>{purchase.purchaseStatus}</span>)
                                                     )
                                                     }
                                                 </td>
                                             )}
-                                            <td>{row.grandTotal}</td>
+                                            <td>{MoneyFormat.format(purchase.totalAmountBought)}</td>
                                         </tr>
                                     ))
                                 ) : <tr>
