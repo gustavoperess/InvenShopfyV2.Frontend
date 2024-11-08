@@ -32,7 +32,6 @@ export const warehouse = createApi({
                 url: `Warehouse/${id}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Warehouse'],  
         }),
 
         // Query to get the total quantity by product and warehouse
@@ -59,7 +58,6 @@ export const warehouse = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['Warehouse'],  
         }),
     }),
 });

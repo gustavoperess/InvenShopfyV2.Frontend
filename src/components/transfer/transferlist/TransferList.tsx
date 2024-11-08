@@ -16,166 +16,50 @@ import {
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
-import TransAddPaymentPopup from './transferPopup/TransAddPaymentPopup';
-import TransGeneratePopup from './transferPopup/TransGeneratePopup';
-import TransPaymentListPopup from './transferPopup/TransPaymentListPopup';
+import { useGetAllTransfersQuery } from '@/services/Transfer/Transfer';
+
 
 // Define the structure of the data
 interface Data {
   id: number;
-  date: string;
-  reference: string;
-  product: string;
+  transferDate: string;
+  referenceNumber: string;
+  productName: string;
   quantity: number;
   fromWarehouse: string;
   toWarehouse: string;
   reason: string;
-  status: string;
-  authorized: string;
+  transferStatus: string;
+  transferNote: string;
+  authorizedBy: string;
 }
 
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    date: '12-12-2024',
-    reference: 'S-3443554345',
-    product: 'Cotton Polo Shirt',
-    quantity: 150,
-    fromWarehouse: 'Warehouse 1',
-    toWarehouse: 'Warehouse 3',
-    reason: 'Stock Rebalancing',
-    status: 'completed',
-    authorized: 'Emily Johnson'
-  },
-  {
-    id: 2,
-    date: '01-01-2024',
-    reference: 'S-3443554346',
-    product: 'Denim Jeans',
-    quantity: 200,
-    fromWarehouse: 'Warehouse 2',
-    toWarehouse: 'Warehouse 4',
-    reason: 'New Season Stock',
-    status: 'pending',
-    authorized: 'John Smith'
-  },
-  {
-    id: 3,
-    date: '02-15-2024',
-    reference: 'S-3443554347',
-    product: 'Leather Jackets',
-    quantity: 50,
-    fromWarehouse: 'Warehouse 3',
-    toWarehouse: 'Warehouse 1',
-    reason: 'Return',
-    status: 'completed',
-    authorized: 'Alice Brown'
-  },
-  {
-    id: 4,
-    date: '03-20-2024',
-    reference: 'S-3443554348',
-    product: 'Sneakers',
-    quantity: 300,
-    fromWarehouse: 'Warehouse 4',
-    toWarehouse: 'Warehouse 2',
-    reason: 'Overstock Clearance',
-    status: 'Rejected',
-    authorized: 'Robert Davis'
-  },
-  {
-    id: 5,
-    date: '04-25-2024',
-    reference: 'S-3443554349',
-    product: 'Sports T-Shirts',
-    quantity: 400,
-    fromWarehouse: 'Warehouse 1',
-    toWarehouse: 'Warehouse 5',
-    reason: 'New Branch Opening',
-    status: 'completed',
-    authorized: 'Maria Garcia'
-  },
-  {
-    id: 6,
-    date: '05-10-2024',
-    reference: 'S-3443554350',
-    product: 'Woolen Sweaters',
-    quantity: 100,
-    fromWarehouse: 'Warehouse 2',
-    toWarehouse: 'Warehouse 3',
-    reason: 'Seasonal Stock Change',
-    status: 'pending',
-    authorized: 'James Wilson'
-  },
-  {
-    id: 7,
-    date: '06-15-2024',
-    reference: 'S-3443554351',
-    product: 'Formal Shirts',
-    quantity: 250,
-    fromWarehouse: 'Warehouse 3',
-    toWarehouse: 'Warehouse 4',
-    reason: 'Stock Rebalancing',
-    status: 'Rejected',
-    authorized: 'Patricia Martinez'
-  },
-  {
-    id: 8,
-    date: '07-20-2024',
-    reference: 'S-3443554352',
-    product: 'Casual Pants',
-    quantity: 350,
-    fromWarehouse: 'Warehouse 4',
-    toWarehouse: 'Warehouse 1',
-    reason: 'Demand Fulfillment',
-    status: 'Rejected',
-    authorized: 'Linda Hernandez'
-  },
-  {
-    id: 9,
-    date: '08-25-2024',
-    reference: 'S-3443554353',
-    product: 'Winter Coats',
-    quantity: 80,
-    fromWarehouse: 'Warehouse 1',
-    toWarehouse: 'Warehouse 2',
-    reason: 'Seasonal Preparation',
-    status: 'completed',
-    authorized: 'Michael Johnson'
-  },
-  {
-    id: 10,
-    date: '09-30-2024',
-    reference: 'S-3443554354',
-    product: 'Summer Hats',
-    quantity: 500,
-    fromWarehouse: 'Warehouse 2',
-    toWarehouse: 'Warehouse 5',
-    reason: 'New Collection Launch',
-    status: 'pending',
-    authorized: 'Barbara Lee'
-  }
-
-];
 
 const TransferList = () => {
-
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [selected, setSelected] = useState<number[]>([]);
+  const [selectedTransferId, setSelectedTransferId] = useState<number | undefined>(); 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const { data: transferData, error: transferError, isLoading: transferLoading, refetch } = useGetAllTransfersQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 25));
-    setPage(0);
+
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
 
+    // handle pagination 
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setCurrentPageSize(parseInt(event.target.value, 10));
+      setCurrentPageNumber(1); 
+      refetch();
+    };
+  
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -186,11 +70,12 @@ const TransferList = () => {
   // Handler for selecting/deselecting all items
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(rows.map((row) => row.id));
+      setSelected(transferData?.data.map((sales: any) => sales.id));
     } else {
       setSelected([]);
     }
   };
+
 
   // Handler for selecting/deselecting a single item
   const handleClick = (id: number) => {
@@ -216,11 +101,15 @@ const TransferList = () => {
   // Check if a particular item is selected
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-  // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+   // Function to sort data
+   const sortedRows = transferData?.data.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof Data]; 
+    const bValue = b[orderBy as keyof Data]; 
+    if (aValue === undefined || bValue === undefined) {
+      return 0; 
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -268,12 +157,11 @@ const TransferList = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Date</MenuItem>
-                            <MenuItem onClick={popupState.close}>Customer</MenuItem>
-                            <MenuItem onClick={popupState.close}>Warehouse</MenuItem>
-                            <MenuItem onClick={popupState.close}>Biller</MenuItem>
-                            <MenuItem onClick={popupState.close}>Paid</MenuItem>
-                            <MenuItem onClick={popupState.close}>Due</MenuItem>
+                          <MenuItem onClick={() => {handleRequestSort("transferDate"); popupState.close()}}>Date</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("authorizedBy"); popupState.close()}}>Manager</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("productName"); popupState.close()}}>Product</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("fromWarehouse"); popupState.close()}}>From Warehouse</MenuItem>
+                            <MenuItem onClick={() => {handleRequestSort("toWarehouse"); popupState.close()}}>To Warehouse</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -302,34 +190,34 @@ const TransferList = () => {
                             <TableRow>
                               <TableCell>
                                 <Checkbox
-                                  indeterminate={selected.length > 0 && selected.length < rows.length}
-                                  checked={rows.length > 0 && selected.length === rows.length}
+                                  indeterminate={selected.length > 0 && selected.length < transferData?.data.length}
+                                  checked={transferData?.data.length > 0 && selected.length === transferData?.data.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                                 />
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'date'}
-                                  direction={orderBy === 'date' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('date')}
+                                  active={orderBy === 'transferDate'}
+                                  direction={orderBy === 'transferDate' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('transferDate')}
                                 >
                                   Date
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'reference'}
-                                  direction={orderBy === 'reference' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('reference')}
+                                  active={orderBy === 'referenceNumber'}
+                                  direction={orderBy === 'referenceNumber' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('referenceNumber')}
                                 >
                                   Reference
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'product'}
-                                  direction={orderBy === 'product' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('product')}
+                                  active={orderBy === 'productName'}
+                                  direction={orderBy === 'productName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('productName')}
                                 >
                                   Product
                                 </TableSortLabel>
@@ -358,7 +246,7 @@ const TransferList = () => {
                                   direction={orderBy === 'toWarehouse' ? order : 'asc'}
                                   onClick={() => handleRequestSort('toWarehouse')}
                                 >
-                                  T warehouse
+                                  T. warehouse
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -372,18 +260,18 @@ const TransferList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'status'}
-                                  direction={orderBy === 'status' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('status')}
+                                  active={orderBy === 'transferStatus'}
+                                  direction={orderBy === 'transferStatus' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('transferStatus')}
                                 >
                                   Status
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'authorized'}
-                                  direction={orderBy === 'authorized' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('authorized')}
+                                  active={orderBy === 'authorizedBy'}
+                                  direction={orderBy === 'authorizedBy' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('authorizedBy')}
                                 >
                                   Authorized
                                 </TableSortLabel>
@@ -397,45 +285,43 @@ const TransferList = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
+                          {sortedRows?.map((transfer: any) => (        
                                 <TableRow
-                                  key={row.id}
+                                  key={transfer.id}
                                   hover
-                                  onClick={() => handleClick(row.id)}
+                                  onClick={() => handleClick(transfer.id)}
                                   role="checkbox"
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
+                                  aria-checked={isSelected(transfer.id)}
+                                  selected={isSelected(transfer.id)}
                                 >
                                   <TableCell>
-                                    <Checkbox checked={isSelected(row.id)} />
+                                    <Checkbox checked={isSelected(transfer.id)} />
                                   </TableCell>
-                                  <TableCell>{row.date}</TableCell>
-                                  <TableCell>{row.reference}</TableCell>
-                                  <TableCell>{row.product}</TableCell>
-                                  <TableCell>{row.quantity}</TableCell>
-                                  <TableCell>{row.fromWarehouse}</TableCell>
-                                  <TableCell>{row.toWarehouse}</TableCell>
-                                  <TableCell>{row.reason}</TableCell>
+                                  <TableCell>{transfer.transferDate}</TableCell>
+                                  <TableCell>{transfer.referenceNumber}</TableCell>
+                                  <TableCell>{transfer.productName}</TableCell>
+                                  <TableCell>{transfer.quantity}</TableCell>
+                                  <TableCell>{transfer.fromWarehouse}</TableCell>
+                                  <TableCell>{transfer.toWarehouse}</TableCell>
+                                  <TableCell>{transfer.reason}</TableCell>
                                   <TableCell>
                                     {
-                                      row.status.toLowerCase() === "completed" ? (
-                                        <span className='badge badge-success'>{row.status}</span>
+                                      transfer.transferStatus.toLowerCase() === "completed" ? (
+                                        <span className='badge badge-success'>{transfer.transferStatus}</span>
                                       ) : (
-                                        row.status.toLowerCase() === "rejected" ? (
-                                          <span className='badge badge-danger'>{row.status}</span>
+                                        transfer.transferStatus.toLowerCase() === "InTransit" ? (
+                                          <span className='badge badge-danger'>{transfer.transferStatus}</span>
                                         ) : (
-                                          row.status.toLowerCase() === "pending" ? (
-                                            <span className='badge badge-teal'>{row.status}</span>
+                                          transfer.transferStatus.toLowerCase() === "pending" ? (
+                                            <span className='badge badge-teal'>{transfer.transferStatus}</span>
                                           ) : (
-                                            <span className='badge badge-success'>{row.status}</span>
+                                            <span className='badge badge-success'>{transfer.transferStatus}</span>
                                           )
                                         )
                                       )
                                     }
                                   </TableCell>
-                                  <TableCell>{row.authorized}</TableCell>
+                                  <TableCell>{transfer.authorizedBy}</TableCell>
                                   <TableCell>
                                     <div className="inventual-list-action-style">
                                       <PopupState variant="popover">
@@ -464,12 +350,11 @@ const TransferList = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
+                    count={transferData?.totalCount || 0}
+                    rowsPerPage={currentPageSize}
+                    page={currentPageNumber - 1}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>

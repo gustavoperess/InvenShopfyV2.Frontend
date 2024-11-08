@@ -12,7 +12,7 @@ export const transfersApi = createApi({
     endpoints: (builder) => ({
         getAllTransfers:builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
-                url: "",
+                url: "alltransfer",
                 method: "GET",
                 params: { pageNumber, pageSize}
             }),
