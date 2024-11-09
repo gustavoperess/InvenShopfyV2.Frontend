@@ -4,6 +4,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { useGetSalesDashBoardQuery } from '@/services/Sales/Sales';
 import { useGetPurchaseDashboardQuery } from '@/services/Purchase/Purchase';
+import { useGetSalesReturnDashBoardQuery } from '@/services/Sales/SaleReturn';
+import { useGetExpenseDashBoardQuery } from '@/services/Expense/Expense';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -121,6 +123,9 @@ const expenseRows: Data[] = [
 const TransactionReport = () => {useGetPurchaseDashboardQuery
     const { data: salesData, refetch } = useGetSalesDashBoardQuery();
     const { data: purchaseData } = useGetPurchaseDashboardQuery();
+    const {data: salesReturnData} = useGetSalesReturnDashBoardQuery();
+    const {data: expenseData} = useGetExpenseDashBoardQuery();
+
     const [value, setValue] = React.useState(0);
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
@@ -275,25 +280,25 @@ const TransactionReport = () => {useGetPurchaseDashboardQuery
                     <table>
                         <thead>
                             <tr className='bg-lightest'>
-                                <th>Date</th>
-                                <th>Voucher</th>
+                                <th>Return Date</th>
+                                <th>Reference Number</th>
                                 <th>Customer</th>
                                 <th>Biller</th>
-                                <th>Remark</th>
+                                <th>Status</th>
                                 <th>Grand Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             {
                                 rows.length > 0 ? (
-                                    rows.map(row => (
-                                        <tr key={row.id}>
-                                            <td>{row.date}</td>
-                                            <td>{row.voucher}</td>
-                                            <td>{row.customer}</td>
-                                            <td>{row.biller}</td>
-                                            <td>{row.status}</td>
-                                            <td>{row.grandTotal}</td>
+                                salesReturnData?.data?.map((salesReturn: any) => (     
+                                        <tr key={salesReturn.id}>
+                                            <td>{salesReturn.returnDate}</td>
+                                            <td>{salesReturn.referenceNumber}</td>
+                                            <td>{salesReturn.customerName}</td>
+                                            <td>{salesReturn.billerName}</td>
+                                            <td>{salesReturn.remarkStatus}</td>
+                                            <td>{MoneyFormat.format(salesReturn.totalAmount)}</td>
                                         </tr>
                                     ))
                                 ) : <tr>
@@ -311,7 +316,7 @@ const TransactionReport = () => {useGetPurchaseDashboardQuery
                             <tr className='bg-lightest'>
                                 <th>Date</th>
                                 <th>Voucher</th>
-                                <th>Name</th>
+                                <th>Description</th>
                                 <th>Category</th>
                                 <th>Payment</th>
                                 <th>Amount</th>
@@ -320,24 +325,24 @@ const TransactionReport = () => {useGetPurchaseDashboardQuery
                         <tbody>
                             {
                                 rows.length > 0 ? (
-                                    rows.map(row => (
-                                        <tr key={row.id}>
-                                            <td>{row.date}</td>
-                                            <td>{row.voucher}</td>
-                                            <td>{row.name}</td>
-                                            <td>{row.category}</td>
-                                            {row.status && (
+                                    expenseData?.data?.map((expense: any) => ( 
+                                        <tr key={expense.id}>
+                                            <td>{expense.date}</td>
+                                            <td>{expense.voucherNumber}</td>
+                                            <td>{expense.expenseDescription}</td>
+                                            <td>{expense.expenseCategory}</td>
+                                            {expense.expenseStatus && (
                                                 <td>
-                                                    {row.status.toLowerCase() === "completed" ? (
-                                                        <span className='badge badge-success'>{row.status}</span>
-                                                    ) : (row.status.toLowerCase() === "partial" ? (
-                                                        <span className='badge badge-teal'>{row.status}</span>
-                                                    ) : (<span className='badge badge-danger'>{row.status}</span>)
+                                                    {expense.expenseStatus.toLowerCase() === "completed" ? (
+                                                        <span className='badge badge-success'>{expense.expenseStatus}</span>
+                                                    ) : (expense.expenseStatus.toLowerCase() === "Incompleted" ? (
+                                                        <span className='badge badge-teal'>{expense.expenseStatus}</span>
+                                                    ) : (<span className='badge badge-danger'>{expense.expenseStatus}</span>)
                                                     )
                                                     }
                                                 </td>
                                             )}
-                                            <td>{row.amount}</td>
+                                            <td>{MoneyFormat.format(expense.expenseCost)}</td>
                                         </tr>
                                     ))
                                 ) : <tr>

@@ -1,8 +1,19 @@
 import React from 'react';
 import { useGetWarehouseQuantityQuery } from '@/services/Warehouse/Warehouse';
+import { useGetSalesReturnTotalAmountQuery } from '@/services/Sales/SaleReturn';
+import { useGetSPurchaseReturnTotalAmountQuery } from '@/services/Purchase/PurchaseReturn';
+
+
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'GBP',
+  });
 
 const QuickReportList = () => {
     const { data: warehouseQuantityData } = useGetWarehouseQuantityQuery();
+    const { data: salesReturnTotalAmountData } = useGetSalesReturnTotalAmountQuery();
+    const {data: purchaseReturnData} = useGetSPurchaseReturnTotalAmountQuery();
+
 
     return (
         <>
@@ -102,7 +113,7 @@ const QuickReportList = () => {
                             </div>
                             <div className="invention-quickreport-text">
                                 <span className="text-[16px] font-semibold block mb-2">Sales Returns</span>
-                                <h5 className="text-[20px] text-heading font-bold">$43,703</h5>
+                                <h5 className="text-[20px] text-heading font-bold">{MoneyFormat.format(salesReturnTotalAmountData?.data)}</h5>
                             </div>
                         </div>
                     </div>
@@ -121,7 +132,7 @@ const QuickReportList = () => {
                             </div>
                             <div className="invention-quickreport-text">
                                 <span className="text-[16px] font-semibold block mb-2">Purchase Returns</span>
-                                <h5 className="text-[20px] text-heading font-bold">$9,035</h5>
+                                <h5 className="text-[20px] text-heading font-bold">{MoneyFormat.format(purchaseReturnData?.data)}</h5>
                             </div>
                         </div>
                     </div>

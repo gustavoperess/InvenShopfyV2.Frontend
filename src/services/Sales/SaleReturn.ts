@@ -28,6 +28,18 @@ export const salesReturnApi = createApi({
                 params: { pageNumber, pageSize}
             }),
         }),
+        getSalesReturnDashBoard: builder.query<any, void>({
+            query: () => ({
+                url: `dashboard`,
+                method: 'GET',
+            }),
+        }),
+        getSalesReturnTotalAmount: builder.query<any, void>({
+            query: () => ({
+                url: `total-amount`,
+                method: 'GET',
+            }),
+        }),
         deleteSalesReturn: builder.mutation<any, number>({
             query: (id) => ({
                 url: `${id}`,
@@ -39,4 +51,11 @@ export const salesReturnApi = createApi({
 });
 
 
-export const { useGetSalesReturnByNameQuery, useCreateSaleReturnMutation, useGetAllSalesReturnQuery, useDeleteSalesReturnMutation } = salesReturnApi;
+export const { 
+    useGetSalesReturnByNameQuery,
+    useCreateSaleReturnMutation,
+    useGetAllSalesReturnQuery,
+    useDeleteSalesReturnMutation,
+    useGetSalesReturnDashBoardQuery,
+    useGetSalesReturnTotalAmountQuery
+} = salesReturnApi;

@@ -72,10 +72,14 @@ const AddExpenseList = () => {
         let date = formatDate(startDate)
 
         const expenseDatatoSubmit = {
-            warehouseId: selectWarehouse, date, expenseDescription: expense, expenseCategoryId: selectedCategory, expenseType: selectSubCategory, voucherNumber: voucherNo, expenseCost: selectedPrice, expenseNote,shippingCost
+            warehouseId: selectWarehouse, date, 
+            expenseStatus: selectStatus, expenseDescription: expense, 
+            expenseCategoryId: selectedCategory, expenseType: selectSubCategory, 
+            voucherNumber: voucherNo, expenseCost: selectedPrice, expenseNote,shippingCost
         };
         
         try {
+            console.log(expenseDatatoSubmit)
             await createExpense(expenseDatatoSubmit).unwrap();
             toast.success("Expense Created successfully!");
             setStartDate(new Date());
@@ -329,9 +333,9 @@ const AddExpenseList = () => {
                                             <MenuItem value="">
                                                 <em>Select Status</em>
                                             </MenuItem>
-                                            <MenuItem value="Paid">Paid</MenuItem>
-                                            <MenuItem value="Partial">Partial</MenuItem>
-                                            <MenuItem value="Due">Due</MenuItem>
+                                            <MenuItem value="Completed">Completed</MenuItem>
+                                            <MenuItem value="Incompleted">Incompleted</MenuItem>
+                                            <MenuItem value="Drafts">Drafts</MenuItem>
                                         </TextField>
                                     </div>
                                 </div>
