@@ -141,6 +141,96 @@
     }
 }
 
+.inventual-formFour-field,
+.inventual-start-input-label-style {
+    @apply relative;
+    
+    h5, h6 {
+        @apply text-[15px] text-heading font-semibold mb-3;
+    }
+
+    &.small-width {
+        & input {
+            @apply w-[150px];
+        }
+    }
+
+    input, select, textarea {
+        @apply m-0 h-9 leading-[46px] border border-solid border-border px-5 rounded outline-none block text-[14px] text-body font-primary font-normal w-full bg-gray focus:bg-white;
+    }
+
+    /* Additional styles for disabled elements with conditional background color */
+    input:disabled, textarea:disabled, select:disabled {
+        @apply bg-grayTwo-100 text-grayTwo-500 cursor-not-allowed; 
+    }
+
+    input, textarea {
+        @apply placeholder:text-body placeholder:text-[14px] font-primary;
+    }
+
+    textarea {
+        @apply h-[120px] leading-tight w-full py-2.5;
+    }
+
+    .react-datepicker-wrapper {
+        @apply w-full;
+        
+        input {
+            @apply w-full;
+        }
+    }
+
+    .react-datepicker {
+        .react-datepicker__header__dropdown {
+            @apply mt-2.5;
+        }
+
+        select {
+            @apply w-full h-10 leading-10;
+        }
+
+        .react-datepicker__month-select,
+        .react-datepicker__year-select {
+            @apply px-2.5;
+        }
+
+        .react-datepicker__navigation-icon {
+            @apply top-0.5;
+        }
+    }
+
+    .react-datepicker__close-icon {
+        @apply end-4;
+    }
+
+    .react-datepicker__time-container {
+        @apply border-s w-[150px] min-w-[125px] border-border;
+
+        .react-datepicker__time .react-datepicker__time-box {
+            @apply w-full;
+        }
+    }
+
+    .react-datepicker {
+        @apply rounded-tr-none;
+    }
+
+    div.react-datepicker-popper {
+        transform: translate(0px, 50px) !important;
+    }
+
+    &.is-disabled {
+        textarea {
+            @apply h-[auto] resize-none;
+
+            &::placeholder {
+                @apply text-danger;
+            }
+        }
+    }
+}
+
+
 .inventual-formTree-field,
 .inventual-start-input-label-style {
     @apply relative;

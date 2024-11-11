@@ -1,8 +1,15 @@
 "use client"
 import React, { useState } from 'react';
-import { MenuItem, TextField, FormControl } from '@mui/material';
+import { Input, TextField, FormControl } from '@mui/material';
 import { useAddSupplierMutation } from '@/services/People/Supplier';
 import { toast } from 'react-toastify';
+import { IMaskInput } from 'react-imask';
+
+interface CustomProps {
+    onChange: (event: { target: { name: string; value: string } }) => void;
+    name: string;
+}
+
 
 const AddSupplier = () => {
     const [supplierName, setSupplierName] = useState('')
@@ -47,6 +54,23 @@ const AddSupplier = () => {
 
     };
 
+    const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
+        function TextMaskCustom(props, ref) {
+            const { onChange, ...other } = props;
+            return (
+                <IMaskInput
+                    {...other}
+                    mask="(#00) 000-0000"
+                    definitions={{ '#': /[1-9]/ }}
+                    inputRef={ref}
+                    onComplete={(value: any) => onChange({ target: { name: props.name, value } })}
+                    overwrite
+                />
+            );
+        }
+    );
+
+
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const email = e.target.value;
         setEmail(email);
@@ -80,19 +104,18 @@ const AddSupplier = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Phone</h5>
+                                <div className="inventual-formFour-field">
                                     <div className="inventual-input-field-style">
+                                        <h5>Phone</h5>
                                         <FormControl fullWidth>
-                                            <TextField  // NEED TO CHECK PHONE NUMBER REQUIREMENTS 
-                                                fullWidth
-                                                type="number"
-                                                required
+                                            <Input
                                                 value={phone}
-                                                placeholder="+234 23432432"
-                                                variant="outlined"
-                                                inputProps={{ maxLength: 80 }}
-                                                onChange={(e) => setPhone(e.target.value)} />
+                                                placeholder="231 2343-2432"
+                                                onChange={(e) => setPhone(e.target.value)}
+                                                name="textmask"
+                                                id="formatted-text-mask-input"
+                                                inputComponent={TextMaskCustom as any}
+                                            />
                                         </FormControl>
                                     </div>
                                 </div>

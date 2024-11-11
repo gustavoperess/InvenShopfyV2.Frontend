@@ -1,24 +1,27 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { MenuItem, TextField, FormControl } from '@mui/material';
+import { MenuItem, TextField, FormControl, Input } from '@mui/material';
 import DatePicker from "react-datepicker"; import { toast } from 'react-toastify';
 import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
 import { useAddBillerMutation } from '@/services/People/Biller';
-import parsePhoneNumber from 'libphonenumber-js'
-import { AsYouType } from 'libphonenumber-js'
+import { IMaskInput } from 'react-imask';
 
 interface warehouseInterface {
     id: number;
     warehouseName: string;
 
 }
+interface CustomProps {
+    onChange: (event: { target: { name: string; value: string } }) => void;
+    name: string;
+}
+
 
 const AddBiller = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [name, setName] = useState('');
-    const [rawPhone, setRawPhone] = useState("");
-    const [formattedPhone, setFormattedPhone] = useState(""); 
     const [email, setEmail] = useState('');
+    const [billerPhoneNumber, setBillerPhoneNumber] = useState<string>("");
     const [country, setCountry] = useState('');
     const [identification, setIdentification] = useState('');
     const [selectWarehouse, setSelectWarehosue] = useState('')
@@ -35,16 +38,16 @@ const AddBiller = () => {
         let date = formatDate(startDate)
 
         const billerData = {
-            name, dateOfJoin: date, email, phoneNumber: rawPhone, identification, address, country,
+            name, dateOfJoin: date, email, phoneNumber: billerPhoneNumber, identification, address, country,
             zipCode, billerCode, warehouseId: selectWarehouse
         }
+        console.log(billerData)
         try {
             await addBiller(billerData).unwrap();
             toast.success("Biller Created successfully!");
             setStartDate(new Date());
             setName('');
-            setRawPhone('');
-            setFormattedPhone('');
+            setBillerPhoneNumber('');
             setEmail('');
             setSelectWarehosue('');
             setAddress('');
@@ -84,22 +87,23 @@ const AddBiller = () => {
         return `${year}-${month}-${day}`;
     };
 
-    const handlePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const input = e.target.value; 
-        if (input === "") {
-            setRawPhone("");
-            setFormattedPhone("");
-            return;
-        }
-        const rawInput = input.replace(/[^\d]/g, "");
-        const formatted = new AsYouType('US').input(rawInput); 
-    
- 
-        setRawPhone(rawInput);
-        setFormattedPhone(formatted);
-    };
 
- 
+    const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
+        function TextMaskCustom(props, ref) {
+            const { onChange, ...other } = props;
+            return (
+                <IMaskInput
+                    {...other}
+                    mask="(#00) 000-0000"
+                    definitions={{ '#': /[1-9]/ }}
+                    inputRef={ref}
+                    onComplete={(value: any) => onChange({ target: { name: props.name, value } })}
+                    overwrite
+                />
+            );
+        }
+    );
+
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const email = e.target.value;
@@ -107,6 +111,7 @@ const AddBiller = () => {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         setError(!emailPattern.test(email));
     };
+
     return (
         <>
             <div className="inventual-content-area px-4 sm:px-7 max2Xl:pb-0 pb-[170px]">
@@ -152,19 +157,17 @@ const AddBiller = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Phone</h5>
+                                <div className="inventual-formFour-field">
                                     <div className="inventual-input-field-style">
+                                        <h5>Phone</h5>
                                         <FormControl fullWidth>
-                                            <TextField
-                                                fullWidth
-                                                type="tel"
-                                                required
-                                                value={formattedPhone}
+                                            <Input
+                                                value={billerPhoneNumber}
                                                 placeholder="+231 2343-2432"
-                                                variant="outlined"
-                                                inputProps={{ maxLength: 16 }}
-                                                onChange={handlePhoneNumber}
+                                                onChange={(e) => setBillerPhoneNumber(e.target.value)}
+                                                name="textmask"
+                                                id="formatted-text-mask-input"
+                                                inputComponent={TextMaskCustom as any}
                                             />
                                         </FormControl>
                                     </div>

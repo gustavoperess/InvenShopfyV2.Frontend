@@ -63,14 +63,16 @@ const Header = () => {
 
   const { setShowingNavigationDropdown, showingNavigationDropdown } = useGlobalContext()
 
-  const splitname = (string: "") => {
+
+  const splitname = (fullName: string) => {
     if (currentuser != undefined) {
-      const words = string.split(" ");
-      const firstName = words[0];
-      const lastName = words[words.length - 1];
-      return `${firstName} ${lastName}`
+        const words = fullName.split(" ");
+        const firstName = words[0];
+        const lastName = words[words.length - 1];
+        return `${firstName} ${lastName}`;
     }
-  }
+    return '';
+};
 
 
 

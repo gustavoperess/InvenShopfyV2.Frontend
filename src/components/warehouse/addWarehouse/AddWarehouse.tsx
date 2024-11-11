@@ -2,8 +2,14 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useCreateWarehouseMutation } from '@/services/Warehouse/Warehouse';
-import { TextField, FormControl } from '@mui/material';
-import { kMaxLength } from 'buffer';
+import { TextField, FormControl,Input } from '@mui/material';
+import { IMaskInput } from 'react-imask';
+
+interface CustomProps {
+    onChange: (event: { target: { name: string; value: string } }) => void;
+    name: string;
+}
+
 
 const AddWarehouse = () => {
     const [addWarehouse] = useCreateWarehouseMutation();
@@ -40,6 +46,21 @@ const AddWarehouse = () => {
             }
         }
     }
+    const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
+        function TextMaskCustom(props, ref) {
+            const { onChange, ...other } = props;
+            return (
+                <IMaskInput
+                    {...other}
+                    mask="(#00) 000-0000"
+                    definitions={{ '#': /[1-9]/ }}
+                    inputRef={ref}
+                    onComplete={(value: any) => onChange({ target: { name: props.name, value } })}
+                    overwrite
+                />
+            );
+        }
+    );
 
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,20 +96,19 @@ const AddWarehouse = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <h5>Phone</h5>
+                                <div className="inventual-formFour-field">
                                     <div className="inventual-input-field-style">
-                                    <FormControl fullWidth>
-                                        <TextField  // NEED TO CHECK PHONE NUMBER REQUIREMENTS 
-                                            fullWidth
-                                            type="number"
-                                            required
-                                            value={warehousePhoneNumber}
-                                            placeholder="+234 23432432"
-                                            variant="outlined"
-                                            inputProps={{ maxLength: 80 }}
-                                            onChange={(e) => setWarehousePhoneNumber(e.target.value)}/>
-                                    </FormControl>
+                                        <h5>Phone</h5>
+                                        <FormControl fullWidth>
+                                            <Input
+                                                value={warehousePhoneNumber}
+                                                placeholder="231 2343-2432"
+                                                onChange={(e) => setWarehousePhoneNumber(e.target.value)}
+                                                name="textmask"
+                                                id="formatted-text-mask-input"
+                                                inputComponent={TextMaskCustom as any}
+                                            />
+                                        </FormControl>
                                     </div>
                                 </div>
                             </div>
