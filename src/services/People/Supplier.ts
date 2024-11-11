@@ -6,7 +6,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export const supplierApi = createApi({
     reducerPath: 'supplierApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: `${BACKEND_URL}/v2/people`,
+        baseUrl: `${BACKEND_URL}/v2/people/`,
         credentials: 'include',
     }),
     tagTypes: ['Suppliers'],  
@@ -35,6 +35,12 @@ export const supplierApi = createApi({
             }),
             invalidatesTags: ['Suppliers'],  
         }),
+        getTopSuppliersDasgboard: builder.query<any, void>({
+            query: () => ({
+                url: `/Supplier/dashboard/top-suppliers`,
+                method: 'GET',
+            }),
+        }),
         deleteSupplier: builder.mutation<any, number>({
             query: (id) => ({
                 url: `Supplier/${id}`,
@@ -45,4 +51,10 @@ export const supplierApi = createApi({
 });
 
 // Export auto-generated hooks for functional components
-export const { useGetAllSuppliersQuery, useAddSupplierMutation, useDeleteSupplierMutation, useGetSuppliersNameQuery } = supplierApi;
+export const { 
+    useGetAllSuppliersQuery, 
+    useAddSupplierMutation, 
+    useDeleteSupplierMutation, 
+    useGetSuppliersNameQuery,
+    useGetTopSuppliersDasgboardQuery
+} = supplierApi;

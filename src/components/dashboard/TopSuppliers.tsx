@@ -1,21 +1,16 @@
 import Link from 'next/link';
 import React from 'react';
+import { useGetTopSuppliersDasgboardQuery } from '@/services/People/Supplier';
+import { it } from 'node:test';
 
-interface Data {
-    sl: string;
-    name: string;
-    amount: string;
-    phone: string;
-}
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'GBP',
+  });
+
 const TopSuppliers = () => {
+    const { data: supplierData } = useGetTopSuppliersDasgboardQuery();
 
-    const sampleData: Data[] = [
-        { sl: '01', name: 'Steve Smith', amount: "325,712", phone: "01711-52523" },
-        { sl: '02', name: 'Jhon Doe', amount: "425,712", phone: "01711-52523" },
-        { sl: '03', name: 'David Warner', amount: "555,712", phone: "01711-52523" },
-        { sl: '04', name: 'Shane Watson', amount: "125,712", phone: "01711-52523" },
-        { sl: '05', name: 'Mitchel Stark', amount: "725,712", phone: "01711-52523" },
-    ]
     return (
         <>
             <div className=" custom-boxshadow inventual-dashboard-topseller-wrapper p-5 sm:p-7 bg-white rounded-8 mb-5">
@@ -36,16 +31,16 @@ const TopSuppliers = () => {
                         </thead>
                         <tbody>
                             {
-                                sampleData.length > 0 ? (
-                                    sampleData.map((item, index) => <tr key={index}>
-                                        <td>{item.sl}</td>
+                                supplierData?.data?.length > 0 ? (
+                                    supplierData?.data?.map((item : any, index : number) => <tr key={index}>
+                                        <td>{item.id}</td>
                                         <td>
                                             <div className="inventual-dashboard-supplier-list-name">
-                                                <a className="text-[15px] font-normal block mb-3">{item.name}</a>
-                                                <Link href="tel:01711-525236" className="text-[15px] font-normal block">{item.phone}</Link>
+                                                <a className="text-[15px] font-normal block mb-3">{item.name} [{item.company}]</a>
+                                                <a className="text-[15px] font-normal block mb-3">{item.supplierCode} </a>
                                             </div>
                                         </td>
-                                        <td>${item.amount}</td>
+                                        <td>{MoneyFormat.format(item.totalPurchase)}</td>
                                     </tr>)
                                 ) : <tr>
                                     <td colSpan={3}>Data not found</td>

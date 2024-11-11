@@ -30,7 +30,7 @@ export const purchaseReturnApi = createApi({
         }),
         getSPurchaseReturnTotalAmount: builder.query<any, void>({
             query: () => ({
-                url: `purchaseReturn/total-amount`,
+                url: `dashboard/total-purchases-returned`,
                 method: 'GET',
             }),
         }),

@@ -6,7 +6,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export const customerApi = createApi({
     reducerPath: 'customerApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: `${BACKEND_URL}/v2/people`,
+        baseUrl: `${BACKEND_URL}/v2/people/`,
         credentials: 'include',
     }),
     tagTypes: ['Customers'],  

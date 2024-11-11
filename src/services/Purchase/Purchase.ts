@@ -29,7 +29,7 @@ export const purchaseApi = createApi({
         }),
         getPurchaseDashboard: builder.query<any, void>({
             query: () => ({
-                url: `purchase/dashboard`,
+                url: `dashboard/top-purchases`,
                 method: 'GET',
             }),
         }),

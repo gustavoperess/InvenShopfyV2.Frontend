@@ -43,7 +43,7 @@ export const salesApi = createApi({
         }),
         getSalesDashBoard: builder.query<any, void>({
             query: () => ({
-                url: `dashboard`,
+                url: `dashboard/top-sales`,
                 method: 'GET',
             }),
         }),

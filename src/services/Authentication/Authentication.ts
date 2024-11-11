@@ -4,7 +4,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // Base query with credentials to ensure cookies are included
 const baseQueryWithCookies = fetchBaseQuery({
-    baseUrl: `${BACKEND_URL}/v2`,
+    baseUrl: `${BACKEND_URL}/v2/identity/`,
     credentials: 'include',  // Allowing cookies in cross-origin requests
 });
 
@@ -15,7 +15,7 @@ export const authApi = createApi({
         userLogin: builder.mutation({
             query: (credentials) => {     
                 return {
-                    url: '/identity/login-custom?useCookies=true',
+                    url: 'login-custom?useCookies=true',
                     method: 'POST',
                     body: credentials,
                 };
@@ -24,7 +24,7 @@ export const authApi = createApi({
         userRegister: builder.mutation({
             query: (credentials) => {
                 return {
-                    url: '/identity/register-custom',
+                    url: 'register-custom',
                     method: 'POST',
                     body: credentials,
                 }
@@ -34,7 +34,7 @@ export const authApi = createApi({
             query: () => {
         
                 return {
-                    url: '/identity/logout-custom',
+                    url: 'logout-custom',
                     method: 'POST',
                 }
             }

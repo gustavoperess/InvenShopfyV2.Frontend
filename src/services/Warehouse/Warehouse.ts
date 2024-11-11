@@ -5,21 +5,21 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export const warehouse = createApi({
     reducerPath: 'warehouseApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: `${BACKEND_URL}/v2/`,
+        baseUrl: `${BACKEND_URL}/v2/Warehouse/`,
         credentials: 'include',  // Important for sending cookies
     }),
     tagTypes: ['Warehouse'],  
     endpoints: (builder) => ({
         // Query to get warehouse quantity
         getWarehouseQuantity: builder.query<any, void>({
-            query: () => 'Warehouse/warehouses-quantity',
+            query: () => 'dashboard/warehouses-quantity',
             providesTags: ['Warehouse'],  
         }),
 
         // Query to get all warehouses (e.g., for a list of warehouses)
         getAllWarehouses: builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
-                url: `Warehouse/allwarehouses`,
+                url: `allwarehouses`,
                 method: 'GET',
                 params: { pageNumber, pageSize }
             }),
@@ -29,7 +29,7 @@ export const warehouse = createApi({
         // Mutation to delete a warehouse
         deleteWarehouse: builder.mutation<any, number>({
             query: (id) => ({
-                url: `Warehouse/${id}`,
+                url: `${id}`,
                 method: 'DELETE',
             }),
         }),
@@ -37,7 +37,7 @@ export const warehouse = createApi({
         // Query to get the total quantity by product and warehouse
         getTotalQuantityByProductAndWarehouseId: builder.query<any, { warehouseId: number; productId: number }>({
             query: ({ warehouseId, productId }) => ({
-                url: `Warehouse/getTotalamount-${warehouseId}-${productId}`,
+                url: `getTotalamount-${warehouseId}-${productId}`,
                 method: 'GET',
             }),
             providesTags: ['Warehouse'],  
@@ -45,7 +45,7 @@ export const warehouse = createApi({
         // Get just the warehouse name and id
         getWarehouseNames: builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
-                url: `Warehouse/warehouses/name`,
+                url: `warehouses/name`,
                 method: 'GET',
                 params: { pageNumber, pageSize }
             }),

@@ -6,7 +6,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export const expenseApi = createApi({
     reducerPath: 'expensesApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: `${BACKEND_URL}/v2/Expenses`,
+        baseUrl: `${BACKEND_URL}/v2/Expenses/`,
         credentials: 'include',
     }),
     tagTypes: ['Expenses'],  
@@ -20,7 +20,7 @@ export const expenseApi = createApi({
         }),
         AddExpense: builder.mutation<any, any>({
             query: (body) => ({
-                url: `/create-expense`,
+                url: `create-expense`,
                 method: 'POST',
                 body,
             }),
@@ -28,7 +28,7 @@ export const expenseApi = createApi({
         }),
         getExpenseDashBoard: builder.query<any, void>({
             query: () => ({
-                url: `expenses/dashboard`,
+                url: `dashboard/top-expenses`,
                 method: 'GET',
             }),
         }),

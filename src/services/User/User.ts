@@ -17,6 +17,13 @@ export const usersApi = createApi({
             }),
             providesTags: ['Users'], 
         }),
+        getUsersDashboard:builder.query<any, void>({
+            query: () => ({
+                url: "dashboard/get-user-dashboard",
+                method: "GET",
+            }),
+            providesTags: ['Users'], 
+        }),
         deleteUsers: builder.mutation<any, number>({
             query: (id) => ({
                 url: `${id}`,
@@ -36,4 +43,4 @@ export const usersApi = createApi({
 });
 
 
-export const { useGetAllUsersQuery, useDeleteUsersMutation, useCreateUsersMutation } = usersApi;
+export const { useGetAllUsersQuery, useGetUsersDashboardQuery, useDeleteUsersMutation, useCreateUsersMutation } = usersApi;

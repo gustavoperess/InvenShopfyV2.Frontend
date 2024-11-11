@@ -30,13 +30,13 @@ export const salesReturnApi = createApi({
         }),
         getSalesReturnDashBoard: builder.query<any, void>({
             query: () => ({
-                url: `dashboard`,
+                url: `dashboard/top-returns`,
                 method: 'GET',
             }),
         }),
         getSalesReturnTotalAmount: builder.query<any, void>({
             query: () => ({
-                url: `total-amount`,
+                url: `dashboard/total-sold-returned`,
                 method: 'GET',
             }),
         }),
