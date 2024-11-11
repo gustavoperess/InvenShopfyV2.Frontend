@@ -32,6 +32,12 @@ export const expenseApi = createApi({
                 method: 'GET',
             }),
         }),
+        getExpenseTotalAmount: builder.query<any, void>({
+            query: () => ({
+                url: `dashboard/total-amount`,
+                method: 'GET',
+            }),
+        }),
         deleteExpense: builder.mutation<any, number>({
             query: (id) => ({
                 url: `${id}`,
@@ -42,4 +48,9 @@ export const expenseApi = createApi({
 });
 
 // Export auto-generated hooks for functional components
-export const { useAddExpenseMutation, useGetExpenseDashBoardQuery, useDeleteExpenseMutation, useGetAllExpensesQuery } = expenseApi;
+export const { useAddExpenseMutation, 
+    useGetExpenseDashBoardQuery, 
+    useDeleteExpenseMutation, 
+    useGetAllExpensesQuery,
+    useGetExpenseTotalAmountQuery
+} = expenseApi;

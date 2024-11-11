@@ -15,7 +15,6 @@ export const warehouse = createApi({
             query: () => 'dashboard/warehouses-quantity',
             providesTags: ['Warehouse'],  
         }),
-
         // Query to get all warehouses (e.g., for a list of warehouses)
         getAllWarehouses: builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
@@ -25,7 +24,6 @@ export const warehouse = createApi({
             }),
             providesTags: ['Warehouse'],  
         }),
-
         // Mutation to delete a warehouse
         deleteWarehouse: builder.mutation<any, number>({
             query: (id) => ({
@@ -33,7 +31,6 @@ export const warehouse = createApi({
                 method: 'DELETE',
             }),
         }),
-
         // Query to get the total quantity by product and warehouse
         getTotalQuantityByProductAndWarehouseId: builder.query<any, { warehouseId: number; productId: number }>({
             query: ({ warehouseId, productId }) => ({
@@ -49,6 +46,11 @@ export const warehouse = createApi({
                 method: 'GET',
                 params: { pageNumber, pageSize }
             }),
+            providesTags: ['Warehouse'],  
+        }),
+        // Get the total amount in stock
+        getTotalStockAmount: builder.query<any, void>({
+            query: () => 'dashboard/total-in-stock',
             providesTags: ['Warehouse'],  
         }),
         // Mutation to create a new warehouse
@@ -69,7 +71,8 @@ export const {
     useCreateWarehouseMutation, 
     useDeleteWarehouseMutation, 
     useGetTotalQuantityByProductAndWarehouseIdQuery ,
-    useGetWarehouseNamesQuery
+    useGetWarehouseNamesQuery,
+    useGetTotalStockAmountQuery
 } = warehouse;
 
 

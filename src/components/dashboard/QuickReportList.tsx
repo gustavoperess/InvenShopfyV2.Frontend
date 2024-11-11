@@ -2,7 +2,8 @@ import React from 'react';
 import { useGetWarehouseQuantityQuery } from '@/services/Warehouse/Warehouse';
 import { useGetSalesReturnTotalAmountQuery } from '@/services/Sales/SaleReturn';
 import { useGetSPurchaseReturnTotalAmountQuery } from '@/services/Purchase/PurchaseReturn';
-
+import { useGetExpenseTotalAmountQuery } from '@/services/Expense/Expense';
+import { useGetTotalStockAmountQuery } from '@/services/Warehouse/Warehouse';
 
 let MoneyFormat = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -13,6 +14,8 @@ const QuickReportList = () => {
     const { data: warehouseQuantityData } = useGetWarehouseQuantityQuery();
     const { data: salesReturnTotalAmountData } = useGetSalesReturnTotalAmountQuery();
     const {data: purchaseReturnData} = useGetSPurchaseReturnTotalAmountQuery();
+    const {data: expenseTotalAMount} = useGetExpenseTotalAmountQuery();
+    const {data: totalInStock} = useGetTotalStockAmountQuery();
 
 
     return (
@@ -36,7 +39,7 @@ const QuickReportList = () => {
                             </div>
                             <div className="invention-quickreport-text">
                                 <span className="text-[16px] font-semibold block mb-2">Total Expense</span>
-                                <h5 className="text-[20px] text-heading font-bold">$58,420</h5>
+                                <h5 className="text-[20px] text-heading font-bold">{MoneyFormat.format(expenseTotalAMount?.data)}</h5>
                             </div>
                         </div>
                     </div>
@@ -71,7 +74,7 @@ const QuickReportList = () => {
                             </div>
                             <div className="invention-quickreport-text">
                                 <span className="text-[16px] font-semibold block mb-2">Closing Stock</span>
-                                <h5 className="text-[20px] text-heading font-bold">1,423 p</h5>
+                                <h5 className="text-[20px] text-heading font-bold">{totalInStock?.data} p</h5>
                             </div>
                         </div>
                     </div>

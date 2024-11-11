@@ -6,11 +6,18 @@ import { useGetBestSellerQuery } from '@/services/Sales/Sales';
 
 const TopSales = () => {
     const { data } = useGetBestSellerQuery();
+    const d = new Date();
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    const monthName = monthNames[d.getMonth()];
+
     return (
         <>
             <div className=" custom-boxshadow inventual-dashboard-topseller-wrapper p-5 sm:p-7 bg-white rounded-8">
                 <div className="inventual-dashboard-supplier-header flex gap-2.5 items-center justify-between mb-5 m-0.5">
-                    <h5 className="text-[18px] text-heading font-bold">Top Sales <span className="text-[18px] text-heading font-normal">(Dec.)</span></h5>
+                    <h5 className="text-[18px] text-heading font-bold">Top Sales <span className="text-[18px] text-heading font-normal">({monthName})</span></h5>
                     <span className="common-blue-badge">
                         <Link href="trading/sales/salelist">View All</Link>
                     </span>

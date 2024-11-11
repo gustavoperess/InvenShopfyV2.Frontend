@@ -9,6 +9,7 @@ import QuickMenuDropdown from "./QuickMenuDropdown";
 import LanguageDropdown from "./LanguageDropdown";
 import useGlobalContext from "@/hooks/use-context";
 import { useUserLogOutMutation } from "@/services/Authentication/Authentication";
+import { useGetCurrentUserQuery } from "@/services/User/User";
 
 const Header = () => {
   const [isQuickDropdown, setQuickDropdown] = useState<boolean>(false);
@@ -16,6 +17,7 @@ const Header = () => {
   const [isEmailDropdown, setEmailDropdown] = useState<boolean>(false);
   const [isProfileDropdown, setProfileDropdown] = useState<boolean>(false);
   const [isNotificationDropdown, setNotificationDropdown] = useState<boolean>(false);
+  const { data: currentuser, error: currentUserError, isLoading: currentUserLoading } = useGetCurrentUserQuery();
   const [logout] = useUserLogOutMutation();
 
   const toggleQuickDropdown = () => {
@@ -25,7 +27,7 @@ const Header = () => {
     setProfileDropdown(false);
     setNotificationDropdown(false);
   };
-  
+
   const toggleLanguageDropdown = () => {
     setLanguageDropdown(!isLanguageDropdown);
     setQuickDropdown(false);
@@ -33,7 +35,7 @@ const Header = () => {
     setProfileDropdown(false);
     setNotificationDropdown(false);
   };
-  
+
   const toggleEmailDropdown = () => {
     setEmailDropdown(!isEmailDropdown);
     setQuickDropdown(false);
@@ -41,7 +43,7 @@ const Header = () => {
     setProfileDropdown(false);
     setNotificationDropdown(false);
   };
-  
+
   const toggleProfileDropdown = () => {
     setProfileDropdown(!isProfileDropdown);
     setQuickDropdown(false);
@@ -49,7 +51,7 @@ const Header = () => {
     setEmailDropdown(false);
     setNotificationDropdown(false);
   };
-  
+
   const toggleNotificationDropdown = () => {
     setNotificationDropdown(!isNotificationDropdown);
     setQuickDropdown(false);
@@ -57,9 +59,20 @@ const Header = () => {
     setEmailDropdown(false);
     setProfileDropdown(false);
   };
-  
-  
+
+
   const { setShowingNavigationDropdown, showingNavigationDropdown } = useGlobalContext()
+
+  const splitname = (string: "") => {
+    if (currentuser != undefined) {
+      const words = string.split(" ");
+      const firstName = words[0];
+      const lastName = words[words.length - 1];
+      return `${firstName} ${lastName}`
+    }
+  }
+
+
 
   return (
     <>
@@ -109,12 +122,19 @@ const Header = () => {
           <div className="inventual-header-profile relative ps-5 flex flex-wrap items-center pe-11 maxMd:pe-0">
             <div className="inventual-header-profile-img w-12 maxMd:me-0 cursor-pointer">
               <button type="button" className="w-12 h-12 rounded min-w-[48px]" onClick={toggleProfileDropdown}>
-                <Image className="rounded" src={userImg} loader={imageLoader} style={{ width: '100%', height: "auto" }} alt="genres img" />
+                {currentUserLoading ? (
+                  <div>Loading...</div>
+                )
+                  : currentUserError ? (
+                    <div>Error loading user data</div>
+                  ) :
+                    <Image src={currentuser?.profilePicture} className="rounded" height={50} width={50} alt='profilePicture' priority />
+                }
               </button>
             </div>
             <div className="inventual-header-profile-info maxMd:hidden ps-2.5 cursor-pointer">
-              <h5 className="text-[15px] font-bold text-heading cursor-pointer" onClick={toggleProfileDropdown}>Shane Watson</h5>
-              <span className="text-[14px] font-normal text-body cursor-pointer">Admin User</span>
+              <h5 className="text-[15px] font-bold text-heading cursor-pointer" onClick={toggleProfileDropdown}>{splitname(currentuser?.fullName)}</h5>
+              <span className="text-[14px] font-normal text-body cursor-pointer">{currentuser?.roles[0]}</span>
               <i className="far fa-chevron-down" onClick={toggleProfileDropdown}></i>
             </div>
 

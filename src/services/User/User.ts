@@ -30,6 +30,13 @@ export const usersApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        getCurrentUser: builder.query<any, void>({
+            query: () => ({
+                url: `get-current-user`,
+                method: 'GET',
+            }),
+            providesTags: ['Users'], 
+        }),
         createUsers: builder.mutation<any, any>({
             query: (body) => ({
                 url: ``,
@@ -43,4 +50,10 @@ export const usersApi = createApi({
 });
 
 
-export const { useGetAllUsersQuery, useGetUsersDashboardQuery, useDeleteUsersMutation, useCreateUsersMutation } = usersApi;
+export const { useGetAllUsersQuery, 
+    useGetUsersDashboardQuery, 
+    useDeleteUsersMutation, 
+    useCreateUsersMutation,
+    useGetCurrentUserQuery
+
+} = usersApi;

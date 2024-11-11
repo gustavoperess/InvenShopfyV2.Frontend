@@ -40,6 +40,11 @@ interface Data {
   shippingCost: string;
 }
 
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'GBP',
+});
+
 
 
 const ExpenseList = () => {
@@ -47,8 +52,6 @@ const ExpenseList = () => {
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [open, setOpen] = React.useState(false);
   const [expense, setExpense] = useState<number>(0);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
@@ -338,7 +341,7 @@ const ExpenseList = () => {
                                   <TableCell>{expense.voucherNumber}</TableCell>
                                   <TableCell>{expense.expenseCategory}</TableCell>
                                   <TableCell>{expense.expenseType}</TableCell>
-                                  <TableCell>{expense.expenseCost}</TableCell>
+                                  <TableCell>{MoneyFormat.format(expense.expenseCost)}</TableCell>
                                   <TableCell>
                                     {
                                       expense.expenseType.toLowerCase() === "paid" ? (

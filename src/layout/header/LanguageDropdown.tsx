@@ -5,9 +5,7 @@ const LanguageDropdown = () => {
     return (
         <ul>
             <li><Link href="#">English</Link></li>
-            <li><Link href="#">Turkish</Link></li>
-            <li><Link href="#">Spanish</Link></li>
-            <li><Link href="#">French</Link></li>
+            <li><Link href="#">Portuguese</Link></li>
         </ul>
     );
 };
