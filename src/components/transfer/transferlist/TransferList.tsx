@@ -39,7 +39,7 @@ const TransferList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
-  const [selectedTransferId, setSelectedTransferId] = useState<number | undefined>(); 
+  const [selectedTransferId, setSelectedTransferId] = useState<number | undefined>();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
@@ -53,13 +53,13 @@ const TransferList = () => {
     refetch();
   };
 
-    // handle pagination 
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setCurrentPageSize(parseInt(event.target.value, 10));
-      setCurrentPageNumber(1); 
-      refetch();
-    };
-  
+  // handle pagination 
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1);
+    refetch();
+  };
+
   // Handlers for sorting
   const handleRequestSort = (property: keyof Data) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -101,14 +101,14 @@ const TransferList = () => {
   // Check if a particular item is selected
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-   // Function to sort data
-   const sortedRows = transferData?.data.slice().sort((a: any, b: any) => {
+  // Function to sort data
+  const sortedRows = transferData?.data.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data]; 
-    const bValue = b[orderBy as keyof Data]; 
+    const aValue = a[orderBy as keyof Data];
+    const bValue = b[orderBy as keyof Data];
     if (aValue === undefined || bValue === undefined) {
-      return 0; 
+      return 0;
     }
 
     if (aValue < bValue) {
@@ -157,11 +157,11 @@ const TransferList = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                          <MenuItem onClick={() => {handleRequestSort("transferDate"); popupState.close()}}>Date</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("authorizedBy"); popupState.close()}}>Manager</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("productName"); popupState.close()}}>Product</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("fromWarehouse"); popupState.close()}}>From Warehouse</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("toWarehouse"); popupState.close()}}>To Warehouse</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("transferDate"); popupState.close() }}>Date</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("authorizedBy"); popupState.close() }}>Manager</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("productName"); popupState.close() }}>Product</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("fromWarehouse"); popupState.close() }}>From Warehouse</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("toWarehouse"); popupState.close() }}>To Warehouse</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -285,62 +285,70 @@ const TransferList = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                          {sortedRows?.map((transfer: any) => (        
-                                <TableRow
-                                  key={transfer.id}
-                                  hover
-                                  onClick={() => handleClick(transfer.id)}
-                                  role="checkbox"
-                                  aria-checked={isSelected(transfer.id)}
-                                  selected={isSelected(transfer.id)}
-                                >
-                                  <TableCell>
-                                    <Checkbox checked={isSelected(transfer.id)} />
-                                  </TableCell>
-                                  <TableCell>{transfer.transferDate}</TableCell>
-                                  <TableCell>{transfer.referenceNumber}</TableCell>
-                                  <TableCell>{transfer.productName}</TableCell>
-                                  <TableCell>{transfer.quantity}</TableCell>
-                                  <TableCell>{transfer.fromWarehouse}</TableCell>
-                                  <TableCell>{transfer.toWarehouse}</TableCell>
-                                  <TableCell>{transfer.reason}</TableCell>
-                                  <TableCell>
-                                    {
-                                      transfer.transferStatus.toLowerCase() === "completed" ? (
-                                        <span className='badge badge-success'>{transfer.transferStatus}</span>
+                          {transferLoading ? (
+                              <tr>
+                                <td colSpan={10}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((transfer: any) => (
+                              <TableRow
+                                key={transfer.id}
+                                hover
+                                onClick={() => handleClick(transfer.id)}
+                                role="checkbox"
+                                aria-checked={isSelected(transfer.id)}
+                                selected={isSelected(transfer.id)}
+                              >
+                                <TableCell>
+                                  <Checkbox checked={isSelected(transfer.id)} />
+                                </TableCell>
+                                <TableCell>{transfer.transferDate}</TableCell>
+                                <TableCell>{transfer.referenceNumber}</TableCell>
+                                <TableCell>{transfer.productName}</TableCell>
+                                <TableCell>{transfer.quantity}</TableCell>
+                                <TableCell>{transfer.fromWarehouse}</TableCell>
+                                <TableCell>{transfer.toWarehouse}</TableCell>
+                                <TableCell>{transfer.reason}</TableCell>
+                                <TableCell>
+                                  {
+                                    transfer.transferStatus.toLowerCase() === "completed" ? (
+                                      <span className='badge badge-success'>{transfer.transferStatus}</span>
+                                    ) : (
+                                      transfer.transferStatus.toLowerCase() === "InTransit" ? (
+                                        <span className='badge badge-danger'>{transfer.transferStatus}</span>
                                       ) : (
-                                        transfer.transferStatus.toLowerCase() === "InTransit" ? (
-                                          <span className='badge badge-danger'>{transfer.transferStatus}</span>
+                                        transfer.transferStatus.toLowerCase() === "pending" ? (
+                                          <span className='badge badge-teal'>{transfer.transferStatus}</span>
                                         ) : (
-                                          transfer.transferStatus.toLowerCase() === "pending" ? (
-                                            <span className='badge badge-teal'>{transfer.transferStatus}</span>
-                                          ) : (
-                                            <span className='badge badge-success'>{transfer.transferStatus}</span>
-                                          )
+                                          <span className='badge badge-success'>{transfer.transferStatus}</span>
                                         )
                                       )
-                                    }
-                                  </TableCell>
-                                  <TableCell>{transfer.authorizedBy}</TableCell>
-                                  <TableCell>
-                                    <div className="inventual-list-action-style">
-                                      <PopupState variant="popover">
-                                        {(popupState: any) => (
-                                          <React.Fragment>
-                                            <button className='' type='button' {...bindTrigger(popupState)}>
-                                              Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                            </button>
-                                            <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/transfer/addtransfer'>Edit Transfer</Link></MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete Transfer</MenuItem>
-                                            </Menu>
-                                          </React.Fragment>
-                                        )}
-                                      </PopupState>
-                                    </div>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
+                                    )
+                                  }
+                                </TableCell>
+                                <TableCell>{transfer.authorizedBy}</TableCell>
+                                <TableCell>
+                                  <div className="inventual-list-action-style">
+                                    <PopupState variant="popover">
+                                      {(popupState: any) => (
+                                        <React.Fragment>
+                                          <button className='' type='button' {...bindTrigger(popupState)}>
+                                            Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                          </button>
+                                          <Menu {...bindMenu(popupState)}>
+                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/transfer/addtransfer'>Edit Transfer</Link></MenuItem>
+                                            <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete Transfer</MenuItem>
+                                          </Menu>
+                                        </React.Fragment>
+                                      )}
+                                    </PopupState>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
                           </TableBody>
                         </Table>
                       </TableContainer>

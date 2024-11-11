@@ -288,7 +288,15 @@ const BillerList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows?.map((biller: any) => (
+                            {billerLoading ? (
+                              <tr>
+                                <td colSpan={7}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((biller: any) => (
                                 <TableRow
                                   key={biller.id}
                                   hover

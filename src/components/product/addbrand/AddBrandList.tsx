@@ -284,7 +284,15 @@ const AddBrandList = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {sortedRows?.map((brand: any) => (
+                          {brandLoading ? (
+                              <tr>
+                                <td colSpan={6}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((brand: any) => (
                               <TableRow
                                 key={brand.id}
                                 hover

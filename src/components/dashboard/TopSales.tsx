@@ -4,8 +4,9 @@ import React from 'react';
 import { useGetBestSellerQuery } from '@/services/Sales/Sales';
 
 
+
 const TopSales = () => {
-    const { data } = useGetBestSellerQuery();
+    const { data, isLoading } = useGetBestSellerQuery();
     const d = new Date();
     const monthNames = [
         "January", "February", "March", "April", "May", "June",
@@ -32,21 +33,28 @@ const TopSales = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {
-                                data?.data.length > 0 ? (
-                                    data?.data.map((item : any, index: any) => <tr key={index}>
-                                        <td>{item.id}</td>
-                                        <td>
-                                            <div className="inventual-dashboard-sellar-list-name">
-                                                <a className="text-[15px] font-normal block mb-3">{item.productName}</a>
-                                                <span className="text-[15px] font-normal block">{item.productCode}</span>
-                                            </div>
-                                        </td>
-                                        <td>{item.totalQuantitySoldPerProduct}</td>
-                                    </tr>)
-                                ) : <tr>
-                                    <td colSpan={3}>Data not found</td>
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={3}>
+                                        <div className="inventual-loading-container">
+                                            <span className="inventual-loading"></span>
+                                        </div>
+                                    </td>
                                 </tr>
+                            ) : data?.data.length > 0 ? (
+                                data?.data.map((item: any, index: any) => <tr key={index}>
+                                    <td>{item.id}</td>
+                                    <td>
+                                        <div className="inventual-dashboard-sellar-list-name">
+                                            <a className="text-[15px] font-normal block mb-3">{item.productName}</a>
+                                            <span className="text-[15px] font-normal block">{item.productCode}</span>
+                                        </div>
+                                    </td>
+                                    <td>{item.totalQuantitySoldPerProduct}</td>
+                                </tr>)
+                            ) : <tr>
+                                <td colSpan={3}>Data not found</td>
+                            </tr>
                             }
                         </tbody>
                     </table>

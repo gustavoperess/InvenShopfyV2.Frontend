@@ -57,7 +57,7 @@ const SaleReturnsList = () => {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
   const [deleteSalesReturn] = useDeleteSalesReturnMutation();
-  const { data: salesReturnData, refetch } = useGetAllSalesReturnQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+  const { data: salesReturnData, isLoading: salesReturnLoading, refetch } = useGetAllSalesReturnQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
 
   const VisuallyHiddenInput = styled('input')({
@@ -338,7 +338,15 @@ const SaleReturnsList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows?.map((salesReturn: any) => (
+                            {salesReturnLoading ? (
+                              <tr>
+                                <td colSpan={6}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((salesReturn: any) => (
                                 <TableRow
                                   key={salesReturn.id}
                                   hover

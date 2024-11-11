@@ -255,7 +255,15 @@ const ProductCategory = () => {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {sortedRows?.map((category: any) => (
+                        {categoryLoading ? (
+                              <tr>
+                                <td colSpan={3}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((category: any) => (
                               <TableRow
                                 key={category.id}
                                 hover

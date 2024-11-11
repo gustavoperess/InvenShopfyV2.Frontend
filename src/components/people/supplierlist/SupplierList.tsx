@@ -279,7 +279,15 @@ const SupplierList = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {sortedRows?.map((supplier: any) => (
+                          {supplierLoading ? (
+                              <tr>
+                                <td colSpan={6}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((supplier: any) => (
                               <TableRow
                                 key={supplier.id}
                                 hover

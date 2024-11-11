@@ -47,7 +47,7 @@ const ExpenseCategory = () => {
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
   const [deleteExpenseCategory] = useDeleteExpenseCategoryMutation();
   const [addExpenseCategory] = useAddExepenseCategoryMutation();
-  const { data: expenseCategoryData, refetch } = useGetAllExpenseCategoriesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+  const { data: expenseCategoryData,isLoading: expenseCategoryLoading ,refetch } = useGetAllExpenseCategoriesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
 
   // handle pagination 
@@ -263,7 +263,15 @@ const ExpenseCategory = () => {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {sortedRows?.map((expenseCategory: any) => (
+                        {expenseCategoryLoading ? (
+                              <tr>
+                                <td colSpan={3}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((expenseCategory: any) => (
                             <TableRow
                               key={expenseCategory.id}
                               hover

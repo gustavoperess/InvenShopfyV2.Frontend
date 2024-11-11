@@ -316,7 +316,15 @@ const ManagePurchaseList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                             {sortedRows?.map((purchase: any) => (         
+                            {purchaseLoading ? (
+                              <tr>
+                                <td colSpan={8}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((purchase: any) => (         
                                 <TableRow
                                   key={purchase.id}
                                   hover

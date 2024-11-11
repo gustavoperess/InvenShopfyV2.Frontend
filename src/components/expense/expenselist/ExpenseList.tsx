@@ -56,7 +56,7 @@ const ExpenseList = () => {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
   const [deleteExpense] = useDeleteExpenseMutation();
-  const { data: expenseData, refetch } = useGetAllExpensesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+  const { data: expenseData, isLoading: expenseLoading , refetch } = useGetAllExpensesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
 
   
@@ -322,7 +322,15 @@ const ExpenseList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows?.map((expense: any) => (
+                            {expenseLoading ? (
+                              <tr>
+                                <td colSpan={9}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((expense: any) => (
                                 <TableRow
                                   key={expense.id}
                                   hover

@@ -325,7 +325,15 @@ const SaleList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows?.map((sales: any) => (                             
+                            {salesLoading ? (
+                              <tr>
+                                <td colSpan={9}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((sales: any) => (                             
                                 <TableRow
                                   key={sales.id}
                                   hover

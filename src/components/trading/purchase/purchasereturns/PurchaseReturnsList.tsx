@@ -54,7 +54,7 @@ const PurchaseReturnsList = () => {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('id');
   const [deletePurchaseReturn] = useDeletePurchaseReturnMutation();
-  const { data: purchaseReturnData, refetch } = useGetAllPurchaseReturnQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+  const { data: purchaseReturnData, isLoading: purchaseReturnLoading, refetch } = useGetAllPurchaseReturnQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
    // View Sale return Popup Start
    const [openPurchaseReturnDialog, setOpenPurchaseReturnDialog] = useState<boolean>(false);
@@ -321,7 +321,15 @@ const PurchaseReturnsList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows?.map((purchaseReturn: any) => (
+                            {purchaseReturnLoading ? (
+                              <tr>
+                                <td colSpan={7}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((purchaseReturn: any) => (
                                 <TableRow
                                   key={purchaseReturn.id}
                                   hover
@@ -335,7 +343,7 @@ const PurchaseReturnsList = () => {
                                     <Checkbox checked={isSelected(purchaseReturn.id)} />
                                   </TableCell>
                                   {/* Data cells */}
-                                  <TableCell>{purchaseReturn.purchaseDate}</TableCell>
+                                  <TableCell>{purchaseReturn.returnDate}</TableCell>
                                   <TableCell>{purchaseReturn.referenceNumber}</TableCell>
                                   <TableCell>{purchaseReturn.warehouseName}</TableCell>
                                   <TableCell>{purchaseReturn.supplierName}</TableCell>

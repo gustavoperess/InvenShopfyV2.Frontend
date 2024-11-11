@@ -292,7 +292,15 @@ const CustomerList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows?.map((customer: any) => (
+                            {customerLoading ? (
+                              <tr>
+                                <td colSpan={7}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((customer: any) => (
                                 <TableRow
                                   key={customer.id}
                                   hover

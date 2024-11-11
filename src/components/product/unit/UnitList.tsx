@@ -1,6 +1,6 @@
 "use client"
 import React, { useRef, useState } from 'react';
-import { Menu, MenuItem,FormControl, TextField } from '@mui/material';
+import { Menu, MenuItem, FormControl, TextField } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import {
     Paper,
@@ -34,7 +34,7 @@ const UnitList = () => {
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
     const [currentPageSize, setCurrentPageSize] = useState(10);
     const [open, setOpen] = React.useState(false);
-    const [unit, setUnit] =  useState<number>(0);
+    const [unit, setUnit] = useState<number>(0);
     const [title, setTitle] = useState("");
     const [shortName, setShortName] = useState("");
     const [selected, setSelected] = useState<number[]>([]);
@@ -54,31 +54,31 @@ const UnitList = () => {
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setCurrentPageSize(parseInt(event.target.value, 10));
-        setCurrentPageNumber(1); 
+        setCurrentPageNumber(1);
         refetch();
-      };
-       // handle opening delete modal
+    };
+    // handle opening delete modal
     const handleOpenDelete = (productId: number) => {
         setUnit(productId);
         setOpen(true);
-      };
+    };
 
-        // handle closing delete modal
-     const handleCloseDelete = () => {
+    // handle closing delete modal
+    const handleCloseDelete = () => {
         setOpen(false);
-      }
-         // handle delete submission
-     const handleDelete = async () => {
+    }
+    // handle delete submission
+    const handleDelete = async () => {
         if (unit > 0) {
-          try {
-            await deleteUnit(unit);
-            setOpen(false);
-            refetch()
-          } catch (err) {
-            console.error('Error deleting the unit:', err);
-          }
+            try {
+                await deleteUnit(unit);
+                setOpen(false);
+                refetch()
+            } catch (err) {
+                console.error('Error deleting the unit:', err);
+            }
         }
-      };
+    };
 
     // Handlers for sorting
     const handleRequestSort = (property: keyof Data) => {
@@ -86,7 +86,7 @@ const UnitList = () => {
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
-  
+
 
     // Handler for selecting/deselecting all items
     const handleSelectAllClick = (checked: boolean) => {
@@ -125,25 +125,25 @@ const UnitList = () => {
     const sortedRows = unitData?.data.slice().sort((a: any, b: any) => {
         if (!orderBy) return 0;
         const isAsc = order === 'asc';
-        const aValue = a[orderBy as keyof Data]; 
+        const aValue = a[orderBy as keyof Data];
         const bValue = b[orderBy as keyof Data];
         if (aValue === undefined || bValue === undefined) {
-            return 0; 
-          }
-          if (aValue < bValue) {
+            return 0;
+        }
+        if (aValue < bValue) {
             return isAsc ? -1 : 1;
-          }
-          if (aValue > bValue) {
+        }
+        if (aValue > bValue) {
             return isAsc ? 1 : -1;
-          }
+        }
         return 0;
     });
 
     //hanle unit form
-    const handleUnitList = async (event:any) => {
+    const handleUnitList = async (event: any) => {
         event.preventDefault();
-        const unitData = {title, shortName}
-        try{
+        const unitData = { title, shortName }
+        try {
             await addUnit(unitData).unwrap();
             toast.success("Unit/Value created successfuly!")
             setTitle("");
@@ -174,7 +174,7 @@ const UnitList = () => {
                                                 <h5>Unit/Value Name</h5>
                                                 <div className="inventual-input-field-style">
                                                     <FormControl fullWidth>
-                                                        <TextField 
+                                                        <TextField
                                                             fullWidth
                                                             placeholder="Kilogram*"
                                                             variant="outlined"
@@ -183,7 +183,7 @@ const UnitList = () => {
                                                             required
                                                             inputProps={{ maxLength: 80 }}
                                                             onChange={(e) => setTitle(e.target.value)}
-                                                            />
+                                                        />
                                                     </FormControl>
                                                 </div>
                                             </div>
@@ -195,7 +195,7 @@ const UnitList = () => {
                                                 <h5>Short Name</h5>
                                                 <div className="inventual-input-field-style">
                                                     <FormControl fullWidth>
-                                                        <TextField 
+                                                        <TextField
                                                             fullWidth
                                                             placeholder="Kg*"
                                                             variant="outlined"
@@ -204,7 +204,7 @@ const UnitList = () => {
                                                             required
                                                             inputProps={{ maxLength: 2 }}
                                                             onChange={(e) => setShortName(e.target.value)}
-                                                            />
+                                                        />
                                                     </FormControl>
                                                 </div>
                                             </div>
@@ -257,39 +257,47 @@ const UnitList = () => {
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                    {sortedRows?.map((unit: any) => (
-                                                            <TableRow
-                                                                key={unit.id}
-                                                                hover
-                                                                onClick={() => handleClick(unit.id)}
-                                                                role="checkbox"
-                                                                aria-checked={isSelected(unit.id)}
-                                                                selected={isSelected(unit.id)}
-                                                            >
-                                                                <TableCell>
-                                                                    <Checkbox checked={isSelected(unit.id)} />
-                                                                </TableCell>
-                                                                <TableCell>{unit.title}</TableCell>
-                                                                <TableCell>{unit.shortName}</TableCell>
-                                                                <TableCell>
-                                                                    <div className="inventual-list-action-style">
-                                                                        <PopupState variant="popover">
-                                                                            {(popupState: any) => (
-                                                                                <React.Fragment>
-                                                                                    <button className='' type='button' {...bindTrigger(popupState)}>
-                                                                                        Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                                                                    </button>
-                                                                                    <Menu {...bindMenu(popupState)}>
-                                                                                        <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
-                                                                                        <MenuItem onClick={() => handleOpenDelete(unit.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                                                                    </Menu>
-                                                                                </React.Fragment>
-                                                                            )}
-                                                                        </PopupState>
-                                                                    </div>
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        ))}
+                                                    {unitLoading ? (
+                                                        <tr>
+                                                            <td colSpan={3}>
+                                                                <div className="inventual-loading-container">
+                                                                    <span className="inventual-loading"></span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ) : sortedRows?.map((unit: any) => (
+                                                        <TableRow
+                                                            key={unit.id}
+                                                            hover
+                                                            onClick={() => handleClick(unit.id)}
+                                                            role="checkbox"
+                                                            aria-checked={isSelected(unit.id)}
+                                                            selected={isSelected(unit.id)}
+                                                        >
+                                                            <TableCell>
+                                                                <Checkbox checked={isSelected(unit.id)} />
+                                                            </TableCell>
+                                                            <TableCell>{unit.title}</TableCell>
+                                                            <TableCell>{unit.shortName}</TableCell>
+                                                            <TableCell>
+                                                                <div className="inventual-list-action-style">
+                                                                    <PopupState variant="popover">
+                                                                        {(popupState: any) => (
+                                                                            <React.Fragment>
+                                                                                <button className='' type='button' {...bindTrigger(popupState)}>
+                                                                                    Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                                                                </button>
+                                                                                <Menu {...bindMenu(popupState)}>
+                                                                                    <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
+                                                                                    <MenuItem onClick={() => handleOpenDelete(unit.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                                                                </Menu>
+                                                                            </React.Fragment>
+                                                                        )}
+                                                                    </PopupState>
+                                                                </div>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>
@@ -309,22 +317,22 @@ const UnitList = () => {
                         <Modal open={open} onClose={handleCloseDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                             <Box
                                 sx={{
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                bgcolor: 'background.paper',
-                                border: '2px solid #000',
-                                boxShadow: 24,
-                                zIndex: 9999,
-                                p: 4,
+                                    position: 'absolute',
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    bgcolor: 'background.paper',
+                                    border: '2px solid #000',
+                                    boxShadow: 24,
+                                    zIndex: 9999,
+                                    p: 4,
                                 }}
                             >
                                 <Typography id="modal-modal-title" variant="h6" component="h2">Delete Confirmation</Typography>
                                 <Typography id="modal-modal-description" sx={{ mt: 2 }}> Are you sure you want to delete this Unit?</Typography>
                                 <Stack spacing={2} direction="row">
-                                <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
-                                <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
+                                    <Button variant="contained" color="success" onClick={handleCloseDelete}>Cancel</Button>
+                                    <Button variant="outlined" color="error" onClick={handleDelete}>Delete</Button>
                                 </Stack>
                             </Box>
                         </Modal>

@@ -279,7 +279,15 @@ const UserList = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                          {sortedRows?.map((user: any) => (
+                          {userLoading ? (
+                              <tr>
+                                <td colSpan={8}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((user: any) => (
                                 <TableRow
                                   key={user.userId}
                                   hover

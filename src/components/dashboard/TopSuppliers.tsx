@@ -6,10 +6,10 @@ import { it } from 'node:test';
 let MoneyFormat = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'GBP',
-  });
+});
 
 const TopSuppliers = () => {
-    const { data: supplierData } = useGetTopSuppliersDasgboardQuery();
+    const { data: supplierData, isLoading } = useGetTopSuppliersDasgboardQuery();
     const d = new Date();
     const monthNames = [
         "January", "February", "March", "April", "May", "June",
@@ -36,21 +36,28 @@ const TopSuppliers = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {
-                                supplierData?.data?.length > 0 ? (
-                                    supplierData?.data?.map((item : any, index : number) => <tr key={index}>
-                                        <td>{item.id}</td>
-                                        <td>
-                                            <div className="inventual-dashboard-supplier-list-name">
-                                                <a className="text-[15px] font-normal block mb-3">{item.name} [{item.company}]</a>
-                                                <a className="text-[15px] font-normal block mb-3">{item.supplierCode} </a>
-                                            </div>
-                                        </td>
-                                        <td>{MoneyFormat.format(item.totalPurchase)}</td>
-                                    </tr>)
-                                ) : <tr>
-                                    <td colSpan={3}>Data not found</td>
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={3}>
+                                        <div className="inventual-loading-container">
+                                            <span className="inventual-loading"></span>
+                                        </div>
+                                    </td>
                                 </tr>
+                            ) : supplierData?.data?.length > 0 ? (
+                                supplierData?.data?.map((item: any, index: number) => <tr key={index}>
+                                    <td>{item.id}</td>
+                                    <td>
+                                        <div className="inventual-dashboard-supplier-list-name">
+                                            <a className="text-[15px] font-normal block mb-3">{item.name} [{item.company}]</a>
+                                            <a className="text-[15px] font-normal block mb-3">{item.supplierCode} </a>
+                                        </div>
+                                    </td>
+                                    <td>{MoneyFormat.format(item.totalPurchase)}</td>
+                                </tr>)
+                            ) : <tr>
+                                <td colSpan={3}>Data not found</td>
+                            </tr>
                             }
                         </tbody>
                     </table>
