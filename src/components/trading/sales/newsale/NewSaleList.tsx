@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import product_data from '@/data/product-data';
 import { TProduct } from '@/interFace/interFace';
@@ -25,7 +25,9 @@ interface productInterface {
     price: number;
     quantitySold: number;
     expired: boolean;
-    totalAmountSold: number,
+    totalAmountSold: number;
+    taxPercentage: number;
+    marginRange: string;
 }
 
 interface warehouseInterface {
@@ -55,7 +57,6 @@ const NewSaleList = () => {
     const [shippingCost, setShippingCost] = useState<number | undefined>();
     const [discount, setDiscount] = useState<number | undefined>();
     const [saleStatus, setSalesStatus] = useState<string>("");
-    const [paymentStatus, setPaymentStatus] = useState<string>("");
     const [saleNote, setSaleNote] = useState<string>("");
     const [staffNote, setStaffNote] = useState<string>("");
     const [productInformation, setProductInformation] = useState<productInterface[]>([]);
@@ -80,8 +81,8 @@ const NewSaleList = () => {
     const [searchResults, setSearchResults] = useState<TProduct[]>([]);
     const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
     const [activeItems, setActiveItems] = useState<TProduct[]>([]);
-
-    
+  
+   
 
     //debounce function
     function useDebounce(value: string, delay: number) {
@@ -256,15 +257,47 @@ const NewSaleList = () => {
             return total;
         }, 0);
     }
-    // calculate total sum of all subtotals
-    const calculateGrandTotal = () => {
-        if (shippingCost != undefined) {
-            return calculateTotal() + shippingCost - calculateDiscount();
-        } else {
-            return calculateTotal() - calculateDiscount();
-        }
-    
+   
+     // calculate order tax
+     const calculateTotalTax = () => {
+        return productInformation.reduce((total, item) => {
+            if (item.quantitySold != undefined) {
+                return (((item.price * item.quantitySold) * item.taxPercentage) / 100) + total;
+            }
+            return total;
+        }, 0);
     }
+
+    const calculateProfit = useMemo(() => {
+        return productInformation.reduce((total, item) => {
+           
+            if (item.quantitySold != undefined) {
+                let firstNumber = Number(item.marginRange.split("%")[0]);
+                let lastNumber = Number(item.marginRange.split(" ")[item.marginRange.split(" ").length - 1].split("%")[0]);
+                let randomNumber = Math.floor(Math.random() * (lastNumber - firstNumber + 1)) + firstNumber;
+                if (!isNaN(firstNumber) && !isNaN(lastNumber)) {
+                    return ((item.price * item.quantitySold * randomNumber) / 100) + total;
+                }
+            }
+            return total;
+        }, 0);
+    }, [productInformation]);  
+
+ 
+     const calculateGrandTotal = useMemo(() => {
+        const total = calculateTotal();
+        const discount = calculateDiscount();
+        const tax = calculateTotalTax();
+    
+        if (shippingCost != undefined) {
+            return (total + tax + shippingCost + calculateProfit) - discount;
+        } else {
+            return total - discount;
+        }
+    }, [calculateTotal, calculateDiscount, calculateTotalTax, shippingCost, calculateProfit]);
+
+
+
 
     const handleRemoveProduct = (productId: number) => {
         setProductInformation((prevProducts) =>
@@ -300,8 +333,11 @@ const NewSaleList = () => {
         });
         let date = formatDate(saleDate)
 
-        const saleData = {customerId: customer, warehouseId: selectWarehouse, productIdPlusQuantity,
-            billerId: biller, saleDate: date, shippingCost, staffNote, saleNote, paymentStatus, saleStatus, totalAmount: calculateGrandTotal(), discount }
+        const saleData = {customerId: customer, warehouseId: selectWarehouse, productIdPlusQuantity, discount,
+            billerId: biller, saleDate: date, shippingCost, staffNote, saleNote, saleStatus, taxAmount: calculateTotalTax(),
+            totalAmount: calculateGrandTotal, profitAmount: calculateProfit }
+
+            console.log(saleData)
         try {
             await addSale(saleData).unwrap();
             toast.success("Sale Created successfully!");
@@ -311,7 +347,6 @@ const NewSaleList = () => {
                 setSelectCustomer('')
                 setSelectWarehosue('')
                 setSelectBiller('')
-                setPaymentStatus("")
                 setSalesStatus("")
                 setSaleNote("")
                 setStaffNote("")
@@ -328,7 +363,7 @@ const NewSaleList = () => {
             }
         }
     }
-  
+
 
     return (
         <>
@@ -517,9 +552,10 @@ const NewSaleList = () => {
                                                             <th>Product</th>
                                                             <th>Code</th>
                                                             <th>Category</th>
-                                                            <th>Sub-Category</th>
                                                             <th>Price</th>
                                                             <th>Stock Amount</th>
+                                                            <th>Tax</th>
+                                                            <th>Margin Range</th>
                                                             <th>Quantity Sold</th>
                                                             <th>Expired</th>
                                                             <th>Action</th>
@@ -537,10 +573,11 @@ const NewSaleList = () => {
                                                                     </td>
                                                                     <td>{product.title}</td>
                                                                     <td>{product.productCode}</td>
-                                                                    <td>{product.category}</td>
-                                                                    <td>{product.subcategory}</td>
+                                                                    <td>{product.category} [{product.subcategory}]</td>
                                                                      <td>{MoneyFormat.format(product.price)}</td>
                                                                     <td>{product.stockQuantity}</td>
+                                                                    <td>{product.taxPercentage}%</td>
+                                                                    <td>{product.marginRange}</td>
                                                                     <td>
                                                                     {product.stockQuantity > 0 ? (
                                                                             <div className="inventual-addsale-product-qty">
@@ -607,17 +644,31 @@ const NewSaleList = () => {
                                                     </span>
                                                     <span className="text-[15px] font-normal text-heading inline-block">{MoneyFormat.format(shippingCost || 0)}</span>
                                                 </li>
+                                                <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
+                                                    <span className="text-[15px] font-normal text-heading w-40 inline-block">
+                                                        Tax
+                                                        <span className="float-end">:</span>
+                                                    </span>
+                                                    <span className="text-[15px] font-normal text-heading inline-block">{MoneyFormat.format(calculateTotalTax())}</span>
+                                                </li>
+                                                <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
+                                                    <span className="text-[15px] font-normal text-heading w-40 inline-block">
+                                                        Profit
+                                                        <span className="float-end">:</span>
+                                                    </span>
+                                                    <span className="text-[15px] font-normal text-heading inline-block">{MoneyFormat.format(calculateProfit)}</span>
+                                                </li>
                                                 <li className="px-4 py-2.5">
                                                     <span className="text-[15px] font-bold text-heading w-40 inline-block">
                                                         Grand Total
                                                         <span className="float-end font-normal">:</span>
                                                     </span>
-                                                    <span className="text-[15px] font-bold text-heading inline-block">{MoneyFormat.format(calculateGrandTotal())}</span>
+                                                    <span className="text-[15px] font-bold text-heading inline-block">{MoneyFormat.format(calculateGrandTotal)}</span>
                                                 </li>
                                             </ul>
                                         </div>
                                     </div>
-                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                         <div className="inventual-form-field">
                                             <h5>Shipping Cost</h5>
                                             <NumericFormat
@@ -641,7 +692,7 @@ const NewSaleList = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                         <div className="inventual-form-field">
                                             <h5>Discount</h5>
                                             <NumericFormat
@@ -670,7 +721,7 @@ const NewSaleList = () => {
                                             />
                                         </div>
                                     </div>
-                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                         <div className="inventual-form-field">
                                             <h5>Sale Status</h5>
                                             <div className="inventual-select-field-style">
@@ -690,45 +741,13 @@ const NewSaleList = () => {
                                                         },
                                                     }}
                                                 >
-                                                    <MenuItem value="">
-                                                        <em>Select Status</em>
-                                                    </MenuItem>
                                                     <MenuItem value="Completed">Completed</MenuItem>
                                                     <MenuItem value="Incompleted">Incompleted</MenuItem>
                                                 </TextField>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-                                        <div className="inventual-form-field">
-                                            <h5>Payment Status</h5>
-                                            <div className="inventual-select-field-style">
-                                                <TextField
-                                                    select
-                                                    label="Select"
-                                                    required
-                                                    value={paymentStatus}
-                                                    onChange={(e) => setPaymentStatus(e.target.value)}
-                                                    SelectProps={{
-                                                        displayEmpty: true,
-                                                        renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Payment Status</em>;
-                                                            }
-                                                            return value;
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">
-                                                        <em>Payment Status</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="Complete">Complete</MenuItem>
-                                                    <MenuItem value="Incomplete">Incomplete</MenuItem>
-                                                    <MenuItem value="Drafts">Drafts</MenuItem>
-                                                </TextField>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
                                         <div className="inventual-input-field-style">
                                             <TextField
