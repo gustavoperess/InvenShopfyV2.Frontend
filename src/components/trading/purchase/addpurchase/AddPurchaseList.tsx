@@ -24,6 +24,7 @@ interface productInterface {
     expired: boolean;
     totalAmountbougth: number,
     quantityBought: number | undefined;
+    taxPercentage: number;
 }
 
 interface warehouseInterface {
@@ -53,6 +54,7 @@ const AddPurchaseList = () => {
     const [productName, setProductName] = useState<string>("");
     const [purchaseNote, setPurchaseNote] = useState<string>("");
     const [shippingCost, setShippingCost] = useState<number | undefined>();
+ 
     const [supplier, setSupplier] = useState('')
     const [productInformation, setProductInformation] = useState<productInterface[]>([]);
     const [suggestions, setSuggestions] = useState<productInterface[]>([]);
@@ -114,18 +116,6 @@ const AddPurchaseList = () => {
 
 
 
-    // calculate order tax
-    const calculateTheAmountOfProductsAdded = () => {
-        if (productInformation.length > 0) {
-            return productInformation.reduce((accumulator, item) => {
-                return item.quantityBought != undefined
-                    ? accumulator + item.quantityBought
-                    : accumulator;
-
-            }, 0);
-
-        }
-    };
 
     //
     useEffect(() => {
@@ -151,15 +141,38 @@ const AddPurchaseList = () => {
         );
     };
 
+   
+    // calculate order tax
+    const calculateTotalTax = () => {
+        return productInformation.reduce((total, item) => {
+            if (item.quantityBought != undefined) {
+                return (((item.price * item.quantityBought) * item.taxPercentage) / 100) + total;
+            }
+            return total;
+        }, 0);
+    }
+   
 
     // calculate total sum of all subtotals
     const calculateGrandTotal = () => {
         if (shippingCost != undefined) {
-            return calculateTotal() + shippingCost;
+            return calculateTotal() + shippingCost + calculateTotalTax();
         } else {
-            return calculateTotal();
+            return calculateTotal() + calculateTotalTax();
         }
     }
+    //  calculates the number of items addeed
+    const calculateTheAmountOfProductsAdded = () => {
+        if (productInformation.length > 0) {
+            return productInformation.reduce((accumulator, item) => {
+                return item.quantityBought != undefined
+                    ? accumulator + item.quantityBought
+                    : accumulator;
+
+            }, 0);
+        }
+    };
+
 
     // calculate total sum of all subtotals
     const calculateTotal = () => {
@@ -182,7 +195,7 @@ const AddPurchaseList = () => {
         setProductName(value);
     };
 
-    
+
     const formatDate = (date: Date) => {
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
@@ -195,13 +208,17 @@ const AddPurchaseList = () => {
     const handleNewSaleForm = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         let date = formatDate(purchaseDate)
-        let productIdPlusQuantity: { [key: number]: number | undefined} = {};
+        let productIdPlusQuantity: { [key: number]: number | undefined } = {};
         productInformation.forEach(product => {
-            productIdPlusQuantity[product.id] = product.quantityBought; 
+            productIdPlusQuantity[product.id] = product.quantityBought;
         });
-        const formData = {purchaseDate: date, productIdPlusQuantity, totalNumberOfProducts: calculateTheAmountOfProductsAdded(), 
-            warehouseId: selectWarehouse, supplierId: selectedSupplier, purchaseStatus, shippingCost, purchaseNote, TotalAmountBought: calculateGrandTotal() }
-      
+        const formData = {
+            purchaseDate: date, productIdPlusQuantity, totalNumberOfProducts: calculateTheAmountOfProductsAdded(),
+            warehouseId: selectWarehouse, supplierId: selectedSupplier,
+            purchaseStatus, shippingCost, purchaseNote, TotalAmountBought: calculateGrandTotal(), 
+            totalTax: calculateTotalTax()
+       
+        }
         try {
             await addPurchase(formData).unwrap();
             setPurchaseDate(new Date())
@@ -422,6 +439,7 @@ const AddPurchaseList = () => {
                                                             <th>Sub-Category</th>
                                                             <th>Price</th>
                                                             <th>Stock</th>
+                                                            <th>Tax</th>
                                                             <th>Quantity</th>
                                                             <th>Action</th>
                                                         </tr>
@@ -442,6 +460,7 @@ const AddPurchaseList = () => {
                                                                     <td>{product.subcategory}</td>
                                                                     <td>{MoneyFormat.format(product.price)}</td>
                                                                     <td>{product.stockQuantity}</td>
+                                                                    <td>{product.taxPercentage}%</td>
                                                                     <td>
                                                                         <TextField
                                                                             fullWidth
@@ -495,6 +514,13 @@ const AddPurchaseList = () => {
                                                     </span>
                                                     <span className="text-[15px] font-normal text-heading inline-block">{MoneyFormat.format(shippingCost || 0)}</span>
                                                 </li>
+                                                <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
+                                                    <span className="text-[15px] font-normal text-heading w-40 inline-block">
+                                                        Tax
+                                                        <span className="float-end">:</span>
+                                                    </span>
+                                                    <span className="text-[15px] font-normal text-heading inline-block">{MoneyFormat.format(calculateTotalTax())}</span>
+                                                </li>
                                                 <li className="px-4 py-2.5">
                                                     <span className="text-[15px] font-bold text-heading w-40 inline-block">
                                                         Grand Total
@@ -547,8 +573,7 @@ const AddPurchaseList = () => {
                                                             }
                                                             return value;
                                                         },
-                                                    }}
-                                                >
+                                                    }}>
                                                     <MenuItem value="">
                                                         <em>Purchase Status</em>
                                                     </MenuItem>

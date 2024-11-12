@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect, useCallback } from 'react';
 import { Accept, useDropzone } from "react-dropzone";
-import { MenuItem, TextField, FormControl, InputAdornment,Autocomplete } from '@mui/material';
+import { MenuItem, TextField, FormControl, InputAdornment, Autocomplete } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import { FormControlLabel } from '@mui/material'
 import { useAddProductMutation } from '@/services/Product/Product';
@@ -39,6 +39,8 @@ const AddProduct = () => {
     const [selectedCode, setSelectedCode] = useState<number | undefined>();
     const [featured, setFeatured] = useState<boolean | false>(false);
     const [expired, setExpired] = useState<boolean | false>(false);
+    const [taxPercentage, setTaxPercentage] = useState(5);
+    const [marginRange, setMarginRange] = useState<string>("5% to 10%");
     const [sale, setSale] = useState<boolean | false>(false);
     const [warehousePrice, setSelectedDiffPriceWarehouse] = useState<boolean | false>(false);
     const [productImage, setProductImage] = useState<string | null>(null);
@@ -71,14 +73,17 @@ const AddProduct = () => {
             productImage, categoryId: selectedCategory,
             subcategory: selectSubCategory, productCode: selectedCode,
             brandId: selectedBrand, unitId: selectedUnit,
-            price: selectedPrice, featured, expired, sale
+            price: selectedPrice, featured, expired, sale, taxPercentage, marginRange
         };
+    
         try {
             await addProduct(productData).unwrap();
             setSelectedTitle('');
             setProductImage(null);
             setSelectedCategory("");
             setSelectSubCategory("");
+            setTaxPercentage(5);
+            setMarginRange("5% to 10%");
             setSelectedCode(undefined);
             setSelectedBrand("");
             setSelectedUnit("");
@@ -345,6 +350,56 @@ const AddProduct = () => {
                                                         placeholder="100.00"
                                                     />
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 xl:col-span-4 md:col-span-6">
+                                        <div className="inventual-form-field">
+                                            <h5>Tax</h5>
+                                            <div className="inventual-select-field-style">
+                                                <TextField
+                                                    select
+                                                    label="Select"
+                                                    required
+                                                    value={taxPercentage}
+                                                    onChange={(e) => setTaxPercentage(Number(e.target.value))}
+                                                    SelectProps={{
+                                                        displayEmpty: true,
+                                                        renderValue: (value: any) => {
+                                                            if (value === '') {
+                                                                return <em>Payment Status</em>;
+                                                            }
+                                                            return `${value}%`; 
+                                                        },
+                                                    }}
+                                                >
+                                                    <MenuItem value={5}>5%</MenuItem>
+                                                    <MenuItem value={8}>8%</MenuItem>
+                                                    <MenuItem value={12}>12%</MenuItem>
+                                                </TextField>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 xl:col-span-4 md:col-span-6">
+                                        <div className="inventual-form-field">
+                                            <h5>Margin Range</h5>
+                                            <div className="inventual-select-field-style">
+                                                <TextField
+                                                    select
+                                                    label="Select"
+                                                    required
+                                                    value={marginRange}
+                                                    onChange={(e) => setMarginRange(e.target.value)}
+                                                    SelectProps={{
+                                                        displayEmpty: true,
+                                                        renderValue: (value: any) => {
+                                                            return value === '' ? <em>5% to 10%</em> : `${value}`;
+                                                        },
+                                                    }}>
+                                                    <MenuItem value="5% to 10%">5% to 10%</MenuItem>
+                                                    <MenuItem value="10% to 12%">10% to 12%</MenuItem>
+                                                    <MenuItem value="12% to 14%">12% to 14%</MenuItem>
+                                                </TextField>
                                             </div>
                                         </div>
                                     </div>

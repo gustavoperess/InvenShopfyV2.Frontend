@@ -148,7 +148,7 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handlePurchaseRet
                                         <div className="inventual-input-field-style search-field">
                                             <TextField
                                                 fullWidth
-                                                placeholder="Macbook..."
+                                                placeholder="B-874739"
                                                 variant="outlined"
                                                 value={referenceNumber}
                                                 onChange={handleReferenceNumberChange}

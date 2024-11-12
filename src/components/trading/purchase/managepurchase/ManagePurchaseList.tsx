@@ -34,7 +34,7 @@ interface Data {
   grandTotal: number;
   purchaseStatus: string;
   totalNumberOfProductsBougth: number;
-
+  totalPaidInTaxes: number;
 }
 
 let MoneyFormat = new Intl.NumberFormat('en-US', {
@@ -307,6 +307,15 @@ const ManagePurchaseList = () => {
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'totalPaidInTaxes'}
+                                  direction={orderBy === 'totalPaidInTaxes' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalPaidInTaxes')}
+                                >
+                                  Tax
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
                                 <TableSortLabel>
                                   Action
                                 </TableSortLabel>
@@ -355,6 +364,7 @@ const ManagePurchaseList = () => {
                                   <TableCell>{purchase.supplierName}</TableCell>
                                   <TableCell>{purchase.totalNumberOfProductsBought}</TableCell>
                                   <TableCell>{MoneyFormat.format(purchase.totalAmountBought)}</TableCell>
+                                  <TableCell>{MoneyFormat.format(purchase.totalPaidInTaxes)}</TableCell>
                                   
                                   <TableCell>
                                     <div className="inventual-list-action-style">

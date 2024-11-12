@@ -693,9 +693,8 @@ const NewSaleList = () => {
                                                     <MenuItem value="">
                                                         <em>Select Status</em>
                                                     </MenuItem>
-                                                    <MenuItem value="Complete">Complete</MenuItem>
-                                                    <MenuItem value="Incomplete">Incomplete</MenuItem>
-                                                    <MenuItem value="Drafts">Drafts</MenuItem>
+                                                    <MenuItem value="Completed">Completed</MenuItem>
+                                                    <MenuItem value="Incompleted">Incompleted</MenuItem>
                                                 </TextField>
                                             </div>
                                         </div>

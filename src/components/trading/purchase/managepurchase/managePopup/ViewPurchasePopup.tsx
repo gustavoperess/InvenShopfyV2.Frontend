@@ -39,7 +39,7 @@ const ViewPurchasePopup = ({ open, purchaseId, handleViewPurchaseDialogClose }: 
         }
     }, [purchaseId, refetch]);
     
-
+  
  
     return (
         <>
@@ -67,6 +67,7 @@ const ViewPurchasePopup = ({ open, purchaseId, handleViewPurchaseDialogClose }: 
                                                         <th>Unit</th>
                                                         <th>Unit Price</th>
                                                         <th>Qty</th>
+                                                        <th>tax</th>
                                                         <th>Sub Total</th>
                                                     </tr>
                                                 </thead>
@@ -78,8 +79,9 @@ const ViewPurchasePopup = ({ open, purchaseId, handleViewPurchaseDialogClose }: 
                                                                 <td>{purchaseDate.productName}</td>
                                                                 <td>{purchaseDate.referenceNumber}</td>
                                                                 <td>{purchaseDate.unitShortName}</td>
-                                                                <td>${purchaseDate.productPrice}</td>
+                                                                <td>{MoneyFormat.format(purchaseDate.productPrice)}</td>
                                                                 <td>{purchaseDate.totalQuantityBoughtPerProduct}</td>
+                                                                <td>{MoneyFormat.format(purchaseDate.totalInTaxPaidPerProduct)}</td>
                                                                 <td>{MoneyFormat.format(purchaseDate.totalPricePaidPerProduct)}</td>
                                                             </tr>)
                                                         ) : <tr>
@@ -87,24 +89,24 @@ const ViewPurchasePopup = ({ open, purchaseId, handleViewPurchaseDialogClose }: 
                                                         </tr>
                                                     }
                                                     <tr>
-                                                        <td colSpan={6}>Shipping Cost : </td>
+                                                        <td colSpan={7}>Shipping Cost : </td>
                                                         <td>{MoneyFormat.format(purchaseData?.data[0].shippingCost)}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={6}>Order Tax : </td>
-                                                        <td>$3 (2%)</td>
+                                                        <td colSpan={7}>Order Tax : </td>
+                                                        <td>{MoneyFormat.format(purchaseData?.data[0].totalTax)}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={6}><span className='font-semibold text-heading'>Grand Total : </span></td>
+                                                        <td colSpan={7}><span className='font-semibold text-heading'>Grand Total : </span></td>
                                                         <td> <span className='font-semibold text-heading'>{MoneyFormat.format(purchaseData?.data[0].totalAmount)}</span></td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={6}>Paid Amount : </td>
+                                                        <td colSpan={7}>Paid Amount : </td>
                                                         <td>{MoneyFormat.format(purchaseData?.data[0].totalAmount)}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={6}>Due Amount : </td>
-                                                        <td>$0.00</td>
+                                                        <td colSpan={7}>Due Amount : </td>
+                                                        <td>£0.00</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

@@ -39,7 +39,15 @@ interface Data {
   brand: string;
   category: string;
   productImage: string;
+  taxPercentage: number;
+  marginRange: string;
 }
+
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'GBP',
+});
+
 
 
 
@@ -236,6 +244,16 @@ const ProductList = () => {
                                   Name
                                 </TableSortLabel>
                               </TableCell>
+                            
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'productImage'}
+                                  direction={orderBy === 'productImage' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('productImage')}
+                                >
+                                  Image
+                                </TableSortLabel>
+                              </TableCell>
                               <TableCell>
                                 <TableSortLabel
                                   active={orderBy === 'price'}
@@ -247,11 +265,20 @@ const ProductList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'productImage'}
-                                  direction={orderBy === 'productImage' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('productImage')}
+                                  active={orderBy === 'taxPercentage'}
+                                  direction={orderBy === 'taxPercentage' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('taxPercentage')}
                                 >
-                                  Image
+                                  Tax
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'marginRange'}
+                                  direction={orderBy === 'marginRange' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('marginRange')}
+                                >
+                                  Margin~
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -279,15 +306,6 @@ const ProductList = () => {
                                   onClick={() => handleRequestSort('category')}
                                 >
                                   Category
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'subCategory'}
-                                  direction={orderBy === 'subCategory' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('subCategory')}
-                                >
-                                  Sub-Category
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -342,7 +360,6 @@ const ProductList = () => {
                                   {/* Data cells */}
                                   <TableCell>{product.id}</TableCell>
                                   <TableCell>{product.title}</TableCell>
-                                  <TableCell>${product.price}</TableCell>
                                   <TableCell>
                                     <div className="min-h-[70px] inline-flex items-center justify-cente">
                                       <div className="inner px-2 py-2 bg-[#F4F5F8] rounded-[5px]">
@@ -350,10 +367,12 @@ const ProductList = () => {
                                       </div>
                                     </div>
                                   </TableCell>
+                                  <TableCell>{MoneyFormat.format(product.price)}</TableCell>
+                                  <TableCell>{product.taxPercentage}%</TableCell>
+                                  <TableCell>{product.marginRange}</TableCell>
                                   <TableCell>{product.productCode}</TableCell>
                                   <TableCell>{product.stockQuantity}</TableCell>
-                                  <TableCell>{product.categoryName}</TableCell>
-                                  <TableCell>{product.subCategories}</TableCell>
+                                  <TableCell>{product.categoryName} [{product.subCategories}]</TableCell>
                                   <TableCell>{product.unitName}</TableCell>
                                   <TableCell>{product.brandName}</TableCell>
                                   <TableCell>

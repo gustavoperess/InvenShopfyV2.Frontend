@@ -171,7 +171,7 @@ const SaleList = () => {
     return 0;
   });
 
-
+ 
 
   return (
 
@@ -353,12 +353,12 @@ const SaleList = () => {
                                   <TableCell>{sales.warehouseName}</TableCell>
                                   <TableCell>
                                     {
-                                      sales.paymentStatus.toLowerCase() === "completed" ? (
-                                        <span className='badge badge-success'>{sales.paymentStatus}</span>
+                                      sales.saleStatus.toLowerCase() === "completed" ? (
+                                        <span className='badge badge-success'>{sales.saleStatus}</span>
                                       ) : (
-                                        sales.paymentStatus.toLowerCase() === "draft" ? (
-                                          <span className='badge badge-warning'>{sales.paymentStatus}</span> 
-                                        ) : (<span className='badge badge-teal'>{sales.paymentStatus}</span>)
+                                        sales.saleStatus.toLowerCase() === "incompleted" ? (
+                                          <span className='badge badge-warning'>{sales.saleStatus}</span> 
+                                        ) : (<span className='badge badge-teal'>{sales.saleStatus}</span>)
                                       )
                                     }
                                   </TableCell>
