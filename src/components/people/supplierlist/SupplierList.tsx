@@ -22,21 +22,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
 import { useGetAllSuppliersQuery, useDeleteSupplierMutation } from '@/services/People/Supplier';
-
-// Define the structure of the data
-interface Data {
-  id: number;
-  name: string;
-  phoneNumber: string;
-  email: string;
-  country: string;
-  supplierCode: string;
-  city: string;
-  address: string;
-  zipCode: string;
-  company: string;
-}
-
+import { TSupplierInterface } from '@/interFace/interFace';
 
 const SupplierList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
@@ -47,7 +33,7 @@ const SupplierList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TSupplierInterface>('id');
   const [deleteSupplier] = useDeleteSupplierMutation();
   const { data: supplierData, error: supplierError, isLoading: supplierLoading, refetch } = useGetAllSuppliersQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -85,7 +71,7 @@ const SupplierList = () => {
     }
   };
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TSupplierInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -128,8 +114,8 @@ const SupplierList = () => {
   const sortedRows = supplierData?.data.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data];
-    const bValue = b[orderBy as keyof Data];
+    const aValue = a[orderBy as keyof TSupplierInterface];
+    const bValue = b[orderBy as keyof TSupplierInterface];
     if (aValue === undefined || bValue === undefined) {
       return 0;
     }

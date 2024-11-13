@@ -6,16 +6,13 @@ import { useGetSalesDashBoardQuery } from '@/services/Sales/Sales';
 import { useGetPurchaseDashboardQuery } from '@/services/Purchase/Purchase';
 import { useGetSalesReturnDashBoardQuery } from '@/services/Sales/SaleReturn';
 import { useGetExpenseDashBoardQuery } from '@/services/Expense/Expense';
+import { MoneyFormat } from '@/interFace/interFace';
 
 interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
     value: number;
 }
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'GBP',
-});
 
 
 function CustomTabPanel(props: TabPanelProps) {
@@ -43,25 +40,6 @@ function a11yProps(index: number) {
     };
 }
 
-// Define the structure of the data
-interface Data {
-    id: number;
-    date: string;
-    reference?: string;
-    customer?: string;
-    supplier?: string;
-    biller?: string;
-    payment?: string;
-    paymentType?: string;
-    voucher?: string;
-    name?: string;
-    category?: string;
-    mode?: string;
-    status?: string;
-    remark?: string;
-    amount?: string;
-    grandTotal?: string;
-}
 
 const TransactionReport = () => {
     const { data: salesData, isLoading: salesDataLoading } = useGetSalesDashBoardQuery();

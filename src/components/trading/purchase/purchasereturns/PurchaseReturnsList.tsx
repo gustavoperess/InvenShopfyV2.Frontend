@@ -24,26 +24,7 @@ import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import AddReturnPopup from './PurchaseRetunPopup/AddReturnPopup';
 import PurchaseReturnPopup from './PurchaseRetunPopup/SaleReturnPopup';
 import { useGetAllPurchaseReturnQuery, useDeletePurchaseReturnMutation } from '@/services/Purchase/PurchaseReturn';
-
-
-// Define the structure of the data
-interface Data {
-  id: number;
-  referenceNumber: string;
-  supplierName: string;
-  warehouseName: string;
-  returnNote: string;
-  totalAmount: number;
-  remarkStatus: string;
-  purchaseDate: string;
-  totalNumberOfProductsBought: number;
-}
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'GBP',
-});
-
-
+import { TPurchaseReturnInterface, MoneyFormat } from '@/interFace/interFace';
 
 const PurchaseReturnsList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
@@ -52,7 +33,7 @@ const PurchaseReturnsList = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TPurchaseReturnInterface>('id');
   const [deletePurchaseReturn] = useDeletePurchaseReturnMutation();
   const { data: purchaseReturnData, isLoading: purchaseReturnLoading, refetch } = useGetAllPurchaseReturnQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -127,7 +108,7 @@ const PurchaseReturnsList = () => {
 
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TPurchaseReturnInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -171,8 +152,8 @@ const PurchaseReturnsList = () => {
   const sortedRows = purchaseReturnData?.data.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data]; 
-    const bValue = b[orderBy as keyof Data]; 
+    const aValue = a[orderBy as keyof TPurchaseReturnInterface]; 
+    const bValue = b[orderBy as keyof TPurchaseReturnInterface]; 
     if (aValue === undefined || bValue === undefined) {
       return 0; 
     }

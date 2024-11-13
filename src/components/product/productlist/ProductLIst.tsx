@@ -23,32 +23,7 @@ import {
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import { useGetAllProductsQuery, useDeleteProductMutation } from '@/services/Product/Product';
-
-
-
-// Define the structure of the data
-interface Data {
-  id: number;
-  title: string;
-  price: number;
-  productCode: number;
-  stockQuantity: number;
-  created: string;
-  subCategory: string;
-  unit: string;
-  brand: string;
-  category: string;
-  productImage: string;
-  taxPercentage: number;
-  marginRange: string;
-}
-
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'GBP',
-});
-
-
+import { TProductInterface, MoneyFormat } from '@/interFace/interFace';
 
 
 const ProductList = () => {
@@ -98,7 +73,7 @@ const ProductList = () => {
     };
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TProductInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -141,8 +116,8 @@ const ProductList = () => {
   const sortedRows = productData?.data.slice().sort((a : any, b : any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data]; 
-    const bValue = b[orderBy as keyof Data]; 
+    const aValue = a[orderBy as keyof TProductInterface]; 
+    const bValue = b[orderBy as keyof TProductInterface]; 
     if (aValue === undefined || bValue === undefined) {
       return 0; 
     }

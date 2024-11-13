@@ -22,21 +22,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
 import { useGetAllCustomersQuery, useDeleteCustomerMutation } from '@/services/People/Customer';
-
-// Define the structure of the data
-interface Data {
-  id: number;
-  name: string;
-  phoneNumber: string;
-  email: string;
-  city: string;
-  country: string;
-  address: string;
-  zipCode: string;
-  rewardPoint: string;
-  customerGroup: number;
-}
-
+import { TCustomerInterface } from '@/interFace/interFace';
 
 const CustomerList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
@@ -45,7 +31,7 @@ const CustomerList = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TCustomerInterface>('id');
   const [deleteCustomer] = useDeleteCustomerMutation();
   const { data: customerData, error: customerError, isLoading: customerLoading, refetch } = useGetAllCustomersQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -87,7 +73,7 @@ const CustomerList = () => {
 
   
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TCustomerInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -130,8 +116,8 @@ const CustomerList = () => {
   const sortedRows = customerData?.data.slice().sort((a : any, b : any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data]; 
-    const bValue = b[orderBy as keyof Data]; 
+    const aValue = a[orderBy as keyof TCustomerInterface]; 
+    const bValue = b[orderBy as keyof TCustomerInterface]; 
     if (aValue === undefined || bValue === undefined) {
       return 0; 
     }

@@ -10,24 +10,9 @@ import { useGetAllProductsBrandQuery } from '@/services/Product/Brand';
 import { useGetAllProductsCategoryQuery, useGetProductByIdQuery } from '@/services/Product/Category';
 import { NumericFormat } from 'react-number-format';
 import { toast } from 'react-toastify';
+import { TMainCategoryInterface, TBrandInterface, TUnitInterface } from '@/interFace/interFace';
 
 
-// Define the structure of the data
-interface mainCategoryData {
-    mainCategory: string;
-    id: number;
-    subCategory: string;
-}
-
-interface brandData {
-    id: number;
-    title: string;
-}
-
-interface unitData {
-    id: number;
-    title: string;
-}
 
 
 const AddProduct = () => {
@@ -181,14 +166,14 @@ const AddProduct = () => {
                                                                 displayEmpty: true,
                                                                 renderValue: (value) => {
                                                                     const selectedCategoryItem = totalCategoryData?.data.find(
-                                                                        (category: mainCategoryData) => category.id === Number(value)
+                                                                        (category: TMainCategoryInterface) => category.id === Number(value)
                                                                     );
                                                                     return selectedCategoryItem ? selectedCategoryItem.mainCategory : <em>Select Category</em>;
                                                                 },
                                                             }}
                                                         >
                                                             {totalCategoryData && totalCategoryData.data.length > 0 ? (
-                                                                totalCategoryData.data.map((mainCategory: mainCategoryData) => (
+                                                                totalCategoryData.data.map((mainCategory: TMainCategoryInterface) => (
                                                                     <MenuItem key={mainCategory.id} value={mainCategory.id}>
                                                                         {mainCategory.mainCategory}
                                                                     </MenuItem>
@@ -272,12 +257,12 @@ const AddProduct = () => {
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
-                                                                const selectedBrand = totalBrandData?.data.find((brand: brandData) => brand.id === value);
+                                                                const selectedBrand = totalBrandData?.data.find((brand: TBrandInterface) => brand.id === value);
                                                                 return selectedBrand ? selectedBrand.title : <em>Select Brand</em>;
                                                             },
                                                         }}>
                                                         {totalBrandData && totalBrandData.data.length > 0 ? (
-                                                            totalBrandData.data.map((brand: brandData) => (
+                                                            totalBrandData.data.map((brand: TBrandInterface) => (
                                                                 <MenuItem key={brand.id} value={brand.id}>
                                                                     {brand.title}
                                                                 </MenuItem>
@@ -306,12 +291,12 @@ const AddProduct = () => {
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
-                                                                const selectedUnit = totalUnitData?.data.find((unit: unitData) => unit.id === value);
+                                                                const selectedUnit = totalUnitData?.data.find((unit: TUnitInterface) => unit.id === value);
                                                                 return selectedUnit ? selectedUnit.title : <em>Select Unit</em>;
                                                             },
                                                         }}>
                                                         {totalUnitData && totalUnitData.data.length > 0 ? (
-                                                            totalUnitData.data.map((unit: unitData) => (
+                                                            totalUnitData.data.map((unit: TUnitInterface) => (
                                                                 <MenuItem key={unit.id} value={unit.id}>
                                                                     {unit.title}
                                                                 </MenuItem>

@@ -7,27 +7,7 @@ import { useGetWarehouseNamesQuery, useGetTotalQuantityByProductAndWarehouseIdQu
 import { useGetProductByNameQuery } from '@/services/Product/Product';
 import { useGetMangerAdminUsersQuery } from '@/services/Role/Role';
 import { useCreateTransferMutation } from '@/services/Transfer/Transfer';
-import { stat } from 'fs';
-import AdminUser from '@/components/dashboard/AdminUser';
-
-
-interface ReferenceInterface {
-    id: number;
-    title: string
-    productCode: string;
-    stockQuantity: number;
-}
-
-interface warehouseInterface {
-    id: number;
-    warehouseTitle: string;
-
-}
-interface userAdminInterface {
-    userId: number;
-    userName: string;
-    roleName: string;
-}
+import { TWarehouseInterface, TtransferInterface } from '@/interFace/interFace';
 
 
 const AddTransfer = () => {
@@ -42,7 +22,7 @@ const AddTransfer = () => {
     const [transferNote, setTransferNote] = useState('');
     const [status, setStatus] = useState('');
     const [userAdmin, setUserAdmin] = useState({ userId: '', userName: '' });
-    const [suggestions, setSuggestions] = useState<ReferenceInterface[]>([]);
+    const [suggestions, setSuggestions] = useState<TtransferInterface[]>([]);
     const [fetchSuggestions, setFetchSuggestions] = useState(true);
     const { data: warehouseData } = useGetWarehouseNamesQuery({ pageNumber: 1, pageSize: 25 });
     const { data: quantityByWarehouseData } = useGetTotalQuantityByProductAndWarehouseIdQuery(
@@ -84,7 +64,7 @@ const AddTransfer = () => {
         setFetchSuggestions(true);
     };
 
-    const handleSuggestionSelect = (suggestion: ReferenceInterface) => {
+    const handleSuggestionSelect = (suggestion: TtransferInterface) => {
         setProductName(suggestion.title);
         setProductId(suggestion.id)
         setProductCode(suggestion.productCode)
@@ -267,12 +247,12 @@ const AddTransfer = () => {
                                                 SelectProps={{
                                                     displayEmpty: true,
                                                     renderValue: (value: any) => {
-                                                        const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
+                                                        const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
                                                         return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                     },
                                                 }}>
                                                 {warehouseData && warehouseData.data.length > 0 ? (
-                                                    warehouseData.data.map((warehouse: warehouseInterface) => (
+                                                    warehouseData.data.map((warehouse: TWarehouseInterface) => (
                                                         <MenuItem key={warehouse.id} value={warehouse.id}>
                                                             {warehouse.warehouseTitle}
                                                         </MenuItem>
@@ -302,12 +282,12 @@ const AddTransfer = () => {
                                                 SelectProps={{
                                                     displayEmpty: true,
                                                     renderValue: (value: any) => {
-                                                        const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
+                                                        const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
                                                         return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                     },
                                                 }}>
                                                 {warehouseData && warehouseData.data.length > 0 ? (
-                                                    warehouseData.data.map((warehouse: warehouseInterface) => (
+                                                    warehouseData.data.map((warehouse: TWarehouseInterface) => (
                                                         <MenuItem key={warehouse.id} value={warehouse.id}>
                                                             {warehouse.warehouseTitle}
                                                         </MenuItem>

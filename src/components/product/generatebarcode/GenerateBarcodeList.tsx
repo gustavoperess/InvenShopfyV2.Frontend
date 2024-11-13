@@ -10,7 +10,7 @@ import { TProduct } from '@/interFace/interFace';
 const GenerateBarcodeList = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<TProduct[]>([]);
-    const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
+    const [activeItemIds, setActiveItemIds] = useState<number[]>([]); 
     const [activeItems, setActiveItems] = useState<TProduct[]>([]);
 
     const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

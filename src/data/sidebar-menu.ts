@@ -188,10 +188,7 @@ export const menuData: MenuItem[] = [
                 label: "Add Transfer",
                 routeLink: "/transfer/addtransfer",
             },
-            {
-                label: "Import Transfer",
-                routeLink: "/transfer/importTransfer",
-            },
+          
             {
                 label: "Transfer List",
                 routeLink: "/transfer/transferlist",

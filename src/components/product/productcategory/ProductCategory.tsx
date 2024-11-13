@@ -24,14 +24,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import { toast } from 'react-toastify';
 import { useGetAllProductsCategoryQuery, useAddCategoryMutation, useDeleteCategoryMutation } from '@/services/Product/Category';
-
-
-// Define the structure of the data
-interface Data {
-  id: number;
-  mainCategory: string;
-  subCategory: string[];
-}
+import { TMainCategoryInterface } from '@/interFace/interFace';
 
 
 const ProductCategory = () => {
@@ -43,7 +36,7 @@ const ProductCategory = () => {
   const [subCategory, setSubCategory] = useState<string>("");
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TMainCategoryInterface>('id');
   const [deleteCategory] = useDeleteCategoryMutation();
   const [addCategory] = useAddCategoryMutation();
   const { data: categorytData, error: categoryError, isLoading: categoryLoading, refetch } = useGetAllProductsCategoryQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
@@ -85,7 +78,7 @@ const ProductCategory = () => {
 
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TMainCategoryInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -128,8 +121,8 @@ const ProductCategory = () => {
   const sortedRows = categorytData?.data.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data]; 
-    const bValue = b[orderBy as keyof Data];
+    const aValue = a[orderBy as keyof TMainCategoryInterface]; 
+    const bValue = b[orderBy as keyof TMainCategoryInterface];
     if (aValue === undefined || bValue === undefined) {
       return 0; 
     }

@@ -4,12 +4,7 @@ import { Input, TextField, FormControl } from '@mui/material';
 import { useAddSupplierMutation } from '@/services/People/Supplier';
 import { toast } from 'react-toastify';
 import { IMaskInput } from 'react-imask';
-
-interface CustomProps {
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-}
-
+import { CustomProps } from '@/interFace/interFace';
 
 const AddSupplier = () => {
     const [supplierName, setSupplierName] = useState('')

@@ -5,11 +5,8 @@ import { useGetSPurchaseReturnTotalAmountQuery } from '@/services/Purchase/Purch
 import { useGetExpenseTotalAmountQuery } from '@/services/Expense/Expense';
 import { useGetTotalStockAmountQuery } from '@/services/Warehouse/Warehouse';
 import { useGetTotalProfitDashboardQuery } from '@/services/Sales/Sales';
+import { MoneyFormat } from '@/interFace/interFace';
 
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'GBP',
-});
 
 const QuickReportList = () => {
     const { data: warehouseQuantityData, isLoading: warehouseLoadingData } = useGetWarehouseQuantityQuery();

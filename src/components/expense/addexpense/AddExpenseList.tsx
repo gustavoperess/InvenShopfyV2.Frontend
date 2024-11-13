@@ -7,18 +7,7 @@ import { toast } from 'react-toastify';
 import { useGetWarehouseNamesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetAllExpenseCategoriesQuery, useGetExpenseCategoryByIdQuery } from '@/services/Expense/ExpenseCategory';
 import { useAddExpenseMutation } from '@/services/Expense/Expense';
-
-
-interface warehouseInterface {
-    id: number;
-    warehouseTitle: string;
-
-}
-interface mainCategoryData {
-    category: string;
-    id: number;
-    subCategory: string;
-}
+import { TMainCategoryInterface, TWarehouseInterface } from '@/interFace/interFace';
 
 
 const AddExpenseList = () => {
@@ -79,7 +68,6 @@ const AddExpenseList = () => {
         };
         
         try {
-            console.log(expenseDatatoSubmit)
             await createExpense(expenseDatatoSubmit).unwrap();
             toast.success("Expense Created successfully!");
             setStartDate(new Date());
@@ -103,6 +91,7 @@ const AddExpenseList = () => {
             }
         }
     }
+
 
     return (
         <>
@@ -164,12 +153,12 @@ const AddExpenseList = () => {
                                                 SelectProps={{
                                                     displayEmpty: true,
                                                     renderValue: (value: any) => {
-                                                        const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
+                                                        const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
                                                         return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                     },
                                                 }}>
                                                 {warehouseData && warehouseData.data.length > 0 ? (
-                                                    warehouseData.data.map((warehouse: warehouseInterface) => (
+                                                    warehouseData.data.map((warehouse: TWarehouseInterface) => (
                                                         <MenuItem key={warehouse.id} value={warehouse.id}>
                                                             {warehouse.warehouseTitle}
                                                         </MenuItem>
@@ -204,16 +193,16 @@ const AddExpenseList = () => {
                                                         displayEmpty: true,
                                                         renderValue: (value) => {
                                                             const selectedCategoryItem = totalCategoryData?.data.find(
-                                                                (category: mainCategoryData) => category.id === Number(value)
+                                                                (category: TMainCategoryInterface) => category.id === Number(value)
                                                             );
                                                             return selectedCategoryItem ? selectedCategoryItem.category : <em>Select Category</em>;
                                                         },
                                                     }}
                                                 >
                                                     {totalCategoryData && totalCategoryData.data.length > 0 ? (
-                                                        totalCategoryData.data.map((mainCategory: mainCategoryData) => (
+                                                        totalCategoryData.data.map((mainCategory: TMainCategoryInterface) => (
                                                             <MenuItem key={mainCategory.id} value={mainCategory.id}>
-                                                                {mainCategory.category}
+                                                                {mainCategory.mainCategory}
                                                             </MenuItem>
                                                         ))
                                                     ) : (

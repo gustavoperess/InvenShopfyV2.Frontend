@@ -2,11 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useGetTopSuppliersDasgboardQuery } from '@/services/People/Supplier';
 import { it } from 'node:test';
-
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'GBP',
-});
+import { MoneyFormat } from '@/interFace/interFace';
 
 const TopSuppliers = () => {
     const { data: supplierData, isLoading } = useGetTopSuppliersDasgboardQuery();

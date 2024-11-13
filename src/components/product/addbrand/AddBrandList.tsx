@@ -25,15 +25,8 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import { Accept, useDropzone } from "react-dropzone";
 import { useGetAllProductsBrandQuery, useDeleteBrandMutation, useAddBrandMutation } from '@/services/Product/Brand';
+import { TBrandInterface } from '@/interFace/interFace';
 import { toast } from 'react-toastify';
-
-// Define the structure of the data
-interface Data {
-  id: number;
-  title: string;
-  brandImage: string;
-}
-
 
 
 const AddBrandList = () => {
@@ -46,7 +39,7 @@ const AddBrandList = () => {
   const [brand, setBrand] = useState<number>(0);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TBrandInterface>('id');
   const [deleteBrand] = useDeleteBrandMutation();
   const [addBrand] = useAddBrandMutation();
   const { data: brandData, error: brandError, isLoading: brandLoading, refetch } = useGetAllProductsBrandQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
@@ -86,7 +79,7 @@ const AddBrandList = () => {
   };
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TBrandInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -129,8 +122,8 @@ const AddBrandList = () => {
   const sortedRows = brandData?.data.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data];
-    const bValue = b[orderBy as keyof Data];
+    const aValue = a[orderBy as keyof TBrandInterface];
+    const bValue = b[orderBy as keyof TBrandInterface];
     if (aValue === undefined || bValue === undefined) {
       return 0;
     }

@@ -5,16 +5,9 @@ import DatePicker from "react-datepicker"; import { toast } from 'react-toastify
 import { useGetAllWarehousesQuery } from '@/services/Warehouse/Warehouse';
 import { useAddBillerMutation } from '@/services/People/Biller';
 import { IMaskInput } from 'react-imask';
+import { TWarehouseInterface, CustomProps } from '@/interFace/interFace';
 
-interface warehouseInterface {
-    id: number;
-    warehouseName: string;
 
-}
-interface CustomProps {
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-}
 
 
 const AddBiller = () => {
@@ -103,7 +96,6 @@ const AddBiller = () => {
             );
         }
     );
-
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const email = e.target.value;
@@ -226,12 +218,12 @@ const AddBiller = () => {
                                             SelectProps={{
                                                 displayEmpty: true,
                                                 renderValue: (value: any) => {
-                                                    const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
+                                                    const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
                                                     return selectedWarehouse ? selectedWarehouse.warehouseName : <em>Select Warehouse</em>;
                                                 },
                                             }}>
                                             {warehouseData && warehouseData.data.length > 0 ? (
-                                                warehouseData.data.map((warehouse: warehouseInterface) => (
+                                                warehouseData.data.map((warehouse: TWarehouseInterface) => (
                                                     <MenuItem key={warehouse.id} value={warehouse.id}>
                                                         {warehouse.warehouseName}
                                                     </MenuItem>

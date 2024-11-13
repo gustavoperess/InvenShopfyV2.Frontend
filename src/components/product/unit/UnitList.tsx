@@ -21,14 +21,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import { useGetAllProductsUnitQuery, useDeleteUnitMutation, useAddUnitMutation } from '@/services/Product/Unit';
 import { toast } from 'react-toastify';
-
-// Define the structure of the data
-interface Data {
-    id: number;
-    title: string;
-    shortName: string;
-}
-
+import { TUnitInterface } from '@/interFace/interFace';
 
 const UnitList = () => {
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
@@ -39,7 +32,7 @@ const UnitList = () => {
     const [shortName, setShortName] = useState("");
     const [selected, setSelected] = useState<number[]>([]);
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-    const [orderBy, setOrderBy] = useState<keyof Data>('id');
+    const [orderBy, setOrderBy] = useState<keyof TUnitInterface>('id');
     const [deleteUnit] = useDeleteUnitMutation();
     const [addUnit] = useAddUnitMutation();
     const { data: unitData, error: unitError, isLoading: unitLoading, refetch } = useGetAllProductsUnitQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
@@ -81,7 +74,7 @@ const UnitList = () => {
     };
 
     // Handlers for sorting
-    const handleRequestSort = (property: keyof Data) => {
+    const handleRequestSort = (property: keyof TUnitInterface) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
@@ -125,8 +118,8 @@ const UnitList = () => {
     const sortedRows = unitData?.data.slice().sort((a: any, b: any) => {
         if (!orderBy) return 0;
         const isAsc = order === 'asc';
-        const aValue = a[orderBy as keyof Data];
-        const bValue = b[orderBy as keyof Data];
+        const aValue = a[orderBy as keyof TUnitInterface];
+        const bValue = b[orderBy as keyof TUnitInterface];
         if (aValue === undefined || bValue === undefined) {
             return 0;
         }

@@ -25,20 +25,8 @@ import ExpenseViewListPopup from './expenseListPopup/ExpenseViewListPopup';
 import AddExpenseListPopup from './expenseListPopup/AddExpenseListPopup';
 import { useGetAllExpensesQuery, useDeleteExpenseMutation } from '@/services/Expense/Expense';
 import exp from 'constants';
+import { TExpenseInterface } from '@/interFace/interFace';
 
-// Define the structure of the data
-interface Data {
-  id: number;
-  expenseDescription: string;
-  date: string;
-  warehouse: string;
-  expenseType: string;
-  expenseCategory: string;
-  voucherNumber: number;
-  expenseCost: number;
-  expenseNote: string;
-  shippingCost: string;
-}
 
 let MoneyFormat = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -54,7 +42,7 @@ const ExpenseList = () => {
   const [expense, setExpense] = useState<number>(0);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TExpenseInterface>('id');
   const [deleteExpense] = useDeleteExpenseMutation();
   const { data: expenseData, isLoading: expenseLoading , refetch } = useGetAllExpensesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -117,7 +105,7 @@ const ExpenseList = () => {
 
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TExpenseInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -160,8 +148,8 @@ const ExpenseList = () => {
   const sortedRows = expenseData?.data.slice().sort((a : any, b : any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data]; 
-    const bValue = b[orderBy as keyof Data]; 
+    const aValue = a[orderBy as keyof TExpenseInterface]; 
+    const bValue = b[orderBy as keyof TExpenseInterface]; 
     if (aValue === undefined || bValue === undefined) {
       return 0; 
     }

@@ -1,8 +1,6 @@
 "use client"
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import product_data from '@/data/product-data';
-import { TProduct } from '@/interFace/interFace';
 import { MenuItem, TextField, InputAdornment } from '@mui/material';
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
@@ -12,39 +10,7 @@ import { useGetWarehouseNamesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetCustomerNamesQuery } from '@/services/People/Customer';
 import { useGetBillerNamesQuery } from '@/services/People/Biller';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
-
-
-interface productInterface {
-    id: number;
-    title: string;
-    productImage: string;
-    category: string;
-    productCode: number,
-    stockQuantity: number,
-    subcategory: string,
-    price: number;
-    quantitySold: number;
-    expired: boolean;
-    totalAmountSold: number;
-    taxPercentage: number;
-    marginRange: string;
-}
-
-interface warehouseInterface {
-    id: number;
-    warehouseTitle: string;
-
-}
-
-interface dataInterface {
-    id: number;
-    name: string;
-}
-
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'GBP',
-});
+import { TProductInterface, TWarehouseInterface, TCustomerInterface, MoneyFormat } from '@/interFace/interFace';
 
 
 const NewSaleList = () => {
@@ -59,8 +25,8 @@ const NewSaleList = () => {
     const [saleStatus, setSalesStatus] = useState<string>("");
     const [saleNote, setSaleNote] = useState<string>("");
     const [staffNote, setStaffNote] = useState<string>("");
-    const [productInformation, setProductInformation] = useState<productInterface[]>([]);
-    const [suggestions, setSuggestions] = useState<productInterface[]>([]);
+    const [productInformation, setProductInformation] = useState<TProductInterface[]>([]);
+    const [suggestions, setSuggestions] = useState<TProductInterface[]>([]);
     const [selectCustomer, setSelectCustomer] = useState('')
     const [selectWarehouse, setSelectWarehosue] = useState('')
     const [selectBiller, setSelectBiller] = useState('')
@@ -78,9 +44,9 @@ const NewSaleList = () => {
     const { data: billerData } = useGetBillerNamesQuery({ pageNumber: 1, pageSize: 25 });
     const { data: warehouseData } = useGetWarehouseNamesQuery({ pageNumber: 1, pageSize: 25 });
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const [searchResults, setSearchResults] = useState<TProduct[]>([]);
+    const [searchResults, setSearchResults] = useState<TProductInterface[]>([]);
     const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
-    const [activeItems, setActiveItems] = useState<TProduct[]>([]);
+    const [activeItems, setActiveItems] = useState<TProductInterface[]>([]);
   
    
 
@@ -133,7 +99,7 @@ const NewSaleList = () => {
     }, [billerData, biller, warehouseData, warehouse, customerData, customer]);
 
 
-    const selectSuggestion = (suggestion: Omit<productInterface, 'quantitySold' | 'totalAmountSold'>) => {
+    const selectSuggestion = (suggestion: Omit<TProductInterface, 'quantitySold' | 'totalAmountSold'>) => {
         const existingProductIndex = productInformation.findIndex(product => product.title === suggestion.title);
         if (existingProductIndex !== -1) {
             setProductInformation(prev => {
@@ -170,16 +136,6 @@ const NewSaleList = () => {
         setProduct("");
     };
 
-    //
-    useEffect(() => {
-        updateActiveItems();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeItemIds]);
-
-    const updateActiveItems = () => {
-        const activeItemsData = product_data.filter(product => activeItemIds.includes(product.id));
-        setActiveItems(activeItemsData);
-    };
 
     //handler for close search with close btn
     const handleSearchClose = () => {
@@ -407,12 +363,12 @@ const NewSaleList = () => {
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
-                                                                const selectedCustomer = customerData?.data.find((customer: dataInterface) => customer.id === value);
+                                                                const selectedCustomer = customerData?.data.find((customer: TCustomerInterface) => customer.id === value);
                                                                 return selectedCustomer ? selectedCustomer.name : <em>Select Customer</em>;
                                                             },
                                                         }}>
                                                         {customerData && customerData.data.length > 0 ? (
-                                                            customerData.data.map((customer: dataInterface) => (
+                                                            customerData.data.map((customer: TCustomerInterface) => (
                                                                 <MenuItem key={customer.id} value={customer.id}>
                                                                     {customer.name}
                                                                 </MenuItem>
@@ -441,12 +397,12 @@ const NewSaleList = () => {
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
-                                                                const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
+                                                                const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
                                                                 return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                             },
                                                         }}>
                                                         {warehouseData && warehouseData.data.length > 0 ? (
-                                                            warehouseData.data.map((warehouse: warehouseInterface) => (
+                                                            warehouseData.data.map((warehouse: TWarehouseInterface) => (
                                                                 <MenuItem key={warehouse.id} value={warehouse.id}>
                                                                     {warehouse.warehouseTitle}
                                                                 </MenuItem>
@@ -475,12 +431,12 @@ const NewSaleList = () => {
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
-                                                                const selectedBiller = billerData?.data.find((biller: dataInterface) => biller.id === value);
+                                                                const selectedBiller = billerData?.data.find((biller: TCustomerInterface) => biller.id === value);
                                                                 return selectedBiller ? selectedBiller.name : <em>Select Biller</em>;
                                                             },
                                                         }}>
                                                         {billerData && billerData.data.length > 0 ? (
-                                                            billerData.data.map((biller: dataInterface) => (
+                                                            billerData.data.map((biller: TCustomerInterface) => (
                                                                 <MenuItem key={biller.id} value={biller.id}>
                                                                     {biller.name}
                                                                 </MenuItem>

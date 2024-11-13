@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { MenuItem, TextField, InputAdornment } from '@mui/material';
 import DatePicker from "react-datepicker";
 import product_data from '@/data/product-data';
-import { TProduct } from '@/interFace/interFace';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { NumericFormat } from 'react-number-format';
@@ -11,37 +10,8 @@ import { useGetProductByNameQuery } from '@/services/Product/Product';
 import { useGetWarehouseNamesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetSuppliersNameQuery } from '@/services/People/Supplier';
 import { useCreatePurchaseMutation } from '@/services/Purchase/Purchase';
+import { TProductInterface, TWarehouseInterface, TSupplierInterface, MoneyFormat } from '@/interFace/interFace';
 
-interface productInterface {
-    id: number;
-    title: string;
-    productImage: string;
-    category: string;
-    productCode: number,
-    stockQuantity: number,
-    subcategory: string,
-    price: number;
-    expired: boolean;
-    totalAmountbougth: number,
-    quantityBought: number | undefined;
-    taxPercentage: number;
-}
-
-interface warehouseInterface {
-    id: number;
-    warehouseTitle: string;
-
-}
-interface supplierInterface {
-    id: number;
-    name: string;
-
-}
-
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'GBP',
-});
 
 const AddPurchaseList = () => {
     const [purchaseDate, setPurchaseDate] = useState(new Date());
@@ -49,18 +19,18 @@ const AddPurchaseList = () => {
     const [selectWarehouse, setSelectWarehosue] = useState('')
     const [selectedSupplier, setSelectedSupplier] = useState('')
     const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
-    const [activeItems, setActiveItems] = useState<TProduct[]>([]);
+    const [activeItems, setActiveItems] = useState<TProductInterface[]>([]);
     const [purchaseStatus, setPurchaseStatus] = useState<string>("");
     const [productName, setProductName] = useState<string>("");
     const [purchaseNote, setPurchaseNote] = useState<string>("");
     const [shippingCost, setShippingCost] = useState<number | undefined>();
  
     const [supplier, setSupplier] = useState('')
-    const [productInformation, setProductInformation] = useState<productInterface[]>([]);
-    const [suggestions, setSuggestions] = useState<productInterface[]>([]);
+    const [productInformation, setProductInformation] = useState<TProductInterface[]>([]);
+    const [suggestions, setSuggestions] = useState<TProductInterface[]>([]);
     const [product, setProduct] = useState<string>("");
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const [searchResults, setSearchResults] = useState<TProduct[]>([]);
+    const [searchResults, setSearchResults] = useState<TProductInterface[]>([]);
     const [addPurchase] = useCreatePurchaseMutation();
     const { data: supplierData } = useGetSuppliersNameQuery({ pageNumber: 1, pageSize: 25 });
     const { data: warehouseData } = useGetWarehouseNamesQuery({ pageNumber: 1, pageSize: 25 });
@@ -113,20 +83,6 @@ const AddPurchaseList = () => {
 
     }, [warehouseData, warehouse, supplierData, supplier]);
 
-
-
-
-
-    //
-    useEffect(() => {
-        updateActiveItems();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeItemIds]);
-
-    const updateActiveItems = () => {
-        const activeItemsData = product_data.filter(product => activeItemIds.includes(product.id));
-        setActiveItems(activeItemsData);
-    };
 
     //handler for close search with close btn
     const handleSearchClose = () => {
@@ -235,7 +191,7 @@ const AddPurchaseList = () => {
         }
     }
 
-    const selectSuggestion = (suggestion: productInterface) => {
+    const selectSuggestion = (suggestion: TProductInterface) => {
         const existingProductIndex = productInformation.findIndex(product => product.title === suggestion.title);
         if (existingProductIndex !== -1) {
             setProductInformation(prev => {
@@ -324,12 +280,12 @@ const AddPurchaseList = () => {
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
-                                                                const selectedWarehouse = warehouseData?.data.find((warehouse: warehouseInterface) => warehouse.id === value);
+                                                                const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
                                                                 return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                             },
                                                         }}>
                                                         {warehouseData && warehouseData.data.length > 0 ? (
-                                                            warehouseData.data.map((warehouse: warehouseInterface) => (
+                                                            warehouseData.data.map((warehouse: TWarehouseInterface) => (
                                                                 <MenuItem key={warehouse.id} value={warehouse.id}>
                                                                     {warehouse.warehouseTitle}
                                                                 </MenuItem>
@@ -359,12 +315,12 @@ const AddPurchaseList = () => {
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
-                                                                const selectedSupplier = supplierData?.data.find((supplier: supplierInterface) => supplier.id === value);
+                                                                const selectedSupplier = supplierData?.data.find((supplier: TSupplierInterface) => supplier.id === value);
                                                                 return selectedSupplier ? selectedSupplier.name : <em>Select Supplier</em>;
                                                             },
                                                         }}>
                                                         {supplierData && supplierData.data.length > 0 ? (
-                                                            supplierData.data.map((supplier: supplierInterface) => (
+                                                            supplierData.data.map((supplier: TSupplierInterface) => (
                                                                 <MenuItem key={supplier.id} value={supplier.id}>
                                                                     {supplier.name}
                                                                 </MenuItem>

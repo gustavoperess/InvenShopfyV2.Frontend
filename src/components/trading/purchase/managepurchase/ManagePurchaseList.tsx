@@ -21,35 +21,14 @@ import PaymentViewListPopup from './managePopup/PaymentViewListPopup';
 import TradingPurchaseListInvoice from './managePopup/TradingPurchaseListInvoice';
 import ViewPurchasePopup from './managePopup/ViewPurchasePopup';
 import { useGetAllPurchasesQuery } from '@/services/Purchase/Purchase';
-
-// Define the structure of the data
-interface Data {
-  id: number;
-  purchaseDate: string;
-  warehouse: string;
-  supplier: string;
-  reference: string;
-  purchaseNote: string;
-  shippingCost: number;
-  grandTotal: number;
-  purchaseStatus: string;
-  totalNumberOfProductsBougth: number;
-  totalPaidInTaxes: number;
-}
-
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'GBP',
-});
-
-
+import { TPurchaseInterface, MoneyFormat } from '@/interFace/interFace';
 
 const ManagePurchaseList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TPurchaseInterface>('id');
   const [selectedPurchaseId, setSelectedPurchaseId] = useState<number | undefined>();
   const { data: purchaseData, error: pruchaseError, isLoading: purchaseLoading, refetch } = useGetAllPurchasesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -115,7 +94,7 @@ const ManagePurchaseList = () => {
 
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TPurchaseInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -159,8 +138,8 @@ const ManagePurchaseList = () => {
  const sortedRows = purchaseData?.data.slice().sort((a: any, b: any) => {
   if (!orderBy) return 0;
   const isAsc = order === 'asc';
-  const aValue = a[orderBy as keyof Data]; 
-  const bValue = b[orderBy as keyof Data]; 
+  const aValue = a[orderBy as keyof TPurchaseInterface]; 
+  const bValue = b[orderBy as keyof TPurchaseInterface]; 
   if (aValue === undefined || bValue === undefined) {
     return 0; 
   }

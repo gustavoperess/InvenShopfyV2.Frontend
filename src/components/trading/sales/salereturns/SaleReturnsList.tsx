@@ -25,27 +25,7 @@ import Link from 'next/link';
 import SaleReturnPopup from './SaleReturnPopup/SaleReturnPopup';
 import AddReturnPopup from './SaleReturnPopup/AddReturnPopup';
 import { useGetAllSalesReturnQuery, useDeleteSalesReturnMutation } from '@/services/Sales/SaleReturn';
-
-
-// Define the structure of the data
-interface Data {
-  id: number;
-  referenceNumber: string;
-  billerName: string;
-  customerName: string;
-  warehouseName: string;
-  returnNote: string;
-  totalAmount: number;
-  remarkStatus: string;
-  returnDate: string;
-}
-
-
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'GBP',
-});
-
+import { TSaleReturnInterface, MoneyFormat } from '@/interFace/interFace';
 
 
 const SaleReturnsList = () => {
@@ -55,7 +35,7 @@ const SaleReturnsList = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TSaleReturnInterface>('id');
   const [deleteSalesReturn] = useDeleteSalesReturnMutation();
   const { data: salesReturnData, isLoading: salesReturnLoading, refetch } = useGetAllSalesReturnQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -120,7 +100,7 @@ const SaleReturnsList = () => {
 
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TSaleReturnInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -176,8 +156,8 @@ const SaleReturnsList = () => {
   const sortedRows = salesReturnData?.data.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data]; 
-    const bValue = b[orderBy as keyof Data]; 
+    const aValue = a[orderBy as keyof TSaleReturnInterface]; 
+    const bValue = b[orderBy as keyof TSaleReturnInterface]; 
     if (aValue === undefined || bValue === undefined) {
       return 0; 
     }

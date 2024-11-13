@@ -8,15 +8,7 @@ import Image from 'next/image';
 import { useGetAllRolesQuery } from '@/services/Role/Role';
 import { useUserRegisterMutation } from '@/services/Authentication/Authentication';
 import { toast } from 'react-toastify';
-
-
-
-interface roleData {
-    id: number;
-    name: string;
-}
-
-
+import { TUserInterface } from '@/interFace/interFace';
 
 const AddUserList = () => {
     const [phone, setPhone] = useState('');
@@ -284,7 +276,7 @@ const AddUserList = () => {
                                                             renderValue: (value) => (value ? (value as string) : <em>Select Role</em>),
                                                         }}>
                                                         {rolesData && rolesData.length > 0 ? (
-                                                            rolesData.map((role: roleData) => (
+                                                            rolesData.map((role: TUserInterface) => (
                                                                 <MenuItem key={role.id} value={role.name}>
                                                                     {role.name}
                                                                 </MenuItem>

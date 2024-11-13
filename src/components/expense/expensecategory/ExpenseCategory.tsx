@@ -25,6 +25,7 @@ import {
   Button,
 } from '@mui/material';
 import { toast } from 'react-toastify';
+import { TMainCategoryInterface } from '@/interFace/interFace';
 
 interface Data {
   id: number;
@@ -44,7 +45,7 @@ const ExpenseCategory = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TMainCategoryInterface>('id');
   const [deleteExpenseCategory] = useDeleteExpenseCategoryMutation();
   const [addExpenseCategory] = useAddExepenseCategoryMutation();
   const { data: expenseCategoryData,isLoading: expenseCategoryLoading ,refetch } = useGetAllExpenseCategoriesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
@@ -84,7 +85,7 @@ const ExpenseCategory = () => {
     }
   };
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TMainCategoryInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -165,6 +166,7 @@ const ExpenseCategory = () => {
     }
   }
 
+
   return (
     <>
       <div className="inventual-content-area px-4 sm:px-7">
@@ -238,9 +240,9 @@ const ExpenseCategory = () => {
 
                             <TableCell>
                               <TableSortLabel
-                                active={orderBy === 'category'}
-                                direction={orderBy === 'category' ? order : 'asc'}
-                                onClick={() => handleRequestSort('category')}
+                                active={orderBy === 'mainCategory'}
+                                direction={orderBy === 'mainCategory' ? order : 'asc'}
+                                onClick={() => handleRequestSort('mainCategory')}
                               >
                                 Category
                               </TableSortLabel>
@@ -282,7 +284,7 @@ const ExpenseCategory = () => {
                               <TableCell>
                                 <Checkbox checked={isSelected(expenseCategory.id)} />
                               </TableCell>
-                              <TableCell>{expenseCategory.category}</TableCell>
+                              <TableCell>{expenseCategory.mainCategory}</TableCell>
                               <TableCell>{Array.isArray(expenseCategory?.subCategory) ? expenseCategory.subCategory.join(', ') : expenseCategory?.subCategory}</TableCell>
                               <TableCell>
                                 <div className="inventual-list-action-style">

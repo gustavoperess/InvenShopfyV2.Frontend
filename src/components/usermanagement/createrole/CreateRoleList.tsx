@@ -25,13 +25,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import { toast } from 'react-toastify';
 import { useGetAllRolesQuery, useCreateRoleMutation, useDeleteRoleMutation } from '@/services/Role/Role';
-
-// Define the structure of the data
-interface Data {
-    id: number;
-    roleTitle: string;
-    roleDescription: string;
-}
+import { TUserInterface } from '@/interFace/interFace';
 
 const CreateRoleList = () => {
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
@@ -45,7 +39,7 @@ const CreateRoleList = () => {
     // State variables
     const [selected, setSelected] = useState<number[]>([]);
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-    const [orderBy, setOrderBy] = useState<keyof Data>('id');
+    const [orderBy, setOrderBy] = useState<keyof TUserInterface>('id');
     const [deleteRole] = useDeleteRoleMutation();
     const [createRole] = useCreateRoleMutation();
     const { data: roleData, error: roleError, isLoading: roleLoading, refetch } = useGetAllRolesQuery();
@@ -85,7 +79,7 @@ const CreateRoleList = () => {
         }
     };
     // Handlers for sorting
-    const handleRequestSort = (property: keyof Data) => {
+    const handleRequestSort = (property: keyof TUserInterface) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
@@ -130,8 +124,8 @@ const CreateRoleList = () => {
     const sortedRows = roleData?.slice().sort((a: any, b: any) => {
         if (!orderBy) return 0;
         const isAsc = order === 'asc';
-        const aValue = a[orderBy as keyof Data];
-        const bValue = b[orderBy as keyof Data];
+        const aValue = a[orderBy as keyof TUserInterface];
+        const bValue = b[orderBy as keyof TUserInterface];
         if (aValue === undefined || bValue === undefined) {
             return 0;
         }

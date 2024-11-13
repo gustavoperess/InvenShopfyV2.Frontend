@@ -17,22 +17,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
 import { useGetAllTransfersQuery } from '@/services/Transfer/Transfer';
-
-
-// Define the structure of the data
-interface Data {
-  id: number;
-  transferDate: string;
-  referenceNumber: string;
-  productName: string;
-  quantity: number;
-  fromWarehouse: string;
-  toWarehouse: string;
-  reason: string;
-  transferStatus: string;
-  transferNote: string;
-  authorizedBy: string;
-}
+import { TtransferInterface } from '@/interFace/interFace';
 
 
 const TransferList = () => {
@@ -43,7 +28,7 @@ const TransferList = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TtransferInterface>('id');
   const { data: transferData, error: transferError, isLoading: transferLoading, refetch } = useGetAllTransfersQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
 
@@ -61,7 +46,7 @@ const TransferList = () => {
   };
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TtransferInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -105,8 +90,8 @@ const TransferList = () => {
   const sortedRows = transferData?.data.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data];
-    const bValue = b[orderBy as keyof Data];
+    const aValue = a[orderBy as keyof TtransferInterface];
+    const bValue = b[orderBy as keyof TtransferInterface];
     if (aValue === undefined || bValue === undefined) {
       return 0;
     }
@@ -128,15 +113,6 @@ const TransferList = () => {
           <div className="inventual-product-top-btn flex flex-wrap gap-5 mb-7">
             <Link className='inventual-btn secondary-btn' href="/transfer/addtransfer"><span><i className="fa-regular fa-circle-plus"></i></span> Add Transfer</Link>
             <div className="file-import-btn-wrapper">
-              <Link
-                className='inventual-btn primary-btn'
-                href="/transfer/importTransfer"
-              >
-                <span>
-                  <i className="fa-regular fa-folder-arrow-up"></i>
-                </span>
-                Import Transfer
-              </Link>
             </div>
           </div>
           <div className="inventual-table-header-search-area">

@@ -21,26 +21,9 @@ import {
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
-import { billedList } from '@/interFace/interFace';
-// import tableList_data from '@/data/Table-list-data';
+import { TBillerInterface } from '@/interFace/interFace';
 import { useGetAllBillersQuery, useDeleteBillerMutation } from '@/services/People/Biller';
 
-
-
-
-interface Data {
-  id: number;
-  name: string;
-  DateOfJoint: string;
-  email: string;
-  phoneNumber: string;
-  identification: string;
-  address: string;
-  country: string;
-  zipCode: string;
-  billerCode: string;
-  warehouse: string;
-}
 
 const BillerList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
@@ -49,7 +32,7 @@ const BillerList = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TBillerInterface>('id');
   const [deleteBiller] = useDeleteBillerMutation();
   const { data: billerData, error: billerError, isLoading: billerLoading, refetch } = useGetAllBillersQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -87,7 +70,7 @@ const BillerList = () => {
   };
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TBillerInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -131,8 +114,8 @@ const BillerList = () => {
   const sortedRows = billerData?.data.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data];
-    const bValue = b[orderBy as keyof Data];
+    const aValue = a[orderBy as keyof TBillerInterface];
+    const bValue = b[orderBy as keyof TBillerInterface];
     if (aValue === undefined || bValue === undefined) {
       return 0;
     }

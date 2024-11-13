@@ -6,12 +6,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Image from 'next/image';
 import { IMaskInput } from 'react-imask';
 import { useGetCurrentUserQuery } from '@/services/User/User';
-
-interface CustomProps {
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-}
-
+import { CustomProps } from '@/interFace/interFace';
 
 const ProfileList = () => {
     //form password field

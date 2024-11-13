@@ -22,18 +22,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
 import { useGetAllWarehousesQuery, useDeleteWarehouseMutation } from '@/services/Warehouse/Warehouse';
-
-
-// Define the structure of the data
-interface Data {
-  id: number;
-  warehouse: string;
-  phone: string;
-  zipcode: string;
-  email: string;
-  address: string;
-  quantityOfItems: number;
-}
+import { TWarehouseInterface } from '@/interFace/interFace';
 
 
 
@@ -44,7 +33,7 @@ const WarehouseList = () => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TWarehouseInterface>('id');
   const [deleteWarehouse] = useDeleteWarehouseMutation();
   const { data: warehouseData, error: warehouseError, isLoading: warehouseLoading, refetch } = useGetAllWarehousesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -93,7 +82,7 @@ const WarehouseList = () => {
   };
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TWarehouseInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -138,8 +127,8 @@ const WarehouseList = () => {
   const sortedRows = warehouseData?.data.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data];
-    const bValue = b[orderBy as keyof Data];
+    const aValue = a[orderBy as keyof TWarehouseInterface];
+    const bValue = b[orderBy as keyof TWarehouseInterface];
     if (aValue === undefined || bValue === undefined) {
       return 0;
     }

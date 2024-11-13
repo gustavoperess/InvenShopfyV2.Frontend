@@ -8,13 +8,6 @@ import { useGetTotalProfitDashboardQuery } from '@/services/Sales/Sales';
 import { useMemo } from 'react';
 
 
-
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'GBP',
-});
-
-
 const options: any = {
   chart: {
     type: "pie",

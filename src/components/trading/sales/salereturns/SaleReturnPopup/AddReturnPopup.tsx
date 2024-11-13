@@ -9,6 +9,7 @@ import { NumericFormat, NumericFormatProps } from 'react-number-format';
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
 import { useGetSalesReturnByNameQuery, useCreateSaleReturnMutation } from '@/services/Sales/SaleReturn';
+import { TSaleReturnInterface } from '@/interFace/interFace';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     '& .MuiDialogContent-root': {
@@ -25,15 +26,6 @@ interface AddReturnPopupProps {
     refetch: () => void;
 }
 
-interface ReferenceInterface {
-    id: number;
-    referenceNumber: string;
-    billerName: string;
-    warehouseName: string;
-    totalAmount: string;
-    customerName: string;
-}
-
 
 const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialogClose, refetch }) => {
     const [referenceNumber, setReferenceNumber] = useState<string>("");
@@ -45,7 +37,7 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
     const [returnNote, setReturnNote] = useState<string>("");
     const [fetchSuggestions, setFetchSuggestions] = useState(true);
     const [remarkStatus, setRemarkStatus] = useState<string>("");
-    const [suggestions, setSuggestions] = useState<ReferenceInterface[]>([]);
+    const [suggestions, setSuggestions] = useState<TSaleReturnInterface[]>([]);
 
 
     const [addSaleReturn] = useCreateSaleReturnMutation();
@@ -93,7 +85,7 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
         setFetchSuggestions(true);
     };
 
-    const handleSuggestionSelect = (suggestion: ReferenceInterface) => {
+    const handleSuggestionSelect = (suggestion: TSaleReturnInterface) => {
         setReferenceNumber(suggestion.referenceNumber);
         setBillerName(suggestion.billerName)
         setWarehouseName(suggestion.warehouseName)

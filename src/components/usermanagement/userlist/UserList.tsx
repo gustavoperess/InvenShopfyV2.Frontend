@@ -22,18 +22,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
 import { useGetAllUsersQuery, useDeleteUsersMutation } from '@/services/User/User';
-
-// Define the structure of the data
-interface Data {
-  userId: number;
-  userName: string;
-  phoneNumber: string;
-  roleName: string;
-  status: string;
-  dateOfJoin: string;
-  email: string;
-}
-
+import { TUserInterface } from '@/interFace/interFace';
 
 
 const UserList = () => {
@@ -45,7 +34,7 @@ const UserList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('userId');
+  const [orderBy, setOrderBy] = useState<keyof TUserInterface>('userId');
   const [deleteUser] = useDeleteUsersMutation();
   const { data: userData, error: userError, isLoading: userLoading, refetch } = useGetAllUsersQuery();
 
@@ -88,7 +77,7 @@ const UserList = () => {
   };
 
     // Handlers for sorting
-    const handleRequestSort = (property: keyof Data) => {
+    const handleRequestSort = (property: keyof TUserInterface) => {
       const isAsc = orderBy === property && order === 'asc';
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(property);
@@ -131,8 +120,8 @@ const UserList = () => {
     const sortedRows = userData?.slice().sort((a: any, b: any) => {
       if (!orderBy) return 0;
       const isAsc = order === 'asc';
-      const aValue = a[orderBy as keyof Data]; 
-      const bValue = b[orderBy as keyof Data]; 
+      const aValue = a[orderBy as keyof TUserInterface]; 
+      const bValue = b[orderBy as keyof TUserInterface]; 
       if (aValue === undefined || bValue === undefined) {
         return 0; 
       }

@@ -21,26 +21,7 @@ import TradingSalesListAddPayemnt from './salelistPopup/TradingSalesListAddPayem
 import TradingSalesListViewPayment from './salelistPopup/TradingSalesListViewPayment';
 import TradingSalesListInvoice from './salelistPopup/TradingSalesListInvoice';
 import ViewSalePopup from './salelistPopup/ViewSalePopup';
-// Define the structure of the data
-interface Data {
-  id: number;
-  salesDate: string;
-  customerName: string;
-  billerName: string;
-  saleStatus: string
-  paymentStatus: string;
-  referenceNumber: string;
-  warehouseName: string;
-  totalQuantitySold: number
-  totalAmount: number;
-
-}
-
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'GBP',
-});
-
+import { TSaleInterface, MoneyFormat } from '@/interFace/interFace';
 
 
 const SaleList = () => {
@@ -48,7 +29,7 @@ const SaleList = () => {
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TSaleInterface>('id');
   const [selectedSaleId, setSelectedSaleId] = useState<number | undefined>(); 
   const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetAllSalesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -113,7 +94,7 @@ const SaleList = () => {
   
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TSaleInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -156,8 +137,8 @@ const SaleList = () => {
   const sortedRows = salesData?.data.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data]; 
-    const bValue = b[orderBy as keyof Data]; 
+    const aValue = a[orderBy as keyof TSaleInterface]; 
+    const bValue = b[orderBy as keyof TSaleInterface]; 
     if (aValue === undefined || bValue === undefined) {
       return 0; 
     }

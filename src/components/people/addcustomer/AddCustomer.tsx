@@ -4,11 +4,8 @@ import { MenuItem, TextField, FormControl, Input } from '@mui/material';
 import { useAddCustomerMutation } from '@/services/People/Customer';
 import { toast } from 'react-toastify';
 import { IMaskInput } from 'react-imask';
+import { CustomProps } from '@/interFace/interFace';
 
-interface CustomProps {
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-}
 
 const AddCustomer = () => {
     const [customerName, setCustomerName] = useState('')

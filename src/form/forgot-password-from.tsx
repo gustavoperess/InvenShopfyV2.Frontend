@@ -1,9 +1,9 @@
 "use client"
-
 import React, { useState } from 'react';
 import logo from '../../public/assets/img/logo/login-logo.png'
 import Image from 'next/image';
 import Link from 'next/link'
+import { TextField, FormControl } from '@mui/material';
 
 const ForgotPasswordFrom = () => {
 
@@ -16,8 +16,20 @@ const ForgotPasswordFrom = () => {
                 <div className="inventual-input-field-style mb-5">
                     <div className="inventual-form-field">
                         <div className="inventual-input-field-style has-icon">
-                            <input type="email" placeholder='Email' />
-                            <span className='inventual-input-icon'><i className="far fa-envelope"></i></span>
+                            <FormControl fullWidth>
+                                <TextField
+                                    fullWidth
+                                    type="text"
+                                    required
+                                    // value={warehouseName}
+                                    placeholder="Email"
+                                    variant="outlined"
+                                    inputProps={{ maxLength: 50 }}
+                                // onChange={(e) => setWarehouseName(e.target.value)}  
+                                />
+                                <span className='inventual-input-icon'><i className="far fa-envelope"></i></span>
+                            </FormControl>
+
                         </div>
                     </div>
                 </div>
@@ -27,7 +39,7 @@ const ForgotPasswordFrom = () => {
                 <div className="inventual-login-footer">
                     <div className="inventual-login-footer-account text-center">
                         <span className="text-[16px] inline-block text-body">
-                        Back to <Link className="text-[16px] text-primary" href="/">Login</Link>
+                            Back to <Link className="text-[16px] text-primary" href="/">Login</Link>
                         </span>
                     </div>
                 </div>
