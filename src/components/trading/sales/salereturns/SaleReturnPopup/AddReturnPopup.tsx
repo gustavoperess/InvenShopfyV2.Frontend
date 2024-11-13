@@ -5,7 +5,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import { NumericFormat, NumericFormatProps } from 'react-number-format';
+import { NumericFormat } from 'react-number-format';
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
 import { useGetSalesReturnByNameQuery, useCreateSaleReturnMutation } from '@/services/Sales/SaleReturn';
@@ -147,7 +147,7 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
                                         <div className="inventual-input-field-style search-field">
                                             <TextField
                                                 fullWidth
-                                                placeholder="Macbook..."
+                                                placeholder="U-450158"
                                                 variant="outlined"
                                                 value={referenceNumber}
                                                 onChange={handleReferenceNumberChange}

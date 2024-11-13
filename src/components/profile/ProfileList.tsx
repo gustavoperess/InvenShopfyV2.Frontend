@@ -1,23 +1,29 @@
 "use client"
-import React, { useState } from 'react';
-import { FilledInput, IconButton, InputAdornment, MenuItem, TextField, FormControl, Input, InputLabel } from '@mui/material';
+import React, { useState, useCallback } from 'react';
+import { FilledInput, IconButton, InputAdornment, MenuItem, TextField, FormControl, Input } from '@mui/material';
+import { Accept, useDropzone } from "react-dropzone";
 import { useRouter } from 'next/navigation';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Image from 'next/image';
 import { IMaskInput } from 'react-imask';
 import { useGetCurrentUserQuery } from '@/services/User/User';
 import { CustomProps } from '@/interFace/interFace';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
+import { useUpdateUserMutation } from '@/services/User/User';
 
 const ProfileList = () => {
     //form password field
     const { data: userData, error: userError, isLoading: userLoading, refetch } = useGetCurrentUserQuery();
     const router = useRouter()
+    const [userPicture, setUserPicture] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
     const [userName, setUserName] = useState<string>(userData?.userName || '');
     const [userPhoneNumber, setUserPhoneNumber] = useState<string>(userData?.phoneNumber || '');
     const [userEmail, setUserEmail] = useState<string>(userData?.email || '');
     const [error, setError] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const [open, setOpen] = React.useState(false);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
@@ -26,7 +32,7 @@ const ProfileList = () => {
     const dummyData = (e: any) => {
         e.preventDefault();
     };
-    console.log(userData, userName)
+
 
     const splitname = (fullName: string) => {
         if (userData) {
@@ -47,6 +53,28 @@ const ProfileList = () => {
 
 
 
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        if (acceptedFiles.length > 0) {
+            const file = acceptedFiles[0];
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+                const base64String = reader.result as string; // Cast to string
+                const base64WithoutPrefix = base64String.split(',')[1];
+                setUserPicture(base64WithoutPrefix);
+                // setProductImage(`data:${dataUrl}`);
+            };
+
+            reader.readAsDataURL(file); // Read the file as Data URL (Base64)
+        }
+    }, []);
+
+    const accept: Accept = {
+        'image/*': []
+    };
+
+    const { getRootProps, getInputProps } = useDropzone({ onDrop, accept });
+
     const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
         function TextMaskCustom(props, ref) {
             const { onChange, ...other } = props;
@@ -54,7 +82,7 @@ const ProfileList = () => {
                 <IMaskInput
                     {...other}
                     mask="(#00) 000-0000"
-                    definitions={{'#': /[1-9]/}}
+                    definitions={{ '#': /[1-9]/ }}
                     inputRef={ref}
                     onComplete={(value: any) => onChange({ target: { name: props.name, value } })}
                     overwrite
@@ -62,25 +90,35 @@ const ProfileList = () => {
             );
         }
     );
-
+   
 
     return (
         <>
             <div className="inventual-content-area px-4 sm:px-7">
                 <div className="inventual-create-payment-area bg-white p-5 sm:p-7 custom-shadow rounded-8">
-
                     <div className="inventual-profile-area">
                         <div className="inventual-profile-wrapper flex items-center flex-wrap gap-x-12 gap-y-5 mb-14">
                             <div className="inventual-profile-info flex flex-wrap items-center gap-5">
                                 <div className="inventual-profile-info-img">
-                                    {userLoading ? (
-                                        <div>Loading...</div>
-                                    )
-                                        : userError ? (
-                                            <div>Error loading user data</div>
-                                        ) :
-                                            <Image src={userData?.profilePicture} className="rounded" height={120} width={120} alt='profilePicture' priority />
-                                    }
+                                    <div {...getRootProps({ className: 'dropzone-two' })}>
+                                        <input {...getInputProps()} />
+                                        {userPicture ? (
+                                            <Image src={`data:image/jpeg;base64,${userPicture}`} className="rounded" height={120} width={120} alt="profilePicture" priority />
+                                        ) : (
+                                            userLoading ? (
+                                                <div>Loading...</div>
+                                            ) : userError ? (
+                                                <div>Error loading user data</div>
+                                            ) : (
+                                                <Image src={userData?.profilePicture} className="rounded" height={120} width={120} alt="profilePicture" priority/>
+                                            )
+                                        )}
+                                    <div className="col-span-12">
+                                            <button type="submit" className="edit-picture-btn">
+                                                <FontAwesomeIcon icon={faCamera} />
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="inventual-profile-info-text">
                                     {userLoading ? (
@@ -95,9 +133,6 @@ const ProfileList = () => {
                                     <span className="text-[16px]">{userData?.roles[0]}</span>
                                 </div>
                             </div>
-                            {/* <div className="inventual-profile-info-btn">
-                                <button type="submit" className="inventual-outline-btn">Edit Profile </button>
-                            </div> */}
                         </div>
                         <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                             <div className="col-span-12">
@@ -117,7 +152,7 @@ const ProfileList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                    <div className="inventual-formFour-field">
+                                        <div className="inventual-formFour-field">
                                             <div className="inventual-input-field-style">
                                                 <h5>Phone</h5>
                                                 <FormControl fullWidth>
@@ -266,3 +301,7 @@ const ProfileList = () => {
 };
 
 export default ProfileList;
+
+
+
+

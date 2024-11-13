@@ -37,6 +37,14 @@ export const usersApi = createApi({
             }),
             providesTags: ['Users'], 
         }),
+        updateUser: builder.mutation<any, any>({
+            query: (body) => ({
+                url: `get-current-user`,
+                method: 'PUT',
+                body,
+            }),
+            invalidatesTags: ['Users'],
+        }),
         createUsers: builder.mutation<any, any>({
             query: (body) => ({
                 url: ``,
@@ -50,7 +58,9 @@ export const usersApi = createApi({
 });
 
 
-export const { useGetAllUsersQuery, 
+export const { 
+    useUpdateUserMutation,
+    useGetAllUsersQuery, 
     useGetUsersDashboardQuery, 
     useDeleteUsersMutation, 
     useCreateUsersMutation,
