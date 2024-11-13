@@ -47,6 +47,12 @@ export const salesApi = createApi({
                 method: 'GET',
             }),
         }),
+        getTotalProfitDashboard: builder.query<any, void>({
+            query: () => ({
+                url: `dashboard/total-profit`,
+                method: 'GET',
+            }),
+        }),
         getBestSeller: builder.query<any, void>({
             query: () => "productmostsold"
         })
@@ -56,6 +62,7 @@ export const salesApi = createApi({
 
 
 export const { 
+    useGetTotalProfitDashboardQuery,
     useGetTotalSalesAmountQuery,
     useCreateSaleMutation,
     useGetAllSalesQuery,

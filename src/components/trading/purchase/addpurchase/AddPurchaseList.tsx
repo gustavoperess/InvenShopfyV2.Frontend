@@ -577,8 +577,8 @@ const AddPurchaseList = () => {
                                                     <MenuItem value="">
                                                         <em>Purchase Status</em>
                                                     </MenuItem>
-                                                    <MenuItem value="Complete">Complete</MenuItem>
-                                                    <MenuItem value="Incomplete">Incomplete</MenuItem>
+                                                    <MenuItem value="Completed">Completed</MenuItem>
+                                                    <MenuItem value="Incompleted">Incompleted</MenuItem>
                                                     <MenuItem value="Drafts">Drafts</MenuItem>
                                                 </TextField>
                                             </div>

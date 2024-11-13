@@ -63,14 +63,7 @@ interface Data {
     grandTotal?: string;
 }
 
-
-
-
-
-
-
 const TransactionReport = () => {
-    useGetPurchaseDashboardQuery
     const { data: salesData, isLoading: salesDataLoading } = useGetSalesDashBoardQuery();
     const { data: purchaseData, isLoading: purchaseDataLoading } = useGetPurchaseDashboardQuery();
     const { data: salesReturnData, isLoading: salesReturnDataLoading } = useGetSalesReturnDashBoardQuery();
@@ -80,14 +73,8 @@ const TransactionReport = () => {
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
-    console.log(salesReturnData)
-    // select rows with value of custom tab panel
     const rows = value === 0 ? salesData?.data : (value === 1 ? purchaseData?.data : (value === 2 ? salesReturnData?.data : (value === 3 ? expenseData?.data : expenseData?.data)));
-
-
-
-
-
+    
     return (
         <div className=" custom-boxshadow inventual-dashboard-transaction-wrapper p-5 sm:p-7 bg-white rounded-8">
             <div className='inventual-common-tab-menus mb-5'>
@@ -127,13 +114,13 @@ const TransactionReport = () => {
                                         <td>{sales.referenceNumber}</td>
                                         <td>{sales.customer}</td>
                                         <td>{sales.totalQuantitySold}</td>
-                                        {sales.paymentStatus && (
+                                        {sales.saleStatus && (
                                             <td>
-                                                {sales.paymentStatus.toLowerCase() === "completed" ? (
-                                                    <span className='badge badge-success'>{sales.paymentStatus}</span>
-                                                ) : (sales.paymentStatus.toLowerCase() === "partial" ? (
-                                                    <span className='badge badge-teal'>{sales.paymentStatus}</span>
-                                                ) : (<span className='badge badge-danger'>{sales.paymentStatus}</span>)
+                                                {sales.saleStatus.toLowerCase() === "completed" ? (
+                                                    <span className='badge badge-success'>{sales.saleStatus}</span>
+                                                ) : (sales.saleStatus.toLowerCase() === "incompleted" ? (
+                                                    <span className='badge badge-teal'>{sales.saleStatus}</span>
+                                                ) : (<span className='badge badge-danger'>{sales.saleStatus}</span>)
                                                 )}
                                             </td>
                                         )}

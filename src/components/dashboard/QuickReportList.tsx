@@ -4,6 +4,7 @@ import { useGetSalesReturnTotalAmountQuery } from '@/services/Sales/SaleReturn';
 import { useGetSPurchaseReturnTotalAmountQuery } from '@/services/Purchase/PurchaseReturn';
 import { useGetExpenseTotalAmountQuery } from '@/services/Expense/Expense';
 import { useGetTotalStockAmountQuery } from '@/services/Warehouse/Warehouse';
+import { useGetTotalProfitDashboardQuery } from '@/services/Sales/Sales';
 
 let MoneyFormat = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -14,8 +15,9 @@ const QuickReportList = () => {
     const { data: warehouseQuantityData, isLoading: warehouseLoadingData } = useGetWarehouseQuantityQuery();
     const { data: salesReturnTotalAmountData, isLoading: salesLoadingData } = useGetSalesReturnTotalAmountQuery();
     const { data: purchaseReturnData, isLoading: purchaseReturnLoadingData } = useGetSPurchaseReturnTotalAmountQuery();
-    const { data: expenseTotalAMount, isLoading: expenseTotalLoadingData } = useGetExpenseTotalAmountQuery();
-    const { data: totalInStock, isLoading: totalInStockLoadingData } = useGetTotalStockAmountQuery();
+    const { data: expenseTotalAMountData, isLoading: expenseTotalLoadingData } = useGetExpenseTotalAmountQuery();
+    const { data: totalInStockData, isLoading: totalInStockLoadingData } = useGetTotalStockAmountQuery();
+    const { data: totalProfitData, isLoading: totalProfitLoadingData } = useGetTotalProfitDashboardQuery();
 
 
     return (
@@ -42,7 +44,7 @@ const QuickReportList = () => {
                                 {expenseTotalLoadingData ? (
                                     <div>Loading...</div>
                                 )
-                                    : <h5 className="text-[20px] text-heading font-bold">{MoneyFormat.format(expenseTotalAMount?.data)}</h5>
+                                    : <h5 className="text-[20px] text-heading font-bold">{MoneyFormat.format(expenseTotalAMountData?.data)}</h5>
                                 }
                             </div>
                         </div>
@@ -61,7 +63,11 @@ const QuickReportList = () => {
                             </div>
                             <div className="invention-quickreport-text">
                                 <span className="text-[16px] font-semibold block mb-2">Gross Profit</span>
-                                <h5 className="text-[20px] text-heading font-bold">$237,813</h5>
+                                {totalProfitLoadingData ? (
+                                    <div>Loading...</div>
+                                )
+                                    : <h5 className="text-[20px] text-heading font-bold">{MoneyFormat.format(totalProfitData?.data)}</h5>
+                                }
                             </div>
                         </div>
                     </div>
@@ -81,7 +87,7 @@ const QuickReportList = () => {
                                 {totalInStockLoadingData ? (
                                     <div>Loading...</div>
                                 )
-                                    : <h5 className="text-[20px] text-heading font-bold">{totalInStock?.data} p</h5>
+                                    : <h5 className="text-[20px] text-heading font-bold">{totalInStockData?.data} p</h5>
                                 }
                             </div>
                         </div>

@@ -1,9 +1,21 @@
 "use client"
 import dynamic from "next/dynamic";
 const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
+import { useGetPurchaseTotalAmountQuery } from "@/services/Purchase/Purchase";
+import { useGetTotalSalesAmountQuery } from "@/services/Sales/Sales";
+import { useGetExpenseTotalAmountQuery } from '@/services/Expense/Expense';
+import { useGetTotalProfitDashboardQuery } from '@/services/Sales/Sales';
+import { useMemo } from 'react';
+
+
+
+let MoneyFormat = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'GBP',
+});
+
 
 const options: any = {
-  series: [44, 55, 13, 43],
   chart: {
     type: "pie",
     width: "100%"
@@ -75,11 +87,42 @@ const options: any = {
   ]
 };
 
-const ReportPicChart = () => {
 
+const ReportPicChart = () => {
+  const { data: totalSalesAmountData, isLoading: totalSalesAmountLoadingData } = useGetTotalSalesAmountQuery();
+  const { data: expenseTotalAmountData, isLoading: expenseTotalLoadingData } = useGetExpenseTotalAmountQuery();
+  const { data: purchaseTotalAmountData, isLoading: purchaseTotalAmountLoadingData } = useGetPurchaseTotalAmountQuery();
+  const { data: totalProfitData, isLoading: totalProfitLoadingData } = useGetTotalProfitDashboardQuery();
+
+
+  const series = useMemo(() => {
+    if (
+      !totalSalesAmountLoadingData && 
+      !expenseTotalLoadingData && 
+      !purchaseTotalAmountLoadingData && 
+      !totalProfitLoadingData
+    ) {
+      return [
+        purchaseTotalAmountData?.data || 0,
+        totalSalesAmountData?.data || 0,
+        expenseTotalAmountData?.data || 0,
+        totalProfitData?.data || 0
+      ];
+    }
+    return [0, 0, 0, 0]; 
+  }, [
+    expenseTotalAmountData, 
+    totalSalesAmountData, 
+    purchaseTotalAmountData, 
+    totalProfitData,
+    totalSalesAmountLoadingData, 
+    expenseTotalLoadingData, 
+    purchaseTotalAmountLoadingData, 
+    totalProfitLoadingData
+  ]);
   return (
     <div >
-      <ApexCharts options={options}  width={380} series={options.series} type="pie" height={300} />
+          <ApexCharts options={options} series={series} type="pie" width={380} height={300} />
     </div>
   );
 };
