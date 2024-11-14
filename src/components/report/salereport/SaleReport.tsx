@@ -16,192 +16,27 @@ import {
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import ReactDatePicker from 'react-datepicker';
+import { useGetSalesReportQuery } from '@/services/Sales/Sales';
 
 // Define the structure of the data
 interface Data {
-  id: number;
-  date: string;
-  warehouse: string;
+  billerId: number;
+  totalQuantitySold: number;
+  totalTaxPaid: number;
+  totalProfit: number;
   name: string;
-  code: string;
-  unit: string;
-  stockQty: number;
-  soldQty: number;
-  saleAmount: string;
+  totalAmount: number;
 }
 
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 1',
-    name: 'China Apple',
-    code: '58756689',
-    unit: 'Kilogram (kg)',
-    stockQty: 30,
-    soldQty: 25,
-    saleAmount: '$582.00',
-  },
-  {
-    id: 2,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 2',
-    name: 'Orange',
-    code: '58756690',
-    unit: 'Quantity (q)',
-    stockQty: 14,
-    soldQty: 30,
-    saleAmount: '$250.00',
-  }, {
-    id: 3,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 3',
-    name: 'Acer',
-    code: '58756691',
-    unit: 'Quantity (q)',
-    stockQty: 35,
-    soldQty: 10,
-    saleAmount: '$542.00',
-  },
-  {
-    id: 4,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 4',
-    name: 'T-shirt',
-    code: '58756692',
-    unit: 'Quantity (q)',
-    stockQty: 35,
-    soldQty: 24,
-    saleAmount: '$542.00',
-  },
-  {
-    id: 5,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 5',
-    name: 'Dell Laptop',
-    code: '58756693',
-    unit: 'Quantity (q)',
-    stockQty: 22,
-    soldQty: 24,
-    saleAmount: '$980.00',
-  },
-  {
-    id: 6,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 6',
-    name: 'Mouse',
-    code: '58756694',
-    unit: 'Quantity (q)',
-    stockQty: 0,
-    soldQty: 20,
-    saleAmount: '$0',
-  },
-  {
-    id: 7,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 7',
-    name: 'HP Monitor',
-    code: '58756689',
-    unit: 'Quantity (q)',
-    stockQty: 0,
-    soldQty: 0,
-    saleAmount: '$0',
-  },
-  {
-    id: 8,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 8',
-    name: 'LED TV',
-    code: '58756695',
-    unit: 'Quantity (q)',
-    stockQty: 0,
-    soldQty: 0,
-    saleAmount: '$0',
-  },
-  {
-    id: 9,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 9',
-    name: 'LED TV',
-    code: '58756696',
-    unit: 'Quantity (q)',
-    stockQty: 0,
-    soldQty: 0,
-    saleAmount: '$0',
-  },
-  {
-    id: 10,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 10',
-    name: 'LED TV',
-    code: '58756688',
-    unit: 'Quantity (q)',
-    stockQty: 0,
-    soldQty: 0,
-    saleAmount: '$0',
-  },
-  {
-    id: 11,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 11',
-    name: 'Samsung',
-    code: '58756619',
-    unit: 'Quantity (q)',
-    stockQty: 0,
-    soldQty: 0,
-    saleAmount: '$0',
-  },
-  {
-    id: 12,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 12',
-    name: 'Asus',
-    code: '58756629',
-    unit: 'Quantity (q)',
-    stockQty: 0,
-    soldQty: 0,
-    saleAmount: '$0',
-  },
-  {
-    id: 13,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 13',
-    name: 'IPhone',
-    code: '58756669',
-    unit: 'Quantity (q)',
-    stockQty: 0,
-    soldQty: 0,
-    saleAmount: '$0',
-  },
-  {
-    id: 14,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 14',
-    name: 'Pad',
-    code: '58756619',
-    unit: 'Quantity (q)',
-    stockQty: 0,
-    soldQty: 0,
-    saleAmount: '$0',
-  },
-  {
-    id: 15,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 15',
-    name: 'Smart Phone',
-    code: '5875669',
-    unit: 'Quantity (q)',
-    stockQty: 0,
-    soldQty: 0,
-    saleAmount: '$0',
-  },
-];
 
 const SaleReport = () => {
-
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
   const [startDate, setStartDate] = useState<Date | null>(new Date());
   const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [searchQuery, setSearchQuery] = useState('');
+  const { data: salesReportData, error: salesReportError, isLoading: salesReportLoading, refetch } = useGetSalesReportQuery({ startDate, endDate, pageNumber: currentPageNumber, pageSize: currentPageSize });
+
 
   const dummyData = (e: any) => {
     e.preventDefault();
@@ -211,15 +46,20 @@ const SaleReport = () => {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof Data>('billerId');
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
+
+  // handle pagination 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 25));
-    setPage(0);
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1);
+    refetch();
   };
 
   // Handlers for sorting
@@ -229,10 +69,10 @@ const SaleReport = () => {
     setOrderBy(property);
   };
 
-  // Handler for selecting/deselecting all items
+  //  Handler for selecting/deselecting all items
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(rows.map((row) => row.id));
+      setSelected(salesReportData?.data.map((warehouse: any) => warehouse.id));
     } else {
       setSelected([]);
     }
@@ -258,15 +98,25 @@ const SaleReport = () => {
 
     setSelected(newSelected);
   };
+  const handleSearchChange = (event: any) => {
+    setSearchQuery(event.target.value);
+  };
 
   // Check if a particular item is selected
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
+  const filteredData = salesReportData?.data.filter((item: any) =>
+    item.warehouseName.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+  const sortedRows = filteredData.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof Data];
+    const bValue = b[orderBy as keyof Data];
+    if (aValue === undefined || bValue === undefined) {
+      return 0;
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -276,6 +126,7 @@ const SaleReport = () => {
     }
     return 0;
   });
+
 
   return (
 
@@ -392,7 +243,12 @@ const SaleReport = () => {
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">
               <div className="col-span-12 md:col-span-7 lg:col-span-7 xl:col-span-5">
                 <div className="inventual-table-header-search relative">
-                  <input type="text" placeholder="Search List" />
+                  <input
+                    type="text"
+                    placeholder="Search List"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                  />
                   <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                 </div>
               </div>
@@ -406,10 +262,10 @@ const SaleReport = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Name</MenuItem>
-                            <MenuItem onClick={popupState.close}>Warehouse</MenuItem>
-                            <MenuItem onClick={popupState.close}>Stock</MenuItem>
-                            <MenuItem onClick={popupState.close}>Sold</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("totalQuantitySold"); popupState.close() }}>Quantiy Sold</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("totalTaxPaid"); popupState.close() }}>Tax Paid</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("totalProfit"); popupState.close() }}>Profit</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("name"); popupState.close() }}>Name</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -438,20 +294,11 @@ const SaleReport = () => {
                             <TableRow>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'date'}
-                                  direction={orderBy === 'date' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('date')}
+                                  active={orderBy === 'totalQuantitySold'}
+                                  direction={orderBy === 'totalQuantitySold' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalQuantitySold')}
                                 >
-                                  Date
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'warehouse'}
-                                  direction={orderBy === 'warehouse' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('warehouse')}
-                                >
-                                  Warehouse
+                                  Quantity Sold
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -465,79 +312,58 @@ const SaleReport = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'code'}
-                                  direction={orderBy === 'code' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('code')}
+                                  active={orderBy === 'totalTaxPaid'}
+                                  direction={orderBy === 'totalTaxPaid' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalTaxPaid')}
                                 >
-                                  Code
+                                  Tax
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'unit'}
-                                  direction={orderBy === 'unit' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('unit')}
+                                  active={orderBy === 'totalProfit'}
+                                  direction={orderBy === 'totalProfit' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalProfit')}
                                 >
-                                  Unit
+                                  Profit
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'stockQty'}
-                                  direction={orderBy === 'stockQty' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('stockQty')}
+                                  active={orderBy === 'totalAmount'}
+                                  direction={orderBy === 'totalAmount' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalAmount')}
                                 >
-                                  stockQty
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'soldQty'}
-                                  direction={orderBy === 'soldQty' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('soldQty')}
-                                >
-                                  Sold Qty
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'saleAmount'}
-                                  direction={orderBy === 'saleAmount' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('saleAmount')}
-                                >
-                                  Sale Amount
+                                  Total Amount
                                 </TableSortLabel>
                               </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
-                                <TableRow
-                                  key={row.id}
-                                  hover
-                                  onClick={() => handleClick(row.id)}
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
-                                >
-                                  {/* Checkbox for row selection */}
-                                  <TableCell>{row.date}</TableCell>
-                                  <TableCell>{row.warehouse}</TableCell>
-                                  <TableCell>{row.name}</TableCell>
-                                  <TableCell>{row.code}</TableCell>
-                                  <TableCell>{row.unit}</TableCell>
-                                  <TableCell>{row.stockQty}</TableCell>
-                                  <TableCell>{row.soldQty}</TableCell>
-                                  <TableCell>{row.saleAmount}</TableCell>
-                                </TableRow>
-                              ))}
-                            <TableRow>
-                              <TableCell colSpan={5}><span className="font-semibold text-heading">Total</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">435</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">54645</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">$345345</span></TableCell>
-                            </TableRow>
+                            {salesReportLoading ? (
+                              <tr>
+                                <td colSpan={7}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((sreport: any) => (
+                              <TableRow
+                                key={sreport.id}
+                                hover
+                                onClick={() => handleClick(sreport.id)}
+                                aria-checked={isSelected(sreport.id)}
+                                selected={isSelected(sreport.id)}
+                              >
+                                {/* Checkbox for row selection */}
+                                <TableCell>{sreport.totalQuantitySold}</TableCell>
+                                <TableCell>{sreport.name}</TableCell>
+                                <TableCell>{sreport.totalTaxPaid}</TableCell>
+                                <TableCell>{sreport.totalProfit}</TableCell>
+                                <TableCell>{sreport.totalAmount}</TableCell>
+                              </TableRow>
+                            ))}
                           </TableBody>
                         </Table>
                       </TableContainer>
@@ -547,12 +373,11 @@ const SaleReport = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
+                    count={salesReportData?.totalCount || 0}
+                    page={currentPageNumber - 1}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
+                    rowsPerPage={currentPageSize}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>

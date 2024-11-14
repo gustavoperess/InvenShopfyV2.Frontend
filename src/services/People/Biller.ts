@@ -28,6 +28,7 @@ export const billerApi = createApi({
             }),
             providesTags: ['Billers'], 
         }),
+     
         addBiller: builder.mutation<any, any>({
             query: (body) => ({
                 url: `Biller`,
@@ -46,4 +47,8 @@ export const billerApi = createApi({
 });
 
 // Export auto-generated hooks for functional components
-export const { useGetAllBillersQuery, useAddBillerMutation, useDeleteBillerMutation, useGetBillerNamesQuery } = billerApi;
+export const { 
+    useGetAllBillersQuery,
+    useAddBillerMutation,
+    useDeleteBillerMutation,
+    useGetBillerNamesQuery } = billerApi;

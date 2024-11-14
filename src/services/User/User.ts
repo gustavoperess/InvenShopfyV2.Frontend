@@ -24,6 +24,13 @@ export const usersApi = createApi({
             }),
             providesTags: ['Users'], 
         }),
+        getAllBillersNew:builder.query<any, void>({
+            query: () => ({
+                url: `get-billers`,
+                method: "GET",
+            }),
+            providesTags: ['Users'], 
+        }),
         deleteUsers: builder.mutation<any, number>({
             query: (id) => ({
                 url: `${id}`,
@@ -59,6 +66,7 @@ export const usersApi = createApi({
 
 
 export const { 
+    useGetAllBillersNewQuery,
     useUpdateUserMutation,
     useGetAllUsersQuery, 
     useGetUsersDashboardQuery, 

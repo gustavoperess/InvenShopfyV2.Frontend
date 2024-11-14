@@ -228,6 +228,14 @@ export interface TBillerInterface {
 }
 
 
+export interface TBillerInterfaceTwo {
+  userId: number;
+  roleId: number;
+  userName: string;
+  roleName: string;
+}
+
+
 export interface TPurchaseInterface {
   id: number;
   purchaseDate: string;

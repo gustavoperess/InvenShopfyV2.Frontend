@@ -11,7 +11,7 @@ export const salesApi = createApi({
     tagTypes: ['Sales'],  
     endpoints: (builder) => ({
         getTotalSalesAmount: builder.query<any, void>({
-            query: () => 'totalamount',
+            query: () => 'dashboard/totalamount',
         }),
         getAllSales:builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize }) => ({
@@ -54,14 +54,22 @@ export const salesApi = createApi({
             }),
         }),
         getBestSeller: builder.query<any, void>({
-            query: () => "productmostsold"
+            query: () => "dashboard/productmostsold"
+        }),
+        getSalesReport:builder.query<any, { startDate: Date | null, endDate: Date | null, pageNumber: number; pageSize: number }>({
+            query: ({ startDate, endDate, pageNumber, pageSize }) => ({
+            url: "sales-report",
+            method: "GET",
+            params: { startDate, endDate, pageNumber, pageSize}
         })
+    })
     }),
     
 });
 
 
 export const { 
+    useGetSalesReportQuery,
     useGetTotalProfitDashboardQuery,
     useGetTotalSalesAmountQuery,
     useCreateSaleMutation,

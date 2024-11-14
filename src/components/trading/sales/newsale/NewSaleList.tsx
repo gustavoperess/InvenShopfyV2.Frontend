@@ -8,9 +8,10 @@ import { NumericFormat } from 'react-number-format';
 import { useCreateSaleMutation } from '@/services/Sales/Sales';
 import { useGetWarehouseNamesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetCustomerNamesQuery } from '@/services/People/Customer';
-import { useGetBillerNamesQuery } from '@/services/People/Biller';
+// import { useGetBillerNamesQuery } from '@/services/People/Biller';
+import { useGetAllBillersNewQuery } from '@/services/User/User';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
-import { TProductInterface, TWarehouseInterface, TCustomerInterface, MoneyFormat } from '@/interFace/interFace';
+import { TProductInterface, TWarehouseInterface, TCustomerInterface, MoneyFormat, TBillerInterfaceTwo } from '@/interFace/interFace';
 
 
 const NewSaleList = () => {
@@ -41,7 +42,8 @@ const NewSaleList = () => {
     //datas
 
     const { data: customerData } = useGetCustomerNamesQuery({ pageNumber: 1, pageSize: 25 });
-    const { data: billerData } = useGetBillerNamesQuery({ pageNumber: 1, pageSize: 25 });
+    const { data: billerDataNew } = useGetAllBillersNewQuery();
+    // const { data: billerData } = useGetBillerNamesQuery({ pageNumber: 1, pageSize: 25 });
     const { data: warehouseData } = useGetWarehouseNamesQuery({ pageNumber: 1, pageSize: 25 });
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<TProductInterface[]>([]);
@@ -86,8 +88,8 @@ const NewSaleList = () => {
     }, [debouncedSearchTerm, productSuggestionsData, error]);
 
     useEffect(() => {
-        if (billerData && billerData?.data.length > 0 && !biller) {
-            setBiller(billerData?.data[0].id);
+        if (billerDataNew && billerDataNew?.length > 0 && !biller) {
+            setBiller(billerDataNew[0].userId);
         }
         if (warehouse && warehouseData?.data.length > 0 && !warehouse) {
             setWarehouse(warehouseData?.data[0].id);
@@ -96,7 +98,7 @@ const NewSaleList = () => {
             setCustomer(customerData?.data[0].id);
         }
 
-    }, [billerData, biller, warehouseData, warehouse, customerData, customer]);
+    }, [billerDataNew, biller, warehouseData, warehouse, customerData, customer]);
 
 
     const selectSuggestion = (suggestion: Omit<TProductInterface, 'quantitySold' | 'totalAmountSold'>) => {
@@ -431,14 +433,14 @@ const NewSaleList = () => {
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
-                                                                const selectedBiller = billerData?.data.find((biller: TCustomerInterface) => biller.id === value);
-                                                                return selectedBiller ? selectedBiller.name : <em>Select Biller</em>;
+                                                                const selectedBiller = billerDataNew?.find((biller: TBillerInterfaceTwo) => biller.userId === value);
+                                                                return selectedBiller ? selectedBiller.userName : <em>Select Biller</em>;
                                                             },
                                                         }}>
-                                                        {billerData && billerData.data.length > 0 ? (
-                                                            billerData.data.map((biller: TCustomerInterface) => (
-                                                                <MenuItem key={biller.id} value={biller.id}>
-                                                                    {biller.name}
+                                                        {billerDataNew && billerDataNew?.length > 0 ? (
+                                                            billerDataNew.map((biller: TBillerInterfaceTwo) => (
+                                                                <MenuItem key={biller.userId} value={biller.userId}>
+                                                                    {biller.userName}
                                                                 </MenuItem>
                                                             ))
                                                         ) : (
