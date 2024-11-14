@@ -48,6 +48,7 @@ const AdminUser = () => {
                                         width={50} 
                                         alt='profileImage' 
                                         priority 
+                                        style={{ maxHeight: '60px', maxWidth: '50px', objectFit: 'contain' }}
                                     />
                                 </div>
                                 <div className="inventual-dashboard-user-list-left-text">

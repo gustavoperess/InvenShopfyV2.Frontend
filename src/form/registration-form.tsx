@@ -179,7 +179,7 @@ const RegistrationFrom = () => {
                             <div className="inventual-select-field">
                                 <div className="inventual-input-field-style has-icon">
                                     <FormControl fullWidth>
-                                        <TextField  // NEED TO CHECK PHONE NUMBER REQUIREMENTS 
+                                        <TextField  
                                             fullWidth
                                             type="number"
                                             required
