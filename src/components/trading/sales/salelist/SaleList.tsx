@@ -171,9 +171,6 @@ const SaleList = () => {
         <div className="inventual-salelist-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
           <div className="inventual-product-top-btn flex flex-wrap gap-5 mb-7">
             <Link className='inventual-btn secondary-btn' href="/trading/sales/newsale"><span><i className="fa-regular fa-circle-plus"></i></span>Add Sale</Link>
-            <div className="file-import-btn-wrapper">
-              <Link className='inventual-btn primary-btn' href="/trading/sales/importSale"><span><i className="fa-regular fa-folder-arrow-up"></i></span>Import Sale</Link>
-            </div>
           </div>
           <div className="inventual-table-header-search-area">
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">

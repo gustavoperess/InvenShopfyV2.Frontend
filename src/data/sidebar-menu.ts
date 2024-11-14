@@ -62,7 +62,6 @@ export const menuData: MenuItem[] = [
                     { label: "New Sales", routeLink: "/trading/sales/newsale" },
                     { label: "POS Sales", routeLink: "/trading/sales/possale" },
                     { label: "Sales List", routeLink: "/trading/sales/salelist" },
-                    { label: "Sales Import", routeLink: "/trading/sales/importSale" },
                     { label: "Sales Returns", routeLink: "/trading/sales/salereturns" },
                 ]
             },
@@ -72,7 +71,6 @@ export const menuData: MenuItem[] = [
                 subSubItems: [
                     { label: "Add Purchase", routeLink: "/trading/purchase/addpurchase" },
                     { label: "Manage Purchase", routeLink: "/trading/purchase/managepurchase" },
-                    { label: "Purchase Import", routeLink: "/trading/purchase/importPurchase" },
                     { label: "Purchase Returns", routeLink: "/trading/purchase/purchasereturns" },
                 ],
             },
@@ -85,7 +83,6 @@ export const menuData: MenuItem[] = [
                     { label: "Import Sale List", routeLink: "/trading/invoice/importInvoice" },
                     { label: "Purchase Invoice", routeLink: "/trading/invoice/purchaseinvoice" },
                     { label: "Purchase List Invoice", routeLink: "/trading/invoice/purchaselistinvoice" },
-                    { label: "Import Purchase Invoice", routeLink: "/trading/invoice/importPurchaseInvoice" },
                     { label: "Expense Invoice", routeLink: "/trading/invoice/expenseinvoice" },
                     { label: "Expense List Invoice", routeLink: "/trading/invoice/expenselistinvoice" },
                     { label: "Import Expence Invoice", routeLink: "/trading/invoice/importExpenseInvoice" },
@@ -130,10 +127,7 @@ export const menuData: MenuItem[] = [
                 label: "Customer List",
                 routeLink: "/people/customerlist",
             },
-            {
-                label: "Import Customer",
-                routeLink: "/people/importCustomer",
-            },
+           
             {
                 label: "Add Supplier",
                 routeLink: "/people/addsupplier",
@@ -142,10 +136,7 @@ export const menuData: MenuItem[] = [
                 label: "Supplier List",
                 routeLink: "/people/supplierlist",
             },
-            {
-                label: "Import Supplier",
-                routeLink: "/people/importSupplier",
-            },
+        
             {
                 label: "Add Biller",
                 routeLink: "/people/addbiller",
@@ -153,10 +144,6 @@ export const menuData: MenuItem[] = [
             {
                 label: "Biller List",
                 routeLink: "/people/billerlist",
-            },
-            {
-                label: "Import Biller",
-                routeLink: "/people/importBiller",
             },
         ],
     },
