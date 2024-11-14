@@ -35,6 +35,7 @@ const SupplierList = () => {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof TSupplierInterface>('id');
   const [deleteSupplier] = useDeleteSupplierMutation();
+  const [searchQuery, setSearchQuery] = useState('');
   const { data: supplierData, error: supplierError, isLoading: supplierLoading, refetch } = useGetAllSuppliersQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
   // Handlers for pagination
@@ -110,8 +111,17 @@ const SupplierList = () => {
   // Check if a particular item is selected
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
+  const handleSearchChange = (event: any) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredData = supplierData?.data.filter((item: any) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    item.company.toLowerCase().includes(searchQuery.toLowerCase()) 
+  ) || [];
+
   // Function to sort data
-  const sortedRows = supplierData?.data.slice().sort((a: any, b: any) => {
+  const sortedRows = filteredData.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
     const aValue = a[orderBy as keyof TSupplierInterface];
@@ -152,7 +162,12 @@ const SupplierList = () => {
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">
               <div className="col-span-12 md:col-span-7 lg:col-span-7 xl:col-span-5">
                 <div className="inventual-table-header-search relative">
-                  <input type="text" placeholder="Search List" />
+                <input
+                    type="text"
+                    placeholder="Search List"
+                    value={searchQuery}  
+                    onChange={handleSearchChange} 
+                  />
                   <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                 </div>
               </div>

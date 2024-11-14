@@ -1,8 +1,6 @@
 "use client"
 import Image from "next/image";
 import React, { useState } from "react";
-import userImg from "../../../public/assets/img/user/user-1.png"
-import { imageLoader } from "@/hooks/imgLoader";
 import EmailDropdown from "./EmailDropdown";
 import NotificationDropdown from "./NotificationDropdown";
 import QuickMenuDropdown from "./QuickMenuDropdown";

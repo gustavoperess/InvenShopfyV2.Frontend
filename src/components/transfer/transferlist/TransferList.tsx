@@ -24,10 +24,8 @@ const TransferList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
-  const [selectedTransferId, setSelectedTransferId] = useState<number | undefined>();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [searchQuery, setSearchQuery] = useState('');
   const [orderBy, setOrderBy] = useState<keyof TtransferInterface>('id');
   const { data: transferData, error: transferError, isLoading: transferLoading, refetch } = useGetAllTransfersQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -86,8 +84,19 @@ const TransferList = () => {
   // Check if a particular item is selected
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
+  const handleSearchChange = (event: any) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredData = transferData?.data.filter((item: any) =>
+    item.referenceNumber.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    item.authorizedBy.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.transferStatus.toLowerCase().includes(searchQuery.toLowerCase()) 
+  ) || [];
+
+
   // Function to sort data
-  const sortedRows = transferData?.data.slice().sort((a: any, b: any) => {
+  const sortedRows = filteredData.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
     const aValue = a[orderBy as keyof TtransferInterface];
@@ -119,7 +128,12 @@ const TransferList = () => {
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">
               <div className="col-span-12 md:col-span-7 lg:col-span-7 xl:col-span-5">
                 <div className="inventual-table-header-search relative">
-                  <input type="text" placeholder="Search List" />
+                <input
+                    type="text"
+                    placeholder="Search List"
+                    value={searchQuery}  
+                    onChange={handleSearchChange} 
+                  />
                   <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                 </div>
               </div>
