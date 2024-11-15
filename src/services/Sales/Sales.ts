@@ -56,20 +56,12 @@ export const salesApi = createApi({
         getBestSeller: builder.query<any, void>({
             query: () => "dashboard/productmostsold"
         }),
-        getSalesReport:builder.query<any, { startDate: Date | null, endDate: Date | null, pageNumber: number; pageSize: number }>({
-            query: ({ startDate, endDate, pageNumber, pageSize }) => ({
-            url: "sales-report",
-            method: "GET",
-            params: { startDate, endDate, pageNumber, pageSize}
-        })
-    })
     }),
     
 });
 
 
 export const { 
-    useGetSalesReportQuery,
     useGetTotalProfitDashboardQuery,
     useGetTotalSalesAmountQuery,
     useCreateSaleMutation,

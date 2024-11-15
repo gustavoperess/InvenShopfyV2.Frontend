@@ -114,6 +114,19 @@ export let MoneyFormat = new Intl.NumberFormat('en-US', {
   currency: 'GBP',
 });
 
+
+export interface TSaleReportInterface {
+  billerId: number;
+  totalQuantitySold: number;
+  totalTaxPaid: number;
+  totalProfit: number;
+  startDate: Date;
+  endDate: Date;
+  name: string;
+  totalAmount: number;
+}
+
+
 export interface TCustomerInterface {
   id: number;
   name: string;

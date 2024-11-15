@@ -15,38 +15,21 @@ import {
   TextField,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import ReactDatePicker from 'react-datepicker';
-import { useGetSalesReportQuery } from '@/services/Sales/Sales';
-
-// Define the structure of the data
-interface Data {
-  billerId: number;
-  totalQuantitySold: number;
-  totalTaxPaid: number;
-  totalProfit: number;
-  name: string;
-  totalAmount: number;
-}
-
+import DatePicker from "react-datepicker";
+import { MoneyFormat, TSaleReportInterface } from '@/interFace/interFace';
+import { useGetSalesReportQuery } from '@/services/Report/Report';
 
 const SaleReport = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [currentPageSize, setCurrentPageSize] = useState(10);
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [currentPageSize, setCurrentPageSize] = useState(25);
+  const [startDate, setStartDate] = useState<string | undefined>(undefined);
+  const [endDate, setEndDate] = useState<string | undefined>(undefined);
+  const [dateRange, setDateRange] = useState<string>("Yearly");
   const [searchQuery, setSearchQuery] = useState('');
-  const { data: salesReportData, error: salesReportError, isLoading: salesReportLoading, refetch } = useGetSalesReportQuery({ startDate, endDate, pageNumber: currentPageNumber, pageSize: currentPageSize });
-
-
-  const dummyData = (e: any) => {
-    e.preventDefault();
-  };
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('billerId');
+  const [orderBy, setOrderBy] = useState<keyof TSaleReportInterface>('billerId');
+  const { data: salesReportData, error: salesReportError, isLoading: salesReportLoading, refetch }
+    = useGetSalesReportQuery({ dateRange, startDate, endDate, pageNumber: currentPageNumber, pageSize: currentPageSize });
 
 
   // handle pagination 
@@ -63,57 +46,29 @@ const SaleReport = () => {
   };
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TSaleReportInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
-  //  Handler for selecting/deselecting all items
-  const handleSelectAllClick = (checked: boolean) => {
-    if (checked) {
-      setSelected(salesReportData?.data.map((warehouse: any) => warehouse.id));
-    } else {
-      setSelected([]);
-    }
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
-  // Handler for selecting/deselecting a single item
-  const handleClick = (id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: number[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = [...selected, id];
-    } else if (selectedIndex === 0) {
-      newSelected = selected.slice(1);
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = selected.slice(0, -1);
-    } else if (selectedIndex > 0) {
-      newSelected = [
-        ...selected.slice(0, selectedIndex),
-        ...selected.slice(selectedIndex + 1),
-      ];
-    }
-
-    setSelected(newSelected);
-  };
-  const handleSearchChange = (event: any) => {
-    setSearchQuery(event.target.value);
-  };
-
-  // Check if a particular item is selected
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
   const filteredData = salesReportData?.data.filter((item: any) =>
-    item.warehouseName.toLowerCase().includes(searchQuery.toLowerCase())
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
   // Function to sort data
   const sortedRows = filteredData.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof Data];
-    const bValue = b[orderBy as keyof Data];
+    const aValue = a[orderBy as keyof TSaleReportInterface];
+    const bValue = b[orderBy as keyof TSaleReportInterface];
     if (aValue === undefined || bValue === undefined) {
       return 0;
     }
@@ -135,76 +90,45 @@ const SaleReport = () => {
         <div className="inventual-report-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
           <div className="flex flex-col xl:flex-row xl:items-end w-full gap-7 mb-7">
             <div className="grid grid-cols-12 gap-y-7 sm:gap-7 w-full">
-              <div className="col-span-12 md:col-span-6 xl:col-span-3">
-                <div className="inventual-form-field">
+              <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
+                <div className="inventual-formTwo-field">
                   <h5>Start Date</h5>
                   <div className="inventual-input-field-style">
-                    <ReactDatePicker
-                      selected={startDate}
-                      onChange={(date) => setStartDate(date)}
-                      showYearDropdown
-                      showMonthDropdown
-                      useShortMonthInDropdown
-                      showPopperArrow={false}
-                      peekNextMonth
-                      dropdownMode="select"
-                      isClearable
-                      placeholderText="MM/DD/YYYY"
-                      className="w-full"
+                    <DatePicker
+                      selected={startDate ? new Date(startDate) : undefined}
+                      onChange={(date) => {
+                        if (date) {
+                          const formattedDate = formatDate(date); 
+                          setStartDate(formattedDate); // Store formatted date
+                        } else {
+                          setStartDate(undefined); // Reset to undefined
+                        }
+                      }}
+                      placeholderText="DD/MM/YYYY"
                     />
                   </div>
                 </div>
               </div>
-              <div className="col-span-12 md:col-span-6 xl:col-span-3">
-                <div className="inventual-form-field">
+              <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
+                <div className="inventual-formTwo-field">
                   <h5>End Date</h5>
                   <div className="inventual-input-field-style">
-                    <ReactDatePicker
-                      selected={endDate}
-                      onChange={(date) => setEndDate(date)}
-                      showYearDropdown
-                      showMonthDropdown
-                      useShortMonthInDropdown
-                      showPopperArrow={false}
-                      peekNextMonth
-                      dropdownMode="select"
-                      isClearable
-                      placeholderText="MM/DD/YYYY"
-                      className="w-full"
+                    <DatePicker
+                      selected={endDate ? new Date(endDate) : undefined}
+                      onChange={(date) => {
+                        if (date) {
+                          const formattedDate = formatDate(date); 
+                          setEndDate(formattedDate); 
+                        } else {
+                          setEndDate(undefined); 
+                        }
+                      }}
+                      placeholderText="DD/MM/YYYY"
                     />
                   </div>
                 </div>
               </div>
-              <div className="col-span-12 md:col-span-6 xl:col-span-3">
-                <div className="inventual-form-field">
-                  <h5>Warehouse</h5>
-                  <div className="inventual-select-field-style">
-                    <TextField
-                      select
-                      label="Select"
-                      defaultValue=""
-                      SelectProps={{
-                        displayEmpty: true,
-                        renderValue: (value: any) => {
-                          if (value === '') {
-                            return <em>Select Warehouse</em>;
-                          }
-                          return value;
-                        },
-                      }}
-                    >
-                      <MenuItem value="">
-                        <em>Select Warehouse</em>
-                      </MenuItem>
-                      <MenuItem value="Warehouse 1">Warehouse 1</MenuItem>
-                      <MenuItem value="Warehouse 2">Warehouse 2</MenuItem>
-                      <MenuItem value="Warehouse 3">Warehouse 3</MenuItem>
-                      <MenuItem value="Warehouse 4">Warehouse 4</MenuItem>
-                      <MenuItem value="Warehouse 5">Warehouse 5</MenuItem>
-                    </TextField>
-                  </div>
-                </div>
-              </div>
+
               <div className="col-span-12 md:col-span-6 xl:col-span-3">
                 <div className="inventual-form-field">
                   <h5>Report Shortcut</h5>
@@ -212,24 +136,16 @@ const SaleReport = () => {
                     <TextField
                       select
                       label="Select"
-                      defaultValue=""
+                      value={dateRange} // Always defined
+                      onChange={(e) => setDateRange(e.target.value)}
                       SelectProps={{
                         displayEmpty: true,
-                        renderValue: (value: any) => {
-                          if (value === '') {
-                            return <em>Select Report</em>;
-                          }
-                          return value;
-                        },
-                      }}
-                    >
-                      <MenuItem value="">
-                        <em>Select Report</em>
-                      </MenuItem>
-                      <MenuItem value="Daily">Daily</MenuItem>
-                      <MenuItem value="Weekly">Weekly</MenuItem>
-                      <MenuItem value="Monthly">Monthly</MenuItem>
+                        renderValue: (value: any) => { return value; }
+                      }}>
                       <MenuItem value="Yearly">Yearly</MenuItem>
+                      <MenuItem value="Monthly">Monthly</MenuItem>
+                      <MenuItem value="Weekly">Weekly</MenuItem>
+                      <MenuItem value="Daily">Daily</MenuItem>
                     </TextField>
                   </div>
                 </div>
@@ -247,8 +163,7 @@ const SaleReport = () => {
                     type="text"
                     placeholder="Search List"
                     value={searchQuery}
-                    onChange={handleSearchChange}
-                  />
+                    onChange={(e) => setSearchQuery(e.target.value)} />
                   <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                 </div>
               </div>
@@ -294,20 +209,25 @@ const SaleReport = () => {
                             <TableRow>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'totalQuantitySold'}
-                                  direction={orderBy === 'totalQuantitySold' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('totalQuantitySold')}
-                                >
-                                  Quantity Sold
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
                                   active={orderBy === 'name'}
                                   direction={orderBy === 'name' ? order : 'asc'}
                                   onClick={() => handleRequestSort('name')}
                                 >
-                                  Name
+                                  Biller
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'totalQuantitySold'}
+                                  direction={orderBy === 'totalQuantitySold' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalQuantitySold')}
+                                >
+                                  Quantity of products sold
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel>
+                                  Date Range
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -316,7 +236,7 @@ const SaleReport = () => {
                                   direction={orderBy === 'totalTaxPaid' ? order : 'asc'}
                                   onClick={() => handleRequestSort('totalTaxPaid')}
                                 >
-                                  Tax
+                                  Total in Taxes
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -325,7 +245,7 @@ const SaleReport = () => {
                                   direction={orderBy === 'totalProfit' ? order : 'asc'}
                                   onClick={() => handleRequestSort('totalProfit')}
                                 >
-                                  Profit
+                                  Total Profit
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -349,19 +269,13 @@ const SaleReport = () => {
                                 </td>
                               </tr>
                             ) : sortedRows?.map((sreport: any) => (
-                              <TableRow
-                                key={sreport.id}
-                                hover
-                                onClick={() => handleClick(sreport.id)}
-                                aria-checked={isSelected(sreport.id)}
-                                selected={isSelected(sreport.id)}
-                              >
-                                {/* Checkbox for row selection */}
-                                <TableCell>{sreport.totalQuantitySold}</TableCell>
+                              <TableRow key={sreport.billerId}>
                                 <TableCell>{sreport.name}</TableCell>
-                                <TableCell>{sreport.totalTaxPaid}</TableCell>
-                                <TableCell>{sreport.totalProfit}</TableCell>
-                                <TableCell>{sreport.totalAmount}</TableCell>
+                                <TableCell>{sreport.totalQuantitySold}</TableCell>
+                                <TableCell>{sreport.startDate} - {sreport.endDate}</TableCell>
+                                <TableCell>{MoneyFormat.format(sreport.totalTaxPaid)}</TableCell>
+                                <TableCell>{MoneyFormat.format(sreport.totalProfit)}</TableCell>
+                                <TableCell>{MoneyFormat.format(sreport.totalAmount)}</TableCell>
                               </TableRow>
                             ))}
                           </TableBody>

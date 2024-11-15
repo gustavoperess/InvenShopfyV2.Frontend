@@ -18,6 +18,7 @@ import { purchaseReturnApi } from '@/services/Purchase/PurchaseReturn';
 import { expenseApi } from '@/services/Expense/Expense';
 import { expenseCategory } from '@/services/Expense/ExpenseCategory';
 import { transfersApi } from '@/services/Transfer/Transfer';
+import { reportsApi } from '@/services/Report/Report';
 
 const authApis = [authApi]; 
 const warehouseApis = [warehouse];
@@ -29,12 +30,14 @@ const roleApis = [roleApi]
 const userApis = [usersApi]
 const expenseApis = [expenseApi, expenseCategory]
 const transferApis = [transfersApi]
+const reportApis = [reportsApi]
 
 
 // Combine all APIs into a single array
 const apis = [...salesApis, ...warehouseApis, ...productsApis,
               ...authApis, ...peopleApis, ...purchaseApis,
-              ...roleApis, ...userApis, ...expenseApis, ...transferApis];
+              ...roleApis, ...userApis, ...expenseApis, ...transferApis,
+              ...reportApis];
 
 // Configure reducers
 const reducers = apis.reduce((acc: Record<string, any>, api) => {
