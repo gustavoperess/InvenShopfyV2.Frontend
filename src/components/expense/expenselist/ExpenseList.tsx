@@ -181,7 +181,11 @@ const ExpenseList = () => {
         <div className="inventual-report-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
           <div className="inventual-product-top-btn flex flex-wrap gap-5 mb-7">
             <Link className='inventual-btn secondary-btn' href="/expense/addexpense"><span><i className="fa-regular fa-circle-plus"></i></span>Add Expense</Link>
+            <div className="file-import-btn-wrapper">
+              <Link className='inventual-btn primary-btn' href="/report/expensereport"><span><i className="fa-regular fa-folder-arrow-up"></i></span>Expense Report</Link>
+            </div>
           </div>
+
           <div className="inventual-table-header-search-area">
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">
               <div className="col-span-12 md:col-span-7 lg:col-span-7 xl:col-span-5">

@@ -154,6 +154,9 @@ const CustomerList = () => {
               <span><i className="fa-regular fa-circle-plus"></i></span>
               Add Customer
             </Link>
+            <div className="file-import-btn-wrapper">
+              <Link className='inventual-btn primary-btn' href="/report/customerreport"><span><i className="fa-regular fa-folder-arrow-up"></i></span>Customer Report</Link>
+            </div>
           </div>
           <div className="inventual-table-header-search-area">
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">

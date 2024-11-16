@@ -127,6 +127,30 @@ export interface TPurchaseReportInterface {
   totalAmount: number;
 }
 
+
+
+export interface TExpenseReportInterface {
+  id: number;
+  name: string;
+  totalCost: number;
+  numberOfTimesUsed: number;
+  shippingCost: number;
+}
+
+
+export interface TCustomerReportInterface {
+  id: number;
+  customerName: string;
+  rewardPoints: number;
+  numberOfPurchases: number;
+  totalPaidInShipping: number;
+  totalAmount: number;
+  totalPaidInTaxes: number;
+  totalProfit: number;
+  numberOfProductsBought: number;
+  lastPurchase: Date;
+}
+
 export interface TProductReportInterface {
   productId: number;
   productName: string;

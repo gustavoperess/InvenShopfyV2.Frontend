@@ -15,226 +15,63 @@ import {
   TextField,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import ReactDatePicker from 'react-datepicker';
+import DatePicker from "react-datepicker";
+import { MoneyFormat, TExpenseReportInterface } from '@/interFace/interFace';
+import { useGetExpenserReportQuery } from '@/services/Report/Report';
 
-// Define the structure of the data
-interface Data {
-  id: number;
-  date: string;
-  warehouse: string;
-  category: string;
-  status: string;
-  expenseType: string;
-  amount: string;
-}
-
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 1',
-    category: 'Current bill',
-    status: 'Completed',
-    expenseType: 'Direct',
-    amount: '$745.00',
-  },
-  {
-    id: 2,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 2',
-    category: 'Multi-plugs',
-    status: 'Completed',
-    expenseType: 'Indirect',
-    amount: '$326.00',
-  }, {
-    id: 3,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 3',
-    category: 'Electric bulb',
-    status: 'Due',
-    expenseType: 'Direct',
-    amount: '$542.00',
-  },
-  {
-    id: 4,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 4',
-    category: 'Desktop repair',
-    status: 'Partial',
-    expenseType: 'Direct',
-    amount: '$652.00',
-  },
-  {
-    id: 5,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 5',
-    category: 'Table',
-    status: 'Partial',
-    expenseType: 'Direct',
-    amount: '$120.00',
-  },
-  {
-    id: 6,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 6',
-    category: 'Chair repair',
-    status: 'Completed',
-    expenseType: 'Indirect',
-    amount: '$241.00',
-  },
-  {
-    id: 7,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 7',
-    category: 'Employee salary',
-    status: 'Completed',
-    expenseType: 'Indirect',
-    amount: '$522.00',
-  },
-  {
-    id: 8,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 8',
-    category: 'Medical bill',
-    status: 'Completed',
-    expenseType: 'Indirect',
-    amount: '$745.00',
-  },
-  {
-    id: 9,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 9',
-    category: 'Watch man bill',
-    status: 'Completed',
-    expenseType: 'Direct',
-    amount: '$312.00',
-  },
-  {
-    id: 10,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 10',
-    category: 'Current bill',
-    status: 'Completed',
-    expenseType: 'Direct',
-    amount: '$919.00',
-  },
-  {
-    id: 11,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 11',
-    category: 'Office rent',
-    status: 'Due',
-    expenseType: 'Direct',
-    amount: '$834.00',
-  },
-  {
-    id: 12,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 12',
-    category: 'Electric bulb',
-    status: 'Due',
-    expenseType: 'Direct',
-    amount: '$755.00',
-  },
-  {
-    id: 13,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 13',
-    category: 'Desktop repair',
-    status: 'Completed',
-    expenseType: 'Direct',
-    amount: '$622.00',
-  },
-  {
-    id: 14,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 14',
-    category: 'Mobile repair',
-    status: 'Completed',
-    expenseType: 'Direct',
-    amount: '$745.00',
-  },
-  {
-    id: 15,
-    date: '01 Jan 2024',
-    warehouse: 'Warehouse 15',
-    category: 'Office launch',
-    status: 'Completed',
-    expenseType: 'Direct',
-    amount: '$745.00',
-  },
-];
 
 const ExpenseReport = () => {
-
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
-
-  const dummyData = (e: any) => {
-    e.preventDefault();
-  };
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(25);
+  const [startDate, setStartDate] = useState<string | undefined>(undefined);
+  const [endDate, setEndDate] = useState<string | undefined>(undefined);
+  const [dateRange, setDateRange] = useState<string>("Yearly");
+  const [searchQuery, setSearchQuery] = useState('');
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TExpenseReportInterface>('id');
+  const { data: expenseReportData, error: expeseReportError, isLoading: expenseReportLoading, refetch }
+    = useGetExpenserReportQuery({ dateRange, startDate, endDate, pageNumber: currentPageNumber, pageSize: currentPageSize });
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
+
+  // handle pagination 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 25));
-    setPage(0);
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1);
+    refetch();
   };
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TExpenseReportInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
-  // Handler for selecting/deselecting all items
-  const handleSelectAllClick = (checked: boolean) => {
-    if (checked) {
-      setSelected(rows.map((row) => row.id));
-    } else {
-      setSelected([]);
-    }
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
-  // Handler for selecting/deselecting a single item
-  const handleClick = (id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: number[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = [...selected, id];
-    } else if (selectedIndex === 0) {
-      newSelected = selected.slice(1);
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = selected.slice(0, -1);
-    } else if (selectedIndex > 0) {
-      newSelected = [
-        ...selected.slice(0, selectedIndex),
-        ...selected.slice(selectedIndex + 1),
-      ];
-    }
-
-    setSelected(newSelected);
-  };
-
-  // Check if a particular item is selected
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+  const filteredData = expenseReportData?.data.filter((item: any) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+  const sortedRows = filteredData.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof TExpenseReportInterface];
+    const bValue = b[orderBy as keyof TExpenseReportInterface];
+    if (aValue === undefined || bValue === undefined) {
+      return 0;
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -249,117 +86,77 @@ const ExpenseReport = () => {
 
     <>
       <div className="inventual-content-area px-4 sm:px-7">
-        <div className="inventual-report-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5">
-          <div className="flex flex-col xl:flex-row xl:items-end w-full gap-7 mb-7">
-            <div className="grid grid-cols-12 gap-y-7 sm:gap-7 w-full">
-              <div className="col-span-12 md:col-span-6 xl:col-span-3">
-                <div className="inventual-form-field">
-                  <h5>Start Date</h5>
-                  <div className="inventual-input-field-style">
-                    <ReactDatePicker
-                      selected={startDate}
-                      onChange={(date) => setStartDate(date)}
-                      showYearDropdown
-                      showMonthDropdown
-                      useShortMonthInDropdown
-                      showPopperArrow={false}
-                      peekNextMonth
-                      dropdownMode="select"
-                      isClearable
-                      placeholderText="MM/DD/YYYY"
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="col-span-12 md:col-span-6 xl:col-span-3">
-                <div className="inventual-form-field">
-                  <h5>End Date</h5>
-                  <div className="inventual-input-field-style">
-                    <ReactDatePicker
-                      selected={endDate}
-                      onChange={(date) => setEndDate(date)}
-                      showYearDropdown
-                      showMonthDropdown
-                      useShortMonthInDropdown
-                      showPopperArrow={false}
-                      peekNextMonth
-                      dropdownMode="select"
-                      isClearable
-                      placeholderText="MM/DD/YYYY"
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="col-span-12 md:col-span-6 xl:col-span-3">
-                <div className="inventual-form-field">
-                  <h5>Warehouse</h5>
-                  <div className="inventual-select-field-style">
-                    <TextField
-                      select
-                      label="Select"
-                      defaultValue=""
-                      SelectProps={{
-                        displayEmpty: true,
-                        renderValue: (value: any) => {
-                          if (value === '') {
-                            return <em>Select Warehouse</em>;
-                          }
-                          return value;
-                        },
-                      }}
-                    >
-                      <MenuItem value="">
-                        <em>Select Warehouse</em>
-                      </MenuItem>
-                      <MenuItem value="Warehouse 1">Warehouse 1</MenuItem>
-                      <MenuItem value="Warehouse 2">Warehouse 2</MenuItem>
-                      <MenuItem value="Warehouse 3">Warehouse 3</MenuItem>
-                      <MenuItem value="Warehouse 4">Warehouse 4</MenuItem>
-                      <MenuItem value="Warehouse 5">Warehouse 5</MenuItem>
-                    </TextField>
-                  </div>
-                </div>
-              </div>
-              <div className="col-span-12 md:col-span-6 xl:col-span-3">
-                <div className="inventual-form-field">
-                  <h5>Status</h5>
-                  <div className="inventual-select-field-style">
-                    <TextField
-                      select
-                      label="Select"
-                      defaultValue=""
-                      SelectProps={{
-                        displayEmpty: true,
-                        renderValue: (value: any) => {
-                          if (value === '') {
-                            return <em>Select Status</em>;
-                          }
-                          return value;
-                        },
-                      }}
-                    >
-                      <MenuItem value="">
-                        <em>All Status</em>
-                      </MenuItem>
-                      <MenuItem value="Daily">Complete</MenuItem>
-                      <MenuItem value="Weekly">Partial</MenuItem>
-                      <MenuItem value="Monthly">Due</MenuItem>
-                    </TextField>
-                  </div>
+        <div className="inventual-report-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+          <div className="grid grid-cols-12 gap-y-7 sm:gap-7 mb-7 items-end">
+            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
+              <div className="inventual-formTwo-field">
+                <h5>Start Date</h5>
+                <div className="inventual-input-field-style">
+                  <DatePicker
+                    selected={startDate ? new Date(startDate) : undefined}
+                    onChange={(date) => {
+                      if (date) {
+                        const formattedDate = formatDate(date);
+                        setStartDate(formattedDate); // Store formatted date
+                      } else {
+                        setStartDate(undefined); // Reset to undefined
+                      }
+                    }}
+                    placeholderText="DD/MM/YYYY"
+                  />
                 </div>
               </div>
             </div>
-            <div className="min-w-[200px]">
-              <button type='button' className='inventual-btn'>Generate Report</button>
+            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
+              <div className="inventual-formTwo-field">
+                <h5>End Date</h5>
+                <div className="inventual-input-field-style">
+                  <DatePicker
+                    selected={endDate ? new Date(endDate) : undefined}
+                    onChange={(date) => {
+                      if (date) {
+                        const formattedDate = formatDate(date);
+                        setEndDate(formattedDate);
+                      } else {
+                        setEndDate(undefined);
+                      }
+                    }}
+                    placeholderText="DD/MM/YYYY"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="col-span-12 md:col-span-6 xl:col-span-3">
+              <div className="inventual-form-field">
+                <h5>Report Shortcut</h5>
+                <div className="inventual-select-field-style">
+                  <TextField
+                    select
+                    label="Select"
+                    value={dateRange} // Always defined
+                    onChange={(e) => setDateRange(e.target.value)}
+                    SelectProps={{
+                      displayEmpty: true,
+                      renderValue: (value: any) => { return value; }
+                    }}>
+                    <MenuItem value="Yearly">Yearly</MenuItem>
+                    <MenuItem value="Monthly">Monthly</MenuItem>
+                    <MenuItem value="Weekly">Weekly</MenuItem>
+                    <MenuItem value="Daily">Daily</MenuItem>
+                  </TextField>
+                </div>
+              </div>
             </div>
           </div>
           <div className="inventual-table-header-search-area">
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">
               <div className="col-span-12 md:col-span-7 lg:col-span-7 xl:col-span-5">
                 <div className="inventual-table-header-search relative">
-                  <input type="text" placeholder="Search List" />
+                  <input
+                    type="text"
+                    placeholder="Search List"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)} />
                   <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                 </div>
               </div>
@@ -373,11 +170,9 @@ const ExpenseReport = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Date</MenuItem>
-                            <MenuItem onClick={popupState.close}>Warehouse</MenuItem>
-                            <MenuItem onClick={popupState.close}>Category</MenuItem>
-                            <MenuItem onClick={popupState.close}>Status</MenuItem>
-                            <MenuItem onClick={popupState.close}>Expense Type</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("totalCost"); popupState.close() }}>Cost</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("numberOfTimesUsed"); popupState.close() }}>Amount</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("shippingCost"); popupState.close() }}>Shipping Amount</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -406,99 +201,59 @@ const ExpenseReport = () => {
                             <TableRow>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'date'}
-                                  direction={orderBy === 'date' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('date')}
+                                  active={orderBy === 'name'}
+                                  direction={orderBy === 'name' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('name')}
                                 >
-                                  Date
+                                  Expense Category
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'warehouse'}
-                                  direction={orderBy === 'warehouse' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('warehouse')}
+                                  active={orderBy === 'numberOfTimesUsed'}
+                                  direction={orderBy === 'numberOfTimesUsed' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('numberOfTimesUsed')}
                                 >
-                                  Warehouse
+                                  Number of times
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'category'}
-                                  direction={orderBy === 'category' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('category')}
+                                  active={orderBy === 'shippingCost'}
+                                  direction={orderBy === 'shippingCost' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('shippingCost')}
                                 >
-                                  category No
+                                  Shipping Cost
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'status'}
-                                  direction={orderBy === 'status' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('status')}
+                                  active={orderBy === 'totalCost'}
+                                  direction={orderBy === 'totalCost' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalCost')}
                                 >
-                                  status
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'expenseType'}
-                                  direction={orderBy === 'expenseType' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('expenseType')}
-                                >
-                                  Expense Type
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'amount'}
-                                  direction={orderBy === 'amount' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('amount')}
-                                >
-                                  Sale Amount
+                                  Total Cost
                                 </TableSortLabel>
                               </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
-                                <TableRow
-                                  key={row.id}
-                                  hover
-                                  onClick={() => handleClick(row.id)}
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
-                                >
-                                  <TableCell>{row.date}</TableCell>
-                                  <TableCell>{row.warehouse}</TableCell>
-                                  <TableCell>{row.category}</TableCell>
-                                  <TableCell>
-                                    {
-                                      row.status.toLowerCase() === "completed" ? (
-                                        <span className='badge badge-success'>{row.status}</span>
-                                      ) : (
-                                        row.status.toLowerCase() === "due" ? (
-                                          <span className='badge badge-danger'>{row.status}</span>
-                                        ) : (
-                                          row.status.toLowerCase() === "partial" ? (
-                                            <span className='badge badge-teal'>{row.status}</span>
-                                          ) : (
-                                            <span className='badge badge-success'>{row.status}</span>
-                                          )
-                                        )
-                                      )
-                                    }
-                                  </TableCell>
-                                  <TableCell>{row.expenseType}</TableCell>
-                                  <TableCell>{row.amount}</TableCell>
-                                </TableRow>
-                              ))}
-                            <TableRow>
-                              <TableCell colSpan={5}><span className="font-semibold text-heading">Total</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">$1965</span></TableCell>
-                            </TableRow>
+                            {expenseReportLoading ? (
+                              <tr>
+                                <td colSpan={7}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((exreport: any) => (
+                              <TableRow key={exreport.id}>
+                                <TableCell>{exreport.name}</TableCell>
+                                <TableCell>{exreport.numberOfTimesUsed}</TableCell>
+                                <TableCell>{MoneyFormat.format(exreport.shippingCost)}</TableCell>
+                                <TableCell>{MoneyFormat.format(exreport.totalCost)}</TableCell>
+                              </TableRow>
+                            ))}
                           </TableBody>
                         </Table>
                       </TableContainer>
@@ -508,12 +263,11 @@ const ExpenseReport = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
+                    count={expenseReportData?.totalCount || 0}
+                    page={currentPageNumber - 1}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
+                    rowsPerPage={currentPageSize}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
@@ -521,7 +275,7 @@ const ExpenseReport = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
 
   );
