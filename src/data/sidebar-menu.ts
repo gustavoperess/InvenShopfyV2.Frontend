@@ -211,10 +211,6 @@ export const menuData: MenuItem[] = [
                 routeLink: "/report/purchasereport",
             },
             {
-                label: "Payment Report",
-                routeLink: "/report/paymentreport",
-            },
-            {
                 label: "Product Report",
                 routeLink: "/report/productreport",
             },

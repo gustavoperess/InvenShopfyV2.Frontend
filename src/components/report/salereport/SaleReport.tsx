@@ -241,6 +241,15 @@ const SaleReport = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
+                                  active={orderBy === 'totalShippingPaid'}
+                                  direction={orderBy === 'totalShippingPaid' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalShippingPaid')}
+                                >
+                                  Total in Shipping
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
                                   active={orderBy === 'totalProfit'}
                                   direction={orderBy === 'totalProfit' ? order : 'asc'}
                                   onClick={() => handleRequestSort('totalProfit')}
@@ -274,6 +283,7 @@ const SaleReport = () => {
                                 <TableCell>{sreport.totalQuantitySold}</TableCell>
                                 <TableCell>{sreport.startDate} - {sreport.endDate}</TableCell>
                                 <TableCell>{MoneyFormat.format(sreport.totalTaxPaid)}</TableCell>
+                                <TableCell>{MoneyFormat.format(sreport.totalShippingPaid)}</TableCell>
                                 <TableCell>{MoneyFormat.format(sreport.totalProfit)}</TableCell>
                                 <TableCell>{MoneyFormat.format(sreport.totalAmount)}</TableCell>
                               </TableRow>

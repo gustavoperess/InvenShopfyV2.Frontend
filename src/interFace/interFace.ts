@@ -115,6 +115,32 @@ export let MoneyFormat = new Intl.NumberFormat('en-US', {
 });
 
 
+export interface TPurchaseReportInterface {
+  supplierId: number;
+  supplierName: string;
+  numberOfPurchases: number;
+  numberOfProductsBought: number;
+  totalPaidInShipping: number;
+  totalPaidInTaxes: number;
+  startDate: Date;
+  endDate: Date;
+  totalAmount: number;
+}
+
+export interface TProductReportInterface {
+  productId: number;
+  productName: string;
+  totalQuantityBought: number;
+  totalAmountPaid: number;
+  totalPaidInTaxes: number;
+  totalQuantitySold: number;
+  totalRevenue: number;
+  stockQuantity: number;
+  productCode: number;
+}
+
+
+
 export interface TSaleReportInterface {
   billerId: number;
   totalQuantitySold: number;
@@ -124,6 +150,7 @@ export interface TSaleReportInterface {
   endDate: Date;
   name: string;
   totalAmount: number;
+  totalShippingPaid: number;
 }
 
 

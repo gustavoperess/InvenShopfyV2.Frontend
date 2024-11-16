@@ -18,11 +18,26 @@ export const reportsApi = createApi({
               params: { dateRange, startDate, endDate, pageNumber, pageSize },
             }),
           }),
+          getPurchaseReport: builder.query<any, { dateRange: string; startDate: string | undefined; endDate: string | undefined; pageNumber: number; pageSize: number }>({
+            query: ({ dateRange, startDate, endDate, pageNumber, pageSize }) => ({
+              url: "purchase-report",
+              method: "GET",
+              params: { dateRange, startDate, endDate, pageNumber, pageSize },
+            }),
+          }),
+          getProductReport: builder.query<any, {pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize }) => ({
+              url: "product-report",
+              method: "GET",
+              params: { pageNumber, pageSize },
+            }),
+          }),
     }),
-    
 });
 
 
 export const { 
+    useGetProductReportQuery,
+    useGetPurchaseReportQuery,
     useGetSalesReportQuery,
 } = reportsApi;

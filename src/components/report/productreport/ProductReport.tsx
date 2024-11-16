@@ -16,236 +16,51 @@ import {
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import ReactDatePicker from 'react-datepicker';
-
-// Define the structure of the data
-interface Data {
-  id: number;
-  date: string;
-  warehouse: string;
-  name: string;
-  purchasedQty: number;
-  purchasedAmount: number;
-  soldQty: number;
-  soldAmount: number;
-  prQty: number;
-  prAmount: number;
-  srQty: number;
-  srAmount: number;
-}
-
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    date: "01 Jan 2024",
-    warehouse: "Warehouse 1",
-    name: "China Apple",
-    purchasedQty: 690,
-    purchasedAmount: 3641.00,
-    soldQty: 30,
-    soldAmount: 25,
-    prQty: 200,
-    prAmount: 180,
-    srQty: 0,
-    srAmount: 0
-  },
-  {
-    id: 2,
-    date: "02 Jan 2024",
-    warehouse: "Warehouse 2",
-    name: "USA Orange",
-    purchasedQty: 850,
-    purchasedAmount: 4500.00,
-    soldQty: 50,
-    soldAmount: 75,
-    prQty: 150,
-    prAmount: 100,
-    srQty: 10,
-    srAmount: 20
-  },
-  {
-    id: 3,
-    date: "03 Jan 2024",
-    warehouse: "Warehouse 3",
-    name: "India Mango",
-    purchasedQty: 1200,
-    purchasedAmount: 7200.00,
-    soldQty: 100,
-    soldAmount: 150,
-    prQty: 300,
-    prAmount: 270,
-    srQty: 20,
-    srAmount: 40
-  },
-  {
-    id: 4,
-    date: "04 Jan 2024",
-    warehouse: "Warehouse 4",
-    name: "Brazil Banana",
-    purchasedQty: 950,
-    purchasedAmount: 3800.00,
-    soldQty: 80,
-    soldAmount: 65,
-    prQty: 250,
-    prAmount: 200,
-    srQty: 15,
-    srAmount: 30
-  },
-  {
-    id: 5,
-    date: "05 Jan 2024",
-    warehouse: "Warehouse 1",
-    name: "Australian Grape",
-    purchasedQty: 760,
-    purchasedAmount: 3040.00,
-    soldQty: 60,
-    soldAmount: 50,
-    prQty: 180,
-    prAmount: 150,
-    srQty: 5,
-    srAmount: 10
-  },
-  {
-    id: 6,
-    date: "06 Jan 2024",
-    warehouse: "Warehouse 2",
-    name: "South African Peach",
-    purchasedQty: 620,
-    purchasedAmount: 2480.00,
-    soldQty: 40,
-    soldAmount: 35,
-    prQty: 220,
-    prAmount: 190,
-    srQty: 8,
-    srAmount: 16
-  },
-  {
-    id: 7,
-    date: "07 Jan 2024",
-    warehouse: "Warehouse 3",
-    name: "New Zealand Kiwi",
-    purchasedQty: 500,
-    purchasedAmount: 3500.00,
-    soldQty: 70,
-    soldAmount: 100,
-    prQty: 130,
-    prAmount: 120,
-    srQty: 12,
-    srAmount: 24
-  },
-  {
-    id: 8,
-    date: "08 Jan 2024",
-    warehouse: "Warehouse 4",
-    name: "Canadian Blueberry",
-    purchasedQty: 820,
-    purchasedAmount: 4920.00,
-    soldQty: 90,
-    soldAmount: 120,
-    prQty: 210,
-    prAmount: 200,
-    srQty: 18,
-    srAmount: 36
-  },
-  {
-    id: 9,
-    date: "09 Jan 2024",
-    warehouse: "Warehouse 1",
-    name: "Spanish Strawberry",
-    purchasedQty: 930,
-    purchasedAmount: 4650.00,
-    soldQty: 110,
-    soldAmount: 140,
-    prQty: 170,
-    prAmount: 150,
-    srQty: 20,
-    srAmount: 40
-  },
-  {
-    id: 10,
-    date: "10 Jan 2024",
-    warehouse: "Warehouse 2",
-    name: "Mexican Avocado",
-    purchasedQty: 740,
-    purchasedAmount: 3700.00,
-    soldQty: 100,
-    soldAmount: 200,
-    prQty: 190,
-    prAmount: 180,
-    srQty: 25,
-    srAmount: 50
-  }
-];
+import { MoneyFormat, TProductReportInterface } from '@/interFace/interFace';
+import { useGetProductReportQuery } from '@/services/Report/Report';
 
 const ProductReport = () => {
-
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
-
-  const dummyData = (e: any) => {
-    e.preventDefault();
-  };
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(25);
+  const [searchQuery, setSearchQuery] = useState('');
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TProductReportInterface>('productId');
+  const { data: productReportData, error: productReportError, isLoading: productReportLoading, refetch }
+    = useGetProductReportQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
+
+  // handle pagination 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 25));
-    setPage(0);
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1);
+    refetch();
   };
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TProductReportInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
-  // Handler for selecting/deselecting all items
-  const handleSelectAllClick = (checked: boolean) => {
-    if (checked) {
-      setSelected(rows.map((row) => row.id));
-    } else {
-      setSelected([]);
-    }
-  };
-
-  // Handler for selecting/deselecting a single item
-  const handleClick = (id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: number[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = [...selected, id];
-    } else if (selectedIndex === 0) {
-      newSelected = selected.slice(1);
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = selected.slice(0, -1);
-    } else if (selectedIndex > 0) {
-      newSelected = [
-        ...selected.slice(0, selectedIndex),
-        ...selected.slice(selectedIndex + 1),
-      ];
-    }
-
-    setSelected(newSelected);
-  };
-
-  // Check if a particular item is selected
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+  const filteredData = productReportData?.data.filter((item: any) =>
+    item.productName.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+  const sortedRows = filteredData.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof TProductReportInterface];
+    const bValue = b[orderBy as keyof TProductReportInterface];
+    if (aValue === undefined || bValue === undefined) {
+      return 0;
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -256,93 +71,22 @@ const ProductReport = () => {
     return 0;
   });
 
+
+
   return (
 
     <>
       <div className="inventual-content-area px-4 sm:px-7">
         <div className="inventual-report-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
-          <div className="flex flex-col xl:flex-row xl:items-end w-full gap-7 mb-7">
-            <div className="grid grid-cols-12 gap-y-7 sm:gap-7 w-full">
-              <div className="col-span-12 md:col-span-6 xl:col-span-3">
-                <div className="inventual-form-field">
-                  <h5>Start Date</h5>
-                  <div className="inventual-input-field-style">
-                    <ReactDatePicker
-                      selected={startDate}
-                      onChange={(date) => setStartDate(date)}
-                      showYearDropdown
-                      showMonthDropdown
-                      useShortMonthInDropdown
-                      showPopperArrow={false}
-                      peekNextMonth
-                      dropdownMode="select"
-                      isClearable
-                      placeholderText="MM/DD/YYYY"
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="col-span-12 md:col-span-6 xl:col-span-3">
-                <div className="inventual-form-field">
-                  <h5>End Date</h5>
-                  <div className="inventual-input-field-style">
-                    <ReactDatePicker
-                      selected={endDate}
-                      onChange={(date) => setEndDate(date)}
-                      showYearDropdown
-                      showMonthDropdown
-                      useShortMonthInDropdown
-                      showPopperArrow={false}
-                      peekNextMonth
-                      dropdownMode="select"
-                      isClearable
-                      placeholderText="MM/DD/YYYY"
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="col-span-12 md:col-span-6 xl:col-span-3">
-                <div className="inventual-form-field">
-                  <h5>Warehouse</h5>
-                  <div className="inventual-select-field-style">
-                    <TextField
-                      select
-                      label="Select"
-                      defaultValue=""
-                      SelectProps={{
-                        displayEmpty: true,
-                        renderValue: (value: any) => {
-                          if (value === '') {
-                            return <em>Select Warehouse</em>;
-                          }
-                          return value;
-                        },
-                      }}
-                    >
-                      <MenuItem value="">
-                        <em>Select Warehouse</em>
-                      </MenuItem>
-                      <MenuItem value="Warehouse 1">Warehouse 1</MenuItem>
-                      <MenuItem value="Warehouse 2">Warehouse 2</MenuItem>
-                      <MenuItem value="Warehouse 3">Warehouse 3</MenuItem>
-                      <MenuItem value="Warehouse 4">Warehouse 4</MenuItem>
-                      <MenuItem value="Warehouse 5">Warehouse 5</MenuItem>
-                    </TextField>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="min-w-[200px]">
-              <button type='button' className='inventual-btn'>Generate Report</button>
-            </div>
-          </div>
           <div className="inventual-table-header-search-area">
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">
               <div className="col-span-12 md:col-span-7 lg:col-span-7 xl:col-span-5">
                 <div className="inventual-table-header-search relative">
-                  <input type="text" placeholder="Search List" />
+                  <input
+                    type="text"
+                    placeholder="Search List"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)} />
                   <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                 </div>
               </div>
@@ -356,13 +100,10 @@ const ProductReport = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Date</MenuItem>
-                            <MenuItem onClick={popupState.close}>Name</MenuItem>
-                            <MenuItem onClick={popupState.close}>Warehouse</MenuItem>
-                            <MenuItem onClick={popupState.close}>Purchased Qty</MenuItem>
-                            <MenuItem onClick={popupState.close}>Sold Qty</MenuItem>
-                            <MenuItem onClick={popupState.close}>PR Qty</MenuItem>
-                            <MenuItem onClick={popupState.close}>SR Qty</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("totalQuantityBought"); popupState.close() }}>Quantiy Bought</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("totalPaidInTaxes"); popupState.close() }}>Tax Paid</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("totalAmountPaid"); popupState.close() }}>Total Amount</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("stockQuantity"); popupState.close() }}>Stock Quantity</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -391,143 +132,100 @@ const ProductReport = () => {
                             <TableRow>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'date'}
-                                  direction={orderBy === 'date' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('date')}
+                                  active={orderBy === 'productCode'}
+                                  direction={orderBy === 'productCode' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('productCode')}
                                 >
-                                  Date
+                                  Product code
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'warehouse'}
-                                  direction={orderBy === 'warehouse' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('warehouse')}
-                                >
-                                  Warehouse
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'name'}
-                                  direction={orderBy === 'name' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('name')}
+                                  active={orderBy === 'productName'}
+                                  direction={orderBy === 'productName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('productName')}
                                 >
                                   Name
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'purchasedQty'}
-                                  direction={orderBy === 'purchasedQty' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('purchasedQty')}
+                                  active={orderBy === 'totalQuantityBought'}
+                                  direction={orderBy === 'totalQuantityBought' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalQuantityBought')}
                                 >
-                                  Purchased Qty
+                                  Quantity Bought
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'purchasedAmount'}
-                                  direction={orderBy === 'purchasedAmount' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('purchasedAmount')}
+                                  active={orderBy === 'totalAmountPaid'}
+                                  direction={orderBy === 'totalAmountPaid' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalAmountPaid')}
                                 >
-                                  Purchased Amount
+                                  Total Amount
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'soldQty'}
-                                  direction={orderBy === 'soldQty' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('soldQty')}
+                                  active={orderBy === 'totalPaidInTaxes'}
+                                  direction={orderBy === 'totalPaidInTaxes' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalPaidInTaxes')}
+                                >
+                                  Total Tax
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'totalQuantitySold'}
+                                  direction={orderBy === 'totalQuantitySold' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalQuantitySold')}
                                 >
                                   Sold Qty
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'prQty'}
-                                  direction={orderBy === 'prQty' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('prQty')}
+                                  active={orderBy === 'totalRevenue'}
+                                  direction={orderBy === 'totalRevenue' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalRevenue')}
                                 >
-                                  sold Amount
+                                  Revenue
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'soldAmount'}
-                                  direction={orderBy === 'soldAmount' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('soldAmount')}
+                                  active={orderBy === 'stockQuantity'}
+                                  direction={orderBy === 'stockQuantity' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('stockQuantity')}
                                 >
-
-                                  PR Qty
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'soldAmount'}
-                                  direction={orderBy === 'soldAmount' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('soldAmount')}
-                                >
-
-                                  PR Amount
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'soldAmount'}
-                                  direction={orderBy === 'soldAmount' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('soldAmount')}
-                                >
-
-                                  SR Qty
-                                </TableSortLabel>
-                              </TableCell>
-                              <TableCell>
-                                <TableSortLabel
-                                  active={orderBy === 'srAmount'}
-                                  direction={orderBy === 'srAmount' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('srAmount')}
-                                >
-                                  SR Amount
+                                  Stock Quantity
                                 </TableSortLabel>
                               </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
-                                <TableRow
-                                  key={row.id}
-                                  hover
-                                  onClick={() => handleClick(row.id)}
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
-                                >
-                                  <TableCell>{row.date}</TableCell>
-                                  <TableCell>{row.warehouse}</TableCell>
-                                  <TableCell>{row.name}</TableCell>
-                                  <TableCell>{row.purchasedQty}</TableCell>
-                                  <TableCell>${row.purchasedAmount}</TableCell>
-                                  <TableCell>{row.soldQty}</TableCell>
-                                  <TableCell>${row.soldAmount}</TableCell>
-                                  <TableCell>{row.prQty}</TableCell>
-                                  <TableCell>${row.prAmount}</TableCell>
-                                  <TableCell>{row.srQty}</TableCell>
-                                  <TableCell>${row.srAmount}</TableCell>
-                                </TableRow>
-                              ))}
-                            <TableRow>
-                              <TableCell colSpan={3}><span className="font-semibold text-heading">Total</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">3510</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">$98,254.00</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">1965</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">$247,210.00</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">11</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">$142.00</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">17</span></TableCell>
-                              <TableCell><span className="font-semibold text-heading">$174.00</span></TableCell>
-                            </TableRow>
+                            {productReportLoading ? (
+                              <tr>
+                                <td colSpan={7}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((poreport: any) => (
+                              <TableRow key={poreport.productId}>
+                                 <TableCell>{poreport.productCode}</TableCell>
+                                <TableCell>{poreport.productName}</TableCell>
+                                <TableCell>{poreport.totalQuantityBought}</TableCell>
+                                <TableCell>{MoneyFormat.format(poreport.totalAmountPaid)}</TableCell>
+                                <TableCell>{MoneyFormat.format(poreport.totalPaidInTaxes)}</TableCell>
+                                <TableCell>{poreport.totalQuantitySold}</TableCell>
+                                <TableCell>{MoneyFormat.format(poreport.totalRevenue)}</TableCell>
+                                <TableCell>{poreport.stockQuantity}</TableCell>
+                              </TableRow>
+                            ))}
+
                           </TableBody>
                         </Table>
                       </TableContainer>
@@ -537,12 +235,11 @@ const ProductReport = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
+                    count={productReportData?.totalCount || 0}
+                    page={currentPageNumber - 1}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
+                    rowsPerPage={currentPageSize}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
