@@ -15,7 +15,6 @@ import {
   TextField,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import ReactDatePicker from 'react-datepicker';
 import { MoneyFormat, TProductReportInterface } from '@/interFace/interFace';
 import { useGetProductReportQuery } from '@/services/Report/Report';
 
@@ -225,7 +224,6 @@ const ProductReport = () => {
                                 <TableCell>{poreport.stockQuantity}</TableCell>
                               </TableRow>
                             ))}
-
                           </TableBody>
                         </Table>
                       </TableContainer>

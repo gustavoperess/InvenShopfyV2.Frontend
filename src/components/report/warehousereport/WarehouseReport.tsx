@@ -9,189 +9,57 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Checkbox,
   TableSortLabel,
   Menu,
   MenuItem,
-  TextField,
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
-import ReactDatePicker from 'react-datepicker';
+import { MoneyFormat, TWarehouseReportInterface } from '@/interFace/interFace';
+import { useGetWarehouseReportQuery } from '@/services/Report/Report';
 
-// Define the structure of the data
-interface Data {
-  id: number;
-  sl: string;
-  warehouse: string;
-  phone: string;
-  email: string;
-  address: string;
-  protein: string;
-}
-
-// Sample data
-const rows: Data[] = [
-  {
-    id: 1,
-    sl: '01',
-    warehouse: 'Warehouse 1',
-    phone: '+02 585 339 202',
-    email: 'Joseph@example.com',
-    address: '2851 Green Avenue, Oakland, CA 94612',
-    protein: '',
-  },
-  {
-    id: 2,
-    sl: '02',
-    warehouse: 'Warehouse 2',
-    phone: '+02 585 339 202',
-    email: 'paul@example.com',
-    address: '4148 Cooks Mine Road, Albuquerque, NM 87108',
-    protein: '',
-  },
-  {
-    id: 3,
-    sl: '03',
-    warehouse: 'Warehouse 3',
-    phone: '+02 585 339 20',
-    address: '4257 Marietta Street, Vallejo, CA 94590',
-    email: 'matthew@example.com',
-    protein: '',
-  },
-  {
-    id: 4,
-    sl: '04',
-    warehouse: 'Warehouse 4',
-    phone: '+02 585 339 202',
-    email: 'matthew@example.com',
-    address: '3926 Brookside Drive, Jasper, AL 35501',
-    protein: '',
-  },
-  {
-    id: 5,
-    sl: '05',
-    warehouse: 'Warehouse 5',
-    phone: '+02 585 339 202',
-    email: 'glenn@example.com',
-    address: '4408 Quarry Drive, Auburn, AL 36830',
-    protein: '',
-  },
-  {
-    id: 6,
-    sl: '06',
-    warehouse: 'Warehouse 6',
-    phone: '+02 585 339 202',
-    email: 'crow@example.com',
-    address: '2377 Gordon Street, Claremont, CA 91711',
-    protein: '',
-  },
-  {
-    id: 7,
-    sl: '07',
-    warehouse: 'Warehouse 7',
-    phone: '+02 585 339 202',
-    email: 'clark@example.com',
-    address: '1880 Gorby Lane, Jackson, MS 39201',
-    protein: '',
-  },
-  {
-    id: 8,
-    sl: '08',
-    warehouse: 'Warehouse 8',
-    phone: '+02 585 339 202',
-    email: 'jennifer@example.com',
-    address: '4292 Park Boulevard, Latimer, IA 50452',
-    protein: '',
-  },
-  {
-    id: 9,
-    sl: '09',
-    warehouse: 'Warehouse 9',
-    phone: '+02 585 339 202',
-    email: 'boser@example.com',
-    address: '236 Counts Lane, Cincinnati, KY 45214',
-    protein: '',
-  },
-  {
-    id: 10,
-    sl: '10',
-    warehouse: 'Warehouse 10',
-    phone: '+02 585 339 202',
-    email: 'maria@example.com',
-    address: '2751 Polk Street, Tucson, AZ 85701',
-    protein: '',
-  },
-];
 
 const WarehouseReport = () => {
-
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
-
-  const dummyData = (e: any) => {
-    e.preventDefault();
-  };
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [selected, setSelected] = useState<number[]>([]);
+  const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+  const [currentPageSize, setCurrentPageSize] = useState(25);
+  const [searchQuery, setSearchQuery] = useState('');
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
+  const [orderBy, setOrderBy] = useState<keyof TWarehouseReportInterface>('id');
+  const { data: warehouseReportData, error: warehouseReportError, isLoading: warehouseReportLoading, refetch }
+    = useGetWarehouseReportQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
-  // Handlers for pagination
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
   };
+
+  // handle pagination 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1);
+    refetch();
   };
 
   // Handlers for sorting
-  const handleRequestSort = (property: keyof Data) => {
+  const handleRequestSort = (property: keyof TWarehouseReportInterface) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
-  // Handler for selecting/deselecting all items
-  const handleSelectAllClick = (checked: boolean) => {
-    if (checked) {
-      setSelected(rows.map((row) => row.id));
-    } else {
-      setSelected([]);
-    }
-  };
-
-  // Handler for selecting/deselecting a single item
-  const handleClick = (id: number) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected: number[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = [...selected, id];
-    } else if (selectedIndex === 0) {
-      newSelected = selected.slice(1);
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = selected.slice(0, -1);
-    } else if (selectedIndex > 0) {
-      newSelected = [
-        ...selected.slice(0, selectedIndex),
-        ...selected.slice(selectedIndex + 1),
-      ];
-    }
-
-    setSelected(newSelected);
-  };
-
-  // Check if a particular item is selected
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+  const filteredData = warehouseReportData?.data.filter((item: any) =>
+    item.warehouseName.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
 
   // Function to sort data
-  const sortedRows = rows.slice().sort((a, b) => {
+  const sortedRows = filteredData.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = (a as any)[orderBy];
-    const bValue = (b as any)[orderBy];
+    const aValue = a[orderBy as keyof TWarehouseReportInterface];
+    const bValue = b[orderBy as keyof TWarehouseReportInterface];
+    if (aValue === undefined || bValue === undefined) {
+      return 0;
+    }
 
     if (aValue < bValue) {
       return isAsc ? -1 : 1;
@@ -201,91 +69,22 @@ const WarehouseReport = () => {
     }
     return 0;
   });
+  
 
   return (
 
     <>
       <div className="inventual-content-area px-4 sm:px-7">
         <div className="inventual-report-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5">
-          <div className="grid grid-cols-12 gap-y-7 sm:gap-7 mb-7 items-end">
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-              <div className="inventual-form-field">
-                <h5>Start Date</h5>
-                <div className="inventual-input-field-style">
-                  <ReactDatePicker
-                    selected={startDate}
-                    onChange={(date) => setStartDate(date)}
-                    showYearDropdown
-                    showMonthDropdown
-                    useShortMonthInDropdown
-                    showPopperArrow={false}
-                    peekNextMonth
-                    dropdownMode="select"
-                    isClearable
-                    placeholderText="MM/DD/YYYY"
-                    className="w-full"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-              <div className="inventual-form-field">
-                <h5>End Date</h5>
-                <div className="inventual-input-field-style">
-                  <ReactDatePicker
-                    selected={endDate}
-                    onChange={(date) => setEndDate(date)}
-                    showYearDropdown
-                    showMonthDropdown
-                    useShortMonthInDropdown
-                    showPopperArrow={false}
-                    peekNextMonth
-                    dropdownMode="select"
-                    isClearable
-                    placeholderText="MM/DD/YYYY"
-                    className="w-full"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-              <div className="inventual-form-field">
-                <h5>Report Shortcut</h5>
-                <div className="inventual-select-field-style">
-                  <TextField
-                    select
-                    label="Select"
-                    defaultValue=""
-                    SelectProps={{
-                      displayEmpty: true,
-                      renderValue: (value: any) => {
-                        if (value === '') {
-                          return <em>Select Report</em>;
-                        }
-                        return value;
-                      },
-                    }}
-                  >
-                    <MenuItem value="">
-                      <em>Select Report</em>
-                    </MenuItem>
-                    <MenuItem value="Daily">Daily</MenuItem>
-                    <MenuItem value="Weekly">Weekly</MenuItem>
-                    <MenuItem value="Monthly">Monthly</MenuItem>
-                    <MenuItem value="Yearly">Yearly</MenuItem>
-                  </TextField>
-                </div>
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-              <button type='button' className='inventual-btn'>Generate Report</button>
-            </div>
-          </div>
           <div className="inventual-table-header-search-area">
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">
               <div className="col-span-12 md:col-span-7 lg:col-span-7 xl:col-span-5">
                 <div className="inventual-table-header-search relative">
-                  <input type="text" placeholder="Search List" />
+                <input
+                    type="text"
+                    placeholder="Search List"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)} />
                   <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                 </div>
               </div>
@@ -299,9 +98,10 @@ const WarehouseReport = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>Warehouse</MenuItem>
-                            <MenuItem onClick={popupState.close}>Email</MenuItem>
-                            <MenuItem onClick={popupState.close}>Address</MenuItem>
+                          <MenuItem onClick={() => { handleRequestSort("totalAmountSold"); popupState.close() }}>Amount Sold</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("totalNumbersOfProductsBought"); popupState.close() }}>Tax Paid</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("totalQtyOfProductsSold"); popupState.close() }}>Quantity Sold</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("stockQuantity"); popupState.close() }}>Stock Quantity</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -330,58 +130,85 @@ const WarehouseReport = () => {
                           {/* Table head */}
                           <TableHead className='bg-lightest'>
                             <TableRow>
-                              {/* Checkbox for select all */}
-                              <TableCell>
-                                <Checkbox
-                                  indeterminate={selected.length > 0 && selected.length < rows.length}
-                                  checked={rows.length > 0 && selected.length === rows.length}
-                                  onChange={(e) => handleSelectAllClick(e.target.checked)}
-                                />
-                              </TableCell>
-                              {/* Table headers */}
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'sl'}
-                                  direction={orderBy === 'sl' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('sl')}
+                                  active={orderBy === 'warehouseName'}
+                                  direction={orderBy === 'warehouseName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('warehouseName')}
                                 >
-                                  sl
+                                  Warehouse Name
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'warehouse'}
-                                  direction={orderBy === 'warehouse' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('warehouse')}
+                                  active={orderBy === 'totalAmountBought'}
+                                  direction={orderBy === 'totalAmountBought' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalAmountBought')}
                                 >
-                                  Warehouse
+                                  Total Amount bought
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'phone'}
-                                  direction={orderBy === 'phone' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('phone')}
+                                  active={orderBy === 'totalNumbersOfProductsBought'}
+                                  direction={orderBy === 'totalNumbersOfProductsBought' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalNumbersOfProductsBought')}
                                 >
-                                  Phone
+                                  Number of products Bought
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'email'}
-                                  direction={orderBy === 'email' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('email')}
+                                  active={orderBy === 'totalPaidInShipping'}
+                                  direction={orderBy === 'totalPaidInShipping' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalPaidInShipping')}
                                 >
-                                  Email
+                                  Shipping Cost
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'address'}
-                                  direction={orderBy === 'address' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('address')}
+                                  active={orderBy === 'totalAmountSold'}
+                                  direction={orderBy === 'totalAmountSold' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalAmountSold')}
                                 >
-                                  address
+                                  Total Sold
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'totalQtyOfProductsSold'}
+                                  direction={orderBy === 'totalQtyOfProductsSold' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalQtyOfProductsSold')}
+                                >
+                                  Quantity Sold
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'totalNumberOfSales'}
+                                  direction={orderBy === 'totalNumberOfSales' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalNumberOfSales')}
+                                >
+                                  Number of sales
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'totalProfit'}
+                                  direction={orderBy === 'totalProfit' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('totalProfit')}
+                                >
+                                  Total Profit
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'stockQuantity'}
+                                  direction={orderBy === 'stockQuantity' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('stockQuantity')}
+                                >
+                                  Stock Qty
                                 </TableSortLabel>
                               </TableCell>
                             </TableRow>
@@ -389,29 +216,27 @@ const WarehouseReport = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {sortedRows
-                              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                              .map((row) => (
-                                <TableRow
-                                  key={row.id}
-                                  hover
-                                  onClick={() => handleClick(row.id)}
-                                  role="checkbox"
-                                  aria-checked={isSelected(row.id)}
-                                  selected={isSelected(row.id)}
-                                >
-                                  {/* Checkbox for row selection */}
-                                  <TableCell>
-                                    <Checkbox checked={isSelected(row.id)} />
-                                  </TableCell>
-                                  {/* Data cells */}
-                                  <TableCell>{row.sl}</TableCell>
-                                  <TableCell>{row.warehouse}</TableCell>
-                                  <TableCell>{row.phone}</TableCell>
-                                  <TableCell>{row.email}</TableCell>
-                                  <TableCell>{row.address}</TableCell>
-                                </TableRow>
-                              ))}
+                            {warehouseReportLoading ? (
+                              <tr>
+                                <td colSpan={7}>
+                                  <div className="inventual-loading-container">
+                                    <span className="inventual-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : sortedRows?.map((wreport: any) => (
+                              <TableRow key={wreport.id}>
+                                 <TableCell>{wreport.warehouseName}</TableCell>
+                                 <TableCell>{MoneyFormat.format(wreport.totalAmountBought)}</TableCell>
+                                <TableCell>{wreport.totalNumbersOfProductsBought}</TableCell>
+                                <TableCell>{MoneyFormat.format(wreport.totalPaidInShipping)}</TableCell>
+                                <TableCell>{MoneyFormat.format(wreport.totalAmountSold)}</TableCell>
+                                <TableCell>{wreport.totalQtyOfProductsSold}</TableCell>
+                                <TableCell>{wreport.totalNumberOfSales}</TableCell>
+                                <TableCell>{MoneyFormat.format(wreport.totalProfit)}</TableCell>
+                                <TableCell>{wreport.stockQuantity}</TableCell>
+                              </TableRow>
+                            ))}
                           </TableBody>
                         </Table>
                       </TableContainer>
@@ -421,12 +246,11 @@ const WarehouseReport = () => {
                 <div className="inventual-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
+                    count={warehouseReportData?.totalCount || 0}
+                    page={currentPageNumber - 1}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
+                    rowsPerPage={currentPageSize}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>

@@ -46,11 +46,19 @@ export const reportsApi = createApi({
               params: { dateRange, startDate, endDate, pageNumber, pageSize },
             }),
           }),
+          getWarehouseReport: builder.query<any, {pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize }) => ({
+              url: "warehouse-report",
+              method: "GET",
+              params: { pageNumber, pageSize },
+            }),
+          }),
     }),
 });
 
 
 export const { 
+    useGetWarehouseReportQuery,
     useGetExpenserReportQuery,
     useGetCustomerReportQuery,
     useGetProductReportQuery,

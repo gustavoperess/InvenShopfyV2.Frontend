@@ -164,6 +164,21 @@ export interface TProductReportInterface {
 }
 
 
+export interface TWarehouseReportInterface {
+  id: number;
+  warehouseName: string;
+  totalAmountBought: number;
+  totalNumbersOfProductsBought: number;
+  totalPaidInShipping: number;
+  totalAmountSold: number;
+  totalQtyOfProductsSold: number;
+  totalNumberOfSales: number;
+  totalProfit: number;
+  stockQuantity: number;
+}
+
+
+
 
 export interface TSaleReportInterface {
   billerId: number;
