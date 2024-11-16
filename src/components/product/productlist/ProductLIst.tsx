@@ -153,7 +153,7 @@ const ProductList = () => {
               <Link className='inventual-btn primary-btn' href="/product/importProduct"><span><i className="fa-regular fa-folder-arrow-up"></i></span>Import Product</Link>
             </div>
             <div className="file-import-btn-wrapper">
-              <Link className='inventual-btn primary-btn' href="/report/productreport"><span><i className="fa-regular fa-folder-arrow-up"></i></span>Product Report</Link>
+              <Link className='inventual-btn primary-btn' href="/report/productreport"><span><i className="fa-regular fa-file-chart-column"></i></span>Product Report</Link>
             </div>
           </div>
           <div className="inventual-table-header-search-area">

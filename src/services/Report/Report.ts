@@ -53,11 +53,19 @@ export const reportsApi = createApi({
               params: { pageNumber, pageSize },
             }),
           }),
+          getSupplierReport: builder.query<any, { dateRange: string; startDate: string | undefined; endDate: string | undefined; pageNumber: number; pageSize: number }>({
+            query: ({ dateRange, startDate, endDate, pageNumber, pageSize }) => ({
+              url: "supplier-report",
+              method: "GET",
+              params: { dateRange, startDate, endDate, pageNumber, pageSize },
+            }),
+          }),
     }),
 });
 
 
 export const { 
+    useGetSupplierReportQuery,
     useGetWarehouseReportQuery,
     useGetExpenserReportQuery,
     useGetCustomerReportQuery,

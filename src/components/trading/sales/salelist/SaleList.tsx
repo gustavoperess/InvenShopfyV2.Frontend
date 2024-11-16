@@ -172,7 +172,7 @@ const SaleList = () => {
           <div className="inventual-product-top-btn flex flex-wrap gap-5 mb-7">
           <Link className='inventual-btn secondary-btn' href="/trading/sales/newsale"><span><i className="fa-regular fa-circle-plus"></i></span>Add Sale</Link>
             <div className="file-import-btn-wrapper">
-              <Link className='inventual-btn primary-btn' href="/report/salereport"><span><i className="fa-regular fa-folder-arrow-up"></i></span>Sales Reports</Link>
+              <Link className='inventual-btn primary-btn' href="/report/salereport"><span><i className="fa-regular fa-file-chart-column"></i></span>Sales Reports</Link>
             </div>
           </div>
           <div className="inventual-table-header-search-area">

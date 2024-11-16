@@ -173,7 +173,7 @@ const ManagePurchaseList = () => {
           <div className="inventual-product-top-btn flex flex-wrap gap-5 mb-7">
             <Link className='inventual-btn secondary-btn' href="/trading/purchase/addpurchase"><span><i className="fa-regular fa-circle-plus"></i></span>Add Purchase</Link>
             <div className="file-import-btn-wrapper">
-              <Link className='inventual-btn primary-btn' href="/report/purchasereport"><span><i className="fa-regular fa-folder-arrow-up"></i></span>Purchase Reports</Link>
+              <Link className='inventual-btn primary-btn' href="/report/purchasereport"><span><i className="fa-regular fa-file-chart-column"></i></span>Purchase Reports</Link>
             </div>
           </div>
           <div className="inventual-table-header-search-area">

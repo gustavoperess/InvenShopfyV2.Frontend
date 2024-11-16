@@ -115,7 +115,7 @@ export let MoneyFormat = new Intl.NumberFormat('en-US', {
 });
 
 
-export interface TPurchaseReportInterface {
+export interface TSupplierReportInterface {
   supplierId: number;
   supplierName: string;
   numberOfPurchases: number;
@@ -125,6 +125,19 @@ export interface TPurchaseReportInterface {
   startDate: Date;
   endDate: Date;
   totalAmount: number;
+}
+
+
+export interface TPurchaseReportInterface {
+  id: number;
+  productName: string;
+  supplierName: string;
+  warehouseName: string;
+  purchaseDate: string;
+  totalQuantityBoughtPerProduct: number;
+  totalPricePaidPerProduct: number;
+  totalInTaxPaidPerProduct: number;
+  purchaseReferenceNumber: string;
 }
 
 
