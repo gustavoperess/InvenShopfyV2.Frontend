@@ -22,7 +22,7 @@ import { useGetPurchaseReportQuery } from '@/services/Report/Report';
 
 const PurchaseReport = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [currentPageSize, setCurrentPageSize] = useState(25);
+  const [currentPageSize, setCurrentPageSize] = useState(10);
   const [startDate, setStartDate] = useState<string | undefined>(undefined);
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [dateRange, setDateRange] = useState<string>("Yearly");
@@ -30,7 +30,7 @@ const PurchaseReport = () => {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof TPurchaseReportInterface>('id');
   const { data: purchaseReportData, error: purchaseReportError, isLoading: purchaseReportLoading, refetch }
-    = useGetPurchaseReportQuery({ dateRange, startDate, endDate, pageNumber: currentPageNumber, pageSize: currentPageSize });
+    = useGetPurchaseReportQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize, dateRange, startDate, endDate });
 
 
 
@@ -83,7 +83,7 @@ const PurchaseReport = () => {
     }
     return 0;
   });
-
+  
 
   return (
 
@@ -285,7 +285,7 @@ const PurchaseReport = () => {
                                 </td>
                               </tr>
                             ) : sortedRows?.map((pureport: any) => (
-                              <TableRow key={pureport.id}>
+                              <TableRow key={pureport.tempKey}>
                                 <TableCell>{pureport.productName}</TableCell>
                                 <TableCell>{pureport.purchaseReferenceNumber}</TableCell>
                                 <TableCell>{pureport.supplierName}</TableCell>

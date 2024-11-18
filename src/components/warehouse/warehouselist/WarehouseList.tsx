@@ -69,6 +69,7 @@ const WarehouseList = () => {
     setOpen(false);
   }
 
+  
   // handle delete submission
   const handleDelete = async () => {
     if (warehouse > 0) {

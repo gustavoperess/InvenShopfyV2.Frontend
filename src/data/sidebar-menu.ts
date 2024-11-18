@@ -238,18 +238,6 @@ export const menuData: MenuItem[] = [
                 label: "Supplier Report",
                 routeLink: "/report/supplierreport",
             },
-            {
-                label: "Discount Report",
-                routeLink: "/report/discountreport",
-            },
-            {
-                label: "Tax Report",
-                routeLink: "/report/taxreport",
-            },
-            {
-                label: "Shipping Charge",
-                routeLink: "/report/shippingchargereport",
-            },
         ],
     },
     {

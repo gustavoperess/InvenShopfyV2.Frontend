@@ -129,6 +129,7 @@ export interface TSupplierReportInterface {
 
 
 export interface TPurchaseReportInterface {
+  tempKey: string;
   id: number;
   productName: string;
   supplierName: string;
