@@ -163,7 +163,6 @@ const ProfileList = () => {
         }
     );
 
-
     return (
         <>
             <div className="inventual-content-area px-4 sm:px-7">

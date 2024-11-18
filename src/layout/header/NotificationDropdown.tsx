@@ -2,116 +2,51 @@ import { imageLoader } from '@/hooks/imgLoader';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import userImgOne from "../../../public/assets/img/user/user-1.png"
-import userImgTwo from "../../../public/assets/img/user/user-2.png"
-import userImgThree from "../../../public/assets/img/user/user-3.png"
-import userImgFour from "../../../public/assets/img/user/user-4.png"
-import userImgFive from "../../../public/assets/img/user/user-5.png"
+import { useGetAllNotificationsQuery } from '@/services/Notifications/Notification';
+
 
 const NotificationDropdown = () => {
-    return (
+    const { data: notificationData, error: notificationError, isLoading: notificationLoading, refetch } = useGetAllNotificationsQuery();
+
+    if (notificationLoading) {
+        return (
+            <div className="inventual-loading-container">
+                <span className="inventual-loading"></span>
+            </div>
+        );
+    }
+    if (notificationError) {
+        return <div className="text-red-500">Failed to load notifications.</div>;
+    }
+    const notifications = notificationData?.data || [];
+
+    
+
+    return(
         <ul>
-            <li>
-                <div className="inventual-notify-dropdown-item">
-                    <div className="thumb">
-                        <Link href="/message">
-                            <Image src={userImgOne} loader={imageLoader} placeholder="blur" loading='lazy' style={{ width: '100%', height: "auto" }} alt="genres img" />
-                        </Link>
-                    </div>
-                    <div className="content">
-                        <h6>
-                            <Link href="/message">
-                                Stock Movement Alerts
+            {notifications.length > 0 ? (
+                notifications.map((notification: any) => (
+                    <li key={notification.id}>
+                        <div className="inventual-notify-dropdown-item">
+                        <div className="thumb">
+                            <Link href={notification.href}>   
+                                <Image src={notification.image} height={32} width={32} alt='image not found' priority />
                             </Link>
-                        </h6>
-                        <span>
-                            31 Dec 2023 - 08:36
-                            PM
-                        </span>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div className="inventual-notify-dropdown-item">
-                    <div className="thumb">
-                        <Link href="/message">
-                            <Image src={userImgTwo} loader={imageLoader} placeholder="blur" loading='lazy' style={{ width: '100%', height: "auto" }} alt="genres img" />
-                        </Link>
-                    </div>
-                    <div className="content">
-                        <h6>
-                            <Link href="/message">
-                                Supplier Communication Updates
-                            </Link>
-                        </h6>
-                        <span>
-                            31 Dec 2021 - 08:36
-                            PM
-                        </span>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div className="inventual-notify-dropdown-item">
-                    <div className="thumb">
-                        <Link href="/message">
-                            <Image src={userImgThree} loader={imageLoader} placeholder="blur" loading='lazy' style={{ width: '100%', height: "auto" }} alt="genres img" />
-                        </Link>
-                    </div>
-                    <div className="content">
-                        <h6>
-                            <Link href="/message">
-                                Demand Forecasting Reminders
-                            </Link>
-                        </h6>
-                        <span>
-                            31 Dec 2021 - 08:36
-                            PM
-                        </span>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div className="inventual-notify-dropdown-item">
-                    <div className="thumb">
-                        <Link href="/message">
-                            <Image src={userImgFour} loader={imageLoader} placeholder="blur" loading='lazy' style={{ width: '100%', height: "auto" }} alt="genres img" />
-                        </Link>
-                    </div>
-                    <div className="content">
-                        <h6>
-                            <Link href="/message">
-                                {" "}
-                                Inventory Valuation Reports
-                            </Link>
-                        </h6>
-                        <span>
-                            31 Dec 2021 - 08:36
-                            PM
-                        </span>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div className="inventual-notify-dropdown-item">
-                    <div className="thumb">
-                        <Link href="/message">
-                            <Image src={userImgFive} loader={imageLoader} placeholder="blur" loading='lazy' style={{ width: '100%', height: "auto" }} alt="genres img" />
-                        </Link>
-                    </div>
-                    <div className="content">
-                        <h6>
-                            <Link href="/message">
-                                Training and Development Opportunities
-                            </Link>
-                        </h6>
-                        <span>
-                            31 Dec 2021 - 08:36
-                            PM
-                        </span>
-                    </div>
-                </div>
-            </li>
+                            </div>
+                            <div className="content">
+                                <h6>
+                                    <Link href={notification.href}>{notification.title}</Link>
+                                </h6>
+                                <span>{notification.createAt || 'Unknown Date'}</span>
+                            </div>
+                        </div>
+                    </li>
+                ))
+            ) : (
+                <li>
+                    <div className="text-gray-500 text-center py-2">No notifications available</div>
+                </li>
+            )}
         </ul>
     );
 };
