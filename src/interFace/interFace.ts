@@ -240,6 +240,7 @@ export interface TWarehouseInterface {
 export interface TUserInterface {
   id: number;
   userId: number;
+  profilePicture: string;
   userName: string;
   phoneNumber: string;
   roleName: string;

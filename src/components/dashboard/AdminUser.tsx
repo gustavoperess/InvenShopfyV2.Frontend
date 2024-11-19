@@ -34,7 +34,7 @@ const AdminUser = () => {
             </div>
             <div className="inventual-dashboard-user">
                 {userLoading ? (
-                    <div>Loading...</div> 
+                    <div>Loading...</div>
                 ) : userError ? (
                     <div>Error loading user data</div>
                 ) : userData?.length > 0 ? (
@@ -42,13 +42,13 @@ const AdminUser = () => {
                         <div key={index} className="inventual-dashboard-user-list flex flex-wrap justify-between items-center mb-5 last:mb-0">
                             <div className="inventual-dashboard-user-list-left flex flex-wrap items-center gap-4">
                                 <div className="inventual-dashboard-user-list-left-img">
-                                    <Image 
-                                        src={item.profilePicture || "/defaultProfileImage.png"}  // Add a default image path
-                                        height={60} 
-                                        width={50} 
-                                        alt='profileImage' 
-                                        priority 
-                                        style={{ maxHeight: '60px', maxWidth: '50px', objectFit: 'contain' }}
+                                    <Image
+                                        src={item.profilePicture}
+                                        width="0"
+                                        height="0"
+                                        alt='image not found'
+                                        sizes="100vw"
+                                        style={{ width: '60px', height: '50px', maxHeight: '60px', maxWidth: '50px', objectFit: 'contain' }}
                                     />
                                 </div>
                                 <div className="inventual-dashboard-user-list-left-text">

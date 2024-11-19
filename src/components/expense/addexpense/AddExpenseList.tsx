@@ -55,7 +55,7 @@ const AddExpenseList = () => {
         return `${year}-${month}-${day}`;
     };
 
-
+    
     const handleExpenseListData = async (event: any) => {
         event.preventDefault();
         let date = formatDate(startDate)
@@ -195,7 +195,7 @@ const AddExpenseList = () => {
                                                             const selectedCategoryItem = totalCategoryData?.data.find(
                                                                 (category: TMainCategoryInterface) => category.id === Number(value)
                                                             );
-                                                            return selectedCategoryItem ? selectedCategoryItem.category : <em>Select Category</em>;
+                                                            return selectedCategoryItem ? selectedCategoryItem.mainCategory : <em>Select Category</em>;
                                                         },
                                                     }}
                                                 >

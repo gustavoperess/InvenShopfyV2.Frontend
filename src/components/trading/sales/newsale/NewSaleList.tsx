@@ -43,7 +43,6 @@ const NewSaleList = () => {
 
     const { data: customerData } = useGetCustomerNamesQuery({ pageNumber: 1, pageSize: 25 });
     const { data: billerDataNew } = useGetAllBillersNewQuery();
-    // const { data: billerData } = useGetBillerNamesQuery({ pageNumber: 1, pageSize: 25 });
     const { data: warehouseData } = useGetWarehouseNamesQuery({ pageNumber: 1, pageSize: 25 });
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<TProductInterface[]>([]);

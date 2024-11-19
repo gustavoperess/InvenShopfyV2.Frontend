@@ -129,7 +129,7 @@ const Header = () => {
                     <div>Error loading user data</div>
                   ) :
                     <Image src={currentuser?.profilePicture} className="rounded" height={50} width={50} alt='profilePicture' priority 
-                    style={{ maxHeight: '50px', width: '50px', objectFit: 'contain' }}/>
+                    style={{ maxHeight: '50px', maxWidth: '50px', objectFit: 'contain' }}/>
                 }
               </button>
             </div>

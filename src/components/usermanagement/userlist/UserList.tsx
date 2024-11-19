@@ -1,5 +1,6 @@
 "use client"
 import React, { useState } from 'react';
+import Image, { StaticImageData } from 'next/image';
 import {
   Paper,
   Table,
@@ -215,9 +216,16 @@ const UserList = () => {
                                 <TableSortLabel
                                   active={orderBy === 'userId'}
                                   direction={orderBy === 'userId' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('userId')}
-                                >
+                                  onClick={() => handleRequestSort('userId')}>
                                   Id
+                                </TableSortLabel>
+                              </TableCell>
+                              <TableCell>
+                                <TableSortLabel
+                                  active={orderBy === 'profilePicture'}
+                                  direction={orderBy === 'profilePicture' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('profilePicture')}>
+                                  Profile Picture
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -302,6 +310,17 @@ const UserList = () => {
                                     <Checkbox checked={isSelected(user.userId)} />
                                   </TableCell>
                                   <TableCell>{user.userId}</TableCell>
+                                  <TableCell>
+                                  <div className="min-h-[70px] inline-flex items-center justify-cente">
+                                    <Image
+                                        src={user.profilePicture}
+                                        width="0"
+                                        height="0"
+                                        alt='image not found'
+                                        sizes="100vw"
+                                        style={{ width: '60px', height: '50px', maxHeight: '60px', maxWidth: '50px', objectFit: 'contain' }}/>
+                                  </div>
+                                </TableCell>
                                   <TableCell>{user.userName}</TableCell>
                                   <TableCell>{user.phoneNumber}</TableCell>
                                   <TableCell>{user.email}</TableCell>

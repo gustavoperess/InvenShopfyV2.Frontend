@@ -2,106 +2,130 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { Checkbox, FormControlLabel, MenuItem, TextField } from '@mui/material';
-import barcodeImg from '../../../../public/assets/img/icon/barcode.png';
 import { toast } from 'react-toastify';
-import product_data from '@/data/product-data';
 import { TProduct } from '@/interFace/interFace';
+import { useGetProductByNameQuery } from '@/services/Product/Product';
+import { TProductInterface, MoneyFormat } from '@/interFace/interFace';
+import Barcode from 'react-barcode';
+
+
 
 const GenerateBarcodeList = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<TProduct[]>([]);
-    const [activeItemIds, setActiveItemIds] = useState<number[]>([]); 
+    const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
     const [activeItems, setActiveItems] = useState<TProduct[]>([]);
-
-    const handleSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const query = event.target.value;
-        setSearchQuery(query);
-
-        if (query.trim() === '') {
-            setSearchResults([]);
-        } else {
-            const filteredResults = product_data.filter(product =>
-                product.title.toLowerCase().includes(query.toLowerCase())
-            );
-            setSearchResults(filteredResults);
-        }
-    };
+    const [product, setProduct] = useState<string>("");
+    const [productName, setProductName] = useState<string>("");
+    const [suggestions, setSuggestions] = useState<TProductInterface[]>([]);
+    const [productInformation, setProductInformation] = useState<TProductInterface[]>([]);
+    const [name, setName] = useState<boolean>(true)
+    const [code, setCode] = useState<boolean>(true)
+    const [price, setPrice] = useState<boolean>(true)
+    const [productCodeNumber, setProductCodeNumber] = useState<number>();
+    const [selectBarSize, setSelectBarSize] = useState<string>("50");
+    const [productCodeName, setProductCodeName] = useState<string>("");
+    const [productCodePrice, setProductCodePrice] = useState<number>();
+    const debouncedSearchTerm = useDebounce(productName, 500);
 
 
-    const toggleActiveItem = (id: number) => {
-        setActiveItemIds(prevState => {
-            if (prevState.includes(id)) {
-                return prevState.filter(itemId => itemId !== id);
-            } else {
-                return [...prevState, id];
-            }
-        });
-        updateActiveItems();
-    };
+
+
+    //debounce function
+    function useDebounce(value: string, delay: number) {
+        const [debouncedValue, setDebouncedValue] = useState(value);
+
+        useEffect(() => {
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+
+            return () => clearTimeout(handler);
+        }, [value, delay]);
+
+        return debouncedValue;
+    }
+
+    const { data: productSuggestionsData, error } = useGetProductByNameQuery(debouncedSearchTerm, {
+        skip: debouncedSearchTerm.trim().length === 0  // Only call API if debounced term is not empty
+    });
+
 
     useEffect(() => {
-        updateActiveItems();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeItemIds]);
+        if (debouncedSearchTerm.trim().length > 0 && productSuggestionsData) {
+            setSuggestions(productSuggestionsData.data);
+        } else {
+            setSuggestions([]);
+        }
 
-    const updateActiveItems = () => {
-        const activeItemsData = product_data.filter(product => activeItemIds.includes(product.id));
-        setActiveItems(activeItemsData);
+        // Handle error scenarios
+        if (error) {
+            console.error("Error fetching product suggestions", error);
+            // You could display a user-friendly message if needed
+        }
+    }, [debouncedSearchTerm, productSuggestionsData, error]);
+
+    const selectSuggestion = (suggestion: TProductInterface) => {
+        if (productInformation.length > 0) {
+            setProductInformation([]);
+            setProductCodeName("");
+            setProductCodePrice(undefined);
+            setProductCodeNumber(undefined);
+            setProductInformation(prev => [
+                ...prev, { ...suggestion }]);
+        } else {
+            setProductInformation(prev => [
+                ...prev, { ...suggestion }]);
+        }
+        setSuggestions([]);
+        setProduct("");
     };
 
+    //handler for close search with close btn
     const handleSearchClose = () => {
         setSearchQuery('');
         setSearchResults([]);
     };
 
-    //hendle increament 
-    const handleIncreament = (increaseId: any) => {
-        setActiveItems((prevData) => prevData.map((item) => {
-            if (increaseId === item.id) {
-                return {
-                    ...item,
-                    quantity: item.quantity + 1
-                }
-            }
-            return item
-        }))
+    const handleRemoveProduct = (productId: number) => {
+        setProductInformation((prevProducts) =>
+            prevProducts.filter((product) => product.id !== productId)
+        );
     };
 
-    //handle decreament
-    const handleDecrement = (decreaseId: any) => {
-        setActiveItems((prevData) => prevData.map((item) => {
-            if (decreaseId === item.id) {
-                return {
-                    ...item,
-                    quantity: item.quantity - 1 >= 1 ? item.quantity - 1 : 1
-                }
-            }
-            return item
-        }))
+
+    const onTypeChangeForProduct = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setProduct(value);
+        setProductName(value);
     };
 
-    const handleRemoveItem = (removeId: number) => {
-        const remainingItem = activeItems.filter((item) => item.id !== removeId);
-        setActiveItems(remainingItem);
-        setActiveItemIds(prevState => prevState.filter(itemId => itemId !== removeId));
-    };
 
 
     //handle generate barcode 
-    const generateBarcodeInputRef = useRef<HTMLInputElement>(null);
+
     const handleGenerateBarcode = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        try {
-            toast.success("Barcode Generate successfully!");
-            if (generateBarcodeInputRef.current) {
-                generateBarcodeInputRef.current.value = '';
-                setActiveItems([]);
-                setActiveItemIds([]);
-
+        if (productInformation.length > 0) {
+            try {
+                if (code != false) {
+                    setProductCodeNumber(productInformation?.[0].productCode)
+                }
+                if (price != false) {
+                    setProductCodePrice(productInformation?.[0].price)
+                }
+                if (name != false) {
+                    setProductCodeName(productInformation?.[0].title)
+                }
+                toast.success("Barcode Generate successfully!");
+            } catch {
+                toast.error("Failed to  Generate Barcode. Please try again later.");
             }
-        } catch {
-            toast.error("Failed to  Generate Barcode. Please try again later.");
+
+        } else {
+            toast.error("Please enter a product to generate the bar code");
         }
+
     }
 
     return (
@@ -114,46 +138,48 @@ const GenerateBarcodeList = () => {
                                 <form onSubmit={handleGenerateBarcode}>
                                     <div className="inventual-barcode-left h-full md:mb-7 sm:mb-7">
                                         <div className="inventual-select-field mb-5">
-                                            <div className="inventual-form-field">
-                                                <h5>Select Product</h5>
-                                                <div className="inventual-input-field-style search-field">
-                                                    <input
-                                                        type="text"
-                                                        ref={generateBarcodeInputRef}
-                                                        placeholder='Scan / search products by code / name'
-                                                        value={searchQuery}
-                                                        onChange={handleSearchInputChange}
-                                                    />
-                                                    {
-                                                        searchResults.length > 0 && (
-                                                            <div onClick={handleSearchClose} className="search-close">x</div>
-                                                        )
-                                                    }
+                                            <div className="inventual-select-field">
+                                                <div className="inventual-form-field">
+                                                    <h5>Select Product</h5>
+                                                    <div className="inventual-input-field-style search-field">
+                                                        <TextField
+                                                            fullWidth
+                                                            placeholder="Macbook..."
+                                                            variant="outlined"
+                                                            value={product}
+                                                            onChange={onTypeChangeForProduct}
+                                                        />
+                                                        {
+                                                            suggestions.length > 0 && (
+                                                                <div onClick={handleSearchClose} className="search-close">x</div>
+                                                            )
+                                                        }
 
-                                                    {
-                                                        searchResults.length > 0 && (
-                                                            <div className='search-dropdown dropdown-scroll'>
-                                                                <ul>
-                                                                    {
-                                                                        searchResults.map(product => (
-                                                                            <li
-                                                                                key={product.id}
-                                                                                id='single-list'
-                                                                                className={activeItemIds.includes(product.id) && activeItems.find(item => item.id === product.id) ? 'active' : ''}
-                                                                                onClick={() => toggleActiveItem(product.id)}
-                                                                            >
-                                                                                <div className="search-img">
-                                                                                    <Image src={product.image} width={30} height={30} alt={product.title} />
-                                                                                </div>
-                                                                                <p className='title'>{product.title}</p>
-                                                                            </li>
-                                                                        ))
-                                                                    }
+                                                        {
+                                                            suggestions.length > 0 && (
+                                                                <div className='search-dropdown dropdown-scroll'>
+                                                                    <ul>
+                                                                        {
+                                                                            suggestions.map(product => (
+                                                                                <li
+                                                                                    key={product.id}
+                                                                                    id='single-list'
+                                                                                    className={activeItemIds.includes(product.id) && activeItems.find(item => item.id === product.id) ? 'active' : ''}
+                                                                                    onClick={() => selectSuggestion(product)}
+                                                                                >
+                                                                                    <div className="search-img">
+                                                                                        <Image src={product?.productImage == "" ? "https://res.cloudinary.com/dououppib/image/upload/v1709830638/PLANTS/placeholder_ry6d8v.webp" : product?.productImage} width={30} height={30} alt={product.title} />
+                                                                                    </div>
+                                                                                    <p className='title'>{product.title}</p>
+                                                                                </li>
+                                                                            ))
+                                                                        }
 
-                                                                </ul>
-                                                            </div>
-                                                        )
-                                                    }
+                                                                    </ul>
+                                                                </div>
+                                                            )
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -164,40 +190,35 @@ const GenerateBarcodeList = () => {
                                                         <thead>
                                                             <tr className='bg-lightest'>
                                                                 <th>Name</th>
+                                                                <th>Image</th>
                                                                 <th>Code</th>
-                                                                <th>Quantity</th>
+                                                                <th>Price</th>
                                                                 <th>Action</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             {
-                                                                activeItems.length > 0 ? (
-                                                                    activeItems.map((product) => <tr key={product.id}>
+                                                                productInformation.length > 0 ? (
+                                                                    productInformation.map((product) => <tr key={product.id}>
                                                                         <td>{product.title}</td>
-                                                                        <td>{product.batchNo}</td>
                                                                         <td>
-                                                                            <div className="inventual-addsale-product-qty">
-                                                                                <span className='flex items-center'>
-                                                                                    <button
-                                                                                        type='button'
-                                                                                        onClick={() => handleDecrement(product.id)}
-                                                                                    >
-                                                                                        <i className="fa-regular fa-minus"></i>
-                                                                                    </button>
-                                                                                    <p>{product.quantity}</p>
-                                                                                    <button
-                                                                                        type='button'
-                                                                                        onClick={() => handleIncreament(product.id)}
-                                                                                    >
-                                                                                        <i className="fa-regular fa-plus"></i>
-                                                                                    </button>
-                                                                                </span>
+                                                                            <div className="new-sale-search-img">
+                                                                                <Image
+                                                                                    src={product.productImage}
+                                                                                    width="0"
+                                                                                    height="0"
+                                                                                    alt={product.title}
+                                                                                    sizes="100vw"
+                                                                                    style={{ width: '30px', height: '30px' }}
+                                                                                />
                                                                             </div>
                                                                         </td>
+                                                                        <td>{product.productCode}</td>
+                                                                        <td>{MoneyFormat.format(product.price)}</td>
                                                                         <td>
                                                                             <div className="inventual-addsale-product-action">
                                                                                 <button
-                                                                                    onClick={() => handleRemoveItem(product.id)}
+                                                                                    onClick={() => handleRemoveProduct(product.id)}
                                                                                     className="product-delete-btn"
                                                                                 >
                                                                                     <i className="fa-regular fa-xmark"></i>
@@ -205,11 +226,9 @@ const GenerateBarcodeList = () => {
                                                                             </div>
                                                                         </td>
                                                                     </tr>)
-                                                                ) : (
-                                                                    <tr>
-                                                                        <td colSpan={4} className='text-center'> No data available</td>
-                                                                    </tr>
-                                                                )
+                                                                ) : <tr>
+                                                                    <td colSpan={10} className='text-center'>No product entered yet</td>
+                                                                </tr>
                                                             }
                                                         </tbody>
                                                     </table>
@@ -221,33 +240,33 @@ const GenerateBarcodeList = () => {
                                             <div className="inventual-barcode-checkbox-wrapper flex flex-wrap gap-x-7 gap-y-3 mb-2">
                                                 <div className='inventual-checkbox-style'>
                                                     <FormControlLabel
-                                                        control={<Checkbox inputProps={{ 'aria-label': 'controlled' }} />}
+                                                        control={<Checkbox inputProps={{ 'aria-label': 'controlled' }}
+                                                            checked={name}
+                                                            onChange={(e) => setName(e.target.checked)}
+                                                        />}
+
                                                         label="Name"
                                                     />
                                                 </div>
                                                 <div className='inventual-checkbox-style'>
                                                     <FormControlLabel
-                                                        control={<Checkbox inputProps={{ 'aria-label': 'controlled' }} />}
+                                                        control={<Checkbox inputProps={{ 'aria-label': 'controlled' }}
+                                                            checked={code}
+                                                            onChange={(e) => setCode(e.target.checked)}
+                                                        />}
                                                         label="Code"
                                                     />
                                                 </div>
-
                                                 <div className='inventual-checkbox-style'>
                                                     <FormControlLabel
-                                                        control={<Checkbox inputProps={{ 'aria-label': 'controlled' }} />}
-                                                        label="Import by Inventual"
-                                                    />
-                                                </div>
-                                                <div className='inventual-checkbox-style'>
-                                                    <FormControlLabel
-                                                        control={<Checkbox inputProps={{ 'aria-label': 'controlled' }} />}
+                                                        control={
+                                                            <Checkbox
+                                                                inputProps={{ 'aria-label': 'controlled' }}
+                                                                checked={price} // bind the checkbox to the state
+                                                                onChange={(e) => setPrice(e.target.checked)} // update state with checked value
+                                                            />
+                                                        }
                                                         label="Price"
-                                                    />
-                                                </div>
-                                                <div className='inventual-checkbox-style'>
-                                                    <FormControlLabel
-                                                        control={<Checkbox inputProps={{ 'aria-label': 'controlled' }} />}
-                                                        label="Promotional Price"
                                                     />
                                                 </div>
                                             </div>
@@ -258,23 +277,23 @@ const GenerateBarcodeList = () => {
                                                         <TextField
                                                             select
                                                             label="Select"
-                                                            defaultValue=""
+                                                            value={selectBarSize}
+                                                            onChange={(e) => setSelectBarSize(e.target.value)}
                                                             SelectProps={{
                                                                 displayEmpty: true,
-                                                                renderValue: (value: any) => {
-                                                                    if (value === '') {
-                                                                        return <em>Select Size</em>;
-                                                                    }
-                                                                    return value;
+                                                                renderValue: (value) => {
+                                                                    const sizes: { [key: string]: string } = {
+                                                                        "50": "50 mm (1.35 Inch)",
+                                                                        "70": "70 mm (1.65 Inch)",
+                                                                        "90": "90 mm (1.95 Inch)",
+                                                                    };
+                                                                    return sizes[value as string] || "Select Size";
                                                                 },
                                                             }}
                                                         >
-                                                            <MenuItem value="">
-                                                                <em>Select Size</em>
-                                                            </MenuItem>
-                                                            <MenuItem value="50 mm (1.95 Inch)">50 mm (1.95 Inch)</MenuItem>
-                                                            <MenuItem value="40 mm (1.65 Inch)">40 mm (1.65 Inch)</MenuItem>
-                                                            <MenuItem value="30 mm (1.35 Inch)">30 mm (1.35 Inch)</MenuItem>
+                                                            <MenuItem value="50">50 mm (1.35 Inch)</MenuItem>
+                                                            <MenuItem value="70">70 mm (1.65 Inch)</MenuItem>
+                                                            <MenuItem value="90">90 mm (1.95 Inch)</MenuItem>
                                                         </TextField>
                                                     </div>
                                                 </div>
@@ -289,27 +308,24 @@ const GenerateBarcodeList = () => {
                             </div>
                             <div className="col-span-12 lg:col-span-6">
                                 <div className="inventual-barcode-right bg-white p-7 rounded-[3px] border border-solid border-gray-borderThree h-full">
-                                    <div className="grid grid-cols-12 gap-x-5">
-                                        <div className="col-span-6 lg:col-span-4">
-                                            <div className="inventual-barcode mb-10 text-center">
-                                                <Image src={barcodeImg} style={{ width: "173", height: 'auto' }} alt="user not found" />
+                                    <div className="col-span-12 lg:col-span-6 flex items-center justify-center">
+                                        {productCodeName && (
+                                            <div className="col-span-6 lg:col-span-4">
+                                                <div className="inventual-barcode mb-10 text-center">
+                                                    <Barcode value={productCodeName} textPosition={"top"} height={Number(selectBarSize)} />
+                                                    {(productCodePrice || productCodeNumber) && (
+                                                        <h1
+                                                            className="text-heading font-bold text-lg mt-2  text-center" // Utility classes for styling
+                                                            style={{ lineHeight: "1.0", letterSpacing: "0.3px" }} // Fine-tuning inline styles
+                                                        >
+                                                            {productCodePrice && `${MoneyFormat.format(productCodePrice)}`}
+                                                            {productCodePrice && productCodeNumber && "-"}
+                                                            {productCodeNumber && `${productCodeNumber}`}
+                                                        </h1>
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="col-span-6 lg:col-span-4">
-                                            <div className="inventual-barcode mb-10 text-center">
-                                                <Image src={barcodeImg} style={{ width: "173", height: 'auto' }} alt="user not found" />
-                                            </div>
-                                        </div>
-                                        <div className="col-span-6 lg:col-span-4">
-                                            <div className="inventual-barcode mb-10 text-center">
-                                                <Image src={barcodeImg} style={{ width: "173", height: 'auto' }} alt="user not found" />
-                                            </div>
-                                        </div>
-                                        <div className="col-span-6 lg:col-span-4">
-                                            <div className="inventual-barcode mb-10 text-center">
-                                                <Image src={barcodeImg} style={{ width: "173", height: 'auto' }} alt="user not found" />
-                                            </div>
-                                        </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

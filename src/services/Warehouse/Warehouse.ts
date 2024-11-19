@@ -56,7 +56,7 @@ export const warehouse = createApi({
         // Mutation to create a new warehouse
         createWarehouse: builder.mutation<any, any>({
             query: (body) => ({
-                url: `Warehouse`,
+                url: ``,
                 method: 'POST',
                 body,
             }),
