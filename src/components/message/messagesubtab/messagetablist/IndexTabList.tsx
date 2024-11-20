@@ -93,7 +93,6 @@ const IndexTabList = () => {
 
 
 
-
     if (!isReady || messagesLoading || !messagesData?.data?.length) {
         return <div>No messages available...</div>;
     }
@@ -181,7 +180,7 @@ const IndexTabList = () => {
                                         <button className="inventual-btn outline-btn h-38" type="submit">
                                             <span><i className="fa-sharp fa-solid fa-reply"></i></span>Reply
                                         </button>
-                                        <button className="inventual-btn outline-btn h-38" type="submit">
+                                        <button className="inventual-btn outline-btn h-38" onClick={() => handleUpdateImportancy(item.id)}>
                                             <span><i className="fa-solid fa-right-long"></i></span>Move to important
                                         </button>
                                         <button className="inventual-btn outline-btn h-38" onClick={() => handleTrashMessage(item.id)}>

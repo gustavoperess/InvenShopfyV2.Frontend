@@ -180,8 +180,8 @@ const ImportantTabList = () => {
                                         <button className="inventual-btn outline-btn h-38" type="submit">
                                             <span><i className="fa-sharp fa-solid fa-reply"></i></span>Reply
                                         </button>
-                                        <button className="inventual-btn outline-btn h-38" type="submit">
-                                            <span><i className="fa-solid fa-right-long"></i></span>Forward
+                                        <button className="inventual-btn outline-btn h-38"  onClick={() => handleUpdateImportancy(item.id)} >
+                                        <span><i className="fa-light fa-inbox"></i></span>Back to Inbox
                                         </button>
                                         <button className="inventual-btn outline-btn h-38">
                                             <span><i className="fa-light fa-trash-can"></i></span>Delete
