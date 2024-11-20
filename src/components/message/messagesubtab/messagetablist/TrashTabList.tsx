@@ -1,12 +1,15 @@
 import { Tab, Tabs } from '@mui/material';
 import Image from 'next/image';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import IndexMailTabData from '@/data/index-mail-tab-data';
 import userTabList from '@/data/users-tab-list';
 import DownloadSvg from '@/svg/DownloadSvg';
 import TrashSvg from '@/svg/TrashSvg';
 import StarSvg from '@/svg/StarSvg';
 import ForwardSvg from '@/svg/ForwardSvg';
+import { MessageTab } from '@/interFace/interFace';
+import { useGetDeletedMessagesQuery, useUpdateMessageImportancyMutation,useDeleteMessageMutation } from '@/services/Messages/Messages';
+
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -41,11 +44,62 @@ function a11yProps(index: number) {
 }
 
 const TrashTabList = () => {
-    const [subTabValue, setSubTabValue] = React.useState(0); // Set the default value for the "Sale" subtabs
+    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+    const [currentPageSize, setCurrentPageSize] = useState(10);
+    const { data: messagesData, error: messagesError, isLoading: messagesLoading } = useGetDeletedMessagesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+    const [isReady, setIsReady] = useState<boolean>(false);
+    const [subTabValue, setSubTabValue] = useState<number>(messagesData?.data?.[0]?.id || 0);
+    const [moveMessageToImportant] = useUpdateMessageImportancyMutation();
+    const [moveMessageToTransh] = useDeleteMessageMutation();
+
 
     const handleSubTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setSubTabValue(newValue);
     };
+    useEffect(() => {
+        if (messagesData?.data?.length) {
+            const isValidTabValue = messagesData.data.some((item: any) => item.id === subTabValue);
+            if (!isValidTabValue) {
+                setSubTabValue(messagesData.data[0].id);
+            }
+            setIsReady(true);
+        } else {
+            setIsReady(false);
+        }
+    }, [messagesData, subTabValue]);
+
+    const sliceMessageBody = (message: string) => {
+        const words = message.split(' ');
+        const firstFourWords = words.slice(0, 4).join(' ');
+        return firstFourWords + '...';
+    };
+
+    const splitname = (string: "") => {
+        if (string.length > 0) {
+            const words = string.split(" ");
+            const firstName = words[0];
+            const lastName = words[words.length - 1];
+            return `${firstName} ${lastName}`;
+        }
+        return "";
+    };
+
+    const handleUpdateImportancy = (id: number) => {
+        moveMessageToImportant(id);
+    };
+
+    const handleTrashMessage = (id: number) => {
+        moveMessageToTransh(id);
+    };
+
+    if (!isReady || messagesLoading || !messagesData?.data?.length) {
+        return <div>No messages available...</div>;
+    }
+
+    const tabList: MessageTab[] = messagesData?.data || [];
+
+
+
     return (
         <>
             <div className="inventual-inbox-top-wrapper mb-2.5">
@@ -59,74 +113,85 @@ const TrashTabList = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-span-12 lg:col-span-4 gap-5">
-                            <div className="inventual-notification-action flex justify-end gap-2">
-                                <button type="button">
-                                    <DownloadSvg />
-                                </button>
-                                <button type="button">
-                                    <TrashSvg />
-                                </button>
-                                <button type="button">
-                                    <StarSvg />
-                                </button>
-                                <button type="button">
-                                    <ForwardSvg />
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div className="inventual-newmessage-wrapper flex flex-col md:flex-row gap-12 minMax2Xl:gap-7">
                     <div className="inventual-message-vertical-subtab">
-                        <Tabs value={subTabValue}
+                        <Tabs
+                            value={tabList.some((tab: MessageTab) => tab.id === subTabValue) ? subTabValue : tabList[0]?.id}
                             onChange={handleSubTabChange}
-                            TabIndicatorProps={{
-                                style: { display: 'none' }
-                            }}
-                            scrollButtons allowScrollButtonsMobile aria-label="basic tabs example">
-
-                            {
-                                userTabList.slice(17, 18).map((item) => (
-                                    <Tab key={item.id} {...a11yProps(item.indexNum)} label={
-                                        <div className='inventual-inbox-user'>
-                                            <div className="inventual-inbox-user-thumb">
-                                                <Image src={item.image} style={{ width: '100%', height: "100%" }} alt="Index image not found" />
+                            TabIndicatorProps={{ style: { display: 'none' } }}
+                            scrollButtons
+                            allowScrollButtonsMobile
+                            aria-label="basic tabs example">
+                            {tabList?.map((item: any) => (
+                                <Tab
+                                    key={item.id}
+                                    value={item.id}
+                                    {...a11yProps(item.id)}
+                                    label={
+                                        <div className="inventual-inbox-user">
+                                            <div className="min-h-[70px] inline-flex items-center justify-cente">
+                                                <Image
+                                                    src={item.profilePicture}
+                                                    width="0"
+                                                    height="0"
+                                                    alt="Profile Picture"
+                                                    sizes="100vw"
+                                                    style={{ width: '62px', height: '52px' }}
+                                                />
                                             </div>
                                             <div className="inventua-inbox-user-text w-full text-start">
-                                                <h5 className="user-name">{item.userName}</h5>
-                                                <span className="sub-title">{item.subTitle}</span>
-                                                <p className="description" >{item.desc}</p>
+                                                <h5 className="user-name">{splitname(item.toUser)}</h5>
+                                                <span className="sub-title">{item.subject}</span>
+                                                <p className="description">{sliceMessageBody(item.messageBody)}</p>
                                                 <small className="time-title">{item.time}</small>
                                             </div>
-                                        </div>}
-                                    />
-                                ))
-                            }
+                                        </div>
+                                    }
+                                />
+                            ))}
                         </Tabs>
                     </div>
                     <div className="inventual-inbox-wrapper-inner w-full">
-                        {
-                            IndexMailTabData.slice(17, 18).map((item) => (
-                                <CustomTabPanel value={subTabValue} index={item.indexNum} key={item.id}>
-                                    <div className="inventual-notification-body">
-                                        <h4 className="text-[24px] font-bold text-heading mb-10">{item.title}</h4>
-                                        <h5 className="text-[18px] font-bold text-heading mb-1">{item.subTitle}</h5>
-                                        <span className="text-[14px] font-semibold block mb-11">{item.time}</span>
-                                        <span className="text-[16px] font-normal block mb-4 pb-0.5">Hi, </span>
-                                        <p className="text-[16px] font-normal leading-[26px] mb-6">{item.description}</p>
-                                        <p className="text-[16px] font-normal leading-[26px] mb-6">{item.descriptionTwo}</p>
-                                        <p className="text-[16px] font-normal leading-[26px] mb-12 pb-0.5">{item.descriptionThree}</p>
-                                        <p className="text-[16px] font-normal mb-12">Thanks!</p>
-                                        <div className="inventual-notification-feedback default-light-theme flex flex-wrap gap-3">
-                                            <button className='inventual-btn outline-btn h-38' type="submit"><span><i className="fa-sharp fa-solid fa-reply"></i></span>Reply</button>
-                                            <button className='inventual-btn outline-btn h-38' type="submit"><span><i className="fa-solid fa-right-long"></i></span>Forward</button>
-                                            <button className='inventual-btn outline-btn h-38' type="submit"><span><i className="fa-light fa-trash-can"></i></span>Delete</button>
+                        {tabList?.map((item: any) => (
+                            <CustomTabPanel value={subTabValue} index={item.id} key={item.id}>
+                                <div className="inventual-notification-body">
+                                    <div className="col-span-12 lg:col-span-4 gap-5">
+                                        <div className="inventual-notification-action flex justify-end gap-2">
+                                            <button type="button">
+                                                <DownloadSvg />
+                                            </button>
+                                            <button onClick={() => handleTrashMessage(item.id)} type="button">
+                                                <TrashSvg />
+                                            </button>
+                                            <button onClick={() => handleUpdateImportancy(item.id)} type="button">
+                                                <StarSvg />
+                                            </button>
+                                            <button type="button">
+                                                <ForwardSvg />
+                                            </button>
                                         </div>
                                     </div>
-                                </CustomTabPanel>
-                            ))
-                        }
+                                    <h4 className="text-[24px] font-bold text-heading mb-10">{item.title}</h4>
+                                    <h5 className="text-[18px] font-bold text-heading mb-1">{item.toUser}</h5>
+                                    <span className="text-[14px] font-semibold block mb-11">{item.time}</span>
+
+                                    <p className="text-[16px] font-normal leading-[26px] mb-6">{item.messageBody}</p>
+                                    <div className="inventual-notification-feedback default-light-theme flex flex-wrap gap-3">
+                                        <button className="inventual-btn outline-btn h-38" type="submit">
+                                            <span><i className="fa-sharp fa-solid fa-reply"></i></span>Reply
+                                        </button>
+                                        <button className="inventual-btn outline-btn h-38" type="submit">
+                                            <span><i className="fa-solid fa-right-long"></i></span>Forward
+                                        </button>
+                                        <button className="inventual-btn outline-btn h-38" type="submit">
+                                            <span><i className="fa-light fa-trash-can"></i></span>Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </CustomTabPanel>
+                        ))}
                     </div>
                 </div>
             </div>

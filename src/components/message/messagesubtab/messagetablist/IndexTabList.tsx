@@ -6,7 +6,7 @@ import StarSvg from '@/svg/StarSvg';
 import React, { useState, useEffect } from 'react';
 import ForwardSvg from '@/svg/ForwardSvg';
 import { MessageTab } from '@/interFace/interFace';
-import { useGetMessagesInboxQuery, useUpdateMessageImportancyMutation } from '@/services/Messages/Messages';
+import { useGetMessagesInboxQuery, useUpdateMessageImportancyMutation,useDeleteMessageMutation } from '@/services/Messages/Messages';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -46,7 +46,8 @@ const IndexTabList = () => {
     const { data: messagesData, error: messagesError, isLoading: messagesLoading } = useGetMessagesInboxQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const [subTabValue, setSubTabValue] = useState<number>(messagesData?.data?.[0]?.id || 0);
     const [isReady, setIsReady] = useState<boolean>(false);
-    const [updateUser] = useUpdateMessageImportancyMutation();
+    const [moveMessageToImportant] = useUpdateMessageImportancyMutation();
+    const [moveMessageToTransh] = useDeleteMessageMutation();
 
     const handleSubTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setSubTabValue(newValue);
@@ -83,9 +84,15 @@ const IndexTabList = () => {
     };
 
     const handleUpdateImportancy = (id: number) => {
-        updateUser(id);
-
+        moveMessageToImportant(id);
     };
+
+    const handleTrashMessage = (id: number) => {
+        moveMessageToTransh(id);
+    };
+
+
+
 
     if (!isReady || messagesLoading || !messagesData?.data?.length) {
         return <div>No messages available...</div>;
@@ -154,7 +161,7 @@ const IndexTabList = () => {
                                             <button type="button">
                                                 <DownloadSvg />
                                             </button>
-                                            <button type="button">
+                                            <button onClick={() => handleTrashMessage(item.id)} type="button">
                                                 <TrashSvg />
                                             </button>
                                             <button onClick={() => handleUpdateImportancy(item.id)} type="button">

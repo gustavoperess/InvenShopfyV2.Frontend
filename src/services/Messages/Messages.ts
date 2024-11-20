@@ -38,6 +38,13 @@ export const messagesApi = createApi({
             }),
             providesTags: ['Messages']
         }),
+        getDeletedMessages: builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize })=> ({
+                url: '/messages-trash',
+                params: { pageNumber, pageSize }
+            }),
+            providesTags: ['Messages']
+        }),
         getTotalAmountOfSentMessages: builder.query<any, void>({
             query: ()=> ({
                 url: '/sent-messages-amount',
@@ -50,14 +57,28 @@ export const messagesApi = createApi({
             }),
             providesTags: ['Messages']
         }),
+        getTotalAmountOfImportantMessages: builder.query<any, void>({
+            query: ()=> ({
+                url: '/important-messages-amount',
+            }),
+            providesTags: ['Messages']
+        }),
         updateMessageImportancy: builder.mutation<any, number>({
             query: (id) => ({
-              url: `message/${id}`,  
+              url: `important-message/${id}`,  
               method: 'PUT',
               body: {id: id},
             }),
             invalidatesTags: ['Messages'],
-          }),
+        }),
+        deleteMessage: builder.mutation<any, number>({
+            query: (id) => ({
+              url: `trash-message/${id}`,  
+              method: 'PUT',
+              body: {id: id},
+            }),
+            invalidatesTags: ['Messages'],
+        }),
         createMessage: builder.mutation<any, any>({
             query: (body) => ({
                 url: `/new-message`,
@@ -66,17 +87,12 @@ export const messagesApi = createApi({
             }),
             invalidatesTags: ['Messages']
         }),
-        deleteMessage: builder.mutation<any, number>({
-            query: (id) => ({
-                url: `/${id}`,
-                method: 'DELETE',
-            }),
-            invalidatesTags: ['Messages']
-        })
     }),
 });
 
 export const {
+    useGetDeletedMessagesQuery,
+    useGetTotalAmountOfImportantMessagesQuery,
     useGetTotalAmountOfInboxMessagesQuery,
     useGetTotalAmountOfSentMessagesQuery,
     useUpdateMessageImportancyMutation,

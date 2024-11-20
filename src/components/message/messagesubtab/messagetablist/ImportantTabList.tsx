@@ -46,7 +46,7 @@ const ImportantTabList = () => {
     const { data: messagesData, error: messagesError, isLoading: messagesLoading } = useGetImportantMessagesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const [subTabValue, setSubTabValue] = useState<number>(messagesData?.data?.[0]?.id || 0);
     const [isReady, setIsReady] = useState<boolean>(false);
-    const [updateUser] = useUpdateMessageImportancyMutation();
+    const [moveMessageToImportant] = useUpdateMessageImportancyMutation();
 
     const handleSubTabChange = (event: React.SyntheticEvent, newValue: number) => {
         const isValidTabValue = tabList.some((item: any) => item.id === newValue);
@@ -87,7 +87,7 @@ const ImportantTabList = () => {
     };
 
     const handleUpdateImportancy = (id: number) => {
-        updateUser(id);
+        moveMessageToImportant(id);
     };
 
     if (!isReady || messagesLoading || !messagesData?.data?.length) {

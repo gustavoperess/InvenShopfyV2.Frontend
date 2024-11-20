@@ -2,13 +2,13 @@
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import IndexTabList from './messagesubtab/messagetablist/IndexTabList';
 import SendTabList from './messagesubtab/messagetablist/SendTabList';
 import DraftTabList from './messagesubtab/messagetablist/DraftTabList';
 import ImportantTabList from './messagesubtab/messagetablist/ImportantTabList';
 import TrashTabList from './messagesubtab/messagetablist/TrashTabList';
-import { useGetTotalAmountOfInboxMessagesQuery, useGetImportantMessagesQuery, useGetTotalAmountOfSentMessagesQuery } from '@/services/Messages/Messages';
+import { useGetTotalAmountOfInboxMessagesQuery, useGetTotalAmountOfSentMessagesQuery, useGetTotalAmountOfImportantMessagesQuery } from '@/services/Messages/Messages';
 
 
 interface TabPanelProps {
@@ -43,11 +43,9 @@ function a11yProps(index: number) {
 }
 
 const MessageList = () => {
-    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-    const [currentPageSize, setCurrentPageSize] = useState(10);
-    const { data: importMessageData } = useGetImportantMessagesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const { data: totalAmountSentMessages } = useGetTotalAmountOfSentMessagesQuery();
     const { data: totalAmountInboxMessages } = useGetTotalAmountOfInboxMessagesQuery();
+    const { data: totalAmountImportantMessages } = useGetTotalAmountOfImportantMessagesQuery();
     const [mainTabValue, setMainTabValue] = React.useState(0);
     const [subTabValue, setSubTabValue] = React.useState(0); // Set the default value for the "Sale" subtabs
     
@@ -96,7 +94,7 @@ const MessageList = () => {
                                     <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fas fa-message-lines"></i>Inbox</span><span>({totalAmountInboxMessages?.data})</span></div>} {...a11yProps(0)} />
                                     <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-sharp fa-regular fa-paper-plane"></i>Send</span><span>({totalAmountSentMessages?.data})</span></div>} {...a11yProps(1)} />
                                     <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-solid fa-envelope-open"></i>Draft</span><span>(3)</span></div>} {...a11yProps(2)} />
-                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-sharp fa-solid fa-circle-exclamation"></i>Important</span><span>({importMessageData?.totalCount})</span></div>} {...a11yProps(3)} />
+                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-sharp fa-solid fa-circle-exclamation"></i>Important</span><span>({totalAmountImportantMessages?.data})</span></div>} {...a11yProps(3)} />
                                     <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-solid fa-trash"></i>Trash</span><span>(1)</span></div>} {...a11yProps(4)} />
                                 </Tabs>
                             </div>
