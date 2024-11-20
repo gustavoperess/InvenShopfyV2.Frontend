@@ -6,7 +6,7 @@ import { useGetAllBillersNewQuery } from '@/services/User/User';
 import { MenuItem, TextField } from '@mui/material';
 import { TBillerInterfaceTwo } from '@/interFace/interFace';
 import { useCreateMessageMutation } from '@/services/Messages/Messages';
-import { Subject } from '@mui/icons-material';
+import { useGetTotalAmountOfInboxMessagesQuery, useGetTotalAmountOfSentMessagesQuery } from '@/services/Messages/Messages';
 
 
 
@@ -17,6 +17,8 @@ const NewMessage = () => {
     const [title, setTitle] = useState('')
     const [messageBody, setMessageBody] = useState('')
     const [createMessage] = useCreateMessageMutation();
+    const { data: totalAmountInboxMessages } = useGetTotalAmountOfInboxMessagesQuery();
+    const { data: totalAmountSentMessages } = useGetTotalAmountOfSentMessagesQuery();
 
 
     const handleMessageSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -49,8 +51,8 @@ const NewMessage = () => {
                     <div className="inventual-newmessage-inbox-wrapper">
                         <div className="inventual-newmessage-wrapper flex">
                             <div className="inventual-newmessage-nav">
-                                <Link className='link' href="/message"><span><i className="fa-solid fa-message-lines"></i>Inbox</span><span>(7)</span></Link>
-                                <Link className='link' href="/message"><span><i className="fa-sharp fa-regular fa-paper-plane"></i>Send</span><span>(5)</span></Link>
+                                <Link className='link' href="/message"><span><i className="fa-solid fa-message-lines"></i>Inbox</span><span>({totalAmountInboxMessages?.data})</span></Link>
+                                <Link className='link' href="/message"><span><i className="fa-sharp fa-regular fa-paper-plane"></i>Send</span><span>({totalAmountSentMessages?.data})</span></Link>
                                 <Link className='link' href="/message"><span><i className="fa-solid fa-envelope-open"></i>Draft</span><span>(3)</span></Link>
                                 <Link className='link' href="/message"><span><i className="fa-sharp fa-solid fa-circle-exclamation"></i>Important</span><span>(2)</span></Link>
                                 <Link className='link' href="/message"><span><i className="fa-solid fa-trash"></i>Trash</span><span>(1+)</span></Link>

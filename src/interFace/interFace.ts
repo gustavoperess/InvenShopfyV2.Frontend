@@ -66,6 +66,15 @@ export interface TSaleInterface {
   totalAmount: number;
 }
 
+
+export interface MessageTab {
+  id: number;
+  profilePicture: string;
+  toUser: string;
+  subject: string;
+  messageBody: string;
+  time: string;
+}
 // possale tab data
 export interface TProductInterface {
   id: number;

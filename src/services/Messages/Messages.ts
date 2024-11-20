@@ -31,6 +31,33 @@ export const messagesApi = createApi({
             }),
             providesTags: ['Messages']
         }),
+        getImportantMessages: builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize })=> ({
+                url: '/messages-important',
+                params: { pageNumber, pageSize }
+            }),
+            providesTags: ['Messages']
+        }),
+        getTotalAmountOfSentMessages: builder.query<any, void>({
+            query: ()=> ({
+                url: '/sent-messages-amount',
+            }),
+            providesTags: ['Messages']
+        }),
+        getTotalAmountOfInboxMessages: builder.query<any, void>({
+            query: ()=> ({
+                url: '/inbox-messages-amount',
+            }),
+            providesTags: ['Messages']
+        }),
+        updateMessageImportancy: builder.mutation<any, number>({
+            query: (id) => ({
+              url: `message/${id}`,  
+              method: 'PUT',
+              body: {id: id},
+            }),
+            invalidatesTags: ['Messages'],
+          }),
         createMessage: builder.mutation<any, any>({
             query: (body) => ({
                 url: `/new-message`,
@@ -49,9 +76,14 @@ export const messagesApi = createApi({
     }),
 });
 
-export const { 
+export const {
+    useGetTotalAmountOfInboxMessagesQuery,
+    useGetTotalAmountOfSentMessagesQuery,
+    useUpdateMessageImportancyMutation,
+    useGetImportantMessagesQuery,
     useGetMessagesInboxQuery,
     useGetSentMessagesQuery,
     useCreateMessageMutation, 
     useDeleteMessageMutation, 
-    useGetAllMessagesQuery } = messagesApi;
+    useGetAllMessagesQuery } 
+    = messagesApi;

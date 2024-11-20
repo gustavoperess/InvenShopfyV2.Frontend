@@ -5,13 +5,15 @@ import TrashSvg from '@/svg/TrashSvg';
 import StarSvg from '@/svg/StarSvg';
 import React, { useState, useEffect } from 'react';
 import ForwardSvg from '@/svg/ForwardSvg';
-import { useGetMessagesInboxQuery } from '@/services/Messages/Messages';
+import { MessageTab } from '@/interFace/interFace';
+import { useGetMessagesInboxQuery, useUpdateMessageImportancyMutation } from '@/services/Messages/Messages';
 
 interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
     value: number;
 }
+
 
 function CustomTabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
@@ -42,19 +44,27 @@ const IndexTabList = () => {
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
     const [currentPageSize, setCurrentPageSize] = useState(10);
     const { data: messagesData, error: messagesError, isLoading: messagesLoading } = useGetMessagesInboxQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
-    const [subTabValue, setSubTabValue] = useState<number>(0);
+    const [subTabValue, setSubTabValue] = useState<number>(messagesData?.data?.[0]?.id || 0);
     const [isReady, setIsReady] = useState<boolean>(false);
+    const [updateUser] = useUpdateMessageImportancyMutation();
 
     const handleSubTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setSubTabValue(newValue);
     };
 
     useEffect(() => {
-        if (messagesData?.data && !subTabValue) {
-            setSubTabValue(messagesData.data[0]?.id);
-            setIsReady(true); 
+        if (messagesData?.data?.length) {
+            const isValidTabValue = messagesData.data.some((item: any) => item.id === subTabValue);
+            if (!isValidTabValue) {
+                setSubTabValue(messagesData.data[0].id);
+            }
+            setIsReady(true);
+        } else {
+            setIsReady(false);
         }
-    }, [messagesData]);
+    }, [messagesData, subTabValue]);
+
+
 
     const sliceMessageBody = (message: string) => {
         const words = message.split(' ');
@@ -72,11 +82,16 @@ const IndexTabList = () => {
         return "";
     };
 
-    if (!isReady || messagesLoading) {
-        return <div>Loading...</div>; 
+    const handleUpdateImportancy = (id: number) => {
+        updateUser(id);
+
+    };
+
+    if (!isReady || messagesLoading || !messagesData?.data?.length) {
+        return <div>No messages available...</div>;
     }
 
-
+    const tabList: MessageTab[] = messagesData?.data || [];
     return (
         <>
             <div className="inventual-inbox-top-wrapper mb-2.5">
@@ -90,34 +105,18 @@ const IndexTabList = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-span-12 lg:col-span-4 gap-5">
-                            <div className="inventual-notification-action flex justify-end gap-2">
-                                <button type="button">
-                                    <DownloadSvg />
-                                </button>
-                                <button type="button">
-                                    <TrashSvg />
-                                </button>
-                                <button type="button">
-                                    <StarSvg />
-                                </button>
-                                <button type="button">
-                                    <ForwardSvg />
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div className="inventual-newmessage-wrapper flex flex-col md:flex-row gap-12 minMax2Xl:gap-7">
                     <div className="inventual-message-vertical-subtab">
-                        <Tabs value={subTabValue}
+                        <Tabs
+                            value={tabList.some((tab: MessageTab) => tab.id === subTabValue) ? subTabValue : tabList[0]?.id}
                             onChange={handleSubTabChange}
-                            TabIndicatorProps={{
-                                style: { display: 'none' }
-                            }}
-                            scrollButtons allowScrollButtonsMobile aria-label="basic tabs example">
-
-                            {messagesData?.data.map((item: any) => (
+                            TabIndicatorProps={{ style: { display: 'none' } }}
+                            scrollButtons
+                            allowScrollButtonsMobile
+                            aria-label="basic tabs example">
+                            {tabList?.map((item: any) => (
                                 <Tab
                                     key={item.id}
                                     value={item.id}
@@ -147,13 +146,29 @@ const IndexTabList = () => {
                         </Tabs>
                     </div>
                     <div className="inventual-inbox-wrapper-inner w-full">
-                    {messagesData?.data.map((item: any) => (
+                        {tabList?.map((item: any) => (
                             <CustomTabPanel value={subTabValue} index={item.id} key={item.id}>
                                 <div className="inventual-notification-body">
+                                    <div className="col-span-12 lg:col-span-4 gap-5">
+                                        <div className="inventual-notification-action flex justify-end gap-2">
+                                            <button type="button">
+                                                <DownloadSvg />
+                                            </button>
+                                            <button type="button">
+                                                <TrashSvg />
+                                            </button>
+                                            <button onClick={() => handleUpdateImportancy(item.id)} type="button">
+                                                <StarSvg />
+                                            </button>
+                                            <button type="button">
+                                                <ForwardSvg />
+                                            </button>
+                                        </div>
+                                    </div>
                                     <h4 className="text-[24px] font-bold text-heading mb-10">{item.title}</h4>
                                     <h5 className="text-[18px] font-bold text-heading mb-1">{item.toUser}</h5>
                                     <span className="text-[14px] font-semibold block mb-11">{item.time}</span>
-                               
+
                                     <p className="text-[16px] font-normal leading-[26px] mb-6">{item.messageBody}</p>
                                     <div className="inventual-notification-feedback default-light-theme flex flex-wrap gap-3">
                                         <button className="inventual-btn outline-btn h-38" type="submit">
