@@ -8,12 +8,28 @@ export const messagesApi = createApi({
         baseUrl: `${BACKEND_URL}/v2/Message`,
         credentials: 'include',
     }),
+    tagTypes: ['Messages'],  
     endpoints: (builder) => ({
             getAllMessages: builder.query<any, { pageNumber: number; pageSize: number }>({
             query: ({ pageNumber, pageSize })=> ({
                 url: '',
                 params: { pageNumber, pageSize }
-            })
+            }),
+            providesTags: ['Messages'], 
+        }),
+        getSentMessages: builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize })=> ({
+                url: '/messages-sent',
+                params: { pageNumber, pageSize }
+            }),
+            providesTags: ['Messages']
+        }),
+        getMessagesInbox: builder.query<any, { pageNumber: number; pageSize: number }>({
+            query: ({ pageNumber, pageSize })=> ({
+                url: '/messages-inbox',
+                params: { pageNumber, pageSize }
+            }),
+            providesTags: ['Messages']
         }),
         createMessage: builder.mutation<any, any>({
             query: (body) => ({
@@ -21,14 +37,21 @@ export const messagesApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['Messages']
         }),
         deleteMessage: builder.mutation<any, number>({
             query: (id) => ({
                 url: `/${id}`,
                 method: 'DELETE',
             }),
+            invalidatesTags: ['Messages']
         })
     }),
 });
 
-export const { useCreateMessageMutation, useDeleteMessageMutation, useGetAllMessagesQuery } = messagesApi;
+export const { 
+    useGetMessagesInboxQuery,
+    useGetSentMessagesQuery,
+    useCreateMessageMutation, 
+    useDeleteMessageMutation, 
+    useGetAllMessagesQuery } = messagesApi;

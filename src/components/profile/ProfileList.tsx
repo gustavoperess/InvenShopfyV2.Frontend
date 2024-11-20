@@ -76,7 +76,7 @@ const ProfileList = () => {
             setPassword('');
 
         } catch (error: any) {
-            console.log(error?.data)
+         
             if (error?.data) {
                 toast.error(error?.data);
             } else {

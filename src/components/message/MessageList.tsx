@@ -1,13 +1,15 @@
 "use client"
-import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
 import IndexTabList from './messagesubtab/messagetablist/IndexTabList';
 import SendTabList from './messagesubtab/messagetablist/SendTabList';
 import DraftTabList from './messagesubtab/messagetablist/DraftTabList';
 import ImportantTabList from './messagesubtab/messagetablist/ImportantTabList';
 import TrashTabList from './messagesubtab/messagetablist/TrashTabList';
+import { useGetSentMessagesQuery } from '@/services/Messages/Messages';
+import { useGetMessagesInboxQuery } from '@/services/Messages/Messages';
 interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
@@ -40,9 +42,14 @@ function a11yProps(index: number) {
 }
 
 const MessageList = () => {
-
+    const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
+    const [currentPageSize, setCurrentPageSize] = useState(10);
+    const { data: sentMessageData } = useGetSentMessagesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+    const { data: inboxMessageData } = useGetMessagesInboxQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const [mainTabValue, setMainTabValue] = React.useState(0);
     const [subTabValue, setSubTabValue] = React.useState(0); // Set the default value for the "Sale" subtabs
+    
+
 
     const handleMainTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setMainTabValue(newValue);
@@ -56,6 +63,8 @@ const MessageList = () => {
     const handleSubTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setSubTabValue(newValue);
     };
+
+
     return (
         <>
             <div className="inventual-content-area px-4 sm:px-7">
@@ -82,8 +91,8 @@ const MessageList = () => {
                                         },
                                       }}                                      
                                     scrollButtons allowScrollButtonsMobile aria-label="basic tabs example">
-                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fas fa-message-lines"></i>Inbox</span><span>(7)</span></div>} {...a11yProps(0)} />
-                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-sharp fa-regular fa-paper-plane"></i>Send</span><span>(5)</span></div>} {...a11yProps(1)} />
+                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fas fa-message-lines"></i>Inbox</span><span>({inboxMessageData?.totalCount})</span></div>} {...a11yProps(0)} />
+                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-sharp fa-regular fa-paper-plane"></i>Send</span><span>({sentMessageData?.totalCount})</span></div>} {...a11yProps(1)} />
                                     <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-solid fa-envelope-open"></i>Draft</span><span>(3)</span></div>} {...a11yProps(2)} />
                                     <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-sharp fa-solid fa-circle-exclamation"></i>Important</span><span>(2)</span></div>} {...a11yProps(3)} />
                                     <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-solid fa-trash"></i>Trash</span><span>(1)</span></div>} {...a11yProps(4)} />
@@ -94,7 +103,7 @@ const MessageList = () => {
                                     <IndexTabList />
                                 </CustomTabPanel>
                                 <CustomTabPanel value={mainTabValue} index={1}>
-                                    <SendTabList />
+                                    <SendTabList  />
                                 </CustomTabPanel>
                                 <CustomTabPanel value={mainTabValue} index={2}>
                                     <DraftTabList />

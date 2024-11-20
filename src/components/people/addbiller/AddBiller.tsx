@@ -34,7 +34,7 @@ const AddBiller = () => {
             name, dateOfJoin: date, email, phoneNumber: billerPhoneNumber, identification, address, country,
             zipCode, billerCode, warehouseId: selectWarehouse
         }
-        console.log(billerData)
+       
         try {
             await addBiller(billerData).unwrap();
             toast.success("Biller Created successfully!");

@@ -294,7 +294,7 @@ const NewSaleList = () => {
             billerId: biller, saleDate: date, shippingCost, staffNote, saleNote, saleStatus, taxAmount: calculateTotalTax(),
             totalAmount: calculateGrandTotal, profitAmount: calculateProfit }
 
-            console.log(saleData)
+
         try {
             await addSale(saleData).unwrap();
             toast.success("Sale Created successfully!");
