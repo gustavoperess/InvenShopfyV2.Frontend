@@ -1,117 +1,56 @@
-import { imageLoader } from '@/hooks/imgLoader';
 import Image from 'next/image';
 import React from 'react';
 import Link from 'next/link';
-import userImgOne from "../../../public/assets/img/user/user-1.png"
-import userImgTwo from "../../../public/assets/img/user/user-2.png"
-import userImgThree from "../../../public/assets/img/user/user-3.png"
-import userImgFour from "../../../public/assets/img/user/user-4.png"
-import userImgFive from "../../../public/assets/img/user/user-5.png"
+import { useGetLastFiveInboxMessagesQuery } from '@/services/Messages/Messages';
 
 const EmailDropdown = () => {
+    const { data: messagesData, error: messagesError, isLoading: messagesLoading } = useGetLastFiveInboxMessagesQuery();
+   
+    if (messagesLoading) {
+        return (
+            <div className="inventual-loading-container">
+                <span className="inventual-loading"></span>
+            </div>
+        );
+    }
+    if (messagesLoading) {
+        return <div className="text-red-500">Failed to load messages.</div>;
+    }
+   
+    const messages = messagesData?.data || [];
+
     return (
         <ul>
-            <li>
-                <div className="inventual-notify-dropdown-item">
-                    <div className="thumb">
-                        <Link href="/message">
-                            <Image src={userImgOne} loader={imageLoader} placeholder="blur" loading='lazy' style={{ width: '100%', height: "auto" }} alt="genres img" />
-                        </Link>
-                    </div>
-                    <div className="content">
-                        <h6>
-                            <Link href="/message">
-                                Urgent Low Stock Alert for ZenithX Pro
-                            </Link>
-                        </h6>
-                        <span>
-                            31 Dec 2023 - 08:36
-                            PM
-                        </span>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div className="inventual-notify-dropdown-item">
-                    <div className="thumb">
-                        <Link href="/message">
-                            <Image src={userImgTwo} loader={imageLoader} placeholder="blur" loading='lazy' style={{ width: '100%', height: "auto" }} alt="genres img" />
-                        </Link>
-                    </div>
-                    <div className="content">
-                        <h6>
-                            <Link href="/message">
-                                Scheduled System Maintenance Notice
-                            </Link>
-                        </h6>
-                        <span>
-                            31 Dec 2021 - 08:36
-                            PM
-                        </span>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div className="inventual-notify-dropdown-item">
-                    <div className="thumb">
-                        <Link href="/message">
-                            <Image src={userImgThree} loader={imageLoader} placeholder="blur" loading='lazy' style={{ width: '100%', height: "auto" }} alt="genres img" />
-                        </Link>
-                    </div>
-                    <div className="content">
-                        <h6>
-                            <Link href="/message">
-                                User Permissions Update Inventory System Access
-                            </Link>
-                        </h6>
-                        <span>
-                            31 Dec 2021 - 08:36
-                            PM
-                        </span>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div className="inventual-notify-dropdown-item">
-                    <div className="thumb">
-                        <Link href="/message">
-                            <Image src={userImgFour} loader={imageLoader} placeholder="blur" loading='lazy' style={{ width: '100%', height: "auto" }} alt="genres img" />
-                        </Link>
-                    </div>
-                    <div className="content">
-                        <h6>
-                            <Link href="/message">
-                                {" "}
-                                Training Opportunity Inventory Management Skills
-                            </Link>
-                        </h6>
-                        <span>
-                            31 Dec 2021 - 08:36
-                            PM
-                        </span>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div className="inventual-notify-dropdown-item">
-                    <div className="thumb">
-                        <Link href="/message">
-                            <Image src={userImgFive} loader={imageLoader} placeholder="blur" loading='lazy' style={{ width: '100%', height: "auto" }} alt="genres img" />
-                        </Link>
-                    </div>
-                    <div className="content">
-                        <h6>
-                            <Link href="/message">
-                                Supplier Communication Update
-                            </Link>
-                        </h6>
-                        <span>
-                            31 Dec 2021 - 08:36
-                            PM
-                        </span>
-                    </div>
-                </div>
-            </li>
+            {messages.length > 0 ? (
+                messages.map((msg: any) => (
+                    <li key={msg.id}>
+                        <div className="inventual-notify-dropdown-item">
+                            <div className="thumb">
+                                <Link href="/message">
+                                    <Image
+                                        src={msg.profilePicture}
+                                        width="0"
+                                        height="0"
+                                        alt='image not found'
+                                        sizes="100vw"
+                                        style={{ width: '52px', height: '42px' }}
+                                    />
+                                </Link>
+                            </div>
+                            <div className="content">
+                                <h6>
+                                    <Link href="/message">Message from {msg.toUser}</Link>
+                                </h6>
+                                <span>{msg.time || 'Unknown Date'}</span>
+                            </div>
+                        </div>
+                    </li>
+                ))
+            ) : (
+                <li>
+                    <div className="text-gray-500 text-center py-2">No messages available</div>
+                </li>
+            )}
             <div className="border-t border-gray-300 my-2"></div>
             <li>
                 <Link href="/message">

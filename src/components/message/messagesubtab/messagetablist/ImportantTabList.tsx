@@ -183,7 +183,7 @@ const ImportantTabList = () => {
                                         <button className="inventual-btn outline-btn h-38" type="submit">
                                             <span><i className="fa-solid fa-right-long"></i></span>Forward
                                         </button>
-                                        <button className="inventual-btn outline-btn h-38" type="submit">
+                                        <button className="inventual-btn outline-btn h-38">
                                             <span><i className="fa-light fa-trash-can"></i></span>Delete
                                         </button>
                                     </div>

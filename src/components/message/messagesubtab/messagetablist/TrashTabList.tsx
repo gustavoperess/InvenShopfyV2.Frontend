@@ -183,10 +183,10 @@ const TrashTabList = () => {
                                             <span><i className="fa-sharp fa-solid fa-reply"></i></span>Reply
                                         </button>
                                         <button className="inventual-btn outline-btn h-38" type="submit">
-                                            <span><i className="fa-solid fa-right-long"></i></span>Forward
+                                        <span><i className="fa-solid fa-right-long"></i></span>Move to important
                                         </button>
-                                        <button className="inventual-btn outline-btn h-38" type="submit">
-                                            <span><i className="fa-light fa-trash-can"></i></span>Delete
+                                        <button className="inventual-btn outline-btn h-38" onClick={() => handleTrashMessage(item.id)}>
+                                            <span><i className="fa-light fa-inbox"></i></span>Back to Inbox
                                         </button>
                                     </div>
                                 </div>

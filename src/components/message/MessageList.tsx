@@ -8,7 +8,7 @@ import SendTabList from './messagesubtab/messagetablist/SendTabList';
 import DraftTabList from './messagesubtab/messagetablist/DraftTabList';
 import ImportantTabList from './messagesubtab/messagetablist/ImportantTabList';
 import TrashTabList from './messagesubtab/messagetablist/TrashTabList';
-import { useGetTotalAmountOfInboxMessagesQuery, useGetTotalAmountOfSentMessagesQuery, useGetTotalAmountOfImportantMessagesQuery } from '@/services/Messages/Messages';
+import { useGetTotalAmountOfInboxMessagesQuery, useGetTotalAmountOfSentMessagesQuery, useGetTotalAmountOfImportantMessagesQuery, useGetTotalAmountOftrashMessagesQuery } from '@/services/Messages/Messages';
 
 
 interface TabPanelProps {
@@ -46,6 +46,7 @@ const MessageList = () => {
     const { data: totalAmountSentMessages } = useGetTotalAmountOfSentMessagesQuery();
     const { data: totalAmountInboxMessages } = useGetTotalAmountOfInboxMessagesQuery();
     const { data: totalAmountImportantMessages } = useGetTotalAmountOfImportantMessagesQuery();
+    const { data: totalAmounTrashMessages } = useGetTotalAmountOftrashMessagesQuery();
     const [mainTabValue, setMainTabValue] = React.useState(0);
     const [subTabValue, setSubTabValue] = React.useState(0); // Set the default value for the "Sale" subtabs
     
@@ -95,7 +96,7 @@ const MessageList = () => {
                                     <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-sharp fa-regular fa-paper-plane"></i>Send</span><span>({totalAmountSentMessages?.data})</span></div>} {...a11yProps(1)} />
                                     <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-solid fa-envelope-open"></i>Draft</span><span>(3)</span></div>} {...a11yProps(2)} />
                                     <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-sharp fa-solid fa-circle-exclamation"></i>Important</span><span>({totalAmountImportantMessages?.data})</span></div>} {...a11yProps(3)} />
-                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-solid fa-trash"></i>Trash</span><span>(1)</span></div>} {...a11yProps(4)} />
+                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-solid fa-trash"></i>Trash</span><span>({totalAmounTrashMessages?.data})</span></div>} {...a11yProps(4)} />
                                 </Tabs>
                             </div>
                             <div className="inventual-inbox-wrapper-inner w-full">

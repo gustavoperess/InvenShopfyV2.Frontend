@@ -57,9 +57,21 @@ export const messagesApi = createApi({
             }),
             providesTags: ['Messages']
         }),
+        getTotalAmountOftrashMessages: builder.query<any, void>({
+            query: ()=> ({
+                url: '/trash-messages-amount',
+            }),
+            providesTags: ['Messages']
+        }),
         getTotalAmountOfImportantMessages: builder.query<any, void>({
             query: ()=> ({
                 url: '/important-messages-amount',
+            }),
+            providesTags: ['Messages']
+        }),
+        getLastFiveInboxMessages: builder.query<any, void>({
+            query: ()=> ({
+                url: '/lastfive-messages-inbox',
             }),
             providesTags: ['Messages']
         }),
@@ -91,6 +103,8 @@ export const messagesApi = createApi({
 });
 
 export const {
+    useGetLastFiveInboxMessagesQuery,
+    useGetTotalAmountOftrashMessagesQuery,
     useGetDeletedMessagesQuery,
     useGetTotalAmountOfImportantMessagesQuery,
     useGetTotalAmountOfInboxMessagesQuery,
