@@ -78,7 +78,7 @@ const TrashTabList = () => {
         if (string.length > 0) {
             const words = string.split(" ");
             const firstName = words[0];
-            const lastName = words[words.length - 1];
+            const lastName = words[words.length - 1][0];
             return `${firstName} ${lastName}`;
         }
         return "";

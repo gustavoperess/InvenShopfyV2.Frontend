@@ -6,7 +6,7 @@ import StarSvg from '@/svg/StarSvg';
 import React, { useState, useEffect } from 'react';
 import ForwardSvg from '@/svg/ForwardSvg';
 import { MessageTab } from '@/interFace/interFace';
-import { useGetMessagesInboxQuery, useUpdateMessageImportancyMutation,useDeleteMessageMutation } from '@/services/Messages/Messages';
+import { useGetMessagesInboxQuery, useUpdateMessageImportancyMutation, useDeleteMessageMutation } from '@/services/Messages/Messages';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -48,6 +48,7 @@ const IndexTabList = () => {
     const [isReady, setIsReady] = useState<boolean>(false);
     const [moveMessageToImportant] = useUpdateMessageImportancyMutation();
     const [moveMessageToTransh] = useDeleteMessageMutation();
+    const [searchQuery, setSearchQuery] = useState('');
 
     const handleSubTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setSubTabValue(newValue);
@@ -55,15 +56,11 @@ const IndexTabList = () => {
 
     useEffect(() => {
         if (messagesData?.data?.length) {
-            const isValidTabValue = messagesData.data.some((item: any) => item.id === subTabValue);
-            if (!isValidTabValue) {
-                setSubTabValue(messagesData.data[0].id);
-            }
             setIsReady(true);
         } else {
             setIsReady(false);
         }
-    }, [messagesData, subTabValue]);
+    }, [messagesData]);
 
 
 
@@ -77,27 +74,39 @@ const IndexTabList = () => {
         if (string.length > 0) {
             const words = string.split(" ");
             const firstName = words[0];
-            const lastName = words[words.length - 1];
+            const lastName = words[words.length - 1][0];
             return `${firstName} ${lastName}`;
         }
         return "";
     };
 
-    const handleUpdateImportancy = (id: number) => {
-        moveMessageToImportant(id);
-    };
+    const handleUpdateImportancy = (id: number) => moveMessageToImportant(id);
+    const handleTrashMessage = (id: number) => moveMessageToTransh(id);
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {setSearchQuery(event.target.value);};
 
-    const handleTrashMessage = (id: number) => {
-        moveMessageToTransh(id);
-    };
-
+  
+    const tabList: MessageTab[] = messagesData?.data || [];
 
 
-    if (!isReady || messagesLoading || !messagesData?.data?.length) {
+    const filteredData = tabList?.filter((item: any) =>
+        item.toUser.toLowerCase().includes(searchQuery.toLowerCase()) 
+      ) || [];
+      useEffect(() => {
+        if (filteredData.length) {
+            const isValidTabValue = filteredData.some((item: any) => item.id === subTabValue);
+            if (!isValidTabValue) {
+                setSubTabValue(filteredData[0]?.id || 0);
+            }
+        } else {
+            setSubTabValue(0); // Reset when no matching data
+        }
+    }, [filteredData, subTabValue]);
+      
+      if (!isReady || messagesLoading || !messagesData?.data?.length) {
         return <div>No messages available...</div>;
     }
 
-    const tabList: MessageTab[] = messagesData?.data || [];
+    
     return (
         <>
             <div className="inventual-inbox-top-wrapper mb-2.5">
@@ -106,7 +115,12 @@ const IndexTabList = () => {
                         <div className="col-span-12 lg:col-span-8">
                             <div className="inventual-notification-search">
                                 <div className="inventual-message-search relative">
-                                    <input type="text" placeholder="Search mail" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search List"
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
+                                    />
                                     <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                                 </div>
                             </div>
@@ -116,13 +130,13 @@ const IndexTabList = () => {
                 <div className="inventual-newmessage-wrapper flex flex-col md:flex-row gap-12 minMax2Xl:gap-7">
                     <div className="inventual-message-vertical-subtab">
                         <Tabs
-                            value={tabList.some((tab: MessageTab) => tab.id === subTabValue) ? subTabValue : tabList[0]?.id}
+                            value={filteredData.some((tab: MessageTab) => tab.id === subTabValue) ? subTabValue : filteredData[0]?.id}
                             onChange={handleSubTabChange}
                             TabIndicatorProps={{ style: { display: 'none' } }}
                             scrollButtons
                             allowScrollButtonsMobile
                             aria-label="basic tabs example">
-                            {tabList?.map((item: any) => (
+                            {filteredData?.map((item: any) => (
                                 <Tab
                                     key={item.id}
                                     value={item.id}
@@ -152,7 +166,7 @@ const IndexTabList = () => {
                         </Tabs>
                     </div>
                     <div className="inventual-inbox-wrapper-inner w-full">
-                        {tabList?.map((item: any) => (
+                        {filteredData?.map((item: any) => (
                             <CustomTabPanel value={subTabValue} index={item.id} key={item.id}>
                                 <div className="inventual-notification-body">
                                     <div className="col-span-12 lg:col-span-4 gap-5">
@@ -171,10 +185,10 @@ const IndexTabList = () => {
                                             </button>
                                         </div>
                                     </div>
-                                    <h4 className="text-[24px] font-bold text-heading mb-10">{item.title}</h4>
-                                    <h5 className="text-[18px] font-bold text-heading mb-1">{item.toUser}</h5>
-                                    <span className="text-[14px] font-semibold block mb-11">{item.time}</span>
-
+                                    <h4 className="text-[24px] font-bold text-heading mb-2">{item.title}</h4>
+                                    <h5 className="text-[14px] text-heading mb-12">{item.subject}</h5>
+                                    <h5 className="text-[18px] font-bold text-heading mb-1">From: {item.toUser}</h5>
+                                    <span className="text-[14px] font-semibold block mb-11">Date: {item.time}</span>
                                     <p className="text-[16px] font-normal leading-[26px] mb-6">{item.messageBody}</p>
                                     <div className="inventual-notification-feedback default-light-theme flex flex-wrap gap-3">
                                         <button className="inventual-btn outline-btn h-38" type="submit">

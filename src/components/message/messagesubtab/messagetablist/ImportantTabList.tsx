@@ -6,7 +6,7 @@ import TrashSvg from '@/svg/TrashSvg';
 import StarSvg from '@/svg/StarSvg';
 import ForwardSvg from '@/svg/ForwardSvg';
 import { MessageTab } from '@/interFace/interFace';
-import { useGetImportantMessagesQuery, useUpdateMessageImportancyMutation } from '@/services/Messages/Messages';
+import { useGetImportantMessagesQuery, useUpdateMessageImportancyMutation,useDeleteMessageMutation } from '@/services/Messages/Messages';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -47,28 +47,20 @@ const ImportantTabList = () => {
     const [subTabValue, setSubTabValue] = useState<number>(messagesData?.data?.[0]?.id || 0);
     const [isReady, setIsReady] = useState<boolean>(false);
     const [moveMessageToImportant] = useUpdateMessageImportancyMutation();
+    const [moveMessageToTransh] = useDeleteMessageMutation();
+    const [searchQuery, setSearchQuery] = useState('');
 
     const handleSubTabChange = (event: React.SyntheticEvent, newValue: number) => {
-        const isValidTabValue = tabList.some((item: any) => item.id === newValue);
-
-        if (isValidTabValue) {
-            setSubTabValue(newValue);
-        } else {
-            console.error("Invalid Tab value:", newValue);
-        }
+        setSubTabValue(newValue);
     };
 
     useEffect(() => {
         if (messagesData?.data?.length) {
-            const isValidTabValue = messagesData.data.some((item: any) => item.id === subTabValue);
-            if (!isValidTabValue) {
-                setSubTabValue(messagesData.data[0].id);
-            }
             setIsReady(true);
         } else {
             setIsReady(false);
         }
-    }, [messagesData, subTabValue]);
+    }, [messagesData]);
 
     const sliceMessageBody = (message: string) => {
         const words = message.split(' ');
@@ -86,16 +78,31 @@ const ImportantTabList = () => {
         return "";
     };
 
-    const handleUpdateImportancy = (id: number) => {
-        moveMessageToImportant(id);
-    };
+    const handleUpdateImportancy = (id: number) => moveMessageToImportant(id);
+    const handleTrashMessage = (id: number) => moveMessageToTransh(id);
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {setSearchQuery(event.target.value);};
 
-    if (!isReady || messagesLoading || !messagesData?.data?.length) {
-        return <div>No messages available...</div>;
-    }
-    
 
     const tabList: MessageTab[] = messagesData?.data || [];
+    const filteredData = tabList?.filter((item: any) =>
+        item.toUser.toLowerCase().includes(searchQuery.toLowerCase()) 
+      ) || [];
+      useEffect(() => {
+        if (filteredData.length) {
+            const isValidTabValue = filteredData.some((item: any) => item.id === subTabValue);
+            if (!isValidTabValue) {
+                setSubTabValue(filteredData[0]?.id || 0);
+            }
+        } else {
+            setSubTabValue(0); // Reset when no matching data
+        }
+    }, [filteredData, subTabValue]);
+      
+      if (!isReady || messagesLoading || !messagesData?.data?.length) {
+        return <div>No messages available...</div>;
+    }
+
+  
 
     return (
         <>
@@ -105,7 +112,12 @@ const ImportantTabList = () => {
                         <div className="col-span-12 lg:col-span-8">
                             <div className="inventual-notification-search">
                                 <div className="inventual-message-search relative">
-                                    <input type="text" placeholder="Search mail" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search List"
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
+                                    />
                                     <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                                 </div>
                             </div>
@@ -116,13 +128,13 @@ const ImportantTabList = () => {
                 <div className="inventual-newmessage-wrapper flex flex-col md:flex-row gap-12 minMax2Xl:gap-7">
                     <div className="inventual-message-vertical-subtab">
                         <Tabs
-                            value={tabList.some((tab: MessageTab) => tab.id === subTabValue) ? subTabValue : tabList[0]?.id}
+                            value={filteredData.some((tab: MessageTab) => tab.id === subTabValue) ? subTabValue : filteredData[0]?.id}
                             onChange={handleSubTabChange}
                             TabIndicatorProps={{ style: { display: 'none' } }}
                             scrollButtons
                             allowScrollButtonsMobile
                             aria-label="basic tabs example">
-                            {tabList?.map((item: any) => (
+                            {filteredData?.map((item: any) => (
                                 <Tab
                                     key={item.id}
                                     value={item.id}
@@ -152,7 +164,7 @@ const ImportantTabList = () => {
                         </Tabs>
                     </div>
                     <div className="inventual-inbox-wrapper-inner w-full">
-                        {tabList?.map((item: any) => (
+                        {filteredData?.map((item: any) => (
                             <CustomTabPanel value={subTabValue} index={item.id} key={item.id}>
                                 <div className="inventual-notification-body">
                                     <div className="col-span-12 lg:col-span-4 gap-5">
@@ -160,7 +172,7 @@ const ImportantTabList = () => {
                                             <button type="button">
                                                 <DownloadSvg />
                                             </button>
-                                            <button type="button">
+                                            <button onClick={() => handleUpdateImportancy(item.id)} type="button">
                                                 <TrashSvg />
                                             </button>
                                             <button onClick={() => handleUpdateImportancy(item.id)} type="button">
@@ -180,10 +192,10 @@ const ImportantTabList = () => {
                                         <button className="inventual-btn outline-btn h-38" type="submit">
                                             <span><i className="fa-sharp fa-solid fa-reply"></i></span>Reply
                                         </button>
-                                        <button className="inventual-btn outline-btn h-38"  onClick={() => handleUpdateImportancy(item.id)} >
-                                        <span><i className="fa-light fa-inbox"></i></span>Back to Inbox
+                                        <button className="inventual-btn outline-btn h-38" onClick={() => handleUpdateImportancy(item.id)} >
+                                            <span><i className="fa-light fa-inbox"></i></span>Back to Inbox
                                         </button>
-                                        <button className="inventual-btn outline-btn h-38">
+                                        <button className="inventual-btn outline-btn h-38" onClick={() => handleTrashMessage(item.id)}>
                                             <span><i className="fa-light fa-trash-can"></i></span>Delete
                                         </button>
                                     </div>

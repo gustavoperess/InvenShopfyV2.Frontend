@@ -24,6 +24,13 @@ export const usersApi = createApi({
             }),
             providesTags: ['Users'], 
         }),
+        getAllUsersButYourself:builder.query<any, void>({
+            query: () => ({
+                url: "users-but-yourself",
+                method: "GET",
+            }),
+            providesTags: ['Users'], 
+        }),
         getAllBillersNew:builder.query<any, void>({
             query: () => ({
                 url: `get-billers`,
@@ -66,6 +73,7 @@ export const usersApi = createApi({
 
 
 export const { 
+    useGetAllUsersButYourselfQuery,
     useGetAllBillersNewQuery,
     useUpdateUserMutation,
     useGetAllUsersQuery, 

@@ -43,6 +43,7 @@ const SendTabList = () => {
     const { data: messagesData, error: messagesError, isLoading: messagesLoading } = useGetSentMessagesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const [subTabValue, setSubTabValue] = useState<number>(0);
     const [isReady, setIsReady] = useState<boolean>(false);
+
     
 
     const handleSubTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -67,7 +68,7 @@ const SendTabList = () => {
         if (string.length > 0) {
             const words = string.split(" ");
             const firstName = words[0];
-            const lastName = words[words.length - 1];
+            const lastName = words[words.length - 1][0];
             return `${firstName} ${lastName}`;
         }
         return "";

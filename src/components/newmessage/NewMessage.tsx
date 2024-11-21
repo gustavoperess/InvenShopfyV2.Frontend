@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
-import { useGetAllBillersNewQuery } from '@/services/User/User';
+import { useGetAllUsersButYourselfQuery } from '@/services/User/User';
 import { MenuItem, TextField } from '@mui/material';
 import { TBillerInterfaceTwo } from '@/interFace/interFace';
 import { useCreateMessageMutation } from '@/services/Messages/Messages';
@@ -11,7 +11,7 @@ import { useGetTotalAmountOfInboxMessagesQuery, useGetTotalAmountOfSentMessagesQ
 
 
 const NewMessage = () => {
-    const { data: billerDataNew } = useGetAllBillersNewQuery();
+    const { data: billerDataNew } = useGetAllUsersButYourselfQuery();
     const [selectBiller, setSelectBiller] = useState('')
     const [subject, setSubject] = useState('')
     const [title, setTitle] = useState('')
@@ -26,6 +26,7 @@ const NewMessage = () => {
 
     const handleMessageSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         const messageData = { toUserId: selectBiller, subject, title, messageBody };
+
         e.preventDefault();
         try {
             await createMessage(messageData).unwrap();
