@@ -59,22 +59,6 @@ const DraftTabList = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-span-12 lg:col-span-4 gap-5">
-                            <div className="inventual-notification-action flex justify-end gap-2">
-                                <button type="button">
-                                    <DownloadSvg />
-                                </button>
-                                <button type="button">
-                                    <TrashSvg />
-                                </button>
-                                <button type="button">
-                                    <StarSvg />
-                                </button>
-                                <button type="button">
-                                    <ForwardSvg />
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div className="inventual-newmessage-wrapper flex flex-col md:flex-row gap-12 minMax2Xl:gap-7">
@@ -110,16 +94,36 @@ const DraftTabList = () => {
                             IndexMailTabData.slice(12, 15).map((item) => (
                                 <CustomTabPanel value={subTabValue} index={item.indexNum} key={item.id}>
                                     <div className="inventual-notification-body">
-                                        <h4 className="text-[24px] font-bold text-heading mb-10">{item.title}</h4>
-                                        <h5 className="text-[18px] font-bold text-heading mb-1">{item.subTitle}</h5>
-                                        <span className="text-[14px] font-semibold block mb-11">{item.time}</span>
+                                        <div className="col-span-12 lg:col-span-4 gap-5">
+                                            <div className="inventual-notification-action flex justify-end gap-2">
+                                                <button type="button">
+                                                    <DownloadSvg />
+                                                </button>
+                                                <button type="button">
+                                                    <TrashSvg />
+                                                </button>
+                                                <button type="button">
+                                                    <StarSvg />
+                                                </button>
+                                                <a href="/newmessage">
+                                                    <ForwardSvg />
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <h4 className="text-[24px] font-bold text-heading mb-2">{item.title}</h4>
+                                        <h5 className="text-[14px] text-heading mb-12">Important Matter</h5>
+
+                                        <h5 className="text-[18px] font-bold text-heading mb-1">From: {item.subTitle}</h5>
+                                        <span className="text-[14px] font-semibold block mb-11">Date: {item.time}</span>
                                         <span className="text-[16px] font-normal block mb-4 pb-0.5">Hi, </span>
                                         <p className="text-[16px] font-normal leading-[26px] mb-6">{item.description}</p>
                                         <p className="text-[16px] font-normal leading-[26px] mb-6">{item.descriptionTwo}</p>
                                         <p className="text-[16px] font-normal leading-[26px] mb-12 pb-0.5">{item.descriptionThree}</p>
                                         <p className="text-[16px] font-normal mb-12">Thanks!</p>
                                         <div className="inventual-notification-feedback default-light-theme flex flex-wrap gap-3">
-                                            <button className='inventual-btn outline-btn h-38' type="submit"><span><i className="fa-sharp fa-solid fa-reply"></i></span>Reply</button>
+                                            <a href="/newmessage" className="inventual-btn outline-btn h-38">
+                                                <span><i className="fa-sharp fa-solid fa-reply"></i></span>Reply
+                                            </a>
                                             <button className='inventual-btn outline-btn h-38' type="submit"><span><i className="fa-solid fa-right-long"></i></span>Forward</button>
                                             <button className='inventual-btn outline-btn h-38' type="submit"><span><i className="fa-light fa-trash-can"></i></span>Delete</button>
                                         </div>

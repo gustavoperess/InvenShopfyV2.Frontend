@@ -6,7 +6,7 @@ import TrashSvg from '@/svg/TrashSvg';
 import StarSvg from '@/svg/StarSvg';
 import ForwardSvg from '@/svg/ForwardSvg';
 import { MessageTab } from '@/interFace/interFace';
-import { useGetImportantMessagesQuery, useUpdateMessageImportancyMutation,useDeleteMessageMutation } from '@/services/Messages/Messages';
+import { useGetImportantMessagesQuery, useUpdateMessageImportancyMutation, useDeleteMessageMutation } from '@/services/Messages/Messages';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -80,14 +80,14 @@ const ImportantTabList = () => {
 
     const handleUpdateImportancy = (id: number) => moveMessageToImportant(id);
     const handleTrashMessage = (id: number) => moveMessageToTransh(id);
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {setSearchQuery(event.target.value);};
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => { setSearchQuery(event.target.value); };
 
 
     const tabList: MessageTab[] = messagesData?.data || [];
     const filteredData = tabList?.filter((item: any) =>
-        item.toUser.toLowerCase().includes(searchQuery.toLowerCase()) 
-      ) || [];
-      useEffect(() => {
+        item.toUser.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || [];
+    useEffect(() => {
         if (filteredData.length) {
             const isValidTabValue = filteredData.some((item: any) => item.id === subTabValue);
             if (!isValidTabValue) {
@@ -97,12 +97,7 @@ const ImportantTabList = () => {
             setSubTabValue(0); // Reset when no matching data
         }
     }, [filteredData, subTabValue]);
-      
-      if (!isReady || messagesLoading || !messagesData?.data?.length) {
-        return <div>No messages available...</div>;
-    }
 
-  
 
     return (
         <>
@@ -122,89 +117,89 @@ const ImportantTabList = () => {
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div className="inventual-newmessage-wrapper flex flex-col md:flex-row gap-12 minMax2Xl:gap-7">
-                    <div className="inventual-message-vertical-subtab">
-                        <Tabs
-                            value={filteredData.some((tab: MessageTab) => tab.id === subTabValue) ? subTabValue : filteredData[0]?.id}
-                            onChange={handleSubTabChange}
-                            TabIndicatorProps={{ style: { display: 'none' } }}
-                            scrollButtons
-                            allowScrollButtonsMobile
-                            aria-label="basic tabs example">
-                            {filteredData?.map((item: any) => (
-                                <Tab
-                                    key={item.id}
-                                    value={item.id}
-                                    {...a11yProps(item.id)}
-                                    label={
-                                        <div className="inventual-inbox-user">
-                                            <div className="min-h-[70px] inline-flex items-center justify-cente">
-                                                <Image
-                                                    src={item.profilePicture}
-                                                    width="0"
-                                                    height="0"
-                                                    alt="Profile Picture"
-                                                    sizes="100vw"
-                                                    style={{ width: '62px', height: '52px' }}
-                                                />
+                    {(!isReady || messagesLoading || !messagesData?.data?.length) ? (
+                        <div>No messages available...</div>
+                    ) : (
+                        <>
+                            <div className="inventual-message-vertical-subtab">
+                                <Tabs
+                                    value={filteredData.some((tab: MessageTab) => tab.id === subTabValue) ? subTabValue : filteredData[0]?.id}
+                                    onChange={handleSubTabChange}
+                                    TabIndicatorProps={{ style: { display: 'none' } }}
+                                    scrollButtons
+                                    allowScrollButtonsMobile
+                                    aria-label="basic tabs example">
+                                    {filteredData?.map((item: any) => (
+                                        <Tab
+                                            key={item.id}
+                                            value={item.id}
+                                            {...a11yProps(item.id)}
+                                            label={
+                                                <div className="inventual-inbox-user">
+                                                    <div className="min-h-[70px] inline-flex items-center justify-cente">
+                                                        <Image
+                                                            src={item.profilePicture}
+                                                            width="0"
+                                                            height="0"
+                                                            alt="Profile Picture"
+                                                            sizes="100vw"
+                                                            style={{ width: '62px', height: '52px' }}
+                                                        />
+                                                    </div>
+                                                    <div className="inventua-inbox-user-text w-full text-start">
+                                                        <h5 className="user-name">{splitname(item.toUser)}</h5>
+                                                        <span className="sub-title">{item.subject}</span>
+                                                        <p className="description">{sliceMessageBody(item.messageBody)}</p>
+                                                        <small className="time-title">{item.time}</small>
+                                                    </div>
+                                                </div>
+                                            }
+                                        />
+                                    ))}
+                                </Tabs>
+                            </div>
+                            <div className="inventual-inbox-wrapper-inner w-full">
+                                {filteredData?.map((item: any) => (
+                                    <CustomTabPanel value={subTabValue} index={item.id} key={item.id}>
+                                        <div className="inventual-notification-body">
+                                            <div className="col-span-12 lg:col-span-4 gap-5">
+                                                <div className="inventual-notification-action flex justify-end gap-2">
+                                                    <button onClick={() => handleTrashMessage(item.id)} type="button">
+                                                        <TrashSvg />
+                                                    </button>
+                                                    <button onClick={() => handleUpdateImportancy(item.id)} type="button">
+                                                        <StarSvg />
+                                                    </button>
+                                                    <a href="/newmessage">
+                                                        <ForwardSvg />
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <div className="inventua-inbox-user-text w-full text-start">
-                                                <h5 className="user-name">{splitname(item.toUser)}</h5>
-                                                <span className="sub-title">{item.subject}</span>
-                                                <p className="description">{sliceMessageBody(item.messageBody)}</p>
-                                                <small className="time-title">{item.time}</small>
+                                            <h4 className="text-[24px] font-bold text-heading mb-2">{item.title}</h4>
+                                            <h5 className="text-[14px] text-heading mb-12">{item.subject}</h5>
+                                            <h5 className="text-[18px] font-bold text-heading mb-1">From: {item.toUser}</h5>
+                                            <span className="text-[14px] font-semibold block mb-11">Date: {item.time}</span>
+                                            <p className="text-[16px] font-normal leading-[26px] mb-6">{item.messageBody}</p>
+                                            <div className="inventual-notification-feedback default-light-theme flex flex-wrap gap-3">
+                                                <a href="/newmessage" className="inventual-btn outline-btn h-38">
+                                                    <span><i className="fa-sharp fa-solid fa-reply"></i></span>Reply
+                                                </a>
+                                                <button className="inventual-btn outline-btn h-38" onClick={() => handleUpdateImportancy(item.id)}>
+                                                    <span><i className="fa-solid fa-right-long"></i></span>Move to important
+                                                </button>
+                                                <button className="inventual-btn outline-btn h-38" onClick={() => handleTrashMessage(item.id)}>
+                                                    <span><i className="fa-light fa-trash-can"></i></span>Delete
+                                                </button>
                                             </div>
                                         </div>
-                                    }
-                                />
-                            ))}
-                        </Tabs>
-                    </div>
-                    <div className="inventual-inbox-wrapper-inner w-full">
-                        {filteredData?.map((item: any) => (
-                            <CustomTabPanel value={subTabValue} index={item.id} key={item.id}>
-                                <div className="inventual-notification-body">
-                                    <div className="col-span-12 lg:col-span-4 gap-5">
-                                        <div className="inventual-notification-action flex justify-end gap-2">
-                                            <button type="button">
-                                                <DownloadSvg />
-                                            </button>
-                                            <button onClick={() => handleUpdateImportancy(item.id)} type="button">
-                                                <TrashSvg />
-                                            </button>
-                                            <button onClick={() => handleUpdateImportancy(item.id)} type="button">
-                                                <StarSvg />
-                                            </button>
-                                            <button type="button">
-                                                <ForwardSvg />
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <h4 className="text-[24px] font-bold text-heading mb-10">{item.title}</h4>
-                                    <h5 className="text-[18px] font-bold text-heading mb-1">{item.toUser}</h5>
-                                    <span className="text-[14px] font-semibold block mb-11">{item.time}</span>
-
-                                    <p className="text-[16px] font-normal leading-[26px] mb-6">{item.messageBody}</p>
-                                    <div className="inventual-notification-feedback default-light-theme flex flex-wrap gap-3">
-                                        <button className="inventual-btn outline-btn h-38" type="submit">
-                                            <span><i className="fa-sharp fa-solid fa-reply"></i></span>Reply
-                                        </button>
-                                        <button className="inventual-btn outline-btn h-38" onClick={() => handleUpdateImportancy(item.id)} >
-                                            <span><i className="fa-light fa-inbox"></i></span>Back to Inbox
-                                        </button>
-                                        <button className="inventual-btn outline-btn h-38" onClick={() => handleTrashMessage(item.id)}>
-                                            <span><i className="fa-light fa-trash-can"></i></span>Delete
-                                        </button>
-                                    </div>
-
-                                </div>
-                            </CustomTabPanel>
-
-                        ))}
-                    </div>
+                                    </CustomTabPanel>
+                                ))}
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </>
