@@ -2,12 +2,14 @@
 import React, { useState } from 'react';
 import TabProduct from './TabProduct';
 import PosSaleList from './PosSaleList';
-import { TProduct } from '@/interFace/interFace';
+import { TProduct,TProductInterface } from '@/interFace/interFace';
 
 const PosSaleMain = () => {
-    const [productListData, setProductListData] = useState<TProduct[]>([]);
-    const [filteredData, setFilteredData] = useState<TProduct[]>([]);
+    const [productListData, setProductListData] = useState<TProductInterface[]>([]);
+    const [filteredData, setFilteredData] = useState<TProductInterface[]>([]);
     const [activeProducts, setActiveProducts] = useState<{ [key: string]: boolean }>({});
+    const [productInformation, setProductInformation] = useState<TProductInterface[]>([]); // Add this
+
 
     return (
         <>
@@ -20,6 +22,9 @@ const PosSaleMain = () => {
                                 setProductListData={setProductListData}
                                 setFilteredData={setFilteredData}
                                 setActiveProducts={setActiveProducts}
+                                productInformation={productInformation} 
+                                setProductInformation={setProductInformation} 
+
                             />
                         </div>
                         <div className="col-span-12 xl:col-span-5">
@@ -30,6 +35,9 @@ const PosSaleMain = () => {
                                 setFilteredData={setFilteredData}
                                 activeProducts={activeProducts}
                                 setActiveProducts={setActiveProducts}
+                                productInformation={productInformation} 
+                                setProductInformation={setProductInformation} 
+
                             />
                         </div>
                     </div>

@@ -4,6 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import { useGetSalesBySaleIdQuery } from '@/services/Sales/Sales';
 import DialogContent from '@mui/material/DialogContent';
 import logo from '../../../../../../public/assets/img/logo/login-logo.png';
+import { MoneyFormat } from '@/interFace/interFace';
 import Image from 'next/image';
 
 interface GenerateInvoicePopupProps {
@@ -21,10 +22,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'GBP',
-  });
   
 
 

@@ -36,9 +36,6 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handlePurchaseRet
     const [fetchSuggestions, setFetchSuggestions] = useState(true);
     const [remarkStatus, setRemarkStatus] = useState<string>("");
     const [suggestions, setSuggestions] = useState<TPurchaseReturnInterface[]>([]);
-
-
-
     const [addPurchaseReturn] = useCreatePurchaseReturnMutation();
 
     const debouncedSearchTerm = useDebounce(referenceNumber, 500);

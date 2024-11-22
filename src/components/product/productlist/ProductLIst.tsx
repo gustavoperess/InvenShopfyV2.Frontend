@@ -118,7 +118,7 @@ const ProductList = () => {
   };
 
   const filteredData = productData?.data.filter((item: any) =>
-    item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.categoryName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.brandName.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
@@ -180,8 +180,8 @@ const ProductList = () => {
                           </button>
                           <Menu {...bindMenu(popupState)}>
                             <MenuItem onClick={() => { handleRequestSort("id"); popupState.close(); }}>Id</MenuItem>
-                            <MenuItem onClick={() => { handleRequestSort("title"); popupState.close() }}>Product</MenuItem>
-                            <MenuItem onClick={() => { handleRequestSort("price"); popupState.close() }}>Price</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("productName"); popupState.close() }}>Product</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("productPrice"); popupState.close() }}>Price</MenuItem>
                             <MenuItem onClick={() => { handleRequestSort("stockQuantity"); popupState.close() }}>Stock Quantity</MenuItem>
                           </Menu>
                         </React.Fragment>
@@ -231,9 +231,9 @@ const ProductList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'title'}
-                                  direction={orderBy === 'title' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('title')}
+                                  active={orderBy === 'productName'}
+                                  direction={orderBy === 'productName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('productName')}
                                 >
                                   Name
                                 </TableSortLabel>
@@ -250,9 +250,9 @@ const ProductList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'price'}
-                                  direction={orderBy === 'price' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('price')}
+                                  active={orderBy === 'productPrice'}
+                                  direction={orderBy === 'productPrice' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('productPrice')}
                                 >
                                   Price
                                 </TableSortLabel>
@@ -353,7 +353,7 @@ const ProductList = () => {
                                 </TableCell>
                                 {/* Data cells */}
                                 <TableCell>{product.id}</TableCell>
-                                <TableCell>{product.title}</TableCell>
+                                <TableCell>{product.produtName}</TableCell>
                                 <TableCell>
                                   <div className="min-h-[70px] inline-flex items-center justify-cente">
                                     <div className="inner px-2 py-2 bg-[#F4F5F8] rounded-[5px]">
@@ -368,7 +368,7 @@ const ProductList = () => {
                                     </div>
                                   </div>
                                 </TableCell>
-                                <TableCell>{MoneyFormat.format(product.price)}</TableCell>
+                                <TableCell>{MoneyFormat.format(product.productPrice)}</TableCell>
                                 <TableCell>{product.taxPercentage}%</TableCell>
                                 <TableCell>{product.marginRange}</TableCell>
                                 <TableCell>{product.productCode}</TableCell>

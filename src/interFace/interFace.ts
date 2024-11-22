@@ -63,7 +63,7 @@ export interface TSaleInterface {
   referenceNumber: string;
   warehouseName: string;
   totalQuantitySold: number
-  totalAmount: number;
+  returnTotalAmount: number;
 }
 
 
@@ -78,8 +78,10 @@ export interface MessageTab {
 // possale tab data
 export interface TProductInterface {
   id: number;
-  title: string;
-  price: number;
+  productId: number;
+  productName: string;
+  featured: boolean;
+  productPrice: number;
   productCode: number;
   stockQuantity: number;
   created: string;
@@ -108,6 +110,7 @@ export interface TProduct {
   productNum: number,
   brand: string,
   is_featured: boolean,
+  featured: boolean,
   batchNo: string,
   category: string,
   price: number,
@@ -231,7 +234,7 @@ export interface TCustomerInterface {
 
 export interface TBrandInterface {
   id: number;
-  title: string;
+  brandName: string;
   brandImage: string;
 }
 export interface TWarehouseInterface {
@@ -298,8 +301,8 @@ export interface TMainCategoryInterface {
 
 export interface TUnitInterface {
   id: number;
-  title: string;
-  shortName: string;
+  unitName: string;
+  unitShortName: string;
 }
 
 

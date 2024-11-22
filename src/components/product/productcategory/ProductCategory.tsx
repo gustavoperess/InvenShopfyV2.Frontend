@@ -140,6 +140,7 @@ const ProductCategory = () => {
     const subCategoryArray = subCategory.split(',').map((item) => item.trim());
     const categoryData = { mainCategory, subCategory: subCategoryArray };
     event.preventDefault();
+    
     try {
       await addCategory(categoryData).unwrap();
       toast.success("Category created successfully!");

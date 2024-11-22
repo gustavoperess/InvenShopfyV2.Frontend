@@ -1,12 +1,13 @@
 "use client"
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MenuItem, TextField } from '@mui/material';
-import * as React from 'react';
+import Image, { StaticImageData } from 'next/image';
 import AddCustomerPopup from './popup/AddCustomerPopup';
 import MakePaymentPopup from './popup/MakePaymentPopup';
 import DiscountPaymentPopup from './popup/DiscountPaymentPopup';
-import { TProduct } from '@/interFace/interFace';
-import product_data from '@/data/product-data';
+import { TProduct, TSaleInterface, MoneyFormat, TProductInterface } from '@/interFace/interFace';
+import { useGetSalesReturnByNameQuery } from '@/services/Sales/SaleReturn';
+import { useGetSalesBySaleIdQuery } from '@/services/Sales/Sales';
 import { toast } from 'react-toastify';
 
 const PosSaleList = (
@@ -14,34 +15,132 @@ const PosSaleList = (
         productListData,
         setProductListData,
         setFilteredData,
-        setActiveProducts
+        setActiveProducts,
+        productInformation,
+        setProductInformation, 
     }:
         {
-            setFilteredData: React.Dispatch<React.SetStateAction<TProduct[]>>,
-            productListData: TProduct[],
-            setProductListData: React.Dispatch<React.SetStateAction<TProduct[]>>
+            setFilteredData: React.Dispatch<React.SetStateAction<TProductInterface[]>>,
+            productListData: TProductInterface[],
+            setProductListData: React.Dispatch<React.SetStateAction<TProductInterface[]>>
+            productInformation: TProductInterface[]; 
+
             setActiveProducts: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>
+            setProductInformation: React.Dispatch<React.SetStateAction<TProductInterface[]>>; 
+
         }
 ) => {
     const [customerData, setCustomerData] = useState<string>('');
-    const [refNoData, setRefNoData] = useState<string>('');
+    const [warehouseName, setWarehouseName] = useState<string>("");
+
+    const [customerName, setCustomerName] = useState<string>("");
+    const [billerName, setBillerName] = useState<string>("");
+    const [saleStatus, setSaleStatus] = useState<string>("");
     const [billerData, setBillerData] = useState<string>('');
     const [warehouseData, setWarehouseData] = useState<string>('');
-    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [totalAmount, seTotalAmount] = useState<string>("");
+    const [taxAmount, setTaxAmount] = useState<number>(0);
+    const [profitAmount, setProfitAmount] = useState<number>(0);
+    const [discountAmount, setDiscountAmount] = useState<number>(0);
     const [shippingAmount, setShippingAmount] = useState<number>(0);
+    const [referenceNumber, setReferenceNumber] = useState<string>("");
+    const [fetchSuggestions, setFetchSuggestions] = useState(true);
+    const [suggestions, setSuggestions] = useState<TSaleInterface[]>([]);
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const [saleId, setSaleId] = useState<number>();
+    const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetSalesBySaleIdQuery(
+        saleId as number,
+        { skip: saleId === undefined }
+    );
 
-    const handleInputChange = (event: any) => {
-        const { value } = event.target;
-        setSearchTerm(value);
-        filterData(value);
+
+    /////////////////////////////////////////////////////////////////////////////////
+    // const handleInputChange = (event: any) => {
+    //     const { value } = event.target;
+    //     setSearchTerm(value);
+    //     filterData(value);
+    // };
+
+    // const filterData = (searchTerm: any) => {
+    //     const filteredData = productInformation?.filter((item) =>
+    //         (item.title && item.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    //     );
+    //     setFilteredData(filteredData);
+    // };
+
+    //  //handle remove data from selected product
+    //  const handleRemoveData = (removeId: any) => {
+    //     const remainingItem = productListData.filter((product) => product.id !== removeId);
+    //     setProductListData(remainingItem);
+
+    //     // Update activeProducts to remove the corresponding key
+    //     setActiveProducts(prevState => {
+    //         const updatedActiveProducts = { ...prevState };
+    //         console.log(updatedActiveProducts)
+    //         delete updatedActiveProducts[removeId];
+    //         return updatedActiveProducts;
+    //     });
+    // }
+  
+    /////////////////////////////////////////////////////////////////////////////////
+
+
+
+    const debouncedSearchTerm = useDebounce(referenceNumber, 500);
+
+    //debounce function
+    function useDebounce(value: string, delay: number) {
+        const [debouncedValue, setDebouncedValue] = useState(value);
+
+        useEffect(() => {
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+            return () => clearTimeout(handler);
+        }, [value, delay]);
+
+        return debouncedValue;
+    }
+
+    const handleReferenceNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setReferenceNumber(e.target.value);
+        setFetchSuggestions(true);
     };
 
-    const filterData = (searchTerm: any) => {
-        const filteredData = product_data.filter((item) =>
-            (item.title && item.title.toLowerCase().includes(searchTerm.toLowerCase()))
-        );
-        setFilteredData(filteredData);
+ 
+
+
+
+    const { data: productSuggestionsData, error } = useGetSalesReturnByNameQuery(debouncedSearchTerm, {
+        skip: !debouncedSearchTerm.trim().length || !fetchSuggestions, // Skip API call if fetchSuggestions is false
+    });
+
+
+    useEffect(() => {
+        if (productSuggestionsData) {
+            setSuggestions(productSuggestionsData.data || []); 
+         }
+    
+    }, [productSuggestionsData]);
+
+    useEffect(() => {
+        if (salesData && salesData.data.length > 0) {
+            setProductInformation(salesData.data); // Use the setter from props
+        }
+    }, [salesData, setProductInformation]);
+
+
+    const handleSuggestionSelect = (suggestion: TSaleInterface) => {
+        setSaleId(suggestion.id)
+        setReferenceNumber(suggestion.referenceNumber);
+        setWarehouseName(suggestion.warehouseName);
+        setSaleStatus(suggestion.saleStatus);
+        setBillerName(suggestion.billerName);
+        setCustomerName(suggestion.customerName)
+        setSuggestions([]);
+        setFetchSuggestions(false);
     };
+
 
     // Popup Start
     const [openFirstDialog, setOpenFirstDialog] = useState<boolean>(false);
@@ -66,100 +165,24 @@ const PosSaleList = (
     const handleDiscountPaymentDialogClose = () => {
         setOpenDiscountPaymentDialog(false);
     };
-    // Popup end
 
-    //handle remove data from selected product
-    const handleRemoveData = (removeId: any) => {
-        const remainingItem = productListData.filter((product) => product.id !== removeId);
-        setProductListData(remainingItem);
-
-        // Update activeProducts to remove the corresponding key
-        setActiveProducts(prevState => {
-            const updatedActiveProducts = { ...prevState };
-            delete updatedActiveProducts[removeId];
-            return updatedActiveProducts;
-        });
-    }
-
-    //handle Increament
-    const handleIncreament = (increaseId: any) => {
-        setProductListData((prevData) => prevData.map((product) => {
-            if (product.id === increaseId) {
-                return {
-                    ...product,
-                    quantity: product.quantity + 1
-                }
-            }
-            return product;
-        }))
-    }
-
-    //handle Decreament
-    const handleDecrement = (decreaseId: any) => {
-        setProductListData((prevData) => prevData.map((product) => {
-            if (product.id === decreaseId) {
-                return {
-                    ...product,
-                    quantity: product.quantity - 1 >= 1 ? product.quantity - 1 : 1
-                }
-            }
-            return product;
-        }))
-    }
-
-    //calculate subtotal
-    const calculateSubtotal = (product: any) => {
-        let tax = 0;
-        let discount = 0;
-        tax = product.price * product.tax / 100;
-        discount = product.price * product.discount / 100;
-        const subTotal = (product.price + tax - discount) * product.quantity;
-        return subTotal;
-    }
-
-    //calculate total tax
-    const calculateTax = () => {
-        return productListData.reduce((totalTax, product) => {
-            const productTax = (product.price * product.tax / 100) * product.quantity;
-            return totalTax + productTax;
-        }, 0)
-    }
-
-    //calculate total discount
-    const calculateDiscount = () => {
-        return productListData.reduce((totalDiscount, product) => {
-            const productDiscount = (product.price * product.discount / 100) * product.quantity;
-            return totalDiscount + productDiscount;
-        }, 0)
-    }
-
-    //calculate total
-    const calculateTotal = () => {
-        return productListData.reduce((total, product) => {
-            return total + product.price * product.quantity;
-        }, 0)
-    }
-
-    // handle shipping value change
-    const handleShippingValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const amount = parseFloat(event.target.value);
-        setShippingAmount(isNaN(amount) ? 0 : amount)
-    };
-
-    //grand total
-    const calculateGrandTotal = calculateTotal() + shippingAmount + calculateTax() - calculateDiscount();
 
     //handle reset form data
     const handlePosFormReset = () => {
-        setSearchTerm('');
-        setWarehouseData('');
-        setBillerData('');
-        setCustomerData('');
-        setRefNoData('');
+        setTaxAmount(0);
+        setSaleId(undefined);
+        setReferenceNumber("");
+        setProfitAmount(0);
+        setDiscountAmount(0);
         setShippingAmount(0);
-        setProductListData([]);
-        setActiveProducts({});
-    }
+        setSuggestions([]); 
+        setFetchSuggestions(false);
+        setCustomerName(""); 
+        setBillerName("");
+        setWarehouseName("");
+        setSaleStatus("");
+        toast.info("Form has been reset successfully!");
+    };
 
     //handle save draft
     const handleSaveDraft = () => {
@@ -170,147 +193,133 @@ const PosSaleList = (
         }
     }
 
+    const totalAmountBeforeTax = salesData?.data.reduce((accumulator: any, data: any) => {
+        accumulator.totalAmountBeforeTax += data.totalPricePerProduct;
+        return accumulator
+
+    }, { totalAmountBeforeTax: 0 })
+
+   
+
     return (
         <>
             <div className="inventual-common-card min-h-full">
                 <div className="grid grid-cols-12 gap-x-5 gap-y-6">
+                    <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
+                        <div className="inventual-form-field">
+                            <h5>Search by reference number</h5>
+                            <div className="inventual-input-field-style search-field">
+                                <TextField
+                                    fullWidth
+                                    placeholder="B-874739"
+                                    variant="outlined"
+                                    value={referenceNumber}
+                                    onChange={handleReferenceNumberChange}
+                                />
+                                {suggestions.length > 0 && (
+                                    <div className='search-dropdown dropdown-scroll'>
+                                        <ul>
+                                            {suggestions.map((product) => (
+                                                <li key={product.id} onClick={() => handleSuggestionSelect(product)}>
+                                                    <p className='title'>{product.referenceNumber}</p>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </div>
+
+                        </div>
+                    </div>
                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
                         <div className="flex items-center w-full">
                             <div className="inventual-form-field w-full">
-                                <div className="inventual-select-field-style">
-                                    <TextField
-                                        id='customer'
-                                        name='customer'
-                                        select
-                                        label="Select"
-                                        defaultValue=""
-                                        value={customerData}
-                                        onChange={(e) => setCustomerData(e.target.value)}
-                                        SelectProps={{
-                                            displayEmpty: true,
-                                            renderValue: (value: any) => {
-                                                if (value === '') {
-                                                    return <em>Select Customer</em>;
-                                                }
-                                                return value;
-                                            },
-                                        }}
-                                    >
-                                        <MenuItem value="">
-                                            <em>Select Warehouse</em>
-                                        </MenuItem>
-                                        <MenuItem value="Shane Watson">Shane Watson</MenuItem>
-                                        <MenuItem value="David Warner">David Warner</MenuItem>
-                                        <MenuItem value="David Miller">David Miller</MenuItem>
-                                        <MenuItem value="Hashim Amla">Hashim Amla</MenuItem>
-                                        <MenuItem value="Imran Tahir">Imran Tahir</MenuItem>
-                                        <MenuItem value="JP Duminy">JP Duminy</MenuItem>
-                                        <MenuItem value="Kagiso Rabada">Kagiso Rabada</MenuItem>
-                                        <MenuItem value="Kagiso Rabada">Stuart Broad</MenuItem>
-                                    </TextField>
-                                </div>
-                            </div>
-                            <button onClick={handleFirstDialogOpen} className='min-w-12 w-12 h-12 inline-flex items-center justify-center bg-primary text-white rounded-r-[3px] text-[20px]' type='button'>
-                                <i className="fa-regular fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                        <div className="inventual-form-field">
-                            <div className="inventual-select-field-style">
-                                <TextField
-                                    id='biller'
-                                    name='biller'
-                                    select
-                                    label="Select"
-                                    defaultValue=""
-                                    value={billerData}
-                                    onChange={(e) => setBillerData(e.target.value)}
-                                    SelectProps={{
-                                        displayEmpty: true,
-                                        renderValue: (value: any) => {
-                                            if (value === '') {
-                                                return <em>Select Biller</em>;
-                                            }
-                                            return value;
-                                        },
-                                    }}
-                                >
-                                    <MenuItem value="">
-                                        <em>Select Biller</em>
-                                    </MenuItem>
-                                    <MenuItem value="Shane Watson">Shane Watson</MenuItem>
-                                    <MenuItem value="David Warner">David Warner</MenuItem>
-                                    <MenuItem value="David Miller">David Miller</MenuItem>
-                                    <MenuItem value="Hashim Amla">Hashim Amla</MenuItem>
-                                    <MenuItem value="Imran Tahir">Imran Tahir</MenuItem>
-                                    <MenuItem value="JP Duminy">JP Duminy</MenuItem>
-                                    <MenuItem value="Kagiso Rabada">Kagiso Rabada</MenuItem>
-                                    <MenuItem value="Kagiso Rabada">Stuart Broad</MenuItem>
-                                </TextField>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                        <div className="inventual-select-field">
-                            <div className="inventual-form-field">
-                                <div className="inventual-select-field-style">
-                                    <TextField
-                                        id='warehouse'
-                                        name='warehouse'
-                                        select
-                                        label="Select"
-                                        defaultValue=""
-                                        value={warehouseData}
-                                        onChange={(e) => setWarehouseData(e.target.value)}
-                                        SelectProps={{
-                                            displayEmpty: true,
-                                            renderValue: (value: any) => {
-                                                if (value === '') {
-                                                    return <em>Select Warehouse</em>;
-                                                }
-                                                return value;
-                                            },
-                                        }}
-                                    >
-                                        <MenuItem value="">
-                                            <em>Select Warehouse</em>
-                                        </MenuItem>
-                                        <MenuItem value="United States">United States</MenuItem>
-                                        <MenuItem value="Canada">Canada</MenuItem>
-                                        <MenuItem value="Mexico">Mexico</MenuItem>
-                                        <MenuItem value="France">France</MenuItem>
-                                        <MenuItem value="Germany">Germany</MenuItem>
-                                    </TextField>
+                                <div className="col-span-12 md:col-span-6">
+                                    <div className="inventual-formTree-field">
+                                        <div className="inventual-input-field-style">
+                                            <TextField
+                                                required
+                                                value={customerName}
+                                                placeholder="Customer"
+                                                disabled={customerName !== ''}
+                                                style={{
+                                                    backgroundColor: customerName !== '' ? '#e0e0e0' : 'inherit',
+                                                    color: customerName !== '' ? '#757575' : 'inherit',
+                                                    width: '100%',
+                                                }}>
+                                            </TextField>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                        <div className="inventual-form-field">
-                            <div className="inventual-input-field-style">
-                                <input
-                                    value={refNoData}
-                                    onChange={(e) => setRefNoData(e.target.value)}
-                                    id="referenceNo"
-                                    name="referenceNo"
-                                    type="text"
-                                    placeholder='Reference No'
-                                />
+                        <div className="flex items-center w-full">
+                            <div className="inventual-form-field w-full">
+                                <div className="col-span-12 md:col-span-6">
+                                    <div className="inventual-formTree-field">
+                                        <div className="inventual-input-field-style">
+                                            <TextField
+                                                required
+                                                value={billerName}
+                                                placeholder="Biller"
+                                                disabled={billerName !== ''}
+                                                style={{
+                                                    backgroundColor: billerName !== '' ? '#e0e0e0' : 'inherit',
+                                                    color: billerName !== '' ? '#757575' : 'inherit',
+                                                    width: '100%',
+                                                }}>
+                                            </TextField>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="col-span-12">
-                        <div className="inventual-form-field">
-                            <div className="inventual-input-field-style">
-                                <input
-                                    id='search_id'
-                                    name='search'
-                                    type="text"
-                                    value={searchTerm}
-                                    onChange={handleInputChange}
-                                    placeholder='Scan / search products by name'
-                                />
+                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
+                        <div className="flex items-center w-full">
+                            <div className="inventual-form-field w-full">
+                                <div className="col-span-12 md:col-span-6">
+                                    <div className="inventual-formTree-field">
+                                        <div className="inventual-input-field-style">
+                                            <TextField
+                                                required
+                                                value={warehouseName}
+                                                placeholder="Warehouse"
+                                                disabled={warehouseName !== ''}
+                                                style={{
+                                                    backgroundColor: warehouseName !== '' ? '#e0e0e0' : 'inherit',
+                                                    color: warehouseName !== '' ? '#757575' : 'inherit',
+                                                    width: '100%',
+                                                }}>
+                                            </TextField>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
+                        <div className="flex items-center w-full">
+                            <div className="inventual-form-field w-full">
+                                <div className="col-span-12 md:col-span-6">
+                                    <div className="inventual-formTree-field">
+                                        <div className="inventual-input-field-style">
+                                            <TextField
+                                                required
+                                                value={saleStatus}
+                                                placeholder="Status"
+                                                disabled={saleStatus !== ''}
+                                                style={{
+                                                    backgroundColor: saleStatus !== '' ? '#e0e0e0' : 'inherit',
+                                                    color: saleStatus !== '' ? '#757575' : 'inherit',
+                                                    width: '100%',
+                                                }}>
+                                            </TextField>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -320,45 +329,23 @@ const PosSaleList = (
                                 <table>
                                     <thead>
                                         <tr className='bg-lightest'>
-                                            <th>Products</th>
-                                            <th>Batch No</th>
+                                            <th>Product</th>
                                             <th>Price</th>
-                                            <th>Tax</th>
-                                            <th>Discount</th>
+                                            <th>Unit</th>
                                             <th>Qty</th>
-                                            <th>Sub Total</th>
-                                            <th>Action</th>
+                                            <th>Total</th>
+                         
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            productListData.length > 0 ? (
-                                                productListData.map((product) => <tr key={product.id}>
-                                                    <td>{product.title}</td>
-                                                    <td>{product.batchNo}</td>
-                                                    <td>${product.price}</td>
-                                                    <td>{product.tax}%</td>
-                                                    <td>{product.discount}%</td>
-                                                    <td>
-                                                        <div className="inventual-addsale-product-qty">
-                                                            <span className='flex items-center'>
-                                                                <button type='button' onClick={() => handleDecrement(product.id)}><i className="fa-regular fa-minus"></i></button>
-                                                                <p>{product.quantity}</p>
-                                                                <button type='button' onClick={() => handleIncreament(product.id)}><i className="fa-regular fa-plus"></i></button>
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td>${calculateSubtotal(product)}</td>
-                                                    <td>
-                                                        <div className="inventual-addsale-product-action">
-                                                            <button
-                                                                className="product-delete-btn"
-                                                                onClick={() => handleRemoveData(product.id)}
-                                                            >
-                                                                <i className="fa-regular fa-xmark"></i>
-                                                            </button>
-                                                        </div>
-                                                    </td>
+                                            saleId != undefined ? (
+                                                salesData?.data.map((product: any) => <tr key={product.productId}>
+                                                    <td>{product.productName}</td>
+                                                    <td>{MoneyFormat.format(product.productPrice)}</td>
+                                                    <td>{product.unitShortName}</td>
+                                                    <td>{product.totalQuantitySoldPerProduct}</td>
+                                                    <td>{MoneyFormat.format(product.totalPricePerProduct)}</td>
                                                 </tr>)
                                             ) : (<tr>
                                                 <td className='text-center' colSpan={8}>Select product at least one </td>
@@ -370,55 +357,55 @@ const PosSaleList = (
                         </div>
                         <div className="inventual-possale-total-area border-t border-[#C1D5FE] border-solid pt-6 pb-1">
                             <div className="inventual-possale-total-wrapper flex justify-between flex-wrap">
-                                <div className="inventual-form-field small-width">
-                                    <h5>Total Price</h5>
-                                    <div className="inventual-input-field-style">
-                                        <input
-                                            type="text"
-                                            placeholder='$0'
-                                            defaultValue={`$${parseInt(calculateTotal().toFixed(2))}`}
-                                            disabled
-                                        />
-
-                                    </div>
-                                </div>
-                                <div className="inventual-form-field small-width">
-                                    <h5>Total Product</h5>
-                                    <div className="inventual-input-field-style">
-                                        <input
-                                            type="text"
-                                            placeholder='$0'
-                                            defaultValue={productListData.length}
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
                                 <div className="inventual-possale-total-tax mb-4">
-                                    <h5 className="text-[16px] font-semibold text-heading mb-[11px]">Total Tax</h5>
+                                    <h5 className="text-[16px] font-semibold text-heading mb-[11px]">Total Amount</h5>
                                     <div className="inventual-possale-total-field small-width">
                                         <input
                                             id="tax"
                                             name="tax"
                                             type="text"
-                                            placeholder="$8.00"
-                                            defaultValue={parseInt(calculateTax().toFixed(2))}
-                                            disabled
+                                            placeholder={MoneyFormat.format(saleId != undefined ? totalAmountBeforeTax?.totalAmountBeforeTax ?? 0 : 0)}
+                                            
                                         />
-                                        <button type="button">$</button>
+                                    </div>
+                                </div>
+                                <div className="inventual-possale-total-tax mb-4">
+                                    <h5 className="text-[16px] font-semibold text-heading mb-[11px]">Profit</h5>
+                                    <div className="inventual-possale-total-field small-width">
+                                        <input
+                                            id="tax"
+                                            name="tax"
+                                            type="text"
+                                            placeholder={MoneyFormat.format(saleId !== undefined ? salesData?.data[0].profitAmount ?? 0 : 0)}
+                                            
+                                        />
+                                   
+                                    </div>
+                                </div>
+                                <div className="inventual-possale-total-tax mb-4">
+                                    <h5 className="text-[16px] font-semibold text-heading mb-[11px]">Tax</h5>
+                                    <div className="inventual-possale-total-field small-width">
+                                        <input
+                                            id="tax"
+                                            name="tax"
+                                            type="text"
+                                            placeholder={MoneyFormat.format(saleId != undefined ? salesData?.data[0].taxAmount ?? 0 : 0)}
+                                            
+                                        />
+                               
                                     </div>
                                 </div>
                                 <div className="inventual-possale-total-discount mb-4">
-                                    <h5 className="text-[16px] font-semibold text-heading mb-[11px]">Total Discount</h5>
+                                    <h5 className="text-[16px] font-semibold text-heading mb-[11px]">Discount</h5>
                                     <div className="inventual-possale-total-field small-width">
                                         <input
                                             id="discount"
                                             name="discount"
                                             type="text"
-                                            placeholder="$25.00"
-                                            defaultValue={parseInt(calculateDiscount().toFixed(2))}
-                                            disabled
+                                            placeholder={MoneyFormat.format(saleId !== undefined ? salesData?.data[0].discount ?? 0 : 0)}
+                                            
                                         />
-                                        <button onClick={handleDiscountPaymentDialogOpen} type='button'>$</button>
+                                  
                                     </div>
                                 </div>
                                 <div className="inventual-possale-total-shipping mb-4">
@@ -428,17 +415,14 @@ const PosSaleList = (
                                             id="shipping"
                                             name="shipping"
                                             type="text"
-                                            placeholder="0"
-                                            value={shippingAmount}
-                                            onChange={handleShippingValue}
+                                            placeholder={MoneyFormat.format(saleId !== undefined ? salesData?.data[0]?.shippingCost ?? 0 : 0)}
                                         />
-                                        <button type="button">$</button>
                                     </div>
                                 </div>
 
                             </div>
                             <h4 className="mb-7 text-[20px] h-12 leading-[46px] text-center font-bold text-heading border-[#C1D5FE] border border-solid rounded-[5px] bg-[#ecf2f8]">
-                                Grand Total : ${parseInt(calculateGrandTotal.toFixed(2))}
+                                Grand Total : {MoneyFormat.format(saleId !== undefined ? salesData?.data[0].totalAmount ?? 0:  0)}
                             </h4>
                             <div className="grid grid-cols-12 gap-y-5 sm:gap-7">
                                 <div className="col-span-12 sm:col-span-3">
@@ -446,8 +430,7 @@ const PosSaleList = (
                                         <button
                                             className='inventual-btn w-full secondary-btn'
                                             type="button"
-                                            onClick={handlePosFormReset}
-                                        >
+                                            onClick={handlePosFormReset}>
                                             Reset All
                                         </button>
                                     </div>
@@ -462,9 +445,8 @@ const PosSaleList = (
                                         <button
                                             onClick={() => productListData.length > 0 && customerData && billerData && warehouseData ? handleMakePaymentDialogOpen() : null}
                                             className={`inventual-btn w-full ${productListData.length > 0 && customerData && billerData && warehouseData ? '' : 'disabled'}`}
-                                            type="button"
-                                        >
-                                            Make Payment
+                                            type="button">
+                                            Calculate new total
                                         </button>
                                     </div>
                                 </div>
@@ -474,11 +456,11 @@ const PosSaleList = (
                     </div>
                 </div>
             </div>
-            <MakePaymentPopup
-                calculateGrandTotal={calculateGrandTotal}
+            {/* <MakePaymentPopup
+                
                 open={openMakePaymentDialog}
                 handleMakePaymentDialogClose={handleMakePaymentDialogClose}
-            />
+            /> */}
             <AddCustomerPopup open={openFirstDialog} handleFirstDialogClose={handleFirstDialogClose} />
             <DiscountPaymentPopup open={openDiscountPaymentDialog} handleDiscountPaymentDialogClose={handleDiscountPaymentDialogClose} />
         </>

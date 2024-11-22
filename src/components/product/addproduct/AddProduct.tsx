@@ -16,12 +16,12 @@ import { TMainCategoryInterface, TBrandInterface, TUnitInterface } from '@/inter
  
 
 const AddProduct = () => {
-    const [selectedCategory, setSelectedCategory] = useState<number | string>("");
-    const [selectedTitle, setSelectedTitle] = useState<string>("");
-    const [selectedBrand, setSelectedBrand] = useState<string>("");
-    const [selectedUnit, setSelectedUnit] = useState<string>("");
-    const [selectedPrice, setSelectedPrice] = useState<number | undefined>();
-    const [selectedCode, setSelectedCode] = useState<number | undefined>();
+    const [categoryId, setCategoryId] = useState<number | string>("");
+    const [productName, setProductName] = useState<string>("");
+    const [brandId, setBrandId] = useState<string>("");
+    const [unitId, setUnitId] = useState<string>("");
+    const [productPrice, setProductPrice] = useState<number | undefined>();
+    const [productCode, setProductCode] = useState<number | undefined>();
     const [featured, setFeatured] = useState<boolean | false>(false);
     const [expired, setExpired] = useState<boolean | false>(false);
     const [taxPercentage, setTaxPercentage] = useState(5);
@@ -29,21 +29,21 @@ const AddProduct = () => {
     const [sale, setSale] = useState<boolean | false>(false);
     const [warehousePrice, setSelectedDiffPriceWarehouse] = useState<boolean | false>(false);
     const [productImage, setProductImage] = useState<string | null>(null);
-    const [selectSubCategory, setSelectSubCategory] = useState<string>("");
+    const [subCategory, setSubCategory] = useState<string>("");
     const [subCategories, setSubCategories] = useState<string[]>([]);
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
     const [currentPageSize, setCurrentPageSize] = useState(10);
     const { data: totalUnitData, error: totalUnitError, isLoading: totalUnitLoading } = useGetAllProductsUnitQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const { data: totalBrandData, error: totalBrandError, isLoading: totalBrandLoading } = useGetAllProductsBrandQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const { data: totalCategoryData, error: totalCategoryError, isLoading: totalCategoryLoading } = useGetAllProductsCategoryQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
-    const { data: subCategoryData } = useGetProductByIdQuery(Number(selectedCategory) || 0, { skip: !selectedCategory });
+    const { data: subCategoryData } = useGetProductByIdQuery(Number(categoryId) || 0, { skip: !categoryId });
     const [addProduct] = useAddProductMutation();
 
 
     useEffect(() => {
         if (subCategoryData) {
             setSubCategories(subCategoryData.data.subCategory || []);
-            setSelectSubCategory('');
+            setSubCategory('');
         }
     }, [subCategoryData]);
 
@@ -54,25 +54,22 @@ const AddProduct = () => {
     const handleFormSubmit = async (event: any) => {
         event.preventDefault()
         const productData = {
-            title: selectedTitle, differPriceWarehouse: warehousePrice,
-            productImage, categoryId: selectedCategory,
-            subcategory: selectSubCategory, productCode: selectedCode,
-            brandId: selectedBrand, unitId: selectedUnit,
-            price: selectedPrice, featured, expired, sale, taxPercentage, marginRange
+            productName, productImage, categoryId,subCategory, productCode,brandId,
+            unitId, productPrice, featured, expired, sale, taxPercentage, marginRange
         };
     
         try {
             await addProduct(productData).unwrap();
-            setSelectedTitle('');
+            setProductName('');
             setProductImage(null);
-            setSelectedCategory("");
-            setSelectSubCategory("");
+            setCategoryId("");
+            setSubCategory("");
             setTaxPercentage(5);
             setMarginRange("5% to 10%");
-            setSelectedCode(undefined);
-            setSelectedBrand("");
-            setSelectedUnit("");
-            setSelectedPrice(undefined);
+            setProductCode(undefined);
+            setBrandId("");
+            setUnitId("");
+            setProductPrice(undefined);
             setFeatured(false);
             setSale(false);
             setExpired(false);
@@ -89,10 +86,10 @@ const AddProduct = () => {
     }
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedCategory(e.target.value as string);
+        setCategoryId(e.target.value as string);
 
-        if (!subCategories.some(subCategory => subCategory === selectSubCategory)) {
-            setSelectSubCategory('');
+        if (!subCategories.some(subCategory => subCategory === subCategory)) {
+            setSubCategory('');
         }
     };
 
@@ -137,10 +134,10 @@ const AddProduct = () => {
                                                             fullWidth
                                                             placeholder="Macbook Pro*"
                                                             variant="outlined"
-                                                            value={selectedTitle}
+                                                            value={productName}
                                                             required
                                                             inputProps={{ maxLength: 80 }}
-                                                            onChange={(e) => setSelectedTitle(e.target.value)}
+                                                            onChange={(e) => setProductName(e.target.value)}
                                                         />
                                                     </FormControl>
                                                 </div>
@@ -158,7 +155,7 @@ const AddProduct = () => {
                                                             select
                                                             required
                                                             helperText="Please select a category"
-                                                            value={selectedCategory}
+                                                            value={categoryId}
                                                             onChange={handleCategoryChange}
                                                             fullWidth
                                                             InputLabelProps={{ shrink: true }}
@@ -198,8 +195,8 @@ const AddProduct = () => {
                                                         select
                                                         label="Select"
                                                         required
-                                                        value={selectSubCategory}
-                                                        onChange={(e) => setSelectSubCategory(e.target.value)}
+                                                        value={subCategory}
+                                                        onChange={(e) => setSubCategory(e.target.value)}
 
                                                         SelectProps={{
                                                             displayEmpty: true,
@@ -237,7 +234,7 @@ const AddProduct = () => {
                                                             placeholder="8952202236"
                                                             variant="outlined"
                                                             inputProps={{ min: 1, max: 10000000 }}
-                                                            onChange={(e) => setSelectedCode(Number(e.target.value))} />
+                                                            onChange={(e) => setProductCode(Number(e.target.value))} />
                                                     </FormControl>
                                                 </div>
                                             </div>
@@ -252,19 +249,19 @@ const AddProduct = () => {
                                                         select
                                                         label="Select"
                                                         required
-                                                        value={selectedBrand}
-                                                        onChange={(e) => setSelectedBrand(e.target.value)}
+                                                        value={brandId}
+                                                        onChange={(e) => setBrandId(e.target.value)}
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
                                                                 const selectedBrand = totalBrandData?.data.find((brand: TBrandInterface) => brand.id === value);
-                                                                return selectedBrand ? selectedBrand.title : <em>Select Brand</em>;
+                                                                return selectedBrand ? selectedBrand.brandName : <em>Select Brand</em>;
                                                             },
                                                         }}>
                                                         {totalBrandData && totalBrandData.data.length > 0 ? (
                                                             totalBrandData.data.map((brand: TBrandInterface) => (
                                                                 <MenuItem key={brand.id} value={brand.id}>
-                                                                    {brand.title}
+                                                                    {brand.brandName}
                                                                 </MenuItem>
                                                             ))
                                                         ) : (
@@ -286,19 +283,19 @@ const AddProduct = () => {
                                                         select
                                                         label="Select"
                                                         required
-                                                        value={selectedUnit}
-                                                        onChange={(e) => setSelectedUnit(e.target.value)}
+                                                        value={unitId}
+                                                        onChange={(e) => setUnitId(e.target.value)}
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
                                                                 const selectedUnit = totalUnitData?.data.find((unit: TUnitInterface) => unit.id === value);
-                                                                return selectedUnit ? selectedUnit.title : <em>Select Unit</em>;
+                                                                return selectedUnit ? selectedUnit.unitName : <em>Select Unit</em>;
                                                             },
                                                         }}>
                                                         {totalUnitData && totalUnitData.data.length > 0 ? (
                                                             totalUnitData.data.map((unit: TUnitInterface) => (
                                                                 <MenuItem key={unit.id} value={unit.id}>
-                                                                    {unit.title}
+                                                                    {unit.unitName}
                                                                 </MenuItem>
                                                             ))
                                                         ) : (
@@ -323,9 +320,9 @@ const AddProduct = () => {
                                                         decimalSeparator="."
                                                         decimalScale={2}
                                                         fixedDecimalScale
-                                                        value={selectedPrice ?? ''} // Display empty if `selectedPrice` is null
+                                                        value={productPrice ?? ''} // Display empty if `selectedPrice` is null
                                                         onValueChange={(values) => {
-                                                            setSelectedPrice(values.floatValue);
+                                                            setProductPrice(values.floatValue);
                                                         }}
                                                         InputProps={{
                                                             startAdornment: <InputAdornment position="start">£</InputAdornment>,
