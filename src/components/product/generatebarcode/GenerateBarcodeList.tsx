@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 import { TProduct } from '@/interFace/interFace';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
 import { TProductInterface, MoneyFormat } from '@/interFace/interFace';
+import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf'
 import Barcode from 'react-barcode';
 
 
@@ -127,7 +129,7 @@ const GenerateBarcodeList = () => {
         }
     }
 
-    console.log(productInformation)
+    
 
     return (
         <>
