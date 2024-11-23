@@ -2,19 +2,14 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import product_data from '@/data/product-data';
-import { TProduct,TProductInterface } from '@/interFace/interFace'
+import { TProduct, TProductInterface } from '@/interFace/interFace'
 import CategoryPopup from './popup/CategoryPopup'
 import BrandPopup from './popup/BrandPopup'
 
 
 const TabProduct = (
     {
-        productListData,
-        setProductListData,
-        
-        filteredData,
-        setFilteredData,
-        
+
         activeProducts,
         setActiveProducts,
 
@@ -22,15 +17,12 @@ const TabProduct = (
         setProductInformation,
     }:
         {
-            filteredData: TProductInterface[],
-            setFilteredData: React.Dispatch<React.SetStateAction<TProductInterface[]>>,
-            productListData: TProductInterface[],
-            setProductListData: React.Dispatch<React.SetStateAction<TProductInterface[]>>,
+   
             activeProducts: { [key: string]: boolean };
             setActiveProducts: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>
 
-            productInformation: TProductInterface[]; 
-            setProductInformation: React.Dispatch<React.SetStateAction<TProductInterface[]>>; 
+            productInformation: TProductInterface[];
+            setProductInformation: React.Dispatch<React.SetStateAction<TProductInterface[]>>;
 
         }
 ) => {
@@ -55,16 +47,12 @@ const TabProduct = (
         setOpenBrandDialog(false);
     };
 
-    useEffect(() => {
-        setFilteredData(productInformation);
-    }, [setFilteredData]);
 
     //handle all product data
     const handleAllProductClick = () => {
         setSelectedCategoryFilteredData([]);
         setSelectedBrandFilteredData([]);
         setFeaturedProduct([]);
-        setFilteredData(productInformation);
     };
 
     //handle Category click
@@ -90,7 +78,6 @@ const TabProduct = (
 
     const handleProductData = (productId: any) => {
         const selectedItem = productInformation?.find((item) => item.productId === productId);
-        console.log(selectedItem)
         if (!selectedItem) {
             return;
         }
@@ -101,17 +88,18 @@ const TabProduct = (
         }));
 
         // Check if the selected item already exists in the productListData
-        const isAlreadyAdded = productListData.some(product => product.productId === productId);
-   
+        const isAlreadyAdded = productInformation.some(product => product.productId === productId);
+
         if (isAlreadyAdded) {
             // If already added, remove it from the list
-            const updatedList = productListData.filter(product => product.productId !== productId);
-            setProductListData(updatedList);
+            const updatedList = productInformation.filter(product => product.productId !== productId);
+            setProductInformation(updatedList);
         } else {
             // If not already added, add it to the productListData
-            setProductListData(prevList => [...prevList, selectedItem]);
+            setProductInformation(prevList => [...prevList, selectedItem]);
         }
     }
+
 
     return (
         <>
@@ -144,48 +132,78 @@ const TabProduct = (
                         </button>
                     </div>
                     <div className="grid grid-cols-12 gap-y-2.5 sm:gap-2.5">
-                        {(selectedCategoryFilteredData.length > 0 ? selectedCategoryFilteredData :
-                            (selectedBrandFilteredData.length > 0 ? selectedBrandFilteredData : (
-                                featuredProduct.length > 0 ? featuredProduct : filteredData
-                            ))
-                        ).map(item => (
-                            <div key={item.productId} onClick={() => handleProductData(item.productId)} className={`col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-4  xxxl:col-span-3 ${activeProducts[item.productId] ? "inventual-possale-tab-product-acitve" : "inventual-possale-tab-product"} text-center`}>
-                                <div>
-                                    <div className="inventual-possale-tab-product-img inline-block">
-                                    <Image
-                                        src={item.productImage}
-                                        width="0"
-                                        height="0"
-                                        alt='image important'
-                                        sizes="100vw"
-                                        style={{ width: '42px', height: '32px' }}
-                                      />
-                                    </div>
-                                    <div className="inventual-possale-tab-product-text">
-                                        <h5>{item.productName}</h5>
-                                        <p className=' text-heading'>{item.productName}</p>
-                                        <span className='text-heading'>{item.batchNo}</span>
+                        {featuredProduct.length > 0
+                            ? featuredProduct.map((item: any) => (
+                                <div
+                                    key={item.productId}
+                                    onClick={() => handleProductData(item.productId)}
+                                    className={`col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-4 xxxl:col-span-3 ${activeProducts[item.productId] ? "inventual-possale-tab-product-acitve" : "inventual-possale-tab-product"
+                                        } text-center`}
+                                >
+                                    <div>
+                                        <div className="inventual-possale-tab-product-img inline-block">
+                                            <Image
+                                                src={item.productImage}
+                                                width="0"
+                                                height="0"
+                                                alt="image important"
+                                                sizes="100vw"
+                                                style={{ width: '42px', height: '32px' }}
+                                            />
+                                        </div>
+                                        <div className="inventual-possale-tab-product-text">
+                                            <h5>{item.productName}</h5>
+                                            <p className="text-heading">{item.productName}</p>
+                                            <span className="text-heading">{item.batchNo}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                            : productInformation.length > 0
+                                ? productInformation.map((item: any) => (
+                                    <div
+                                        key={item.productId}
+                                        onClick={() => handleProductData(item.productId)}
+                                        className={`col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-4 xxxl:col-span-3 ${activeProducts[item.productId] ? "inventual-possale-tab-product-acitve" : "inventual-possale-tab-product"
+                                            } text-center`}
+                                    >
+                                        <div>
+                                            <div className="inventual-possale-tab-product-img inline-block">
+                                                <Image
+                                                    src={item.productImage}
+                                                    width="0"
+                                                    height="0"
+                                                    alt="image important"
+                                                    sizes="100vw"
+                                                    style={{ width: '42px', height: '32px' }}
+                                                />
+                                            </div>
+                                            <div className="inventual-possale-tab-product-text">
+                                                <h5>{item.productName}</h5>
+                                                <p className="text-heading">{item.productName}</p>
+                                                <span className="text-heading">{item.batchNo}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                                : null}
                     </div>
                 </div>
             </div>
 
-            {/* <CategoryPopup
-                product_data={product_data}
+            <CategoryPopup
+                productInformation={productInformation}
                 setSeelctedCategoryFilteredData={setSelectedCategoryFilteredData}
                 open={openFirstDialog}
                 handleFirstDialogClose={handleFirstDialogClose}
             />
 
             <BrandPopup
-                product_data={product_data}
+                productInformation={productInformation}
                 setSelectedBrandFilteredData={setSelectedBrandFilteredData}
                 open={openBrandDialog}
                 handleBrandDialogClose={handleBrandDialogClose}
-            /> */}
+            />
         </>
     );
 };

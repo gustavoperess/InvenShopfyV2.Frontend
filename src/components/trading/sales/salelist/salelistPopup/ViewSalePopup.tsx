@@ -69,7 +69,7 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: GenerateInvo
                                                     <tr className='bg-lightest'>
                                                         <th>SL</th>
                                                         <th>Products</th>
-                                                        <th>Batch No</th>
+                                                        <th>Reference No</th>
                                                         <th>Unit</th>
                                                         <th>Unit Price</th>
                                                         <th>Qty</th>
@@ -79,12 +79,12 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: GenerateInvo
                                                 <tbody>
                                                     {
                                                         salesData?.data != undefined ? (
-                                                            salesData?.data.map((salesDate: any, index: any) => <tr key={index}>
+                                                            salesData?.data.map((salesDate: any) => <tr key={salesDate.productId}>
                                                                 <td>{salesDate.productId}</td>
                                                                 <td>{salesDate.productName}</td>
                                                                 <td>{salesDate.referenceNumber}</td>
                                                                 <td>{salesDate.unitShortName}</td>
-                                                                <td>${salesDate.productPrice}</td>
+                                                                <td>{MoneyFormat.format(salesDate.productPrice)}</td>
                                                                 <td>{salesDate.totalQuantitySoldPerProduct}</td>
                                                                 <td>{MoneyFormat.format(salesDate.totalPricePerProduct)}</td>
                                                             </tr>)
@@ -107,7 +107,7 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: GenerateInvo
                                                     </tr>
                                                     <tr>
                                                         <td colSpan={6}>Order Tax : </td>
-                                                        <td>+3 (2%)</td>
+                                                        <td>{MoneyFormat.format(salesData?.data[0].taxAmount)}</td>
                                                     </tr>
                                                     <tr>
                                                         <td colSpan={6}><span className='font-semibold text-heading'>Grand Total : </span></td>
@@ -116,10 +116,6 @@ const ViewSalePopup = ({ open, saleId, handleViewSaleDialogClose }: GenerateInvo
                                                     <tr>
                                                         <td colSpan={6}>Paid Amount : </td>
                                                         <td>{MoneyFormat.format(salesData?.data[0].totalAmount)}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colSpan={6}>Due Amount : </td>
-                                                        <td>0.00</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

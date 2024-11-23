@@ -2,29 +2,21 @@
 import React, { useState, useEffect } from 'react';
 import { MenuItem, TextField } from '@mui/material';
 import Image, { StaticImageData } from 'next/image';
-import AddCustomerPopup from './popup/AddCustomerPopup';
 import MakePaymentPopup from './popup/MakePaymentPopup';
 import DiscountPaymentPopup from './popup/DiscountPaymentPopup';
-import { TProduct, TSaleInterface, MoneyFormat, TProductInterface } from '@/interFace/interFace';
+import { TSaleInterface, MoneyFormat, TProductInterface } from '@/interFace/interFace';
 import { useGetSalesReturnByNameQuery } from '@/services/Sales/SaleReturn';
 import { useGetSalesBySaleIdForPosSaleQuery } from '@/services/Sales/Sales';
 import { toast } from 'react-toastify';
 
 const PosSaleList = (
     {
-        productListData,
-        setProductListData,
-        setFilteredData,
-        setActiveProducts,
+ 
         productInformation,
         setProductInformation, 
     }:
         {
-            setFilteredData: React.Dispatch<React.SetStateAction<TProductInterface[]>>,
-            productListData: TProductInterface[],
-            setProductListData: React.Dispatch<React.SetStateAction<TProductInterface[]>>
             productInformation: TProductInterface[]; 
-
             setActiveProducts: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>
             setProductInformation: React.Dispatch<React.SetStateAction<TProductInterface[]>>; 
 
@@ -48,42 +40,10 @@ const PosSaleList = (
     const [suggestions, setSuggestions] = useState<TSaleInterface[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [saleId, setSaleId] = useState<number>();
-    const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetSalesBySaleIdForPosSaleQuery(
-        saleId as number,
-        { skip: saleId === undefined }
-    );
-
-
-    /////////////////////////////////////////////////////////////////////////////////
-    // const handleInputChange = (event: any) => {
-    //     const { value } = event.target;
-    //     setSearchTerm(value);
-    //     filterData(value);
-    // };
-
-    // const filterData = (searchTerm: any) => {
-    //     const filteredData = productInformation?.filter((item) =>
-    //         (item.title && item.title.toLowerCase().includes(searchTerm.toLowerCase()))
-    //     );
-    //     setFilteredData(filteredData);
-    // };
-
-    //  //handle remove data from selected product
-    //  const handleRemoveData = (removeId: any) => {
-    //     const remainingItem = productListData.filter((product) => product.id !== removeId);
-    //     setProductListData(remainingItem);
-
-    //     // Update activeProducts to remove the corresponding key
-    //     setActiveProducts(prevState => {
-    //         const updatedActiveProducts = { ...prevState };
-    //         console.log(updatedActiveProducts)
-    //         delete updatedActiveProducts[removeId];
-    //         return updatedActiveProducts;
-    //     });
-    // }
-  
-    /////////////////////////////////////////////////////////////////////////////////
-
+    const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = 
+    useGetSalesBySaleIdForPosSaleQuery(saleId as number, {
+        skip: saleId === undefined || saleId === null, 
+    });
 
 
     const debouncedSearchTerm = useDebounce(referenceNumber, 500);
@@ -121,12 +81,12 @@ const PosSaleList = (
     }, [productSuggestionsData]);
 
     useEffect(() => {
-        if (salesData && salesData.data.length > 0) {
-            setProductInformation(salesData.data); // Use the setter from props
+        if (salesData && salesData.data.length > 0 && saleId) {
+            setProductInformation(salesData.data);
+        } else {
+            setProductInformation([]);
         }
-    }, [salesData, setProductInformation]);
-
-
+    }, [salesData, saleId]);
 
 
     const handleSuggestionSelect = (suggestion: TSaleInterface) => {
@@ -142,16 +102,9 @@ const PosSaleList = (
 
 
     // Popup Start
-    const [openFirstDialog, setOpenFirstDialog] = useState<boolean>(false);
     const [openMakePaymentDialog, setOpenMakePaymentDialog] = useState<boolean>(false);
     const [openDiscountPaymentDialog, setOpenDiscountPaymentDialog] = useState<boolean>(false);
 
-    const handleFirstDialogOpen = () => {
-        setOpenFirstDialog(true);
-    };
-    const handleFirstDialogClose = () => {
-        setOpenFirstDialog(false);
-    };
     const handleMakePaymentDialogOpen = () => {
         setOpenMakePaymentDialog(true);
     };
@@ -165,23 +118,19 @@ const PosSaleList = (
         setOpenDiscountPaymentDialog(false);
     };
 
-
-    //handle reset form data
     const handlePosFormReset = () => {
-        setTaxAmount(0);
-        setReferenceNumber("");
-        setProfitAmount(0);
-        setDiscountAmount(0);
-        setShippingAmount(0);
+        setReferenceNumber(""); 
         setSuggestions([]); 
-        setProductInformation([]);
-        setFetchSuggestions(false);
+        setProductInformation([]); 
         setCustomerName(""); 
         setBillerName("");
         setWarehouseName("");
         setSaleStatus("");
+        setSaleId(undefined); 
+        setFetchSuggestions(false); 
         toast.info("Form has been reset successfully!");
     };
+    
 
     //handle save draft
     const handleSaveDraft = () => {
@@ -442,8 +391,8 @@ const PosSaleList = (
                                 <div className="col-span-12 sm:col-span-6">
                                     <div className="inventual-material-btn-item">
                                         <button
-                                            onClick={() => productListData.length > 0 && customerData && billerData && warehouseData ? handleMakePaymentDialogOpen() : null}
-                                            className={`inventual-btn w-full ${productListData.length > 0 && customerData && billerData && warehouseData ? '' : 'disabled'}`}
+                                            onClick={() => productInformation.length > 0 ? handleMakePaymentDialogOpen() : null}
+                                            className={`inventual-btn w-full ${productInformation.length > 0 && customerData && billerData && warehouseData ? '' : 'disabled'}`}
                                             type="button">
                                             Calculate new total
                                         </button>
@@ -455,12 +404,11 @@ const PosSaleList = (
                     </div>
                 </div>
             </div>
-            {/* <MakePaymentPopup
-                
+            <MakePaymentPopup
+                calculateGrandTotal={5000}
                 open={openMakePaymentDialog}
                 handleMakePaymentDialogClose={handleMakePaymentDialogClose}
-            /> */}
-            <AddCustomerPopup open={openFirstDialog} handleFirstDialogClose={handleFirstDialogClose} />
+            />
             <DiscountPaymentPopup open={openDiscountPaymentDialog} handleDiscountPaymentDialogClose={handleDiscountPaymentDialogClose} />
         </>
     );

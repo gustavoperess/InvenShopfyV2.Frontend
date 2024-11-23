@@ -62,6 +62,7 @@ export interface TSaleInterface {
   paymentStatus: string;
   referenceNumber: string;
   warehouseName: string;
+  totalAmount: number;
   totalQuantitySold: number
   returnTotalAmount: number;
 }

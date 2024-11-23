@@ -74,7 +74,8 @@ const SaleList = () => {
   // GenerateInvoice Popup Start
   const [openeGenerateInvoiceDialog, setOpenGenerateInvoiceDialog] = useState<boolean>(false);
 
-  const handleGenerateInvoiceDialogOpen = () => {
+  const handleGenerateInvoiceDialogOpen = (saleId: number) => {
+    setSelectedSaleId(saleId)
     setOpenGenerateInvoiceDialog(true);
   };
   const handleGenerateInvoiceDialogClose = () => {
@@ -372,7 +373,7 @@ const SaleList = () => {
                                             <Menu {...bindMenu(popupState)}>
                                               <MenuItem onClick={() => {handleViewSale(sales.id);  popupState.close()}}> <i className="fa-regular fa-eye"></i>View Sale</MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/trading/sales/newsale'>Add Sale</Link></MenuItem>
-                                              <MenuItem onClick={() => {handleGenerateInvoiceDialogOpen();  popupState.close()}}> <i className="fa-regular fa-print"></i>Generate Invoice</MenuItem>
+                                              <MenuItem onClick={() => {handleGenerateInvoiceDialogOpen(sales.id);  popupState.close()}}> <i className="fa-regular fa-print"></i>Generate Invoice</MenuItem>
                                               <MenuItem onClick={() => {handleAddPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-circle-plus"></i>Add Payment</MenuItem>
                                               <MenuItem onClick={() => {handleViewPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-money-check-dollar"></i>View Payment</MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
@@ -409,7 +410,7 @@ const SaleList = () => {
       <ViewSalePopup saleId={selectedSaleId} open={openViewSaleDialog} handleViewSaleDialogClose={handleViewSaleDialogClose} />
       <TradingSalesListAddPayemnt open={openeAddPaymentDialog} handleAddPaymentDialogClose={handleAddPaymentDialogClose} />
       <TradingSalesListViewPayment open={openeViewPaymentDialog} handleViewPaymentDialogClose={handleViewPaymentDialogClose} />
-      <TradingSalesListInvoice open={openeGenerateInvoiceDialog} handleGenerateInvoiceDialogClose={handleGenerateInvoiceDialogClose} />
+      <TradingSalesListInvoice  saleId={selectedSaleId} open={openeGenerateInvoiceDialog} handleGenerateInvoiceDialogClose={handleGenerateInvoiceDialogClose} />
     </>
 
 

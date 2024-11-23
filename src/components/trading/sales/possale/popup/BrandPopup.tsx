@@ -10,23 +10,11 @@ import brandAdidas from "../../../../../../public/assets/img/brand/Adidas.png";
 import brandHalal from "../../../../../../public/assets/img/brand/FreshFood.png";
 
 
-interface brand {
-    id: number;
-    brandTitle: string;
-    brandImg: StaticImageData; 
-}
-
-interface Brand {
-    id: number;
-    brandTitle: string;
-    brandImg: StaticImageData; 
-}
-
 interface FirstPopupProps {
     open: boolean;
     handleBrandDialogClose: () => void;
-    product_data: any; 
-    setSelectedBrandFilteredData: (data: any) => void; 
+    productInformation: any;
+    setSelectedBrandFilteredData: (data: any) => void;
 }
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -38,15 +26,15 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const BrandPopup: React.FC<FirstPopupProps> = ({ open, handleBrandDialogClose, product_data, setSelectedBrandFilteredData }) => {
+const BrandPopup: React.FC<FirstPopupProps> = ({ open, handleBrandDialogClose, productInformation, setSelectedBrandFilteredData }) => {
     const [selectedBrand, setSelectedBrand] = useState<string[]>([]);
 
-    const brandList: Brand[] = [
-        { id: 1, brandTitle: "Dell", brandImg: brandDell },
-        { id: 2, brandTitle: "Adidas", brandImg: brandAdidas },
-        { id: 3, brandTitle: "Organic Food", brandImg: brandHalal },
-        { id: 4, brandTitle: "Xiaomi", brandImg: brandXiaomi },
-    ];
+    // const brandList: Brand[] = [
+    //     { id: 1, brandTitle: "Dell", brandImg: brandDell },
+    //     { id: 2, brandTitle: "Adidas", brandImg: brandAdidas },
+    //     { id: 3, brandTitle: "Organic Food", brandImg: brandHalal },
+    //     { id: 4, brandTitle: "Xiaomi", brandImg: brandXiaomi },
+    // ];
 
     const handlebrandList = (brandTitle: string) => {
         if (selectedBrand.includes(brandTitle)) {
@@ -59,7 +47,7 @@ const BrandPopup: React.FC<FirstPopupProps> = ({ open, handleBrandDialogClose, p
 
 
     const handleProductbrandData = () => {
-        const filteredBrandData = product_data.filter((item: { brand: string; }) => selectedBrand.includes(item.brand));
+        const filteredBrandData = productInformation.filter((item: { brand: string; }) => selectedBrand.includes(item.brand));
         setSelectedBrandFilteredData(filteredBrandData);
     };
 
@@ -82,29 +70,30 @@ const BrandPopup: React.FC<FirstPopupProps> = ({ open, handleBrandDialogClose, p
                         <div className="inventual-popup-form-wrapper">
                             <div className="inventual-popup-form pt-5 pb-5 maxSm:py-4 flex flex-col gap-3">
                                 <div className='flex flex-wrap justify-center md:justify-between gap-5'>
-                                    {brandList?.map((item) => (
-                                        <div key={item.id}
-                                            onClick={
-                                                () => handlebrandList(item.brandTitle)
-                                            }
-                                            className={`w-[290px] sm:w-[140px] h-[180px] flex items-center justify-center bg-gray flex-col rounded-md border ${selectedBrand.includes(item.brandTitle) ? 'border-blue-500' : 'border-border'}`
-                                            }>
-                                            <Image
-                                                src={item.brandImg}
-                                                style={{ width: "100px", height: '100px' }}
-                                                className='rounded-md'
-                                                alt=""
-                                                priority
-                                            />
-
-                                            <h5 className='mt-2 font-semibold text-heading'>{item.brandTitle}</h5>
-                                        </div>
-                                    ))}
+                                {productInformation?.map((item: any) =>
+                                        item.brandId != null ? (
+                                            <div key={item.brandId}
+                                                onClick={() => handlebrandList(item.brandName)}
+                                                className={`w-[290px] sm:w-[140px] h-[180px] flex items-center justify-center bg-gray flex-col rounded-md border ${selectedBrand.includes(item.brandName) ? 'border-blue-500' : 'border-border'}`}
+                                                >
+                                                <Image
+                                                    src={item.productImage}
+                                                    width="0"
+                                                    height="0"
+                                                    alt="brandName"
+                                                    sizes="100vw"
+                                                    style={{ maxHeight: '80px', width: '80px', objectFit: 'contain' }}
+                                                />
+                                                <h5 className='mt-2 font-semibold text-heading'>{item.brandName}</h5>
+                                            </div>
+                                        ) : null
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </DialogContent>
+
                 <DialogActions>
                     <button
                         className='inventual-btn' type='button'

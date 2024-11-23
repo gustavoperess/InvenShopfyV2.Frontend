@@ -9,17 +9,11 @@ import categoryElectronics from "../../../../../../public/assets/img/category/El
 import categoryFood from "../../../../../../public/assets/img/category/Food.png";
 import categoryAccessories from "../../../../../../public/assets/img/category/Accessories.png";
 
-interface Category {
-    id: number;
-    categoryTitle: string;
-    categoryImg: StaticImageData;
-}
-
 interface FirstPopupProps {
     open: boolean;
     handleFirstDialogClose: () => void;
-    product_data: any;
-    setSeelctedCategoryFilteredData: (data: any) => void; 
+    productInformation: any;
+    setSeelctedCategoryFilteredData: (data: any) => void;
 }
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -31,28 +25,23 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const CategoryPopup: React.FC<FirstPopupProps> = ({ open, handleFirstDialogClose, product_data, setSeelctedCategoryFilteredData }) => {
+const CategoryPopup: React.FC<FirstPopupProps> = ({ open, handleFirstDialogClose, productInformation, setSeelctedCategoryFilteredData }) => {
     const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
 
-    const categoryList: Category[] = [
-        { id: 1, categoryTitle: "Electronics", categoryImg: categoryElectronics },
-        { id: 2, categoryTitle: "Fashion", categoryImg: categoryFashion },
-        { id: 3, categoryTitle: "Food", categoryImg: categoryFood },
-        { id: 4, categoryTitle: "Accessories", categoryImg: categoryAccessories },
-    ];
 
-    const handleCategoryList = (categoryTitle: string) => {
-        if (selectedCategory.includes(categoryTitle)) {
-            const newCategory = selectedCategory.filter((cat) => cat !== categoryTitle);
+
+    const handleCategoryList = (mainCategory: string) => {
+        if (selectedCategory.includes(mainCategory)) {
+            const newCategory = selectedCategory.filter((cat) => cat !== mainCategory);
             setSelectedCategory(newCategory);
         } else {
-            setSelectedCategory([...selectedCategory, categoryTitle]);
+            setSelectedCategory([...selectedCategory, mainCategory]);
         }
     };
 
 
     const handleProductCategoryData = () => {
-        const filteredCategoryData = product_data.filter((item: { category: string; }) => selectedCategory.includes(item.category));
+        const filteredCategoryData = productInformation.filter((item: { mainCategory: string; }) => selectedCategory.includes(item.mainCategory));
         setSeelctedCategoryFilteredData(filteredCategoryData);
     };
 
@@ -70,29 +59,20 @@ const CategoryPopup: React.FC<FirstPopupProps> = ({ open, handleFirstDialogClose
                     <button autoFocus onClick={handleFirstDialogClose} type='button'><i className="fa-regular fa-xmark"></i></button>
                 </div>
                 <DialogContent dividers>
-                    <div className='inventual-common-modal-width-medium width-full'>
+                <div className='inventual-common-modal-width-medium width-full'>
                         <div className="inventual-popup-form-wrapper">
                             <div className="inventual-popup-form pt-5 pb-5 maxSm:py-4 flex flex-col gap-3">
                                 <div className='flex flex-wrap justify-center md:justify-between gap-5'>
-                                    {categoryList?.map((item) => (
-                                        <div key={item.id}
-                                            onClick={
-                                                () => handleCategoryList(item.categoryTitle)
-                                            }
-                                            className={`w-[290px] sm:w-[140px] h-[180px] flex items-center justify-center bg-gray flex-col rounded-md border ${selectedCategory.includes(item.categoryTitle) ? 'border-blue-500' : 'border-border'}`
-                                            }>
-                                            <Image
-                                                src={item.categoryImg}
-                                                style={{ width: "120px", height: '120px' }}
-                                                className='rounded-md'
-                                                alt=""
-                                                priority={true}
-                                            />
-
-                                            <h5 className='mt-2 text-[16px] font-semibold text-heading'>{item.categoryTitle}</h5>
-                                        </div>
-
-                                    ))}
+                                {productInformation?.map((item: any) =>
+                                           item.categoryId != null ? (
+                                            <div key={item.categoryId}
+                                                onClick={() => handleCategoryList(item.mainCategory)}
+                                                className={`w-[290px] sm:w-[140px] h-[180px] flex items-center justify-center bg-gray flex-col rounded-md border ${selectedCategory.includes(item.mainCategory) ? 'border-blue-500' : 'border-border'}`}
+                                                >
+                                                <h5 className='mt-2 text-[16px] font-semibold text-heading'>{item.mainCategory}</h5>
+                                            </div>
+                                        ) : null
+                                    )}
                                 </div>
                             </div>
                         </div>

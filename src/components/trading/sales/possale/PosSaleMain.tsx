@@ -18,26 +18,18 @@ const PosSaleMain = () => {
                     <div className="grid grid-cols-12 gap-5">
                         <div className="col-span-12 xl:col-span-7">
                             <PosSaleList
-                                productListData={productListData}
-                                setProductListData={setProductListData}
-                                setFilteredData={setFilteredData}
                                 setActiveProducts={setActiveProducts}
                                 productInformation={productInformation} 
                                 setProductInformation={setProductInformation} 
-
                             />
                         </div>
                         <div className="col-span-12 xl:col-span-5">
                             <TabProduct
-                                productListData={productListData}
-                                setProductListData={setProductListData}
-                                filteredData={filteredData}
-                                setFilteredData={setFilteredData}
+                        
                                 activeProducts={activeProducts}
                                 setActiveProducts={setActiveProducts}
                                 productInformation={productInformation} 
                                 setProductInformation={setProductInformation} 
-
                             />
                         </div>
                     </div>

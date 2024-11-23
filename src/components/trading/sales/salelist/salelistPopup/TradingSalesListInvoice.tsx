@@ -4,9 +4,12 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import logo from '../../../../../../public/assets/img/logo/login-logo.png';
 import Image from 'next/image';
+import { useGetSalesBySaleIdQuery } from '@/services/Sales/Sales';
+import { MoneyFormat } from '@/interFace/interFace';
 
 interface GenerateInvoicePopupProps {
     open: boolean;
+    saleId: number | undefined;
     handleGenerateInvoiceDialogClose: () => void;
 }
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -18,47 +21,17 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-interface GenerateInvoiceListData {
-    sl: string;
-    product: string;
-    batchNo: string;
-    unit: string;
-    unitPrice: number;
-    quantity: number;
-    tax: number;
-    discount: number;
-    subTotal: number;
-}
-const TradingSalesListInvoice = ({ open, handleGenerateInvoiceDialogClose }: GenerateInvoicePopupProps) => {
+const TradingSalesListInvoice = ({ open, saleId, handleGenerateInvoiceDialogClose }: GenerateInvoicePopupProps) => {
+    const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetSalesBySaleIdQuery(
+        saleId as number, 
+        { skip: saleId === undefined }
+    );
 
-    const sampleData: GenerateInvoiceListData[] = [
-        {
-            sl: '01',
-            product: '3D Cannon Camera',
-            batchNo: '30566205',
-            unit: 'Pc',
-            unitPrice: 25,
-            quantity: 1,
-            tax: 10,
-            discount: 5,
-            subTotal: 23,
-        },
-        {
-            sl: '02',
-            product: 'Green Lemon',
-            batchNo: '30566206',
-            unit: 'Kg',
-            unitPrice: 70,
-            quantity: 1,
-            tax: 0,
-            discount: 0,
-            subTotal: 60,
-        },
-    ]
 
     const dummyData = (e: any) => {
         e.preventDefault();
     };
+
 
     return (
         <>
@@ -88,19 +61,19 @@ const TradingSalesListInvoice = ({ open, handleGenerateInvoiceDialogClose }: Gen
                                         <ul className="bg-primary rounded-[3px] flex flex-wrap justify-between items-center px-4 py-3 gap-y-2">
                                             <li className=" flex gap-[5px] flex-wrap pe-4 me-4 border-e border-solid border-border text-white m-0">
                                                 <span className="text-[14px font-bold inline-block">Date : </span>
-                                                <span className="text-[14px font-normal inline-block ps-1">12/13/2022</span>
+                                                <span className="text-[14px font-normal inline-block ps-1">{salesData?.data[0].saleDate}</span>
                                             </li>
                                             <li className=" flex gap-[5px] flex-wrap pe-4 me-4 border-e border-solid border-border text-white m-0">
                                                 <span className="text-[14px font-bold inline-block">Reference : </span>
-                                                <span className="text-[14px font-normal inline-block ps-1">S-5852987452</span>
+                                                <span className="text-[14px font-normal inline-block ps-1">{salesData?.data[0].referenceNumber}</span>
                                             </li>
                                             <li className="flex gap-[5px] flex-wrap pe-4 me-4 border-e border-solid border-border text-white m-0">
                                                 <span className="text-[14px font-bold inline-block">Warehouse : </span>
-                                                <span className="text-[14px font-normal inline-block ps-1">Warehouse 1</span>
+                                                <span className="text-[14px font-normal inline-block ps-1">{salesData?.data[0].warehouseName}</span>
                                             </li>
                                             <li className=' flex gap-[5px] flex-wrap text-white'>
                                                 <span className="text-[14px font-bold inline-block m-0">Sale Status : </span>
-                                                <span className="text-[14px font-normal inline-block ps-1">Completed</span>
+                                                <span className="text-[14px font-normal inline-block ps-1">{salesData?.data[0].saleStatus}</span>
                                             </li>
                                         </ul>
                                     </div>
@@ -109,10 +82,9 @@ const TradingSalesListInvoice = ({ open, handleGenerateInvoiceDialogClose }: Gen
                                             <div className="inventual-invoice-popup-address-inner text-start">
                                                 <h5>From</h5>
                                                 <ul>
-                                                    <li>Name : <span>Richard Joseph</span></li>
-                                                    <li>Email : <span>info@example.com</span></li>
-                                                    <li>Phone : <span>+02 782 930 782</span></li>
-                                                    <li>Address : <span>Milton Street, New York, USA</span></li>
+                                                    <li>Name : <span>{salesData?.data[0].billerName}</span></li>
+                                                    <li>Email : <span>{salesData?.data[0].billerEmail}</span></li>
+                                                    <li>Phone : <span>{salesData?.data[0].billerPhoneNumber}</span></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -120,10 +92,10 @@ const TradingSalesListInvoice = ({ open, handleGenerateInvoiceDialogClose }: Gen
                                             <div className="inventual-invoice-popup-address-inner text-start">
                                                 <h5>To</h5>
                                                 <ul>
-                                                    <li>Name : <span>Walk - in - Customer</span></li>
-                                                    <li>Email : <span>N/A</span></li>
-                                                    <li>Phone : <span>+02 202 396 228</span></li>
-                                                    <li>Address : <span>Kashba, New York, USA</span></li>
+                                                    <li>Name : <span>{salesData?.data[0].customerName}</span></li>
+                                                    <li>Email : <span>{salesData?.data[0].customerEmail}</span></li>
+                                                    <li>Phone : <span>+{salesData?.data[0].customerPhoneNumber}</span></li>
+                                                    <li>Address : <span>{salesData?.data[0].customerAddress}</span></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -136,58 +108,49 @@ const TradingSalesListInvoice = ({ open, handleGenerateInvoiceDialogClose }: Gen
                                                     <tr className='bg-lightest'>
                                                         <th>SL</th>
                                                         <th>Products</th>
-                                                        <th>Batch No</th>
+                                                        <th>Reference No</th>
                                                         <th>Unit</th>
                                                         <th>Unit Price</th>
                                                         <th>Qty</th>
-                                                        <th>Tax</th>
-                                                        <th>Discount</th>
                                                         <th>Sub Total</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {
-                                                        sampleData.length > 0 ? (
-                                                            sampleData.map((product, index) => <tr key={index}>
-                                                                <td>{product.sl}</td>
-                                                                <td>{product.product}</td>
-                                                                <td>{product.batchNo}</td>
-                                                                <td>{product.unit}</td>
-                                                                <td>${product.unitPrice}</td>
-                                                                <td>{product.quantity}</td>
-                                                                <td>{product.tax}%</td>
-                                                                <td>{product.discount}%</td>
-                                                                <td>${product.subTotal}</td>
+                                                        salesData?.data != undefined ? (
+                                                            salesData?.data.map((product : any) => <tr key={product.productId}>
+                                                                <td>{product.productId}</td>
+                                                                <td>{product.productName}</td>
+                                                                <td>{product.referenceNumber}</td>
+                                                                <td>{product.unitShortName}</td>
+                                                                <td>{MoneyFormat.format(product.productPrice)}</td>
+                                                                <td>{product.totalQuantitySoldPerProduct}</td>
+                                                                <td>{MoneyFormat.format(product.totalPricePerProduct)}</td>
                                                             </tr>)
                                                         ) : <tr>
-                                                            <td colSpan={9} className='text-center'>Data not found</td>
+                                                            <td colSpan={7} className='text-center'>Data not found</td>
                                                         </tr>
                                                     }
                                                     <tr>
-                                                        <td colSpan={6}><span className='font-semibold text-heading'>Total = </span></td>
-                                                        <td><span className='font-semibold text-heading'>8.00</span></td>
-                                                        <td><span className='font-semibold text-heading'>10.00</span></td>
-                                                        <td><span className='font-semibold text-heading'>93.00</span></td>
+                                                        <td colSpan={6}>Shipping Cost : </td>
+                                                        <td>{MoneyFormat.format(salesData?.data[0].shippingCost)}</td>
+
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}>Order Discount : </td>
-                                                        <td>-0.00</td>
+                                                        <td colSpan={6}>Order Discount : </td>
+                                                        <td>{salesData?.data[0].discount}%</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}>Order Tax : </td>
-                                                        <td>+3 (2%)</td>
+                                                        <td colSpan={6}>Order Tax : </td>
+                                                        <td>{MoneyFormat.format(salesData?.data[0].taxAmount)}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}><span className='font-semibold text-heading'>Grand Total : </span></td>
-                                                        <td> <span className='font-semibold text-heading'>96.00</span></td>
+                                                        <td colSpan={6}><span className='font-semibold text-heading'>Grand Total : </span></td>
+                                                        <td> <span className='font-semibold text-heading'>{MoneyFormat.format(salesData?.data[0].totalAmount)}</span></td>
                                                     </tr>
                                                     <tr>
-                                                        <td colSpan={8}>Paid Amount : </td>
-                                                        <td>96.00</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colSpan={8}>Due Amount : </td>
-                                                        <td>0.00</td>
+                                                        <td colSpan={6}>Paid Amount : </td>
+                                                        <td>{MoneyFormat.format(salesData?.data[0].totalAmount)}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -197,10 +160,10 @@ const TradingSalesListInvoice = ({ open, handleGenerateInvoiceDialogClose }: Gen
                                     <div className="inventual-invoice-popup-address pt-5 pb-1">
                                         <div className="inventual-invoice-popup-address-inner text-start">
                                             <ul>
-                                                <li>Sales Note : <span>N/A</span></li>
-                                                <li className="pb-5">Remarks : <span>N/A</span></li>
-                                                <li>Created by : <span>Richard Joseph</span></li>
-                                                <li><span>info@example.com</span></li>
+                                            <li>Sales Note : <span>{salesData?.data[0].saleNote}</span></li>
+                                                <li >Remarks : <span>{salesData?.data[0].staffNote}</span></li>
+                                                <li>Created by : <span>{salesData?.data[0].billerName}</span></li>
+                                                <li><span>{salesData?.data[0].billerEmail}</span></li> 
                                             </ul>
                                         </div>
                                     </div>
