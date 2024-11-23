@@ -16,6 +16,9 @@ import {
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import ReactDatePicker from 'react-datepicker';
+import { saveAs } from 'file-saver';
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 // Define the structure of the data
 interface Data {

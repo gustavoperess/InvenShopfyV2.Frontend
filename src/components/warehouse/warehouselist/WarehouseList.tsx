@@ -154,7 +154,7 @@ const WarehouseList = () => {
     return 0;
   });
 
-  console.log(warehouseData)
+
   const handleDocument = (type: string) => {
     if (!warehouseData?.data?.length) return;
   
