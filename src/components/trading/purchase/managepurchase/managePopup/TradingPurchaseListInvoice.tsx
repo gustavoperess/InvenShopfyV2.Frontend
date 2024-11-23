@@ -82,7 +82,7 @@ const TradingPurchaseListInvoice = ({ open, handleGenerateInvoiceDialogClose }: 
                             <form onSubmit={dummyData}>
                                 <div className="inventual-invoice-popup-area">
                                     <div className="inventual-invoice-popup-logo text-center mt-7 mb-10">
-                                        <Image src={logo} style={{ width: 'auto', height: 'auto' }} alt="logo img" />
+                                        <Image src={logo} priority={true} style={{ width: 'auto', height: 'auto' }} alt="logo img" />
                                     </div>
                                     <div className="inventual-invoice-popup-heading mb-11">
                                         <ul className="bg-primary rounded-[3px] flex flex-wrap justify-between items-center px-4 py-3 gap-y-2">

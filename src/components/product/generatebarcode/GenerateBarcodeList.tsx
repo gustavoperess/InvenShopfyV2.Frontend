@@ -112,10 +112,10 @@ const GenerateBarcodeList = () => {
                     setProductCodeNumber(productInformation?.[0].productCode)
                 }
                 if (price != false) {
-                    setProductCodePrice(productInformation?.[0].price)
+                    setProductCodePrice(productInformation?.[0].productPrice)
                 }
                 if (name != false) {
-                    setProductCodeName(productInformation?.[0].title)
+                    setProductCodeName(productInformation?.[0].productName)
                 }
                 toast.success("Barcode Generate successfully!");
             } catch {
@@ -125,8 +125,9 @@ const GenerateBarcodeList = () => {
         } else {
             toast.error("Please enter a product to generate the bar code");
         }
-
     }
+
+    console.log(productInformation)
 
     return (
         <>
@@ -168,9 +169,9 @@ const GenerateBarcodeList = () => {
                                                                                     onClick={() => selectSuggestion(product)}
                                                                                 >
                                                                                     <div className="search-img">
-                                                                                        <Image src={product?.productImage == "" ? "https://res.cloudinary.com/dououppib/image/upload/v1709830638/PLANTS/placeholder_ry6d8v.webp" : product?.productImage} width={30} height={30} alt={product.title} />
+                                                                                        <Image src={product?.productImage == "" ? "https://res.cloudinary.com/dououppib/image/upload/v1709830638/PLANTS/placeholder_ry6d8v.webp" : product?.productImage} width={30} height={30} alt={product.productName} />
                                                                                     </div>
-                                                                                    <p className='title'>{product.title}</p>
+                                                                                    <p className='title'>{product.productName}</p>
                                                                                 </li>
                                                                             ))
                                                                         }
@@ -200,21 +201,21 @@ const GenerateBarcodeList = () => {
                                                             {
                                                                 productInformation.length > 0 ? (
                                                                     productInformation.map((product) => <tr key={product.id}>
-                                                                        <td>{product.title}</td>
+                                                                        <td>{product.productName}</td>
                                                                         <td>
                                                                             <div className="new-sale-search-img">
                                                                                 <Image
                                                                                     src={product.productImage}
                                                                                     width="0"
                                                                                     height="0"
-                                                                                    alt={product.title}
+                                                                                    alt={product.productName}
                                                                                     sizes="100vw"
                                                                                     style={{ width: '30px', height: '30px' }}
                                                                                 />
                                                                             </div>
                                                                         </td>
                                                                         <td>{product.productCode}</td>
-                                                                        <td>{MoneyFormat.format(product.price)}</td>
+                                                                        <td>{MoneyFormat.format(product.productPrice)}</td>
                                                                         <td>
                                                                             <div className="inventual-addsale-product-action">
                                                                                 <button

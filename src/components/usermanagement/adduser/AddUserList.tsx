@@ -4,7 +4,6 @@ import { MenuItem, TextField, FormControl } from '@mui/material';
 import { FilledInput, IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Accept, useDropzone } from "react-dropzone";
-import Image from 'next/image';
 import { useGetAllRolesQuery } from '@/services/Role/Role';
 import { useUserRegisterMutation } from '@/services/Authentication/Authentication';
 import { toast } from 'react-toastify';

@@ -23,7 +23,7 @@ const AddCustomer = () => {
     const handleAddCustomer = async (e: any) => {
         e.preventDefault();
         const customerData = {
-            name: customerName, email, phoneNumber: phone, city, country, address, zipCode,
+            customerName, email, phoneNumber: phone, city, country, address, zipCode,
             rewardPoint, customerGroup
         }
         try {

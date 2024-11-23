@@ -307,9 +307,9 @@ const SaleReturnsList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'totalAmount'}
-                                  direction={orderBy === 'totalAmount' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('totalAmount')}
+                                  active={orderBy === 'returnTotalAmount'}
+                                  direction={orderBy === 'returnTotalAmount' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('returnTotalAmount')}
                                 >
                                   Grand Total
                                 </TableSortLabel>
@@ -360,7 +360,7 @@ const SaleReturnsList = () => {
                                   <TableCell>{salesReturn.customerName}</TableCell>
                                   <TableCell>{salesReturn.warehouseName}</TableCell>
                                   <TableCell>{salesReturn.billerName}</TableCell>
-                                  <TableCell>{MoneyFormat.format(salesReturn.totalAmount)}</TableCell>
+                                  <TableCell>{MoneyFormat.format(salesReturn.returnTotalAmount)}</TableCell>
                                   <TableCell>{salesReturn.remarkStatus}</TableCell>
                                   <TableCell>
                                     <div className="inventual-list-action-style">

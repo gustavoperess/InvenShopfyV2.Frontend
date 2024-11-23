@@ -118,7 +118,7 @@ const CustomerList = () => {
   };
 
   const filteredData = customerData?.data.filter((item: any) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
     item.customerGroup.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
@@ -182,7 +182,7 @@ const CustomerList = () => {
                           </button>
                           <Menu {...bindMenu(popupState)}>
                             <MenuItem onClick={() => { handleRequestSort("id"); popupState.close(); }}>Date</MenuItem>
-                            <MenuItem onClick={() => { handleRequestSort("name"); popupState.close(); }}>Customer</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("customerName"); popupState.close(); }}>Customer</MenuItem>
                             <MenuItem onClick={() => { handleRequestSort("city"); popupState.close(); }}>City</MenuItem>
                             <MenuItem onClick={() => { handleRequestSort("country"); popupState.close(); }}>Country</MenuItem>
                           </Menu>
@@ -224,9 +224,9 @@ const CustomerList = () => {
                               {/* Table headers */}
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'name'}
-                                  direction={orderBy === 'name' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('name')}
+                                  active={orderBy === 'customerName'}
+                                  direction={orderBy === 'customerName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('customerName')}
                                 >
                                   Name
                                 </TableSortLabel>
@@ -308,7 +308,7 @@ const CustomerList = () => {
                                   <Checkbox checked={isSelected(customer.id)} />
                                 </TableCell>
                                 {/* Data cells */}
-                                <TableCell>{customer.name}</TableCell>
+                                <TableCell>{customer.customerName}</TableCell>
                                 <TableCell>{customer.phoneNumber}</TableCell>
                                 <TableCell>{customer.email}</TableCell>
                                 <TableCell>{customer.customerGroup}</TableCell>

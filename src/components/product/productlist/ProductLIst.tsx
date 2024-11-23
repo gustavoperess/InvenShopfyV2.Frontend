@@ -361,9 +361,9 @@ const ProductList = () => {
                                         src={product.productImage}
                                         width="0"
                                         height="0"
-                                        alt='image important'
+                                        alt={product.productName}
                                         sizes="100vw"
-                                        style={{ width: '42px', height: '32px' }}
+                                        style={{ maxHeight: '80px', width: '80px', objectFit: 'contain' }}
                                       />
                                     </div>
                                   </div>

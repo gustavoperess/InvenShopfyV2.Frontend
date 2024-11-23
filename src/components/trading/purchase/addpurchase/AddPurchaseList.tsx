@@ -15,17 +15,14 @@ import { TProductInterface, TWarehouseInterface, TSupplierInterface, MoneyFormat
 
 const AddPurchaseList = () => {
     const [purchaseDate, setPurchaseDate] = useState(new Date());
-    const [warehouse, setWarehouse] = useState<number | null>();
-    const [selectWarehouse, setSelectWarehosue] = useState('')
-    const [selectedSupplier, setSelectedSupplier] = useState('')
+    const [warehouseId, setWarehouseId] = useState('')
+    const [supplierId, setSupplierId] = useState('')
     const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
     const [activeItems, setActiveItems] = useState<TProductInterface[]>([]);
     const [purchaseStatus, setPurchaseStatus] = useState<string>("");
     const [productName, setProductName] = useState<string>("");
     const [purchaseNote, setPurchaseNote] = useState<string>("");
     const [shippingCost, setShippingCost] = useState<number | undefined>();
- 
-    const [supplier, setSupplier] = useState('')
     const [productInformation, setProductInformation] = useState<TProductInterface[]>([]);
     const [suggestions, setSuggestions] = useState<TProductInterface[]>([]);
     const [product, setProduct] = useState<string>("");
@@ -72,16 +69,6 @@ const AddPurchaseList = () => {
         }
     }, [debouncedSearchTerm, productSuggestionsData, error]);
 
-    useEffect(() => {
-        if (supplierData && supplierData.data.length > 0 && !supplier) {
-            setSupplier(supplierData.data[0].id);
-        }
-        if (warehouse && warehouseData.data.length > 0 && !warehouse) {
-            setWarehouse(warehouseData.data[0].id);
-        }
-
-
-    }, [warehouseData, warehouse, supplierData, supplier]);
 
 
     //handler for close search with close btn
@@ -102,7 +89,7 @@ const AddPurchaseList = () => {
     const calculateTotalTax = () => {
         return productInformation.reduce((total, item) => {
             if (item.quantityBought != undefined) {
-                return (((item.price * item.quantityBought) * item.taxPercentage) / 100) + total;
+                return (((item.productPrice * item.quantityBought) * item.taxPercentage) / 100) + total;
             }
             return total;
         }, 0);
@@ -134,7 +121,7 @@ const AddPurchaseList = () => {
     const calculateTotal = () => {
         return productInformation.reduce((total, item) => {
             if (item.quantityBought != undefined) {
-                return total + item.price * item.quantityBought;
+                return total + item.productPrice * item.quantityBought;
             }
             return total;
         }, 0);
@@ -170,7 +157,7 @@ const AddPurchaseList = () => {
         });
         const formData = {
             purchaseDate: date, productIdPlusQuantity, totalNumberOfProducts: calculateTheAmountOfProductsAdded(),
-            warehouseId: selectWarehouse, supplierId: selectedSupplier,
+            warehouseId, supplierId,
             purchaseStatus, shippingCost, purchaseNote, TotalAmountBought: calculateGrandTotal(), 
             totalTax: calculateTotalTax()
        
@@ -178,8 +165,8 @@ const AddPurchaseList = () => {
         try {
             await addPurchase(formData).unwrap();
             setPurchaseDate(new Date())
-            setSelectWarehosue("")
-            setSelectedSupplier("")
+            setWarehouseId("")
+            setSupplierId("")
             setShippingCost(undefined)
             setPurchaseStatus("")
             setProductInformation([])
@@ -192,14 +179,14 @@ const AddPurchaseList = () => {
     }
 
     const selectSuggestion = (suggestion: TProductInterface) => {
-        const existingProductIndex = productInformation.findIndex(product => product.title === suggestion.title);
+        const existingProductIndex = productInformation.findIndex(product => product.productName === suggestion.productName);
         if (existingProductIndex !== -1) {
             setProductInformation(prev => {
                 const updatedProducts = prev.map((product, index) => {
                     if (index === existingProductIndex) {
                         return {
                             ...product,
-                            totalAmountbougth: product.totalAmountbougth * product.price
+                            totalAmountbougth: product.totalAmountbougth * product.productPrice
                         };
                     }
                     return product;
@@ -207,7 +194,7 @@ const AddPurchaseList = () => {
                 return updatedProducts;
             });
         } else {
-            setProductInformation(prev => [...prev, { ...suggestion, quantityBougth: 0, totalAmountbougth: suggestion.price }]);
+            setProductInformation(prev => [...prev, { ...suggestion, quantityBougth: 0, totalAmountbougth: suggestion.productPrice }]);
         }
 
         // Additional updates
@@ -237,6 +224,7 @@ const AddPurchaseList = () => {
             })
         );
     };
+
 
     return (
         <>
@@ -275,8 +263,8 @@ const AddPurchaseList = () => {
                                                         select
                                                         label="Select"
                                                         required
-                                                        value={selectWarehouse}
-                                                        onChange={(e) => setSelectWarehosue(e.target.value)}
+                                                        value={warehouseId}
+                                                        onChange={(e) => setWarehouseId(e.target.value)}
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
@@ -310,19 +298,19 @@ const AddPurchaseList = () => {
                                                         select
                                                         label="Select"
                                                         required
-                                                        value={selectedSupplier}
-                                                        onChange={(e) => setSelectedSupplier(e.target.value)}
+                                                        value={supplierId}
+                                                        onChange={(e) => setSupplierId(e.target.value)}
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
                                                                 const selectedSupplier = supplierData?.data.find((supplier: TSupplierInterface) => supplier.id === value);
-                                                                return selectedSupplier ? selectedSupplier.name : <em>Select Supplier</em>;
+                                                                return selectedSupplier ? selectedSupplier.supplierName : <em>Select Supplier</em>;
                                                             },
                                                         }}>
                                                         {supplierData && supplierData.data.length > 0 ? (
                                                             supplierData.data.map((supplier: TSupplierInterface) => (
                                                                 <MenuItem key={supplier.id} value={supplier.id}>
-                                                                    {supplier.name}
+                                                                    {supplier.supplierName}
                                                                 </MenuItem>
                                                             ))
                                                         ) : (
@@ -366,9 +354,16 @@ const AddPurchaseList = () => {
                                                                                 onClick={() => selectSuggestion(product)}
                                                                             >
                                                                                 <div className="search-img">
-                                                                                    <Image src={product?.productImage == "" ? "https://res.cloudinary.com/dououppib/image/upload/v1709830638/PLANTS/placeholder_ry6d8v.webp" : product?.productImage} width={30} height={30} alt={product.title} />
+                                                                                    <Image src={product?.productImage} 
+                                                                                    alt={product.productName}
+                                                                                    width="0"
+                                                                                    height="0"
+                                                                                    sizes="100vw"
+                                                                                    style={{ maxHeight: '50px', width: '50px', objectFit: 'contain' }}
+                                                                                    
+                                                                                    />
                                                                                 </div>
-                                                                                <p className='title'>{product.title}</p>
+                                                                                <p className='title'>{product.productName}</p>
                                                                             </li>
                                                                         ))
                                                                     }
@@ -407,14 +402,21 @@ const AddPurchaseList = () => {
                                                                     <td>{product.id}</td>
                                                                     <td>
                                                                         <div className="new-sale-search-img">
-                                                                            <Image src={product.productImage} width={30} height={30} alt={product.title} />
+                                                                            <Image 
+                                                                            src={product.productImage} 
+                                                                            alt={product.productName}
+                                                                            width="0"
+                                                                            height="0"
+                                                                            sizes="100vw"
+                                                                            style={{ maxHeight: '50px', width: '50px', objectFit: 'contain' }}
+                                                                            />
                                                                         </div>
                                                                     </td>
-                                                                    <td>{product.title}</td>
+                                                                    <td>{product.productName}</td>
                                                                     <td>{product.productCode}</td>
                                                                     <td>{product.category}</td>
                                                                     <td>{product.subcategory}</td>
-                                                                    <td>{MoneyFormat.format(product.price)}</td>
+                                                                    <td>{MoneyFormat.format(product.productPrice)}</td>
                                                                     <td>{product.stockQuantity}</td>
                                                                     <td>{product.taxPercentage}%</td>
                                                                     <td>

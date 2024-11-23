@@ -116,7 +116,7 @@ const SupplierList = () => {
   };
 
   const filteredData = supplierData?.data.filter((item: any) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    item.supplierName.toLowerCase().includes(searchQuery.toLowerCase()) || 
     item.company.toLowerCase().includes(searchQuery.toLowerCase()) 
   ) || [];
 
@@ -218,9 +218,9 @@ const SupplierList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'name'}
-                                  direction={orderBy === 'name' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('name')}
+                                  active={orderBy === 'supplierName'}
+                                  direction={orderBy === 'supplierName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('supplierName')}
                                 >
                                   Name
                                 </TableSortLabel>
@@ -291,7 +291,7 @@ const SupplierList = () => {
                                   <Checkbox checked={isSelected(supplier.id)} />
                                 </TableCell>
                                 <TableCell>{supplier.supplierCode}</TableCell>
-                                <TableCell>{supplier.name}</TableCell>
+                                <TableCell>{supplier.supplierName}</TableCell>
                                 <TableCell>{supplier.phoneNumber}</TableCell>
                                 <TableCell>{supplier.email}</TableCell>
                                 <TableCell>{supplier.company}</TableCell>

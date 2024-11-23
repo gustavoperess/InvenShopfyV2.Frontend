@@ -15,12 +15,28 @@ const SidebarMenu = () => {
                         <div className="inventual-sidebar-main-logo">
                             <div className="sidebar-logo">
                                 <Link href="/dashboard">
-                                    <Image className='rounded' priority={true} src={sidebarLogo} style={{ width: 'auto', height: "auto" }} alt="logo thimb" />
+                                    <Image 
+                                    className='rounded' 
+                                    width="0"
+                                    height="0" 
+                                    sizes="100vw"
+                                    priority={true}
+                                    src={sidebarLogo}
+                                    style={{ maxHeight: '50px', maxWidth: '50px', objectFit: 'contain' }}
+                                    alt="logo thimb" />
                                 </Link>
                             </div>
                             <div className="sidebar-small-logo">
                                 <Link href="/dashboard">
-                                    <Image src={sidebarSmallLogo} priority={true} style={{ width: '40px', height: "auto" }} alt="logo thimb" />
+                                    <Image 
+                                    src={sidebarSmallLogo}
+                                    width="0"
+                                    height="0" 
+                                    alt="logo thimb"
+                                    sizes="100vw"
+                                    priority 
+                                    style={{ maxHeight: '50px', maxWidth: '50px', objectFit: 'contain' }}
+                                   />
                                 </Link>
                             </div>
                         </div>

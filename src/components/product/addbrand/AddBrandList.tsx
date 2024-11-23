@@ -34,7 +34,7 @@ const AddBrandList = () => {
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [open, setOpen] = React.useState(false);
   const [brandImage, setBrandImage] = useState<string | null>(null);
-  const [title, setTitle] = useState<string>("");
+  const [brandName, setBrandName] = useState<string>("");
   const formRef = useRef<HTMLFormElement>(null);
   const [brand, setBrand] = useState<number>(0);
   const [selected, setSelected] = useState<number[]>([]);
@@ -165,10 +165,10 @@ const AddBrandList = () => {
   //handle brand submit form
   const handleBrandForm = async (event: any) => {
     event.preventDefault()
-    const brandData = { title, brandImage };
+    const brandData = { brandName, brandImage };
     try {
       await addBrand(brandData).unwrap();
-      setTitle('');
+      setBrandName('');
       setBrandImage(null);
       formRef.current?.reset();
       toast.success("Brand Created Successfully!")
@@ -221,10 +221,10 @@ const AddBrandList = () => {
                           placeholder="Microsoft*"
                           variant="outlined"
                           type="text"
-                          value={title}
+                          value={brandName}
                           required
                           inputProps={{ maxLength: 80 }}
-                          onChange={(e) => setTitle(e.target.value)}
+                          onChange={(e) => setBrandName(e.target.value)}
                         />
                       </FormControl>
                     </div>
@@ -262,9 +262,9 @@ const AddBrandList = () => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'title'}
-                                  direction={orderBy === 'title' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('title')}
+                                  active={orderBy === 'brandName'}
+                                  direction={orderBy === 'brandName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('brandName')}
                                 >
                                   Brand Name
                                 </TableSortLabel>
@@ -300,11 +300,18 @@ const AddBrandList = () => {
                                 <TableCell>
                                   <div className="max-h-[72px] inline-flex items-center justify-cente">
                                     <div className="inner px-2 py-2">
-                                      <Image src={brand.brandImage} height={48} width={48} alt='brand-img' />
+                                      <Image
+                                        src={brand.brandImage}
+                                        width="0"
+                                        height="0"
+                                        alt='brand-img' 
+                                        sizes="100vw"
+                                        style={{ maxHeight: '60px', width: '60px', objectFit: 'contain' }}
+                                      />
                                     </div>
                                   </div>
                                 </TableCell>
-                                <TableCell>{brand.title}</TableCell>
+                                <TableCell>{brand.brandName}</TableCell>
                                 <TableCell>
                                   <div className="inventual-list-action-style">
                                     <PopupState variant="popover">

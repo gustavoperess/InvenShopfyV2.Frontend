@@ -65,7 +65,7 @@ const AddTransfer = () => {
     };
 
     const handleSuggestionSelect = (suggestion: TtransferInterface) => {
-        setProductName(suggestion.title);
+        setProductName(suggestion.productName);
         setProductId(suggestion.id)
         setProductCode(suggestion.productCode)
         setSuggestions([]);
@@ -152,7 +152,7 @@ const AddTransfer = () => {
                                                 <ul>
                                                     {suggestions.map((product) => (
                                                         <li key={product.id} onClick={() => handleSuggestionSelect(product)}>
-                                                            <p className='title'>{product.title}</p>
+                                                            <p className='title'>{product.productName}</p>
                                                         </li>
                                                     ))}
                                                 </ul>

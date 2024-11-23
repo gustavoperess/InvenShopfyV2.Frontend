@@ -45,7 +45,7 @@ export interface TSaleReturnInterface {
   referenceNumber: string;
   supplierName: string;
   warehouseName: string;
-  totalAmount: string;
+  returnTotalAmount: string;
   billerName: string;
   customerName: string;
   returnNote: string;
@@ -221,7 +221,7 @@ export interface TSaleReportInterface {
 
 export interface TCustomerInterface {
   id: number;
-  name: string;
+  customerName: string;
   phoneNumber: string;
   email: string;
   city: string;
@@ -281,7 +281,7 @@ export interface TPurchaseReturnInterface {
 
 export interface TSupplierInterface {
   id: number;
-  name: string;
+  supplierName: string;
   phoneNumber: string;
   email: string;
   country: string;

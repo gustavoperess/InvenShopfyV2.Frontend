@@ -16,9 +16,6 @@ import { TProductInterface, TWarehouseInterface, TCustomerInterface, MoneyFormat
 
 const NewSaleList = () => {
     const [saleDate, setSaleDate] = useState(new Date());
-    const [customer, setCustomer] = useState<number | null>();
-    const [warehouse, setWarehouse] = useState<number | null>();
-    const [biller, setBiller] = useState<number | null>();
     const [product, setProduct] = useState<string>("");
     const [productName, setProductName] = useState<string>("");
     const [shippingCost, setShippingCost] = useState<number | undefined>();
@@ -28,9 +25,9 @@ const NewSaleList = () => {
     const [staffNote, setStaffNote] = useState<string>("");
     const [productInformation, setProductInformation] = useState<TProductInterface[]>([]);
     const [suggestions, setSuggestions] = useState<TProductInterface[]>([]);
-    const [selectCustomer, setSelectCustomer] = useState('')
-    const [selectWarehouse, setSelectWarehosue] = useState('')
-    const [selectBiller, setSelectBiller] = useState('')
+    const [customerId, setCustomerId] = useState('')
+    const [warehouseId, setWarehouseId] = useState('')
+    const [billerId, setBillerId] = useState('')
 
     // funcitons
     const debouncedSearchTerm = useDebounce(productName, 500);
@@ -85,23 +82,10 @@ const NewSaleList = () => {
             // You could display a user-friendly message if needed
         }
     }, [debouncedSearchTerm, productSuggestionsData, error]);
-
-    useEffect(() => {
-        if (billerDataNew && billerDataNew?.length > 0 && !biller) {
-            setBiller(billerDataNew[0].userId);
-        }
-        if (warehouse && warehouseData?.data.length > 0 && !warehouse) {
-            setWarehouse(warehouseData?.data[0].id);
-        }
-        if (customerData && customerData?.data.length > 0 && !customer) {
-            setCustomer(customerData?.data[0].id);
-        }
-
-    }, [billerDataNew, biller, warehouseData, warehouse, customerData, customer]);
-
+ 
 
     const selectSuggestion = (suggestion: Omit<TProductInterface, 'quantitySold' | 'totalAmountSold'>) => {
-        const existingProductIndex = productInformation.findIndex(product => product.title === suggestion.title);
+        const existingProductIndex = productInformation.findIndex(product => product.productName === suggestion.productName);
         if (existingProductIndex !== -1) {
             setProductInformation(prev => {
                 const updatedProducts = prev.map((product, index) => {
@@ -110,7 +94,7 @@ const NewSaleList = () => {
                             ...product,
                             stockQuantity: product.stockQuantity - 1,
                             quantitySold: product.quantitySold + 1,
-                            totalAmountSold: product.totalAmountSold + product.price
+                            totalAmountSold: product.totalAmountSold + product.productPrice
                         };
                     }
                     return product;
@@ -121,13 +105,13 @@ const NewSaleList = () => {
             if (suggestion.stockQuantity > 0) {
                 setProductInformation(prev => [
                     ...prev,
-                    { ...suggestion, quantitySold: 1, totalAmountSold: suggestion.price, stockQuantity: suggestion.stockQuantity - 1}
+                    { ...suggestion, quantitySold: 1, totalAmountSold: suggestion.productPrice, stockQuantity: suggestion.stockQuantity - 1}
                 ]);
 
             } else {
                 setProductInformation(prev => [
                     ...prev,
-                    { ...suggestion, quantitySold: 0, totalAmountSold: suggestion.price }
+                    { ...suggestion, quantitySold: 0, totalAmountSold: suggestion.productPrice }
                 ]);
             }
         }
@@ -209,7 +193,7 @@ const NewSaleList = () => {
     const calculateTotal = () => {
         return productInformation.reduce((total, item) => {
             if (item.stockQuantity > 0) {
-                return total + item.price * item.quantitySold;
+                return total + item.productPrice * item.quantitySold;
             } 
             return total;
         }, 0);
@@ -219,7 +203,7 @@ const NewSaleList = () => {
      const calculateTotalTax = () => {
         return productInformation.reduce((total, item) => {
             if (item.quantitySold != undefined) {
-                return (((item.price * item.quantitySold) * item.taxPercentage) / 100) + total;
+                return (((item.productPrice * item.quantitySold) * item.taxPercentage) / 100) + total;
             }
             return total;
         }, 0);
@@ -233,7 +217,7 @@ const NewSaleList = () => {
                 let lastNumber = Number(item.marginRange.split(" ")[item.marginRange.split(" ").length - 1].split("%")[0]);
                 let randomNumber = Math.floor(Math.random() * (lastNumber - firstNumber + 1)) + firstNumber;
                 if (!isNaN(firstNumber) && !isNaN(lastNumber)) {
-                    return ((item.price * item.quantitySold * randomNumber) / 100) + total;
+                    return ((item.productPrice * item.quantitySold * randomNumber) / 100) + total;
                 }
             }
             return total;
@@ -290,10 +274,9 @@ const NewSaleList = () => {
         });
         let date = formatDate(saleDate)
 
-        const saleData = {customerId: customer, warehouseId: selectWarehouse, productIdPlusQuantity, discount,
-            billerId: biller, saleDate: date, shippingCost, staffNote, saleNote, saleStatus, taxAmount: calculateTotalTax(),
+        const saleData = {customerId, warehouseId, productIdPlusQuantity, discount,
+            billerId, saleDate: date, shippingCost, staffNote, saleNote, saleStatus, taxAmount: calculateTotalTax(),
             totalAmount: calculateGrandTotal, profitAmount: calculateProfit }
-
 
         try {
             await addSale(saleData).unwrap();
@@ -301,9 +284,9 @@ const NewSaleList = () => {
                 setActiveItems([]);
                 setActiveItemIds([]);
                 setSaleDate(new Date());
-                setSelectCustomer('')
-                setSelectWarehosue('')
-                setSelectBiller('')
+                setWarehouseId("")
+                setCustomerId("")
+                setBillerId("")
                 setSalesStatus("")
                 setSaleNote("")
                 setStaffNote("")
@@ -359,8 +342,8 @@ const NewSaleList = () => {
                                                         select
                                                         label="Select"
                                                         required
-                                                        value={selectCustomer}
-                                                        onChange={(e) => setSelectCustomer(e.target.value)}
+                                                        value={customerId}
+                                                        onChange={(e) => setCustomerId(e.target.value)}
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
@@ -393,8 +376,8 @@ const NewSaleList = () => {
                                                         select
                                                         label="Select"
                                                         required
-                                                        value={selectWarehouse}
-                                                        onChange={(e) => setSelectWarehosue(e.target.value)}
+                                                        value={warehouseId}
+                                                        onChange={(e) => setWarehouseId(e.target.value)}
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
@@ -427,8 +410,8 @@ const NewSaleList = () => {
                                                         select
                                                         label="Select"
                                                         required
-                                                        value={selectBiller}
-                                                        onChange={(e) => setSelectBiller(e.target.value)}
+                                                        value={billerId}
+                                                        onChange={(e) => setBillerId(e.target.value)}
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
@@ -483,9 +466,9 @@ const NewSaleList = () => {
                                                                                 onClick={() => selectSuggestion(product)}
                                                                             >
                                                                                 <div className="search-img">
-                                                                                    <Image src={product?.productImage == "" ? "https://res.cloudinary.com/dououppib/image/upload/v1709830638/PLANTS/placeholder_ry6d8v.webp" : product?.productImage} width={30} height={30} alt={product.title} />
+                                                                                    <Image src={product?.productImage == "" ? "https://res.cloudinary.com/dououppib/image/upload/v1709830638/PLANTS/placeholder_ry6d8v.webp" : product?.productImage} width={30} height={30} alt={product.productName} />
                                                                                 </div>
-                                                                                <p className='title'>{product.title}</p>
+                                                                                <p className='title'>{product.productName}</p>
                                                                             </li>
                                                                         ))
                                                                     }
@@ -525,13 +508,13 @@ const NewSaleList = () => {
                                                                     <td>{product.id}</td>
                                                                     <td>
                                                                         <div className="new-sale-search-img">
-                                                                            <Image src={product.productImage} width={30} height={30} alt={product.title} />
+                                                                            <Image src={product.productImage} width={30} height={30} alt={product.productName} />
                                                                         </div>
                                                                     </td>
-                                                                    <td>{product.title}</td>
+                                                                    <td>{product.productName}</td>
                                                                     <td>{product.productCode}</td>
                                                                     <td>{product.category} [{product.subcategory}]</td>
-                                                                     <td>{MoneyFormat.format(product.price)}</td>
+                                                                     <td>{MoneyFormat.format(product.productPrice)}</td>
                                                                     <td>{product.stockQuantity}</td>
                                                                     <td>{product.taxPercentage}%</td>
                                                                     <td>{product.marginRange}</td>

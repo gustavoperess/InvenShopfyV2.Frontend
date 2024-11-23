@@ -7,7 +7,7 @@ import MakePaymentPopup from './popup/MakePaymentPopup';
 import DiscountPaymentPopup from './popup/DiscountPaymentPopup';
 import { TProduct, TSaleInterface, MoneyFormat, TProductInterface } from '@/interFace/interFace';
 import { useGetSalesReturnByNameQuery } from '@/services/Sales/SaleReturn';
-import { useGetSalesBySaleIdQuery } from '@/services/Sales/Sales';
+import { useGetSalesBySaleIdForPosSaleQuery } from '@/services/Sales/Sales';
 import { toast } from 'react-toastify';
 
 const PosSaleList = (
@@ -48,7 +48,7 @@ const PosSaleList = (
     const [suggestions, setSuggestions] = useState<TSaleInterface[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [saleId, setSaleId] = useState<number>();
-    const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetSalesBySaleIdQuery(
+    const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetSalesBySaleIdForPosSaleQuery(
         saleId as number,
         { skip: saleId === undefined }
     );
@@ -107,9 +107,6 @@ const PosSaleList = (
         setFetchSuggestions(true);
     };
 
- 
-
-
 
     const { data: productSuggestionsData, error } = useGetSalesReturnByNameQuery(debouncedSearchTerm, {
         skip: !debouncedSearchTerm.trim().length || !fetchSuggestions, // Skip API call if fetchSuggestions is false
@@ -128,6 +125,8 @@ const PosSaleList = (
             setProductInformation(salesData.data); // Use the setter from props
         }
     }, [salesData, setProductInformation]);
+
+
 
 
     const handleSuggestionSelect = (suggestion: TSaleInterface) => {
@@ -170,12 +169,12 @@ const PosSaleList = (
     //handle reset form data
     const handlePosFormReset = () => {
         setTaxAmount(0);
-        setSaleId(undefined);
         setReferenceNumber("");
         setProfitAmount(0);
         setDiscountAmount(0);
         setShippingAmount(0);
         setSuggestions([]); 
+        setProductInformation([]);
         setFetchSuggestions(false);
         setCustomerName(""); 
         setBillerName("");
@@ -339,8 +338,8 @@ const PosSaleList = (
                                     </thead>
                                     <tbody>
                                         {
-                                            saleId != undefined ? (
-                                                salesData?.data.map((product: any) => <tr key={product.productId}>
+                                            productInformation?.length > 0 ? (
+                                                productInformation?.map((product: any) => <tr key={product.productId}>
                                                     <td>{product.productName}</td>
                                                     <td>{MoneyFormat.format(product.productPrice)}</td>
                                                     <td>{product.unitShortName}</td>

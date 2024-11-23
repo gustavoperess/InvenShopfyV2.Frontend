@@ -74,6 +74,7 @@ const Header = () => {
 
 
 
+
   return (
     <>
       <div className="flex justify-between items-center gap-4">
@@ -128,8 +129,14 @@ const Header = () => {
                   : currentUserError ? (
                     <div>Error loading user data</div>
                   ) :
-                    <Image src={currentuser?.profilePicture} className="rounded" height={50} width={50} alt='profilePicture' priority 
-                    style={{ maxHeight: '50px', maxWidth: '50px', objectFit: 'contain' }}/>
+                    <Image src={currentuser?.profilePicture}  
+                    width="0"
+                    height="0" 
+                    sizes="100vw"
+                    alt='profilePicture' 
+                    priority 
+                    style={{ maxHeight: '50px', width: '50px', height:"50px", maxWidth: "50px", objectFit: 'contain' }}
+                    />
                 }
               </button>
             </div>

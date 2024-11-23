@@ -42,7 +42,7 @@ const NotificationDropdown = () => {
                             </div>
                             <div className="content">
                                 <h6>
-                                    <Link href={notification.href}>{notification.title}</Link>
+                                    <Link href={notification.href}>{notification.notificationTitle}</Link>
                                 </h6>
                                 <span>{notification.createAt || 'Unknown Date'}</span>
                             </div>

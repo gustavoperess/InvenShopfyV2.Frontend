@@ -37,7 +37,13 @@ export const salesApi = createApi({
         }),
         getSalesBySaleId: builder.query<any, number>({
             query: (saleId) => ({
-                url: `GetBySalesId/${saleId}`,
+                url: `getBySalesId/${saleId}`,
+                method: 'GET',
+            }),
+        }),
+        getSalesBySaleIdForPosSale: builder.query<any, number>({
+            query: (saleId) => ({
+                url: `posSale/${saleId}`,
                 method: 'GET',
             }),
         }),
@@ -62,6 +68,7 @@ export const salesApi = createApi({
 
 
 export const { 
+    useGetSalesBySaleIdForPosSaleQuery,
     useGetTotalProfitDashboardQuery,
     useGetTotalSalesAmountQuery,
     useCreateSaleMutation,

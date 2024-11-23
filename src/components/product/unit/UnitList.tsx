@@ -28,8 +28,8 @@ const UnitList = () => {
     const [currentPageSize, setCurrentPageSize] = useState(10);
     const [open, setOpen] = React.useState(false);
     const [unit, setUnit] = useState<number>(0);
-    const [title, setTitle] = useState("");
-    const [shortName, setShortName] = useState("");
+    const [unitName, setUnitName] = useState("");
+    const [unitShortName, setunitShortName] = useState("");
     const [selected, setSelected] = useState<number[]>([]);
     const [order, setOrder] = useState<'asc' | 'desc'>('asc');
     const [orderBy, setOrderBy] = useState<keyof TUnitInterface>('id');
@@ -135,12 +135,12 @@ const UnitList = () => {
     //hanle unit form
     const handleUnitList = async (event: any) => {
         event.preventDefault();
-        const unitData = { title, shortName }
+        const unitData = { unitName, unitShortName }
         try {
             await addUnit(unitData).unwrap();
             toast.success("Unit/Value created successfuly!")
-            setTitle("");
-            setShortName("");
+            setUnitName("");
+            setunitShortName("");
             refetch();
         }
         catch (error: any) {
@@ -172,10 +172,10 @@ const UnitList = () => {
                                                             placeholder="Kilogram*"
                                                             variant="outlined"
                                                             type="text"
-                                                            value={title}
+                                                            value={unitName}
                                                             required
                                                             inputProps={{ maxLength: 80 }}
-                                                            onChange={(e) => setTitle(e.target.value)}
+                                                            onChange={(e) => setUnitName(e.target.value)}
                                                         />
                                                     </FormControl>
                                                 </div>
@@ -193,10 +193,10 @@ const UnitList = () => {
                                                             placeholder="Kg*"
                                                             variant="outlined"
                                                             type="text"
-                                                            value={shortName}
+                                                            value={unitShortName}
                                                             required
                                                             inputProps={{ maxLength: 2 }}
-                                                            onChange={(e) => setShortName(e.target.value)}
+                                                            onChange={(e) => setunitShortName(e.target.value)}
                                                         />
                                                     </FormControl>
                                                 </div>
@@ -226,18 +226,18 @@ const UnitList = () => {
                                                         </TableCell>
                                                         <TableCell>
                                                             <TableSortLabel
-                                                                active={orderBy === 'title'}
-                                                                direction={orderBy === 'title' ? order : 'asc'}
-                                                                onClick={() => handleRequestSort('title')}
+                                                                active={orderBy === 'unitName'}
+                                                                direction={orderBy === 'unitName' ? order : 'asc'}
+                                                                onClick={() => handleRequestSort('unitName')}
                                                             >
                                                                 Name
                                                             </TableSortLabel>
                                                         </TableCell>
                                                         <TableCell>
                                                             <TableSortLabel
-                                                                active={orderBy === 'shortName'}
-                                                                direction={orderBy === 'shortName' ? order : 'asc'}
-                                                                onClick={() => handleRequestSort('shortName')}
+                                                                active={orderBy === 'unitShortName'}
+                                                                direction={orderBy === 'unitShortName' ? order : 'asc'}
+                                                                onClick={() => handleRequestSort('unitShortName')}
                                                             >
                                                                 Short Name
                                                             </TableSortLabel>
@@ -270,8 +270,8 @@ const UnitList = () => {
                                                             <TableCell>
                                                                 <Checkbox checked={isSelected(unit.id)} />
                                                             </TableCell>
-                                                            <TableCell>{unit.title}</TableCell>
-                                                            <TableCell>{unit.shortName}</TableCell>
+                                                            <TableCell>{unit.unitName}</TableCell>
+                                                            <TableCell>{unit.unitShortName}</TableCell>
                                                             <TableCell>
                                                                 <div className="inventual-list-action-style">
                                                                     <PopupState variant="popover">

@@ -23,7 +23,7 @@ const AddSupplier = () => {
     const handleSupplierForm =  async(e: any) => {
         e.preventDefault();
         const supplierData = {
-            name: supplierName, email, phoneNumber: phone, city, country, address, zipCode,
+            supplierName, email, phoneNumber: phone, city, country, address, zipCode,
             supplierCode, company
         }
         try {
