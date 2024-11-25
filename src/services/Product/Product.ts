@@ -37,8 +37,20 @@ export const productsApi = createApi({
                 url: `Product/by-name/${encodeURIComponent(title)}`,
             })
         }),
+
+        getProductByNameForAdjusmentPage: builder.query<any, string>({
+            query: (title) => ({
+                url: `Product/by-name-adjustment/${encodeURIComponent(title)}`,
+            })
+        }),
     }),
 });
 
 // Export auto-generated hooks for functional components
-export const { useGetAllProductsQuery, useAddProductMutation, useDeleteProductMutation, useGetProductByNameQuery } = productsApi;
+export const { 
+    useGetAllProductsQuery, 
+    useAddProductMutation, 
+    useDeleteProductMutation, 
+    useGetProductByNameQuery,
+    useGetProductByNameForAdjusmentPageQuery
+} = productsApi;

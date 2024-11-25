@@ -20,7 +20,6 @@ const SidebarMenu = () => {
                                     width="0"
                                     height="0" 
                                     sizes="100vw"
-                                    priority={true}
                                     src={sidebarLogo}
                                     style={{ maxHeight: '50px', maxWidth: '50px', objectFit: 'contain' }}
                                     alt="logo thimb" />
@@ -34,7 +33,6 @@ const SidebarMenu = () => {
                                     height="0" 
                                     alt="logo thimb"
                                     sizes="100vw"
-                                    priority 
                                     style={{ maxHeight: '50px', maxWidth: '50px', objectFit: 'contain' }}
                                    />
                                 </Link>

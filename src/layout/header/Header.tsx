@@ -134,7 +134,6 @@ const Header = () => {
                     height="0" 
                     sizes="100vw"
                     alt='profilePicture' 
-                    priority 
                     style={{ maxHeight: '50px', width: '50px', height:"50px", maxWidth: "50px", objectFit: 'contain' }}
                     />
                 }

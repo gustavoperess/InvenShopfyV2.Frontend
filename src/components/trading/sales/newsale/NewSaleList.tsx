@@ -354,7 +354,7 @@ const NewSaleList = () => {
                                                         {customerData && customerData.data.length > 0 ? (
                                                             customerData.data.map((customer: TCustomerInterface) => (
                                                                 <MenuItem key={customer.id} value={customer.id}>
-                                                                    {customer.name}
+                                                                    {customer.customerName}
                                                                 </MenuItem>
                                                             ))
                                                         ) : (
@@ -513,7 +513,7 @@ const NewSaleList = () => {
                                                                     </td>
                                                                     <td>{product.productName}</td>
                                                                     <td>{product.productCode}</td>
-                                                                    <td>{product.category} [{product.subcategory}]</td>
+                                                                    <td>{product.mainCategory} [{product.subcategory}]</td>
                                                                      <td>{MoneyFormat.format(product.productPrice)}</td>
                                                                     <td>{product.stockQuantity}</td>
                                                                     <td>{product.taxPercentage}%</td>

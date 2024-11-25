@@ -11,7 +11,7 @@ const ForgotPasswordFrom = () => {
         <div className="inventual-login-area flex justify-center items-center w-full min-h-screen h-full">
             <div className="inventual-login-wrapper">
                 <div className="inventual-login-logo text-center mb-12">
-                    <Image src={logo} priority={true}  style={{ width: 'auto', height: "73px" }} alt="logo img" />
+                    <Image src={logo}  style={{ width: 'auto', height: "73px" }} alt="logo img" />
                 </div>
                 <div className="inventual-input-field-style mb-5">
                     <div className="inventual-form-field">

@@ -1,6 +1,10 @@
 'use client'
 import dynamic from "next/dynamic";
 const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
+import { useGetPurchaseTotalAmountQuery } from "@/services/Purchase/Purchase";
+import { useGetTotalSalesAmountQuery } from "@/services/Sales/Sales";
+import { useGetExpenseTotalAmountQuery } from '@/services/Expense/Expense';
+import { useGetTotalProfitDashboardQuery } from '@/services/Sales/Sales';
 
 const options: any = {
   series: [
@@ -116,6 +120,9 @@ const options: any = {
 };
 
 const ProfitLossChart = () => {
+  const { data: expenseTotalAmountData, isLoading: expenseTotalLoadingData } = useGetExpenseTotalAmountQuery();
+  const { data: totalProfitData, isLoading: totalProfitLoadingData } = useGetTotalProfitDashboardQuery();
+  
   return (
     <>
       <ApexCharts options={options} width={'100%'} series={options.series} type="line" height={380} />

@@ -176,7 +176,7 @@ const ProfileList = () => {
                                         <div {...getRootProps({ className: 'dropzone-two' })}>
                                             <input {...getInputProps()} />
                                             {userPicture ? (
-                                                <Image src={`data:image/jpeg;base64,${userPicture}`} className="rounded" height={120} width={120} alt="profilePicture" priority 
+                                                <Image src={`data:image/jpeg;base64,${userPicture}`} className="rounded" height={120} width={120} alt="profilePicture" 
                                                 style={{ maxHeight: '120px', width: '120px', objectFit: 'contain' }}
                                                 />
                                             ) : (
@@ -185,7 +185,7 @@ const ProfileList = () => {
                                                 ) : userError ? (
                                                     <div>Error loading user data</div>
                                                 ) : (
-                                                    <Image src={userData?.profilePicture} className="rounded" height={120} width={120} alt="profilePicture" priority 
+                                                    <Image src={userData?.profilePicture} className="rounded" height={120} width={120} alt="profilePicture"  
                                                     style={{ maxHeight: '120px', maxWidth: '120px', objectFit: 'contain' }}/>
                                                 )
                                             )}

@@ -87,7 +87,7 @@ const AddProduct = () => {
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCategoryId(e.target.value as string);
-
+    
         if (!subCategories.some(subCategory => subCategory === subCategory)) {
             setSubCategory('');
         }

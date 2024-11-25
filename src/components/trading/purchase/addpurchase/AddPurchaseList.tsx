@@ -414,7 +414,7 @@ const AddPurchaseList = () => {
                                                                     </td>
                                                                     <td>{product.productName}</td>
                                                                     <td>{product.productCode}</td>
-                                                                    <td>{product.category}</td>
+                                                                    <td>{product.mainCategory}</td>
                                                                     <td>{product.subcategory}</td>
                                                                     <td>{MoneyFormat.format(product.productPrice)}</td>
                                                                     <td>{product.stockQuantity}</td>

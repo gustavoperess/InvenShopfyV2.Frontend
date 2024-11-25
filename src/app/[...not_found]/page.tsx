@@ -12,7 +12,6 @@ const page = () => {
                         <div className="error-thumb inline-block">
                             <Image
                                 src={ErrorThumb}
-                                priority
                                 style={{ width: "auto", height: "auto" }}
                                 alt="img not found"
                             />

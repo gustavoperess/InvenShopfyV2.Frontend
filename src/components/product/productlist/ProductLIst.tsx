@@ -357,27 +357,27 @@ const handleDocument = (type: string) => {
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'category'}
-                                  direction={orderBy === 'category' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('category')}
+                                  active={orderBy === 'mainCategory'}
+                                  direction={orderBy === 'mainCategory' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('mainCategory')}
                                 >
                                   Category
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'unit'}
-                                  direction={orderBy === 'unit' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('unit')}
+                                  active={orderBy === 'unitName'}
+                                  direction={orderBy === 'unitName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('unitName')}
                                 >
                                   Unit
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
-                                  active={orderBy === 'brand'}
-                                  direction={orderBy === 'brand' ? order : 'asc'}
-                                  onClick={() => handleRequestSort('brand')}
+                                  active={orderBy === 'brandName'}
+                                  direction={orderBy === 'brandName' ? order : 'asc'}
+                                  onClick={() => handleRequestSort('brandName')}
                                 >
                                   Brand
                                 </TableSortLabel>

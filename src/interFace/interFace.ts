@@ -87,13 +87,13 @@ export interface TProductInterface {
   stockQuantity: number;
   created: string;
   subcategory: string;
-  mainCategory: string
-  unit: string;
+  mainCategory: string;
+  mainCategoryId: number;
+  unitName: string;
   quantity: number;
-  brand: string;
+  brandName: string;
   marginRange: string;
   productImage: string;
-  category: string;
   image: string;
   batchNo: string;
   totalAmountSold: number;
