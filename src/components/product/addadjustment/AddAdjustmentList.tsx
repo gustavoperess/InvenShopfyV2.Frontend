@@ -1,19 +1,17 @@
 "use client"
 import React, { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import { TProductInterface, TMainCategoryInterface, TUnitInterface, TBrandInterface } from '@/interFace/interFace';
+import { TProductInterface, TUnitInterface, TBrandInterface } from '@/interFace/interFace';
 import { toast } from 'react-toastify';
 import { useGetProductByNameForAdjusmentPageQuery } from '@/services/Product/Product';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Accept, useDropzone } from "react-dropzone";
-import { IMaskInput } from 'react-imask';
-import { CustomProps } from '@/interFace/interFace';
-import { faCamera } from '@fortawesome/free-solid-svg-icons';
-import { FilledInput, IconButton, InputAdornment, MenuItem, TextField, FormControl, Input } from '@mui/material';
+import { InputAdornment, MenuItem, TextField, FormControl } from '@mui/material';
 import { NumericFormat } from 'react-number-format';
 import { useGetAllProductsUnitQuery } from '@/services/Product/Unit';
 import { useGetAllProductsBrandQuery } from '@/services/Product/Brand'
 import { useGetAllProductsCategoryQuery, useGetProductByIdQuery } from '@/services/Product/Category';
+import { useUpdateProductMutation } from '@/services/Product/Product';
+
 
 
 
@@ -36,6 +34,7 @@ const AddAdjustmentList = () => {
     const [currentPageSize, setCurrentPageSize] = useState(10);
     const [suggestions, setSuggestions] = useState<TProductInterface[]>([]);
     const [fetchSuggestions, setFetchSuggestions] = useState(true);
+    const [updateProduct, { isLoading, error: errorUpdating }] = useUpdateProductMutation();
     const { data: totalUnitData } = useGetAllProductsUnitQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize }, { skip: !productUnit });
     const { data: totalBrandData } = useGetAllProductsBrandQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize }, { skip: !productBrand });
     const { data: totalCategoryData } = useGetAllProductsCategoryQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize }, { skip: !productCateogy });
@@ -115,7 +114,14 @@ const AddAdjustmentList = () => {
 
     const handleAdjustmentForm = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        const productData = {
+            productName, productImage, categoryId : productCateogy ,subCategory,brandId,
+            unitId, productPrice, taxPercentage : productTaxPercentage, marginRange
+        };
+        console.log(productData)
+    
         try {
+            // await updateProduct({ body: productData, id }).unwrap();
             toast.success("Adjustment Created successfully!");
 
 
@@ -197,7 +203,6 @@ const AddAdjustmentList = () => {
                                                     <NumericFormat
                                                         customInput={TextField}
                                                         thousandSeparator=","
-                                                        required
                                                         decimalSeparator="."
                                                         decimalScale={2}
                                                         fixedDecimalScale
@@ -225,7 +230,6 @@ const AddAdjustmentList = () => {
                                                         <TextField
                                                             label="Category"
                                                             select
-                                                            required
                                                             value={
                                                                 totalCategoryData?.data?.some(
                                                                     (category: { id: number }) => category.id === Number(productCateogy)
@@ -273,7 +277,6 @@ const AddAdjustmentList = () => {
                                                     <TextField
                                                         select
                                                         label="Select"
-                                                        required
                                                         value={subCategory}
                                                         onChange={(e) => setSubCategory(e.target.value)}
                                                         SelectProps={{
@@ -308,7 +311,6 @@ const AddAdjustmentList = () => {
                                                     <TextField
                                                         select
                                                         label="Select"
-                                                        required
                                                         value={brandId}
                                                         onChange={(e) => setBrandId(e.target.value)}
                                                         SelectProps={{
@@ -340,7 +342,6 @@ const AddAdjustmentList = () => {
                                                 <TextField
                                                     select
                                                     label="Select"
-                                                    required
                                                     value={productTaxPercentage ?? 8}
                                                     onChange={(e) => setProductTaxPercentage(Number(e.target.value))}
                                                     SelectProps={{
@@ -367,7 +368,6 @@ const AddAdjustmentList = () => {
                                                 <TextField
                                                     select
                                                     label="Select"
-                                                    required
                                                     value={marginRange ?? "5% to 10%"}
                                                     onChange={(e) => setMarginRange(e.target.value)}
                                                     SelectProps={{
@@ -391,7 +391,6 @@ const AddAdjustmentList = () => {
                                                     <TextField
                                                         select
                                                         label="Select"
-                                                        required
                                                         value={unitId}
                                                         onChange={(e) => setUnitId(e.target.value)}
                                                         SelectProps={{
@@ -418,8 +417,6 @@ const AddAdjustmentList = () => {
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                         <div className="flex justify-end">
                             <button className='inventual-btn primary-btn' type="submit">Create Adjustment</button>

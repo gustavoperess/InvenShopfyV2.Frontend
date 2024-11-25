@@ -32,6 +32,13 @@ export const productsApi = createApi({
                 method: 'DELETE',
             }),
         }),
+        updateProduct: builder.mutation<any, { body: any; id: string }>({
+            query: ({ body, id }) => ({
+                url: `Product/${id}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
         getProductByName: builder.query<any, string>({
             query: (title) => ({
                 url: `Product/by-name/${encodeURIComponent(title)}`,
@@ -48,6 +55,7 @@ export const productsApi = createApi({
 
 // Export auto-generated hooks for functional components
 export const { 
+    useUpdateProductMutation,
     useGetAllProductsQuery, 
     useAddProductMutation, 
     useDeleteProductMutation, 
