@@ -5,23 +5,24 @@ import DatePicker from "react-datepicker"; import { toast } from 'react-toastify
 import { useGetExpenseByNameQuery } from '@/services/Expense/Expense';
 import { TExpenseInterface } from '@/interFace/interFace';
 import { NumericFormat } from 'react-number-format';
+import { useAddPaymentExpenseMutation } from '@/services/Expense/ExpensePayment';
 
 
 
 const CreatePayment = () => {
     const [expenseNumber, setExpenseNumber] = useState<string>("");
     const [expenseAmount, setExpenseAmount] = useState<string>("");
-    const [paymentType, setPaymentType] = useState<string>("");
+    const [paymentType, setPaymentType] = useState<string>("Card");
     const [paymentStatus, setPaymentStatus] = useState<string>("");
     const [creditCard, setCreditCard] = useState<string>("");
     const [expenseId, setExpenseId] = useState<number>();
     const [expenseCategory, setExpenseCategory] = useState<string>("");
     const [expenseNote, setExpenseNote] = useState<string>("");
-    const [creditCardNumberCheck, setCreditCardNumberCheck] = useState<string>("");
     const [expenseDate, setExpenseDate] = useState(new Date());
     const [suggestions, setSuggestions] = useState<TExpenseInterface[]>([]);
     const [fetchSuggestions, setFetchSuggestions] = useState<boolean>(true);
     const debouncedSearchTerm = useDebounce(expenseNumber, 500);
+    const [addPayment] = useAddPaymentExpenseMutation();
 
 
     function useDebounce(value: string, delay: number) {
@@ -71,9 +72,7 @@ const CreatePayment = () => {
         value = value.slice(0, 16);
         const formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
         setCreditCard(formattedValue);
-        if (value == "1234567889101112") {
-            setCreditCardNumberCheck(value)
-        }
+    
     }
 
     const formatDate = (date: Date) => {
@@ -84,14 +83,26 @@ const CreatePayment = () => {
     };
 
 
-    const handleCreatePayment = (e: any) => {
+    const handleCreatePayment = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let date = formatDate(expenseDate)
-        const PaymentData = { date, cardNumber : creditCardNumberCheck, expenseId, expenseNote, paymentType, }
+        const PaymentData = { date, cardNumber : creditCard, expenseId, expenseNote, paymentType, }
         try {
+            await addPayment(PaymentData).unwrap();
+            setExpenseAmount("");
+            setExpenseNumber("");
+            setCreditCard("");
+            setExpenseDate(new Date())
+            setPaymentStatus("");
+            setExpenseCategory("");
             toast.success("Payment Created successfully!");
-        } catch {
-            toast.error("Failed to create Payment. Please try again later.");
+        } catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error?.data?.message);
+            } else {
+                // Fallback error message
+                toast.error("Failed to create payment. Please try again later.");
+            }
         }
     };
     return (
@@ -108,7 +119,7 @@ const CreatePayment = () => {
                                             <div className="inventual-input-field-style search-field">
                                                 <TextField
                                                     fullWidth
-                                                    placeholder="Macbook..."
+                                                    placeholder="D-422134"
                                                     variant="outlined"
                                                     value={expenseNumber}
                                                     onChange={handleNameChange}
@@ -214,13 +225,10 @@ const CreatePayment = () => {
                                                     required
                                                     value={paymentType}
                                                     onChange={(e) => setPaymentType(e.target.value)}
-                                                    defaultValue=""
+                                                    defaultValue="Card"
                                                     SelectProps={{
                                                         displayEmpty: true,
                                                         renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Card</em>;
-                                                            }
                                                             return value
                                                         },
                                                     }}>

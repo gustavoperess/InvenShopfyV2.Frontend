@@ -51,8 +51,8 @@ const AddProduct = () => {
     // handlers
 
     //handle brand submit form
-    const handleFormSubmit = async (event: any) => {
-        event.preventDefault()
+    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         const productData = {
             productName, productImage, categoryId,subCategory, productCode,brandId,
             unitId, productPrice, featured, expired, sale, taxPercentage, marginRange
