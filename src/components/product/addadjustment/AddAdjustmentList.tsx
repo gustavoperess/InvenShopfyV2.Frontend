@@ -34,6 +34,7 @@ const AddAdjustmentList = () => {
     const [currentPageSize, setCurrentPageSize] = useState(10);
     const [suggestions, setSuggestions] = useState<TProductInterface[]>([]);
     const [fetchSuggestions, setFetchSuggestions] = useState(true);
+    const [productId, setProductId] = useState<number>();
     const [updateProduct, { isLoading, error: errorUpdating }] = useUpdateProductMutation();
     const { data: totalUnitData } = useGetAllProductsUnitQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize }, { skip: !productUnit });
     const { data: totalBrandData } = useGetAllProductsBrandQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize }, { skip: !productBrand });
@@ -72,6 +73,7 @@ const AddAdjustmentList = () => {
 
 
     const handleSuggestionSelect = (suggestion: TProductInterface) => {
+        setProductId(suggestion.id)
         setProductName(suggestion.productName);
         setProductBrand(suggestion.brandName);
         setProductTaxPercentage(suggestion.taxPercentage)
@@ -111,20 +113,34 @@ const AddAdjustmentList = () => {
 
     const { getRootProps, getInputProps } = useDropzone({ onDrop, accept });
 
-
     const handleAdjustmentForm = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        let myImage = false
+        if (productImage?.startsWith("https:")) {
+           myImage = true;
+        }
         const productData = {
-            productName, productImage, categoryId : productCateogy ,subCategory,brandId,
-            unitId, productPrice, taxPercentage : productTaxPercentage, marginRange
+            productName: productName || null,
+            productImage: myImage ? null : productImage ,
+            categoryId : productCateogy || null,
+            subCategory : subCategories[0] || null,
+            brandId: brandId || null,
+            unitId: unitId || null,
+            productPrice: productPrice || null,
+            taxPercentage : productTaxPercentage || null,
+            marginRange: marginRange || null
         };
-        console.log(productData)
-    
         try {
-            // await updateProduct({ body: productData, id }).unwrap();
+            await updateProduct({ body: productData, id : String(productId) }).unwrap();
+            setProductName("")
+            setProductImage("")
+            setProductCategory("")
+            setBrandId("")
+            setUnitId("")
+            setProductTaxPercentage(5);
+            setProductPrice(undefined);
+            setMarginRange("5% to 10%");
             toast.success("Adjustment Created successfully!");
-
-
         } catch {
             toast.error("Failed to  create adjustmnet. Please try again later.");
         }
