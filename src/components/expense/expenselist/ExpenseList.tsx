@@ -25,16 +25,10 @@ import ExpenseViewListPopup from './expenseListPopup/ExpenseViewListPopup';
 import AddExpenseListPopup from './expenseListPopup/AddExpenseListPopup';
 import { useGetAllExpensesQuery, useDeleteExpenseMutation } from '@/services/Expense/Expense';
 import exp from 'constants';
-import { TExpenseInterface } from '@/interFace/interFace';
+import { TExpenseInterface, MoneyFormat } from '@/interFace/interFace';
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 import { saveAs } from 'file-saver';
-
-
-let MoneyFormat = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'GBP',
-});
 
 
 
@@ -49,8 +43,6 @@ const ExpenseList = () => {
   const [deleteExpense] = useDeleteExpenseMutation();
   const [searchQuery, setSearchQuery] = useState('');
   const { data: expenseData, isLoading: expenseLoading , refetch } = useGetAllExpensesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
-
-
   
   // AddPayment Popup Start
   const [openeAddPaymentDialog, setOpenAddPaymentDialog] = useState<boolean>(false);

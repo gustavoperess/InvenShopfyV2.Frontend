@@ -14,8 +14,6 @@ import { useUpdateProductMutation } from '@/services/Product/Product';
 
 
 
-
-
 const AddAdjustmentList = () => {
     const [productName, setProductName] = useState<string>("");
     const [brandId, setBrandId] = useState<string>("");

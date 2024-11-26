@@ -314,8 +314,9 @@ export interface TExpenseInterface {
   warehouse: string;
   expenseType: string;
   expenseCategory: string;
-  voucherNumber: number;
-  expenseCost: number;
+  voucherNumber: string;
+  expenseStatus: string;
+  expenseCost: string;
   expenseNote: string;
   shippingCost: string;
 }

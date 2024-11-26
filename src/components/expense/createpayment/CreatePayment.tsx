@@ -1,29 +1,95 @@
 "use client"
-import React, { useState } from 'react';
-import { MenuItem, TextField } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {  MenuItem, TextField } from '@mui/material';
 import DatePicker from "react-datepicker"; import { toast } from 'react-toastify';
-;
+import { useGetExpenseByNameQuery } from '@/services/Expense/Expense';
+import { TExpenseInterface } from '@/interFace/interFace';
+import { NumericFormat } from 'react-number-format';
+
+
 
 const CreatePayment = () => {
+    const [expenseNumber, setExpenseNumber] = useState<string>("");
+    const [expenseAmount, setExpenseAmount] = useState<string>("");
+    const [paymentType, setPaymentType] = useState<string>("");
+    const [paymentStatus, setPaymentStatus] = useState<string>("");
+    const [creditCard, setCreditCard] = useState<string>("");
+    const [expenseId, setExpenseId] = useState<number>();
+    const [expenseCategory, setExpenseCategory] = useState<string>("");
+    const [expenseNote, setExpenseNote] = useState<string>("");
+    const [creditCardNumberCheck, setCreditCardNumberCheck] = useState<string>("");
+    const [expenseDate, setExpenseDate] = useState(new Date());
+    const [suggestions, setSuggestions] = useState<TExpenseInterface[]>([]);
+    const [fetchSuggestions, setFetchSuggestions] = useState<boolean>(true);
+    const debouncedSearchTerm = useDebounce(expenseNumber, 500);
 
-    const [startDate, setStartDate] = useState<Date | null>(null);
-    const [voucherNo, setVoucherNo] = useState('');
-    const [amount, setAmount] = useState(0);
-    const [paymentType, setPaymentType] = useState('');
-    const [cardNumber, setCardNumber] = useState('');
-    const [status, setStatus] = useState('');
+
+    function useDebounce(value: string, delay: number) {
+        const [debouncedValue, setDebouncedValue] = useState(value);
+        useEffect(() => {
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+            return () => clearTimeout(handler);
+        }, [value, delay]);
+        return debouncedValue;
+    }
+
+    const { data: expenseSuggestionData, error } = useGetExpenseByNameQuery(debouncedSearchTerm, {
+        skip: !debouncedSearchTerm.trim().length || !fetchSuggestions, // Skip API call if fetchSuggestions is false
+    });
+
+
+    useEffect(() => {
+        if (expenseSuggestionData) {
+            setSuggestions(expenseSuggestionData.data || []);
+        }
+    }, [expenseSuggestionData]);
+
+   
+    const handleSuggestionSelect = (suggestion: TExpenseInterface) => {
+        setExpenseAmount(suggestion.expenseCost);
+        setExpenseNumber(suggestion.voucherNumber);
+        setExpenseId(suggestion.id);
+        setPaymentStatus(suggestion.expenseStatus);
+        setExpenseCategory(suggestion.expenseCategory);
+        setSuggestions([]);
+        setFetchSuggestions(false);
+    };
+
+    const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setExpenseNumber(e.target.value);
+        setFetchSuggestions(true);
+    };
+
+    const handleDateChange = (date: Date | null) => {
+        setExpenseDate(date || new Date());
+    };
+
+    const handleCreditCardChange = (event: any) => {
+        let value = event.target.value.replace(/\D/g, '');
+        value = value.slice(0, 16);
+        const formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
+        setCreditCard(formattedValue);
+        if (value == "1234567889101112") {
+            setCreditCardNumberCheck(value)
+        }
+    }
+
+    const formatDate = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
 
     const handleCreatePayment = (e: any) => {
         e.preventDefault();
+        let date = formatDate(expenseDate)
+        const PaymentData = { date, cardNumber : creditCardNumberCheck, expenseId, expenseNote, paymentType, }
         try {
             toast.success("Payment Created successfully!");
-            setStartDate(null);
-            setVoucherNo('');
-            setAmount(0);
-            setPaymentType('');
-            setPaymentType('');
-            setCardNumber('');
-            setStatus('');
         } catch {
             toast.error("Failed to create Payment. Please try again later.");
         }
@@ -36,14 +102,96 @@ const CreatePayment = () => {
                         <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                             <div className="col-span-12">
                                 <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
-                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
+                                    <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-4">
                                         <div className="inventual-form-field">
+                                            <h5>Search by Voucher number</h5>
+                                            <div className="inventual-input-field-style search-field">
+                                                <TextField
+                                                    fullWidth
+                                                    placeholder="Macbook..."
+                                                    variant="outlined"
+                                                    value={expenseNumber}
+                                                    onChange={handleNameChange}
+                                                />
+                                                {suggestions.length > 0 && (
+                                                    <div className='search-dropdown dropdown-scroll'>
+                                                        <ul>
+                                                            {suggestions.map((expense) => (
+                                                                <li key={expense.id} onClick={() => handleSuggestionSelect(expense)}>
+                                                                    <p className='title'>{expense.voucherNumber}</p>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-4">
+                                        <div className="inventual-formTree-field">
+                                            <h5>Payment status</h5>
+                                            <div className="inventual-select-field-style">
+                                                <TextField
+                                                    required
+                                                    value={paymentStatus}
+                                                    disabled={paymentStatus !== ''}
+                                                    style={{
+                                                        backgroundColor: paymentStatus !== '' ? '#e0e0e0' : 'inherit',
+                                                        color: paymentStatus !== '' ? '#757575' : 'inherit',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                </TextField>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-4">
+                                        <div className="inventual-select-field">
+                                            <div className="inventual-form-field">
+                                                <h5>Expense Price</h5>
+                                                <div className="inventual-input-field-style">
+                                                    <NumericFormat
+                                                        value={expenseAmount}
+                                                        thousandSeparator
+                                                        valueIsNumericString
+                                                        disabled={expenseAmount !== ''}
+                                                        prefix="£"
+                                                        style={{
+                                                            backgroundColor: expenseAmount !== '' ? '#e0e0e0' : 'inherit',
+                                                            color: expenseAmount !== '' ? '#757575' : 'inherit',
+                                                            height: "48px"
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
+                                        <div className="inventual-formTree-field">
+                                            <h5>Category</h5>
+                                            <div className="inventual-select-field-style">
+                                                <TextField
+                                                    required
+                                                    value={expenseCategory}
+                                                    disabled={expenseCategory !== ''}
+                                                    style={{
+                                                        backgroundColor: expenseCategory !== '' ? '#e0e0e0' : 'inherit',
+                                                        color: expenseCategory !== '' ? '#757575' : 'inherit',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                </TextField>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
+                                        <div className="inventual-formTwo-field">
                                             <h5>Date</h5>
                                             <div className="inventual-input-field-style">
                                                 <DatePicker
+                                                    selected={expenseDate}
                                                     required
-                                                    selected={startDate}
-                                                    onChange={(date) => setStartDate(date)}
+                                                    onChange={handleDateChange}
                                                     showYearDropdown
                                                     showMonthDropdown
                                                     useShortMonthInDropdown
@@ -52,35 +200,6 @@ const CreatePayment = () => {
                                                     dropdownMode="select"
                                                     isClearable
                                                     placeholderText="DD/MM/YYYY"
-                                                    className="w-full"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-form-field">
-                                            <h5>Voucher No</h5>
-                                            <div className="inventual-input-field-style">
-                                                <input
-                                                    required
-                                                    value={voucherNo}
-                                                    onChange={(e) => setVoucherNo(e.target.value)}
-                                                    type="text"
-                                                    placeholder='787'
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-form-field">
-                                            <h5>Amount</h5>
-                                            <div className="inventual-input-field-style">
-                                                <input
-                                                    required
-                                                    value={amount}
-                                                    onChange={(e) => setAmount(Number(e.target.value))}
-                                                    type="text"
-                                                    placeholder='4,470'
                                                 />
                                             </div>
                                         </div>
@@ -100,73 +219,51 @@ const CreatePayment = () => {
                                                         displayEmpty: true,
                                                         renderValue: (value: any) => {
                                                             if (value === '') {
-                                                                return <em>Select Type</em>;
+                                                                return <em>Card</em>;
                                                             }
-                                                            return value;
+                                                            return value
                                                         },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">
-                                                        <em>Select Type</em>
-                                                    </MenuItem>
+                                                    }}>
                                                     <MenuItem value="Card">Card</MenuItem>
                                                     <MenuItem value="Cash">Cash</MenuItem>
-                                                    <MenuItem value="Bank">Bank</MenuItem>
                                                 </TextField>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
+                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
                                         <div className="inventual-form-field">
                                             <h5>Card Number</h5>
                                             <div className="inventual-input-field-style">
-                                                <input
+                                                <TextField
+                                                    fullWidth
+                                                    type="text"
+                                                    placeholder="Enter card number"
+                                                    variant="outlined"
                                                     required
-                                                    value={cardNumber}
-                                                    onChange={(e) => setCardNumber(e.target.value)}
-                                                    type="number"
-                                                    placeholder='XXXX   XXXX   XXXX   XXXX'
+                                                    onChange={handleCreditCardChange}
+                                                    value={creditCard}
+                                                    disabled={paymentType == 'Cash'}
+                                                    style={{
+                                                        backgroundColor: paymentType == 'Cash' ? '#e0e0e0' : 'inherit',
+                                                        color: paymentType == 'Cash' ? '#757575' : 'inherit',
+                                                        width: '100%',
+                                                    }}
                                                 />
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-form-field">
-                                            <h5>Status</h5>
-                                            <div className="inventual-select-field-style">
-                                                <TextField
-                                                    select
-                                                    label="Select"
-                                                    required
-                                                    value={status}
-                                                    onChange={(e) => setStatus(e.target.value)}
-                                                    defaultValue=""
-                                                    SelectProps={{
-                                                        displayEmpty: true,
-                                                        renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Select Status</em>;
-                                                            }
-                                                            return value;
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">
-                                                        <em>Select Status</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="Paid">Paid</MenuItem>
-                                                    <MenuItem value="Unpaid">Unpaid</MenuItem>
-                                                    <MenuItem value="Draft">Draft</MenuItem>
-                                                </TextField>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12">
-                                        <div className="inventual-form-field">
-                                            <h5>Purchase Note:</h5>
-                                            <div className="inventual-input-field-style">
-                                                <textarea placeholder='Write your message'></textarea>
-                                            </div>
+                                    <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
+                                        <div className="inventual-input-field-style">
+                                            <TextField
+                                                fullWidth
+                                                multiline
+                                                required
+                                                rows={4}
+                                                value={expenseNote}
+                                                placeholder='Staff Notes'
+                                                inputProps={{ maxLength: 500 }}
+                                                onChange={(e) => setExpenseNote(e.target.value)}
+                                            />
                                         </div>
                                     </div>
                                     <div className="col-span-12 flex justify-end">

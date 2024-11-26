@@ -14,7 +14,6 @@ const AddExpenseList = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [expense, setExpense] = useState<string>('');
     const [selectWarehouse, setSelectWarehouse] = useState<string>('');
-    const [voucherNo, setVoucherNo] = useState<number | ''>('');
     const [expenseNote, setExpenseNote] = useState<string>("");
     const [selectStatus, setSelectStatus] = useState('');
     const [selectedPrice, setSelectedPrice] = useState<number | undefined>();
@@ -53,20 +52,21 @@ const AddExpenseList = () => {
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
-    };
+    }; 
 
-    
+
+
     const handleExpenseListData = async (event: any) => {
         event.preventDefault();
         let date = formatDate(startDate)
 
         const expenseDatatoSubmit = {
-            warehouseId: selectWarehouse, date, 
-            expenseStatus: selectStatus, expenseDescription: expense, 
-            expenseCategoryId: selectedCategory, expenseType: selectSubCategory, 
-            voucherNumber: voucherNo, expenseCost: selectedPrice, expenseNote,shippingCost
+            warehouseId: selectWarehouse, date,
+            expenseStatus: selectStatus, expenseDescription: expense,
+            expenseCategoryId: selectedCategory, expenseType: selectSubCategory,
+            expenseCost: selectedPrice, expenseNote, shippingCost
         };
-        
+
         try {
             await createExpense(expenseDatatoSubmit).unwrap();
             toast.success("Expense Created successfully!");
@@ -76,7 +76,6 @@ const AddExpenseList = () => {
             setExpense("")
             setSelectSubCategory("")
             setSelectSubCategory("")
-            setVoucherNo("")
             setSelectedPrice(undefined)
             setExpenseNote("")
             setShippingCost(undefined)
@@ -84,7 +83,7 @@ const AddExpenseList = () => {
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);
-            } 
+            }
             else {
                 // Fallback error message
                 toast.error("Failed to create Expense. Please try again later.");
@@ -254,26 +253,6 @@ const AddExpenseList = () => {
                             <div className="col-span-12 xl:col-span-4 md:col-span-6">
                                 <div className="inventual-select-field">
                                     <div className="inventual-form-field">
-                                        <h5>Voucher Number</h5>
-                                        <div className="inventual-input-field-style">
-                                            <FormControl fullWidth>
-                                                <TextField
-                                                    fullWidth
-                                                    type="number"
-                                                    required
-                                                    placeholder="2453"
-                                                    variant="outlined"
-                                                    value={voucherNo} 
-                                                    inputProps={{ min: 1, max: 10000000 }}
-                                                    onChange={(e) => setVoucherNo(Number(e.target.value))} />
-                                            </FormControl>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                <div className="inventual-select-field">
-                                    <div className="inventual-form-field">
                                         <h5>Expense Cost</h5>
                                         <div className="inventual-input-field-style">
                                             <NumericFormat
@@ -313,18 +292,15 @@ const AddExpenseList = () => {
                                                 displayEmpty: true,
                                                 renderValue: (value: any) => {
                                                     if (value === '') {
-                                                        return <em>Select Status</em>;
+                                                        return <em>Incompleted</em>;
                                                     }
                                                     return value;
                                                 },
                                             }}
                                         >
-                                            <MenuItem value="">
-                                                <em>Select Status</em>
-                                            </MenuItem>
-                                            <MenuItem value="Completed">Completed</MenuItem>
                                             <MenuItem value="Incompleted">Incompleted</MenuItem>
-                                            <MenuItem value="Drafts">Drafts</MenuItem>
+
+                                            <MenuItem value="Completed">Completed</MenuItem>
                                         </TextField>
                                     </div>
                                 </div>
@@ -354,18 +330,18 @@ const AddExpenseList = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
-                                        <div className="inventual-input-field-style">
-                                            <TextField
-                                                fullWidth
-                                                multiline
-                                                rows={4}
-                                                value={expenseNote}
-                                                placeholder='Expense Notes'
-                                                inputProps={{ maxLength: 500 }}
-                                                onChange={(e) => setExpenseNote(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
+                                <div className="inventual-input-field-style">
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        rows={4}
+                                        value={expenseNote}
+                                        placeholder='Expense Notes'
+                                        inputProps={{ maxLength: 500 }}
+                                        onChange={(e) => setExpenseNote(e.target.value)}
+                                    />
+                                </div>
+                            </div>
                             <div className="col-span-12 flex justify-end">
                                 <button type="submit" className="inventual-btn">Create Expense</button>
                             </div>

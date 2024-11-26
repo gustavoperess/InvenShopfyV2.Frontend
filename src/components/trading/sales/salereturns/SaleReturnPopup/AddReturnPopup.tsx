@@ -85,11 +85,12 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
         setFetchSuggestions(true);
     };
 
+
     const handleSuggestionSelect = (suggestion: TSaleReturnInterface) => {
         setReferenceNumber(suggestion.referenceNumber);
         setBillerName(suggestion.billerName)
         setWarehouseName(suggestion.warehouseName)
-        seTotalAmount(suggestion.totalAmount)
+        seTotalAmount(suggestion.returnTotalAmount)
         setCustomerName(suggestion.customerName)
         setSuggestions([]);
         setFetchSuggestions(false);
