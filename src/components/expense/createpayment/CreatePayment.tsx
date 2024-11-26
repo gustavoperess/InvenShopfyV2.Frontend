@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import {  MenuItem, TextField } from '@mui/material';
+import { MenuItem, TextField } from '@mui/material';
 import DatePicker from "react-datepicker"; import { toast } from 'react-toastify';
 import { useGetExpenseByNameQuery } from '@/services/Expense/Expense';
 import { TExpenseInterface } from '@/interFace/interFace';
@@ -47,7 +47,7 @@ const CreatePayment = () => {
         }
     }, [expenseSuggestionData]);
 
-   
+
     const handleSuggestionSelect = (suggestion: TExpenseInterface) => {
         setExpenseAmount(suggestion.expenseCost);
         setExpenseNumber(suggestion.voucherNumber);
@@ -72,7 +72,7 @@ const CreatePayment = () => {
         value = value.slice(0, 16);
         const formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
         setCreditCard(formattedValue);
-    
+
     }
 
     const formatDate = (date: Date) => {
@@ -86,7 +86,7 @@ const CreatePayment = () => {
     const handleCreatePayment = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let date = formatDate(expenseDate)
-        const PaymentData = { date, cardNumber : creditCard, expenseId, expenseNote, paymentType, }
+        const PaymentData = { date, cardNumber: creditCard, expenseId, expenseNote, paymentType, }
         try {
             await addPayment(PaymentData).unwrap();
             setExpenseAmount("");
@@ -275,8 +275,13 @@ const CreatePayment = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 flex justify-end">
-                                        <button type="submit" className="inventual-btn">Pay Now</button>
+                                        <button
+                                            className={`inventual-btn w-full ${paymentStatus != "Completed" ? '' : 'disabled'}`}
+                                            type="submit">
+                                            Pay Now
+                                        </button>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
