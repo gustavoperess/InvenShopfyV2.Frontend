@@ -6,9 +6,13 @@ import DialogContent from '@mui/material/DialogContent';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import { useGetSalesPaymentForViewPaymentByIdQuery } from '@/services/Sales/SalesPayment';
+import { MoneyFormat } from '@/interFace/interFace';
+
 
 interface ViewPaymentPopupProps {
     open: boolean;
+    saleId: number | undefined;
     handleViewPaymentDialogClose: () => void;
 }
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -20,11 +24,14 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const TradingSalesListViewPayment = ({ open, handleViewPaymentDialogClose }: ViewPaymentPopupProps) => {
+const TradingSalesListViewPayment = ({ open, saleId, handleViewPaymentDialogClose }: ViewPaymentPopupProps) => {
+    const { data: salesData, refetch } = useGetSalesPaymentForViewPaymentByIdQuery(
+        saleId as number, 
+        { skip: saleId === undefined }
+    );
 
-    const dummyData = (e: any) => {
-        e.preventDefault();
-    };
+    console.log(salesData)
+   
 
     return (
         <>
@@ -40,46 +47,29 @@ const TradingSalesListViewPayment = ({ open, handleViewPaymentDialogClose }: Vie
                     </div>
                     <DialogContent dividers>
                         <div className='inventual-common-modal-width width-full'>
-                            <form onSubmit={dummyData}>
+                         
                                 <div className="inventual-common-small-table mt-0.5 xs:overflow-x-auto">
                                     <table>
                                         <thead>
                                             <tr className='bg-lightest'>
                                                 <th>Date</th>
                                                 <th>Reference</th>
-                                                <th>Cash</th>
+                                                <th>Payment type</th>
+                                                <th>Warehouse</th>
                                                 <th>Amount</th>
-                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>30/12/2022</td>
-                                                <td>S-920873850390</td>
-                                                <td>Cash</td>
-                                                <td>$4,582</td>
-                                                <td>
-                                                    <div className="inventual-list-action-style">
-                                                        <PopupState variant="popover">
-                                                            {(popupState: any) => (
-                                                                <React.Fragment>
-                                                                    <button className='' type='button' {...bindTrigger(popupState)}>
-                                                                        Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                                                    </button>
-                                                                    <Menu {...bindMenu(popupState)}>
-                                                                        <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i> Edit</MenuItem>
-                                                                        <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                                                    </Menu>
-                                                                </React.Fragment>
-                                                            )}
-                                                        </PopupState>
-                                                    </div>
-                                                </td>
+                                                <td>{salesData?.data.date}</td>
+                                                <td>{salesData?.data.referenceNumber}</td>
+                                                <td>{salesData?.data.paymentType}</td>
+                                                <td>{salesData?.data.warehouseName}</td>
+                                                <td>{MoneyFormat.format(salesData?.data.totalAmount)}</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                            </form>
                         </div>
                     </DialogContent>
                 </BootstrapDialog>

@@ -26,11 +26,19 @@ export const salesPaymentApi = createApi({
             }),
         }),
 
+        getSalesPaymentForViewPaymentById: builder.query<any, number>({
+            query: (salesPaymentId) => ({
+                url: `/${salesPaymentId}`,
+                method: 'GET',
+            }),
+        }),
+
     }),
 });
 
 // Export auto-generated hooks for functional components
 export const { 
+    useGetSalesPaymentForViewPaymentByIdQuery,
     useGetSalesPaymentByIdQuery,
     useAddSalesPaymentMutation,
 } = salesPaymentApi;
