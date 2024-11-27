@@ -447,7 +447,7 @@ const ExpenseList = () => {
                                                 pointerEvents: expense.expenseStatus === "Paid" ? 'none' : 'auto'
                                               }}
                                             >
-                                              <i className={`fa-regular fa-circle-plus ${expense.expenseStatus !== "Paid" ? '' : 'disabled'}`}></i>
+                                              <i className={`fa-regular fa-circle-plus ${expense.expensePaymentId == -1 && expense.expenseStatus !== "Paid" ? '' : 'disabled'}`}></i>
                                               Add Payment
                                             </MenuItem>
                                             <MenuItem
@@ -458,7 +458,7 @@ const ExpenseList = () => {
                                                 pointerEvents: expense.expenseStatus !== "Paid" ? 'none' : 'auto'
                                               }}
                                             >
-                                              <i className={`fa-regular fa-money-check-dollar ${expense.expenseStatus === "Paid" ? '' : 'disabled'}`}></i>
+                                              <i className={`fa-regular fa-money-check-dollar ${expense.expensePaymentId > 0 && expense.expenseStatus === "Paid" ? '' : 'disabled'}`}></i>
                                               View Payment
                                             </MenuItem>                                            
                                             <MenuItem onClick={() => handleOpenDelete(expense.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>

@@ -57,11 +57,13 @@ const SaleList = () => {
   // AddPayment Popup Start
   const [openeAddPaymentDialog, setOpenAddPaymentDialog] = useState<boolean>(false);
 
-  const handleAddPaymentDialogOpen = () => {
+  const handleAddPaymentDialogOpen = (saleId: number) => {
+    setSelectedSaleId(saleId)
     setOpenAddPaymentDialog(true);
   };
   const handleAddPaymentDialogClose = () => {
     setOpenAddPaymentDialog(false);
+    refetch();
   };
 
   // ViewPayment Popup Start
@@ -219,7 +221,7 @@ const SaleList = () => {
     }
   };
 
-
+  
   return (
 
     <>
@@ -405,10 +407,10 @@ const SaleList = () => {
                                   <TableCell>{sales.warehouseName}</TableCell>
                                   <TableCell>
                                     {
-                                      sales.saleStatus.toLowerCase() === "completed" ? (
+                                      sales.saleStatus.toLowerCase() === "paid" ? (
                                         <span className='badge badge-success'>{sales.saleStatus}</span>
                                       ) : (
-                                        sales.saleStatus.toLowerCase() === "incompleted" ? (
+                                        sales.saleStatus.toLowerCase() === "unpaid" ? (
                                           <span className='badge badge-warning'>{sales.saleStatus}</span> 
                                         ) : (<span className='badge badge-teal'>{sales.saleStatus}</span>)
                                       )
@@ -429,7 +431,7 @@ const SaleList = () => {
                                               <MenuItem onClick={() => {handleViewSale(sales.id);  popupState.close()}}> <i className="fa-regular fa-eye"></i>View Sale</MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/trading/sales/newsale'>Add Sale</Link></MenuItem>
                                               <MenuItem onClick={() => {handleGenerateInvoiceDialogOpen(sales.id);  popupState.close()}}> <i className="fa-regular fa-print"></i>Generate Invoice</MenuItem>
-                                              <MenuItem onClick={() => {handleAddPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-circle-plus"></i>Add Payment</MenuItem>
+                                              <MenuItem onClick={() => {handleAddPaymentDialogOpen(sales.id);  popupState.close()}}> <i className="fa-regular fa-circle-plus"></i>Add Payment</MenuItem>
                                               <MenuItem onClick={() => {handleViewPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-money-check-dollar"></i>View Payment</MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
@@ -463,7 +465,7 @@ const SaleList = () => {
         </div>
       </div>
       <ViewSalePopup saleId={selectedSaleId} open={openViewSaleDialog} handleViewSaleDialogClose={handleViewSaleDialogClose} />
-      <TradingSalesListAddPayemnt open={openeAddPaymentDialog} handleAddPaymentDialogClose={handleAddPaymentDialogClose} />
+      <TradingSalesListAddPayemnt saleId={selectedSaleId} open={openeAddPaymentDialog} handleAddPaymentDialogClose={handleAddPaymentDialogClose} />
       <TradingSalesListViewPayment open={openeViewPaymentDialog} handleViewPaymentDialogClose={handleViewPaymentDialogClose} />
       <TradingSalesListInvoice  saleId={selectedSaleId} open={openeGenerateInvoiceDialog} handleGenerateInvoiceDialogClose={handleGenerateInvoiceDialogClose} />
     </>

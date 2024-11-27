@@ -4,7 +4,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import { useGetExpenseByIdQuery } from '@/services/Expense/Expense';
-import DatePicker from "react-datepicker"; import { toast } from 'react-toastify';
+import DatePicker from "react-datepicker"; 
+import { toast } from 'react-toastify';
 import { NumericFormat } from 'react-number-format';
 import { useAddPaymentExpenseMutation } from '@/services/Expense/ExpensePayment';
 import { TextField } from '@mui/material';
@@ -69,6 +70,8 @@ const AddExpenseListPopup = ({ open, expenseId, handleAddPaymentDialogClose }: A
         try {
             await addPayment(PaymentData).unwrap();
             toast.success("Payment Created successfully!");
+            setExpenseNote("")
+            setCreditCard("")
             handleAddPaymentDialogClose();
         } catch (error: any) {
             if (error?.data?.message) {

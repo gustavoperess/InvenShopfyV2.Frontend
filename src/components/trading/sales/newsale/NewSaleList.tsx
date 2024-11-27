@@ -304,7 +304,6 @@ const NewSaleList = () => {
         }
     }
 
-
     return (
         <>
             <div className="inventual-content-area px-4 sm:px-7">
@@ -354,7 +353,7 @@ const NewSaleList = () => {
                                                         {customerData && customerData.data.length > 0 ? (
                                                             customerData.data.map((customer: TCustomerInterface) => (
                                                                 <MenuItem key={customer.id} value={customer.id}>
-                                                                    {customer.customerName}
+                                                                    {customer.name}
                                                                 </MenuItem>
                                                             ))
                                                         ) : (
@@ -675,14 +674,14 @@ const NewSaleList = () => {
                                                         displayEmpty: true,
                                                         renderValue: (value: any) => {
                                                             if (value === '') {
-                                                                return <em>Select Status</em>;
+                                                                return <em>Unpaid</em>;
                                                             }
                                                             return value;
                                                         },
                                                     }}
                                                 >
-                                                    <MenuItem value="Completed">Completed</MenuItem>
-                                                    <MenuItem value="Incompleted">Incompleted</MenuItem>
+                                                    <MenuItem value="Unpaid">Unpaid</MenuItem>
+                                                    <MenuItem value="Paid">Paid</MenuItem>
                                                 </TextField>
                                             </div>
                                         </div>

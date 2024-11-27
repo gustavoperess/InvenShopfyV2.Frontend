@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import ReactDatePicker from 'react-datepicker';
+import DatePicker from "react-datepicker"; 
+import { toast } from 'react-toastify';
+import { NumericFormat } from 'react-number-format';
+import { useAddSalesPaymentMutation,useGetSalesPaymentByIdQuery } from '@/services/Sales/SalesPayment';
+
 
 interface AddPaymentPopupProps {
     open: boolean;
+    saleId: number | undefined;
     handleAddPaymentDialogClose: () => void;
 }
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -20,13 +24,63 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const TradingSalesListAddPayemnt = ({ open, handleAddPaymentDialogClose }: AddPaymentPopupProps) => {
+const TradingSalesListAddPayemnt = ({ open, saleId, handleAddPaymentDialogClose }: AddPaymentPopupProps) => {
+    const [creditCard, setCreditCard] = useState<string>("");
+    const [salesNote, setSalesNote] = useState<string>("");
+    const [expenseDate, setExpenseDate] = useState(new Date());
+    const [addPayment] = useAddSalesPaymentMutation();
 
-    const [startDate, setStartDate] = useState<Date | null>(new Date());
+    const { data: salesData, refetch } = useGetSalesPaymentByIdQuery(
+        saleId as number, 
+        { skip: saleId === undefined }
+    );
 
-    const dummyData = (e: any) => {
-        e.preventDefault();
+    useEffect(() => {
+        if (saleId !== undefined) {
+            refetch();
+        }
+    }, [saleId, refetch]);
+
+    const handleDateChange = (date: Date | null) => {
+        setExpenseDate(date || new Date());
     };
+
+    const handleCreditCardChange = (event: any) => {
+        let value = event.target.value.replace(/\D/g, '');
+        value = value.slice(0, 16);
+        const formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
+        setCreditCard(formattedValue);
+
+    }
+    const formatDate = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+
+    const handleCreatePayment = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        let date = formatDate(expenseDate)
+        const PaymentData = { date, salesId: saleId, cardNumber: creditCard, salesNote }
+        try {
+            await addPayment(PaymentData).unwrap();
+            setExpenseDate(new Date())
+            setSalesNote("")
+            setCreditCard("")
+            toast.success("Payment Created successfully!");
+            handleAddPaymentDialogClose();
+        } catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error?.data?.message);
+            } else {
+                // Fallback error message
+                toast.error("Failed to create payment. Please try again later.");
+            }
+        }
+    }
+
 
     return (
         <>
@@ -42,56 +96,79 @@ const TradingSalesListAddPayemnt = ({ open, handleAddPaymentDialogClose }: AddPa
                     </div>
                     <DialogContent dividers>
                         <div className='inventual-common-modal-width width-full'>
-                            <form onSubmit={dummyData}>
+                            <form onSubmit={handleCreatePayment}>
                                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
-                                            <h5>Received Amount</h5>
-                                            <div className="inventual-input-field-style">
-                                                <input type="email" placeholder='$4595.00' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
-                                            <h5>Paying Amount</h5>
-                                            <div className="inventual-input-field-style">
-                                                <input type="email" placeholder='$3595.00' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
-                                            <h5>Change</h5>
-                                            <div className="inventual-input-field-style">
-                                                <input type="number" placeholder='Type phone' />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
-                                            <h5>Payment Type</h5>
+                                        <div className="inventual-formTree-field">
+                                            <h5>Reference Number</h5>
                                             <div className="inventual-select-field-style">
                                                 <TextField
-                                                    select
-                                                    label="Select"
-                                                    defaultValue=""
-                                                    SelectProps={{
-                                                        displayEmpty: true,
-                                                        renderValue: (value: any) => {
-                                                            if (value === '') {
-                                                                return <em>Payment Type</em>;
-                                                            }
-                                                            return value;
-                                                        },
+                                                    required
+                                                    value={salesData?.data.referenceNumber || ""}
+                                                    disabled={salesData?.data.voucherNumber !== ''}
+                                                    style={{
+                                                        backgroundColor: salesData?.data.voucherNumber !== '' ? '#e0e0e0' : 'inherit',
+                                                        color: salesData?.data.voucherNumber !== '' ? '#757575' : 'inherit',
+                                                        width: '100%',
                                                     }}
                                                 >
-                                                    <MenuItem value="">
-                                                        <em>Payment Type</em>
-                                                    </MenuItem>
-                                                    <MenuItem value="Card">Card</MenuItem>
-                                                    <MenuItem value="Bank">Bank</MenuItem>
-                                                    <MenuItem value="Cash">Cash</MenuItem>
+                                                </TextField>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 md:col-span-6">
+                                        <div className="inventual-formTree-field">
+                                            <h5>Warehouse</h5>
+                                            <div className="inventual-select-field-style">
+                                                <TextField
+                                                    required
+                                                    value={salesData?.data.warehouseName || ""}
+                                                    disabled={salesData?.data.warehouseName !== ''}
+                                                    style={{
+                                                        backgroundColor: salesData?.data.warehouseName !== '' ? '#e0e0e0' : 'inherit',
+                                                        color: salesData?.data.warehouseName !== '' ? '#757575' : 'inherit',
+                                                        width: '100%',
+                                                    }}
+                                                >
+                                                </TextField>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 md:col-span-6">
+                                        <div className="inventual-select-field">
+                                            <div className="inventual-form-field">
+                                                <h5>Total Amount</h5>
+                                                <div className="inventual-input-field-style">
+                                                    <NumericFormat
+                                                        value={salesData?.data.totalAmount || ""}
+                                                        thousandSeparator
+                                                        valueIsNumericString
+                                                        disabled={salesData?.data.totalAmount !== ''}
+                                                        prefix="£"
+                                                        style={{
+                                                            backgroundColor: salesData?.data.totalAmount !== '' ? '#e0e0e0' : 'inherit',
+                                                            color: salesData?.data.totalAmount !== '' ? '#757575' : 'inherit',
+                                                            height: "48px"
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-12 md:col-span-6">
+                                        <div className="inventual-formTree-field">
+                                            <h5>Customer Name</h5>
+                                            <div className="inventual-select-field-style">
+                                                <TextField
+                                                    required
+                                                    value={salesData?.data.customerName || ""}
+                                                    disabled={salesData?.data.customerName !== ''}
+                                                    style={{
+                                                        backgroundColor: salesData?.data.customerName !== '' ? '#e0e0e0' : 'inherit',
+                                                        color: salesData?.data.customerName !== '' ? '#757575' : 'inherit',
+                                                        width: '100%',
+                                                    }}
+                                                >
                                                 </TextField>
                                             </div>
                                         </div>
@@ -100,17 +177,26 @@ const TradingSalesListAddPayemnt = ({ open, handleAddPaymentDialogClose }: AddPa
                                         <div className="inventual-form-field">
                                             <h5>Card Number</h5>
                                             <div className="inventual-input-field-style">
-                                                <input type="text" placeholder='XXXX XXXX XXXX XXXX' />
+                                                <TextField
+                                                    fullWidth
+                                                    type="text"
+                                                    placeholder="Enter card number"
+                                                    variant="outlined"
+                                                    required
+                                                    onChange={handleCreditCardChange}
+                                                    value={creditCard}
+                                                />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
-                                            <h5>Expired Date</h5>
+                                        <div className="inventual-formTwo-field">
+                                            <h5>Date</h5>
                                             <div className="inventual-input-field-style">
-                                                <ReactDatePicker
-                                                    selected={startDate}
-                                                    onChange={(date) => setStartDate(date)}
+                                                <DatePicker
+                                                    selected={expenseDate}
+                                                    required
+                                                    onChange={handleDateChange}
                                                     showYearDropdown
                                                     showMonthDropdown
                                                     useShortMonthInDropdown
@@ -118,29 +204,34 @@ const TradingSalesListAddPayemnt = ({ open, handleAddPaymentDialogClose }: AddPa
                                                     peekNextMonth
                                                     dropdownMode="select"
                                                     isClearable
-                                                    placeholderText="MM/DD/YYYY"
-                                                    className="w-full"
+                                                    placeholderText="DD/MM/YYYY"
                                                 />
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-span-12">
-                                        <div className="inventual-form-field">
-                                            <h5>Sale Note</h5>
-                                            <div className="inventual-input-field-style">
-                                                <textarea placeholder='Type sales note'></textarea>
-                                            </div>
+                                    <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
+                                        <div className="inventual-input-field-style">
+                                            <TextField
+                                                fullWidth
+                                                multiline
+                                                required
+                                                rows={4}
+                                                value={salesNote}
+                                                placeholder='Staff Notes'
+                                                inputProps={{ maxLength: 500 }}
+                                                onChange={(e) => setSalesNote(e.target.value)}
+                                            />
                                         </div>
                                     </div>
                                 </div>
+                                <DialogActions>
+                                    <button className='inventual-btn' type='submit'>
+                                        Pay Now
+                                    </button>
+                                </DialogActions>
                             </form>
                         </div>
                     </DialogContent>
-                    <DialogActions>
-                        <button className='inventual-btn' type='button'>
-                            Pay Now
-                        </button>
-                    </DialogActions>
                 </BootstrapDialog>
             </div>
         </>

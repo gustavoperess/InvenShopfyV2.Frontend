@@ -223,6 +223,7 @@ export interface TSaleReportInterface {
 export interface TCustomerInterface {
   id: number;
   customerName: string;
+  name: string
   phoneNumber: string;
   email: string;
   city: string;
