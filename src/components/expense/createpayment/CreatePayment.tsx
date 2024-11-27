@@ -282,7 +282,6 @@ const CreatePayment = () => {
                                             Pay Now
                                         </button>
                                     </div>
-
                                 </div>
                             </div>
                         </div>

@@ -38,6 +38,12 @@ export const expenseApi = createApi({
                 method: 'GET',
             }),
         }),
+        getExpenseById: builder.query<any, number>({
+            query: (expenseId) => ({
+                url: `/${expenseId}`,
+                method: 'GET',
+            }),
+        }),
         getExpenseByName: builder.query<any, string>({
             query: (expenseNumber) => ({
                 url: `expense-by/${encodeURIComponent(expenseNumber)}`,
@@ -53,7 +59,8 @@ export const expenseApi = createApi({
 });
 
 // Export auto-generated hooks for functional components
-export const { 
+export const {
+    useGetExpenseByIdQuery,
     useGetExpenseByNameQuery,
     useAddExpenseMutation, 
     useGetExpenseDashBoardQuery, 
