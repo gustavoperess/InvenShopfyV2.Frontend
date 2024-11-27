@@ -292,15 +292,14 @@ const AddExpenseList = () => {
                                                 displayEmpty: true,
                                                 renderValue: (value: any) => {
                                                     if (value === '') {
-                                                        return <em>Incompleted</em>;
+                                                        return <em>Unpaid</em>;
                                                     }
                                                     return value;
                                                 },
                                             }}
                                         >
-                                            <MenuItem value="Incompleted">Incompleted</MenuItem>
-
-                                            <MenuItem value="Completed">Completed</MenuItem>
+                                            <MenuItem value="Unpaid">Unpaid</MenuItem>
+                                            <MenuItem value="Paid">Paid</MenuItem>
                                         </TextField>
                                     </div>
                                 </div>

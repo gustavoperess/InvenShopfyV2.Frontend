@@ -408,10 +408,10 @@ const ExpenseList = () => {
                                   <TableCell>{MoneyFormat.format(expense.expenseCost)}</TableCell>
                                   <TableCell>
                                     {
-                                      expense.expenseStatus.toLowerCase() === "completed" ? (
+                                      expense.expenseStatus.toLowerCase() === "paid" ? (
                                         <span className='badge badge-success'>{expense.expenseStatus}</span>
                                       ) : (
-                                        expense.expenseStatus.toLowerCase() === "incompleted" ? (
+                                        expense.expenseStatus.toLowerCase() === "unpaid" ? (
                                           <span className='badge badge-warning'>{expense.expenseStatus}</span>
                                         ) : (<span className='badge badge-danger'>{expense.expenseStatus}</span>)
                                       )

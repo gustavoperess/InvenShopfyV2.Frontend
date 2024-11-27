@@ -95,6 +95,7 @@ const CreatePayment = () => {
             setExpenseDate(new Date())
             setPaymentStatus("");
             setExpenseCategory("");
+            setExpenseNote("")
             toast.success("Payment Created successfully!");
         } catch (error: any) {
             if (error?.data?.message) {
@@ -276,7 +277,7 @@ const CreatePayment = () => {
                                     </div>
                                     <div className="col-span-12 flex justify-end">
                                         <button
-                                            className={`inventual-btn w-full ${paymentStatus != "Completed" ? '' : 'disabled'}`}
+                                            className={`inventual-btn w-full ${paymentStatus != "Paid" ? '' : 'disabled'}`}
                                             type="submit">
                                             Pay Now
                                         </button>
