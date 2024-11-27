@@ -26,12 +26,19 @@ export const expensePaymentApi = createApi({
             }),
             invalidatesTags: ['ExpensePayment']
         }),
+        getExpensePaymentById: builder.query<any, number>({
+            query: (expensePaymentId) => ({
+                url: `/${expensePaymentId}`,
+                method: 'GET',
+            }),
+        }),
 
     }),
 });
 
 // Export auto-generated hooks for functional components
 export const { 
+    useGetExpensePaymentByIdQuery,
     useAddPaymentExpenseMutation, 
     useGetAllExpensesQuery,
 } = expensePaymentApi;

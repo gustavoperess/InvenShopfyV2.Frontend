@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Paper,
   Table,
@@ -40,10 +40,11 @@ const ExpenseList = () => {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof TExpenseInterface>('id');
   const [expenseId, setExpenseId] = useState<number | undefined>();
-
+  const [expensePaymentId, setExpensePaymentId] = useState<number | undefined>();
   const [deleteExpense] = useDeleteExpenseMutation();
   const [searchQuery, setSearchQuery] = useState('');
   const { data: expenseData, isLoading: expenseLoading, refetch } = useGetAllExpensesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+
 
   // AddPayment Popup Start
   const [openeAddPaymentDialog, setOpenAddPaymentDialog] = useState<boolean>(false);
@@ -54,12 +55,14 @@ const ExpenseList = () => {
   };
   const handleAddPaymentDialogClose = () => {
     setOpenAddPaymentDialog(false);
+    refetch();
   };
 
   // ViewPayment Popup Start
   const [openeViewPaymentDialog, setOpenViewPaymentDialog] = useState<boolean>(false);
 
-  const handleViewPaymentDialogOpen = () => {
+  const handleViewPaymentDialogOpen = (expensePayment: number) => {
+    setExpensePaymentId(expensePayment)
     setOpenViewPaymentDialog(true);
   };
   const handleViewPaymentDialogClose = () => {
@@ -447,7 +450,17 @@ const ExpenseList = () => {
                                               <i className={`fa-regular fa-circle-plus ${expense.expenseStatus !== "Paid" ? '' : 'disabled'}`}></i>
                                               Add Payment
                                             </MenuItem>
-                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-money-check-dollar"></i><span onClick={handleViewPaymentDialogOpen}>View Payment</span></MenuItem>
+                                            <MenuItem
+                                              onClick={() => {if (expense.expenseStatus == "Paid") {handleViewPaymentDialogOpen(expense.expensePaymentId); popupState.close()}}}
+                                              disabled={expense.expenseStatus !== "Paid"}
+                                              style={{
+                                                color: expense.expenseStatus !== "Paid" ? '#c0c0c0' : 'inherit',
+                                                pointerEvents: expense.expenseStatus !== "Paid" ? 'none' : 'auto'
+                                              }}
+                                            >
+                                              <i className={`fa-regular fa-money-check-dollar ${expense.expenseStatus === "Paid" ? '' : 'disabled'}`}></i>
+                                              View Payment
+                                            </MenuItem>                                            
                                             <MenuItem onClick={() => handleOpenDelete(expense.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                           </Menu>
                                         </React.Fragment>
@@ -502,7 +515,7 @@ const ExpenseList = () => {
         </div>
       </div>
       <AddExpenseListPopup expenseId={expenseId} open={openeAddPaymentDialog} handleAddPaymentDialogClose={handleAddPaymentDialogClose} />
-      <ExpenseViewListPopup open={openeViewPaymentDialog} handleViewPaymentDialogClose={handleViewPaymentDialogClose} />
+      <ExpenseViewListPopup expensePaymentId={expensePaymentId} open={openeViewPaymentDialog} handleViewPaymentDialogClose={handleViewPaymentDialogClose} />
     </>
 
   );

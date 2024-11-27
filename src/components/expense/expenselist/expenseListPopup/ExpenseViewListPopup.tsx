@@ -1,14 +1,17 @@
 "use client"
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import { useGetExpensePaymentByIdQuery } from '@/services/Expense/ExpensePayment'; 
+import { MoneyFormat } from '@/interFace/interFace';
 
 interface ViewPaymentPopupProps {
     open: boolean;
+    expensePaymentId: number | undefined;
     handleViewPaymentDialogClose: () => void;
 }
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -20,11 +23,19 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const ExpenseViewListPopup = ({ open, handleViewPaymentDialogClose }: ViewPaymentPopupProps) => {
+const ExpenseViewListPopup = ({ open, expensePaymentId, handleViewPaymentDialogClose }: ViewPaymentPopupProps) => {
 
-    const dummyData = (e: any) => {
-        e.preventDefault();
-    };
+    const { data: expensePaymentData, refetch } = useGetExpensePaymentByIdQuery(
+        expensePaymentId as number,
+        { skip: expensePaymentId === undefined }
+    );
+
+    useEffect(() => {
+        if (expensePaymentId !== undefined) {
+            refetch();
+        }
+    }, [expensePaymentId, refetch]);
+
 
     return (
         <>
@@ -40,7 +51,6 @@ const ExpenseViewListPopup = ({ open, handleViewPaymentDialogClose }: ViewPaymen
                     </div>
                     <DialogContent dividers>
                         <div className='inventual-common-modal-width width-full'>
-                            <form onSubmit={dummyData}>
                                 <div className="inventual-common-small-table mt-0.5 xs:overflow-x-auto">
                                     <table>
                                         <thead>
@@ -48,38 +58,21 @@ const ExpenseViewListPopup = ({ open, handleViewPaymentDialogClose }: ViewPaymen
                                                 <th>Date</th>
                                                 <th>Voucher No.</th>
                                                 <th>Payment Mode</th>
+                                                <th>Card Number</th>
                                                 <th>Amount</th>
-                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>30/12/2022</td>
-                                                <td>785</td>
-                                                <td>Cash</td>
-                                                <td>$4,582</td>
-                                                <td>
-                                                    <div className="inventual-list-action-style">
-                                                        <PopupState variant="popover">
-                                                            {(popupState: any) => (
-                                                                <React.Fragment>
-                                                                    <button className='' type='button' {...bindTrigger(popupState)}>
-                                                                        Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                                                    </button>
-                                                                    <Menu {...bindMenu(popupState)}>
-                                                                        <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i> Edit Payment</MenuItem>
-                                                                        <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                                                    </Menu>
-                                                                </React.Fragment>
-                                                            )}
-                                                        </PopupState>
-                                                    </div>
-                                                </td>
+                                                <td>{expensePaymentData?.data.date}</td>
+                                                <td>{expensePaymentData?.data.voucherNumber}</td>
+                                                <td>{expensePaymentData?.data.paymentType}</td>
+                                                <td>{expensePaymentData?.data.cardNumber}</td>
+                                                <td>{MoneyFormat.format(expensePaymentData?.data.expenseCost)}</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                            </form>
                         </div>
                     </DialogContent>
                 </BootstrapDialog>

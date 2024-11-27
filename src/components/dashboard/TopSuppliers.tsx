@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
 import { useGetTopSuppliersDasgboardQuery } from '@/services/People/Supplier';
-import { it } from 'node:test';
 import { MoneyFormat } from '@/interFace/interFace';
 
 const TopSuppliers = () => {
