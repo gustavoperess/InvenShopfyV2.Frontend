@@ -9,6 +9,7 @@ import { MoneyFormat } from '@/interFace/interFace';
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
+
 interface GenerateInvoicePopupProps {
     open: boolean;
     saleId: number | undefined;
@@ -38,7 +39,7 @@ const TradingSalesListInvoice = ({ open, saleId, handleGenerateInvoiceDialogClos
 
     const handleGenerateInvoicePDF = () => {
         const doc = new jsPDF();
-      
+        let finalY = 0;
         // Invoice Title
         doc.setFontSize(20);
         doc.setTextColor(44, 106, 229); // Primary blue
@@ -92,12 +93,12 @@ const TradingSalesListInvoice = ({ open, saleId, handleGenerateInvoiceDialogClos
           headStyles: { fillColor: [44, 106, 229], textColor: 255 }, // Header style
           bodyStyles: { fontSize: 10, cellPadding: 3 },
         });
-      
+        finalY = (doc as any).lastAutoTable.finalY;
         // Additional Information (Footer)
-        // doc.text("Sales Note:", 14, doc.lastAutoTable.finalY + 10);
-        // doc.text(salesData?.data[0]?.saleNote || "N/A", 14, doc.lastAutoTable.finalY + 16);
-        // doc.text("Remarks:", 14, doc.lastAutoTable.finalY + 22);
-        // doc.text(salesData?.data[0]?.staffNote || "N/A", 14, doc.lastAutoTable.finalY + 28);
+        doc.text("Sales Note:", 14, finalY + 10);
+        doc.text(salesData?.data[0]?.saleNote || "N/A", 14, finalY + 16);
+        doc.text("Staff Note:", 14, finalY + 22);
+        doc.text(salesData?.data[0]?.staffNote || "N/A", 14, finalY + 28);
       
         // Save PDF
         doc.save("invoice.pdf");
@@ -223,7 +224,7 @@ const TradingSalesListInvoice = ({ open, saleId, handleGenerateInvoiceDialogClos
                                                     </tr>
                                                     <tr>
                                                         <td colSpan={6}>Paid Amount : </td>
-                                                        <td>{MoneyFormat.format(salesData?.data[0].totalAmount)}</td>
+                                                        <td>{salesData?.data[0].saleStatus == "Unpaid" ? "£0" : MoneyFormat.format(salesData?.data[0].totalAmount)}</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

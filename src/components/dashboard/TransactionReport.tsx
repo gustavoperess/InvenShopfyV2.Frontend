@@ -94,11 +94,11 @@ const TransactionReport = () => {
                                         <td>{sales.totalQuantitySold}</td>
                                         {sales.saleStatus && (
                                             <td>
-                                                {sales.saleStatus.toLowerCase() === "completed" ? (
+                                                {sales.saleStatus.toLowerCase() === "paid" ? (
                                                     <span className='badge badge-success'>{sales.saleStatus}</span>
-                                                ) : (sales.saleStatus.toLowerCase() === "incompleted" ? (
-                                                    <span className='badge badge-teal'>{sales.saleStatus}</span>
-                                                ) : (<span className='badge badge-danger'>{sales.saleStatus}</span>)
+                                                ) : (sales.saleStatus.toLowerCase() === "unpaid" ? (
+                                                    <span className='badge badge-danger'>{sales.saleStatus}</span>
+                                                ) : (<span className='badge badge-teal'>{sales.saleStatus}</span>)
                                                 )}
                                             </td>
                                         )}
@@ -241,11 +241,11 @@ const TransactionReport = () => {
                                             <td>{expense.expenseCategory}</td>
                                             {expense.expenseStatus && (
                                                 <td>
-                                                    {expense.expenseStatus.toLowerCase() === "completed" ? (
+                                                    {expense.expenseStatus.toLowerCase() === "paid" ? (
                                                         <span className='badge badge-success'>{expense.expenseStatus}</span>
-                                                    ) : (expense.expenseStatus.toLowerCase() === "Incompleted" ? (
-                                                        <span className='badge badge-teal'>{expense.expenseStatus}</span>
-                                                    ) : (<span className='badge badge-danger'>{expense.expenseStatus}</span>)
+                                                    ) : (expense.expenseStatus.toLowerCase() === "unpaid" ? (
+                                                        <span className='badge badge-danger'>{expense.expenseStatus}</span>
+                                                    ) : (<span className='badge badge-teal'>{expense.expenseStatus}</span>)
                                                     )
                                                     }
                                                 </td>

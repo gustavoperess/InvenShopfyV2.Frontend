@@ -28,7 +28,7 @@ export const salesPaymentApi = createApi({
 
         getSalesPaymentForViewPaymentById: builder.query<any, number>({
             query: (salesPaymentId) => ({
-                url: `/${salesPaymentId}`,
+                url: `view-payment/${salesPaymentId}`,
                 method: 'GET',
             }),
         }),

@@ -3,9 +3,6 @@ import React from 'react';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import { useGetSalesPaymentForViewPaymentByIdQuery } from '@/services/Sales/SalesPayment';
 import { MoneyFormat } from '@/interFace/interFace';
 
@@ -25,12 +22,10 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const TradingSalesListViewPayment = ({ open, saleId, handleViewPaymentDialogClose }: ViewPaymentPopupProps) => {
-    const { data: salesData, refetch } = useGetSalesPaymentForViewPaymentByIdQuery(
+    const { data: salesPaymentData } = useGetSalesPaymentForViewPaymentByIdQuery(
         saleId as number, 
         { skip: saleId === undefined }
     );
-
-    console.log(salesData)
    
 
     return (
@@ -54,18 +49,20 @@ const TradingSalesListViewPayment = ({ open, saleId, handleViewPaymentDialogClos
                                             <tr className='bg-lightest'>
                                                 <th>Date</th>
                                                 <th>Reference</th>
+                                                <th>Customer</th>
                                                 <th>Payment type</th>
-                                                <th>Warehouse</th>
+                                                <th>Card Nº</th>
                                                 <th>Amount</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>{salesData?.data.date}</td>
-                                                <td>{salesData?.data.referenceNumber}</td>
-                                                <td>{salesData?.data.paymentType}</td>
-                                                <td>{salesData?.data.warehouseName}</td>
-                                                <td>{MoneyFormat.format(salesData?.data.totalAmount)}</td>
+                                                <td>{salesPaymentData?.data.date}</td>
+                                                <td>{salesPaymentData?.data.referenceNumber}</td>
+                                                <td>{salesPaymentData?.data.customerName}</td>
+                                                <td>{salesPaymentData?.data.paymentType}</td>
+                                                <td>{salesPaymentData?.data.cardNumber}</td>
+                                                <td>{MoneyFormat.format(salesPaymentData?.data.totalAmount)}</td>
                                             </tr>
                                         </tbody>
                                     </table>

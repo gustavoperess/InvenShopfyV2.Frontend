@@ -81,7 +81,6 @@ const TradingSalesListAddPayemnt = ({ open, saleId, handleAddPaymentDialogClose 
         }
     }
 
-
     return (
         <>
             <div className='inventual-common-modal'>
