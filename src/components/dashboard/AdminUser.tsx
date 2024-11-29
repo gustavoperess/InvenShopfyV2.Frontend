@@ -57,12 +57,12 @@ const AdminUser = () => {
                                     </h5>
                                     <span className="text-[14px] font-normal block">{item.roleName}</span>
                                     <span className="text-[12px] text-blue font-normal block">
-                                        Sign in - {dateTimeSplit(item.lastLogin)}
+                                        Sign in - {dateTimeSplit(item.lastActivityTime)}
                                     </span>
                                 </div>
                             </div>
                             <div className="inventual-dashboard-user-list-right">
-                                {item.roleName.toLowerCase() === "admin" ? (
+                                {item.isOnline === true ? (
                                     <span className='badge-stroke badge-success'>online</span>
                                 ) : (
                                     <span className='badge-stroke badge-warning'>offline</span>

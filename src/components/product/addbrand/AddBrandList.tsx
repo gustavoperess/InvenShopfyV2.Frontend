@@ -31,7 +31,7 @@ import { toast } from 'react-toastify';
 
 const AddBrandList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [currentPageSize, setCurrentPageSize] = useState(25);
   const [open, setOpen] = React.useState(false);
   const [brandImage, setBrandImage] = useState<string | null>(null);
   const [brandName, setBrandName] = useState<string>("");
@@ -69,11 +69,16 @@ const AddBrandList = () => {
   const handleDelete = async () => {
     if (brand > 0) {
       try {
-        await deleteBrand(brand);
+        const result = await deleteBrand(brand).unwrap();
         setOpen(false);
-        refetch()
-      } catch (err) {
-        console.error('Error deleting the brand:', err);
+        refetch();
+        toast.success("Brand deleted successfully.");
+      } catch (error: any) {
+        if (error?.data?.message) {
+          toast.error(error.data.message);
+        } else {
+          toast.error("Failed to delete brand. Please try again later.");
+        }
       }
     }
   };
@@ -175,13 +180,14 @@ const AddBrandList = () => {
       refetch();
     } catch (error: any) {
       if (error?.data?.message) {
-          toast.error(error?.data?.message);
+        toast.error(error?.data?.message);
       } else {
-          // Fallback error message
-          toast.error("Failed to create brand. Please try again later.")
+        // Fallback error message
+        toast.error("Failed to create brand. Please try again later.")
       }
+    }
   }
-  }
+
 
   return (
     <>
@@ -197,8 +203,8 @@ const AddBrandList = () => {
                     <div {...getRootProps({ className: 'dropzone-two' })}>
                       <input {...getInputProps()} />
                       {brandImage ? (
-                        <img src={`data:image/jpeg;base64,${brandImage}`} alt="Selected" className="preview-image" 
-                        style={{ maxHeight: '300px', width: 'auto', objectFit: 'contain' }}
+                        <img src={`data:image/jpeg;base64,${brandImage}`} alt="Selected" className="preview-image"
+                          style={{ maxHeight: '300px', width: 'auto', objectFit: 'contain' }}
                         />
                       ) : (
                         <>
@@ -277,7 +283,7 @@ const AddBrandList = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                          {brandLoading ? (
+                            {brandLoading ? (
                               <tr>
                                 <td colSpan={6}>
                                   <div className="inventual-loading-container">
@@ -285,52 +291,66 @@ const AddBrandList = () => {
                                   </div>
                                 </td>
                               </tr>
-                            ) : sortedRows?.map((brand: any) => (
-                              <TableRow
-                                key={brand.id}
-                                hover
-                                onClick={() => handleClick(brand.id)}
-                                role="checkbox"
-                                aria-checked={isSelected(brand.id)}
-                                selected={isSelected(brand.id)}
-                              >
-                                <TableCell>
-                                  <Checkbox checked={isSelected(brand.id)} />
-                                </TableCell>
-                                <TableCell>
-                                  <div className="max-h-[72px] inline-flex items-center justify-cente">
-                                    <div className="inner px-2 py-2">
-                                      <Image
-                                        src={brand.brandImage}
-                                        width="0"
-                                        height="0"
-                                        alt='brand-img' 
-                                        sizes="100vw"
-                                        style={{ maxHeight: '60px', width: '60px', objectFit: 'contain' }}
-                                      />
+                            ) : brandData?.message === "User is not authorized to do this task" ? (
+                              <tr>
+                                <td colSpan={6}>
+                                  <div className="inventual-loading-container">
+                                    <h1>User is not authorized to do this task</h1>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : (
+                              sortedRows?.map((brand: any) => (
+                                <TableRow
+                                  key={brand.id}
+                                  hover
+                                  onClick={() => handleClick(brand.id)}
+                                  role="checkbox"
+                                  aria-checked={isSelected(brand.id)}
+                                  selected={isSelected(brand.id)}
+                                >
+                                  <TableCell>
+                                    <Checkbox checked={isSelected(brand.id)} />
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="max-h-[72px] inline-flex items-center justify-center">
+                                      <div className="inner px-2 py-2">
+                                        <Image
+                                          src={brand.brandImage}
+                                          width="0"
+                                          height="0"
+                                          alt="brand-img"
+                                          sizes="100vw"
+                                          style={{ maxHeight: '60px', width: '60px', objectFit: 'contain' }}
+                                        />
+                                      </div>
                                     </div>
-                                  </div>
-                                </TableCell>
-                                <TableCell>{brand.brandName}</TableCell>
-                                <TableCell>
-                                  <div className="inventual-list-action-style">
-                                    <PopupState variant="popover">
-                                      {(popupState: any) => (
-                                        <React.Fragment>
-                                          <button className='' type='button' {...bindTrigger(popupState)}>
-                                            Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                          </button>
-                                          <Menu {...bindMenu(popupState)}>
-                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
-                                            <MenuItem onClick={() => handleOpenDelete(brand.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                          </Menu>
-                                        </React.Fragment>
-                                      )}
-                                    </PopupState>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                                  </TableCell>
+                                  <TableCell>{brand.brandName}</TableCell>
+                                  <TableCell>
+                                    <div className="inventual-list-action-style">
+                                      <PopupState variant="popover">
+                                        {(popupState: any) => (
+                                          <React.Fragment>
+                                            <button type="button" {...bindTrigger(popupState)}>
+                                              Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                            </button>
+                                            <Menu {...bindMenu(popupState)}>
+                                              <MenuItem onClick={popupState.close}>
+                                                <i className="fa-regular fa-pen-to-square"></i>Edit
+                                              </MenuItem>
+                                              <MenuItem onClick={() => handleOpenDelete(brand.id)}>
+                                                <i className="fa-light fa-trash-can"></i> Delete
+                                              </MenuItem>
+                                            </Menu>
+                                          </React.Fragment>
+                                        )}
+                                      </PopupState>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>

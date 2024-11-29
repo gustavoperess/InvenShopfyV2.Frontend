@@ -166,7 +166,7 @@ const UserList = () => {
       item.userName,
       item.email,
       item.phoneNumber,
-      item.lastLogin,
+      item.lastActivityTime,
       item.roleName,
     ]);
   
@@ -378,7 +378,7 @@ const UserList = () => {
                                   <TableCell>{user.dateOfJoin.split("T")[0]}</TableCell>
                                   <TableCell>
                                     {
-                                      user.roleName === 'Owner' ? (
+                                      user.isOnline === true ? (
                                         <span className='badge-stroke badge-success'>Online</span>
                                       ) : (
                                         <span className='badge-stroke badge-warning'>Offline</span>

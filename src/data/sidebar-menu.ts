@@ -74,21 +74,7 @@ export const menuData: MenuItem[] = [
                     { label: "Purchase Returns", routeLink: "/trading/purchase/purchasereturns" },
                 ],
             },
-            {
-                label: "Invoice/Billing",
-                routeLink: "#",
-                subSubItems: [
-                    { label: "Sale Invoice", routeLink: "/trading/invoice/saleinvoice" },
-                    { label: "Sale List Invoice", routeLink: "/trading/invoice/saleslistinvoice" },
-                    { label: "Import Sale List", routeLink: "/trading/invoice/importInvoice" },
-                    { label: "Purchase Invoice", routeLink: "/trading/invoice/purchaseinvoice" },
-                    { label: "Purchase List Invoice", routeLink: "/trading/invoice/purchaselistinvoice" },
-                    { label: "Expense Invoice", routeLink: "/trading/invoice/expenseinvoice" },
-                    { label: "Expense List Invoice", routeLink: "/trading/invoice/expenselistinvoice" },
-                    { label: "Import Expence Invoice", routeLink: "/trading/invoice/importExpenseInvoice" },
-
-                ],
-            },
+           
         ],
     },
     {
