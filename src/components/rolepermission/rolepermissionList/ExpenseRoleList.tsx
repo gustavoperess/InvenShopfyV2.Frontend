@@ -17,12 +17,6 @@ const ExpenseRoleList = () => {
         categoryEdit: false,
         categoryDelete: false,
 
-        // for Expense Invoic
-        expenseInvoiceAdd: false,
-        expenseInvoiceView: false,
-        expenseInvoiceEdit: false,
-        expenseInvoiceDelete: false,
-
         // Expense Payment
         expensePaymentAdd: false,
         expensePaymentView: false,
@@ -62,12 +56,6 @@ const ExpenseRoleList = () => {
             categoryView: isChecked,
             categoryEdit: isChecked,
             categoryDelete: isChecked,
-
-            // for Sale Invoic
-            expenseInvoiceAdd: isChecked,
-            expenseInvoiceView: isChecked,
-            expenseInvoiceEdit: isChecked,
-            expenseInvoiceDelete: isChecked,
 
             // for Sale Payment
             expensePaymentAdd: isChecked,
@@ -209,65 +197,6 @@ const ExpenseRoleList = () => {
                                             checked={childCheckboxStates.categoryDelete}
                                             onChange={handleChildCheckboxChange}
                                             name="categoryDelete"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Delete"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border">
-                        <div className="inventual-role-category">
-                            <h5>Expense Invoice</h5>
-                        </div>
-                        <div className="inventual-role-checkbox-wrapper">
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.expenseInvoiceAdd}
-                                            onChange={handleChildCheckboxChange}
-                                            name="expenseInvoiceAdd"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Add"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.expenseInvoiceView}
-                                            onChange={handleChildCheckboxChange}
-                                            name="expenseInvoiceView"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="View"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.expenseInvoiceEdit}
-                                            onChange={handleChildCheckboxChange}
-                                            name="expenseInvoiceEdit"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Edit"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.expenseInvoiceDelete}
-                                            onChange={handleChildCheckboxChange}
-                                            name="expenseInvoiceDelete"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }

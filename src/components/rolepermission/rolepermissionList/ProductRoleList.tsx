@@ -1,105 +1,88 @@
 import React, { useState, useEffect } from 'react';
 import { Checkbox, FormControlLabel } from '@mui/material';
-const ProductRoleList = () => {
 
-    const [childCheckboxStates, setChildCheckboxStates] = useState({
 
-        // for Sales
+type ChildCheckboxStates = {
+    [key: string]: boolean; 
+  };
+  
+
+const ProductRoleList = ({ permissionsByEntity }: { permissionsByEntity: any }) => {
+    const [childCheckboxStates, setChildCheckboxStates] = useState<ChildCheckboxStates>({
+        // for products
         productsAdd: false,
         productsView: false,
         productsEdit: false,
         productsDelete: false,
 
-        // for Pos Sale
-        bardCodeAdd: false,
-        bardCodeView: false,
-        bardCodeEdit: false,
-        bardCodeDelete: false,
+        // for products category
+        productCategoryAdd: false,
+        productCategoryView: false,
+        productCategoryEdit: false,
+        productCategoryDelete: false,
 
-        // for Sale Return
-        categoryAdd: false,
-        categoryView: false,
-        categoryEdit: false,
-        categoryDelete: false,
+        // for products brand
+        productBrandAdd: false,
+        productBrandView: false,
+        productBrandEdit: false,
+        productBrandDelete: false,
 
-        // for Sale Payment
-        brandAdd: false,
-        brandView: false,
-        brandEdit: false,
-        brandDelete: false,
+        // for products unit
+        productUnitAdd: false,
+        productUnitView: false,
+        productUnitEdit: false,
+        productUnitDelete: false,
 
-        // for Sale Invoice
-        UnitValueAdd: false,
-        UnitValueView: false,
-        UnitValueEdit: false,
-        UnitValueDelete: false,
 
-        // for Sale Purchase
-        adjustmentAdd: false,
-        adjustmentView: false,
-        adjustmentEdit: false,
-        adjustmentDelete: false,
 
     });
     const [selectAllChecked, setSelectAllChecked] = useState(false);
 
     useEffect(() => {
-        // Check if all child checkboxes are checked, if yes, set parent checkbox to checked
-        const allChecked = Object.values(childCheckboxStates).every(value => value);
+        if (permissionsByEntity?.length) {
+            const updatedStates: ChildCheckboxStates = {};
+            
+            permissionsByEntity.forEach((entity: any) => {
+                const entityType = entity.entityType.toLowerCase(); // Normalize to match state keys
+                entity.permissions.forEach((permission: any) => {
+                    const key = `${entityType}${permission.action}`;
+                    updatedStates[key] = permission.isAllowed;
+                    console.log(updatedStates)
+                });
+            });
+
+            setChildCheckboxStates(updatedStates);
+        }
+    }, [permissionsByEntity]);
+
+    useEffect(() => {
+        const allChecked = Object.values(childCheckboxStates).every(Boolean);
         setSelectAllChecked(allChecked);
     }, [childCheckboxStates]);
 
-    const handleChildCheckboxChange = (event: any) => {
+    const handleChildCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = event.target;
-        setChildCheckboxStates(prevState => ({
-            ...prevState,
-            [name]: checked
+        setChildCheckboxStates((prev) => ({
+            ...prev,
+            [name]: checked,
         }));
     };
 
-    const handleSelectAllChange = (event: any) => {
+    const handleSelectAllChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const isChecked = event.target.checked;
-        setSelectAllChecked(isChecked);
-        setChildCheckboxStates({
+    
+        const updatedStates: ChildCheckboxStates = Object.keys(childCheckboxStates).reduce(
+            (acc, key) => ({
+              ...acc,
+              [key]: isChecked,
+            }),
+            {} as ChildCheckboxStates
+          );
+      
+          setSelectAllChecked(isChecked);
+          setChildCheckboxStates(updatedStates);
+        };
 
-            // for Products
-            productsAdd: isChecked,
-            productsView: isChecked,
-            productsEdit: isChecked,
-            productsDelete: isChecked,
-
-            // for Sales Add
-            bardCodeAdd: isChecked,
-            bardCodeView: isChecked,
-            bardCodeEdit: isChecked,
-            bardCodeDelete: isChecked,
-
-            // for Sale Return
-            categoryAdd: isChecked,
-            categoryView: isChecked,
-            categoryEdit: isChecked,
-            categoryDelete: isChecked,
-
-            // for Sale Payment
-            brandAdd: isChecked,
-            brandView: isChecked,
-            brandEdit: isChecked,
-            brandDelete: isChecked,
-
-            // for Sale Invoice
-            UnitValueAdd: isChecked,
-            UnitValueView: isChecked,
-            UnitValueEdit: isChecked,
-            UnitValueDelete: isChecked,
-
-            // for Sale Purchase
-            adjustmentAdd: isChecked,
-            adjustmentView: isChecked,
-            adjustmentEdit: isChecked,
-            adjustmentDelete: isChecked,
-
-        });
-    };
 
     return (
         <>
@@ -184,66 +167,6 @@ const ProductRoleList = () => {
                     <div
                         className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border">
                         <div className="inventual-role-category">
-                            <h5>Bardcode</h5>
-                        </div>
-                        <div className="inventual-role-checkbox-wrapper">
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.bardCodeAdd}
-                                            onChange={handleChildCheckboxChange}
-                                            name="bardCodeAdd"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Add"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.bardCodeView}
-                                            onChange={handleChildCheckboxChange}
-                                            name="bardCodeView"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="View"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.bardCodeEdit}
-                                            onChange={handleChildCheckboxChange}
-                                            name="bardCodeEdit"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Edit"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.bardCodeDelete}
-                                            onChange={handleChildCheckboxChange}
-                                            name="bardCodeDelete"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Delete"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border">
-                        <div className="inventual-role-category">
                             <h5>Category</h5>
                         </div>
                         <div className="inventual-role-checkbox-wrapper">
@@ -251,9 +174,9 @@ const ProductRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.categoryAdd}
+                                            checked={childCheckboxStates.productCategoryAdd}
                                             onChange={handleChildCheckboxChange}
-                                            name="categoryAdd"
+                                            name="productCategoryAdd"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -264,9 +187,9 @@ const ProductRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.categoryView}
+                                            checked={childCheckboxStates.productCategoryView}
                                             onChange={handleChildCheckboxChange}
-                                            name="categoryView"
+                                            name="productCategoryView"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -277,9 +200,9 @@ const ProductRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.categoryEdit}
+                                            checked={childCheckboxStates.productCategoryEdit}
                                             onChange={handleChildCheckboxChange}
-                                            name="categoryEdit"
+                                            name="productCategoryEdit"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -290,9 +213,9 @@ const ProductRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.categoryDelete}
+                                            checked={childCheckboxStates.productCategoryDelete}
                                             onChange={handleChildCheckboxChange}
-                                            name="categoryDelete"
+                                            name="productCategoryDelete"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -311,9 +234,9 @@ const ProductRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.brandAdd}
+                                            checked={childCheckboxStates.productBrandAdd}
                                             onChange={handleChildCheckboxChange}
-                                            name="brandAdd"
+                                            name="productBrandAdd"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -324,9 +247,9 @@ const ProductRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.brandView}
+                                            checked={childCheckboxStates.productBrandView}
                                             onChange={handleChildCheckboxChange}
-                                            name="brandView"
+                                            name="productBrandView"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -337,9 +260,9 @@ const ProductRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.brandEdit}
+                                            checked={childCheckboxStates.productBrandEdit}
                                             onChange={handleChildCheckboxChange}
-                                            name="brandEdit"
+                                            name="productBrandEdit"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -350,9 +273,9 @@ const ProductRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.brandDelete}
+                                            checked={childCheckboxStates.productBrandDelete}
                                             onChange={handleChildCheckboxChange}
-                                            name="brandDelete"
+                                            name="productBrandDelete"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -364,16 +287,16 @@ const ProductRoleList = () => {
                     <div
                         className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border">
                         <div className="inventual-role-category">
-                            <h5>Unite / Value</h5>
+                            <h5>Unit / Value</h5>
                         </div>
                         <div className="inventual-role-checkbox-wrapper">
                             <div className='inventual-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.UnitValueAdd}
+                                            checked={childCheckboxStates.productUnitAdd}
                                             onChange={handleChildCheckboxChange}
-                                            name="UnitValueAdd"
+                                            name="productUnitAdd"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -384,9 +307,9 @@ const ProductRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.UnitValueView}
+                                            checked={childCheckboxStates.productUnitView}
                                             onChange={handleChildCheckboxChange}
-                                            name="UnitValueView"
+                                            name="productUnitView"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -397,9 +320,9 @@ const ProductRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.UnitValueEdit}
+                                            checked={childCheckboxStates.productUnitEdit}
                                             onChange={handleChildCheckboxChange}
-                                            name="UnitValueEdit"
+                                            name="productUnitEdit"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -410,9 +333,9 @@ const ProductRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.UnitValueDelete}
+                                            checked={childCheckboxStates.productUnitDelete}
                                             onChange={handleChildCheckboxChange}
-                                            name="UnitValueDelete"
+                                            name="productUnitDelete"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
@@ -421,66 +344,7 @@ const ProductRoleList = () => {
                             </div>
                         </div>
                     </div>
-                    <div
-                        className="inventual-role-category-list custom-height-70 flex items-center border-b-0 border-solid border-border">
-                        <div className="inventual-role-category">
-                            <h5>Adjustment</h5>
-                        </div>
-                        <div className="inventual-role-checkbox-wrapper">
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.adjustmentAdd}
-                                            onChange={handleChildCheckboxChange}
-                                            name="adjustmentAdd"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Add"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.adjustmentView}
-                                            onChange={handleChildCheckboxChange}
-                                            name="adjustmentView"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="View"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.adjustmentEdit}
-                                            onChange={handleChildCheckboxChange}
-                                            name="adjustmentEdit"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Edit"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.adjustmentDelete}
-                                            onChange={handleChildCheckboxChange}
-                                            name="adjustmentDelete"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Delete"
-                                />
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </>

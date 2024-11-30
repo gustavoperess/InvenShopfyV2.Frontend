@@ -31,6 +31,11 @@ export const roleApi = createApi({
                 body,
             }),
         }),
+        getRoleByName: builder.query<any, string>({
+            query: (name) => ({
+                url: `get-role-by-partial/${encodeURIComponent(name)}`,
+            })
+        }),
         deleteRole: builder.mutation<any, number>({
             query: (id) => ({
                 url: `delete-role-custom/${id}`,
@@ -41,4 +46,9 @@ export const roleApi = createApi({
 });
 
 
-export const { useCreateRoleMutation, useGetAllRolesQuery, useDeleteRoleMutation, useGetMangerAdminUsersQuery } = roleApi;
+export const { 
+    useGetRoleByNameQuery,
+    useCreateRoleMutation,
+    useGetAllRolesQuery,
+    useDeleteRoleMutation,
+    useGetMangerAdminUsersQuery } = roleApi;

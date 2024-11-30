@@ -11,18 +11,18 @@ const ReportRoleList = () => {
         productsReport: false,
 
         // second row
-        bestSallers: false,
+        expenseReport: false,
         supplierReport: false,
         billerReport: false,
         dueReport: false,
- 
+
 
         // third row
         purchaseReport: false,
         userReport: false,
         stockReport: false,
         warehouseReport: false,
- 
+
 
     });
     const [selectAllChecked, setSelectAllChecked] = useState(false);
@@ -52,7 +52,7 @@ const ReportRoleList = () => {
             productsReport: isChecked,
 
             // second row
-            bestSallers: isChecked,
+            expenseReport: isChecked,
             supplierReport: isChecked,
             billerReport: isChecked,
             dueReport: isChecked,
@@ -62,7 +62,7 @@ const ReportRoleList = () => {
             userReport: isChecked,
             stockReport: isChecked,
             warehouseReport: isChecked,
-        
+
 
         });
     };
@@ -107,13 +107,13 @@ const ReportRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.customerReport}
+                                            checked={childCheckboxStates.purchaseReport}
                                             onChange={handleChildCheckboxChange}
-                                            name="customerReport"
+                                            name="purchaseReport"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
-                                    label="Customer Report"
+                                    label="Purchase Report"
                                 />
                             </div>
                             <div className='inventual-checkbox-style'>
@@ -137,69 +137,26 @@ const ReportRoleList = () => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.bestSallers}
+                                            checked={childCheckboxStates.stockReport}
                                             onChange={handleChildCheckboxChange}
-                                            name="bestSallers"
+                                            name="stockReport"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
-                                    label="Best Sallers"
+                                    label="Stock Report"
                                 />
                             </div>
                             <div className='inventual-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.supplierReport}
+                                            checked={childCheckboxStates.expenseReport}
                                             onChange={handleChildCheckboxChange}
-                                            name="supplierReport"
+                                            name="expenseReport"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
-                                    label="Supplier Report"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.billerReport}
-                                            onChange={handleChildCheckboxChange}
-                                            name="billerReport"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Biller Report"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.dueReport}
-                                            onChange={handleChildCheckboxChange}
-                                            name="dueReport"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Due Report"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="inventual-role-category-list custom-height-50 flex items-center">
-                        <div className="inventual-role-checkbox-wrapper inventual-role-checkbox-wrapper2">
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.purchaseReport}
-                                            onChange={handleChildCheckboxChange}
-                                            name="purchaseReport"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Purchase Report"
+                                    label="Expense Report"
                                 />
                             </div>
                             <div className='inventual-checkbox-style'>
@@ -215,17 +172,21 @@ const ReportRoleList = () => {
                                     label="User Report"
                                 />
                             </div>
+                        </div>
+                    </div>
+                    <div className="inventual-role-category-list custom-height-50 flex items-center">
+                        <div className="inventual-role-checkbox-wrapper inventual-role-checkbox-wrapper2">
                             <div className='inventual-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={childCheckboxStates.stockReport}
+                                            checked={childCheckboxStates.customerReport}
                                             onChange={handleChildCheckboxChange}
-                                            name="stockReport"
+                                            name="customerReport"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
-                                    label="Stock Report"
+                                    label="Customer Report"
                                 />
                             </div>
                             <div className='inventual-checkbox-style'>
@@ -239,6 +200,19 @@ const ReportRoleList = () => {
                                         />
                                     }
                                     label="Warehouse Report"
+                                />
+                            </div>
+                            <div className='inventual-checkbox-style'>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={childCheckboxStates.supplierReport}
+                                            onChange={handleChildCheckboxChange}
+                                            name="supplierReport"
+                                            inputProps={{ 'aria-label': 'controlled' }}
+                                        />
+                                    }
+                                    label="Supplier Report"
                                 />
                             </div>
                         </div>

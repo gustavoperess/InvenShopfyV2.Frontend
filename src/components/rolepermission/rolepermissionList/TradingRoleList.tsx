@@ -33,11 +33,6 @@ const TradingRoleList = () => {
         salePaymentEdit: false,
         salePaymentDelete: false,
 
-        // for Sale Invoice
-        saleInvoiceAdd: false,
-        saleInvoiceView: false,
-        saleInvoiceEdit: false,
-        saleInvoiceDelete: false,
 
         // for Sale Purchase
         salePurchaseAdd: false,
@@ -51,23 +46,7 @@ const TradingRoleList = () => {
         purchaseReturnEdit: false,
         purchaseReturnDelete: false,
 
-        // for Sale Purchase Invoice
-        purchaseInvoiceAdd: false,
-        purchaseInvoiceView: false,
-        purchaseInvoiceEdit: false,
-        purchaseInvoiceDelete: false,
 
-        // for Sale Purchase Payment
-        purchasePaymentAdd: false,
-        purchasePaymentView: false,
-        purchasePaymentEdit: false,
-        purchasePaymentDelete: false,
-
-        // for Sale Quotation
-        QuotationAdd: false,
-        QuotationView: false,
-        QuotationEdit: false,
-        QuotationDelete: false,
 
     });
     const [selectAllChecked, setSelectAllChecked] = useState(false);
@@ -119,11 +98,6 @@ const TradingRoleList = () => {
             salePaymentEdit: isChecked,
             salePaymentDelete: isChecked,
 
-            // for Sale Invoice
-            saleInvoiceAdd: isChecked,
-            saleInvoiceView: isChecked,
-            saleInvoiceEdit: isChecked,
-            saleInvoiceDelete: isChecked,
 
             // for Sale Purchase
             salePurchaseAdd: isChecked,
@@ -137,23 +111,6 @@ const TradingRoleList = () => {
             purchaseReturnEdit: isChecked,
             purchaseReturnDelete: isChecked,
 
-            // for Sale Purchase Payment
-            purchaseInvoiceAdd: isChecked,
-            purchaseInvoiceView: isChecked,
-            purchaseInvoiceEdit: isChecked,
-            purchaseInvoiceDelete: isChecked,
-
-            // for Sale Purchase Payment
-            purchasePaymentAdd: isChecked,
-            purchasePaymentView: isChecked,
-            purchasePaymentEdit: isChecked,
-            purchasePaymentDelete: isChecked,
-
-            // for Sale Quotation
-            QuotationAdd: isChecked,
-            QuotationView: isChecked,
-            QuotationEdit: isChecked,
-            QuotationDelete: isChecked,
 
         });
     };
@@ -418,65 +375,6 @@ const TradingRoleList = () => {
                     </div>
                     <div className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border">
                         <div className="inventual-role-category">
-                            <h5>Sales Invoice</h5>
-                        </div>
-                        <div className="inventual-role-checkbox-wrapper">
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.saleInvoiceAdd}
-                                            onChange={handleChildCheckboxChange}
-                                            name="saleInvoiceAdd"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Add"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.saleInvoiceView}
-                                            onChange={handleChildCheckboxChange}
-                                            name="saleInvoiceView"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="View"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.saleInvoiceEdit}
-                                            onChange={handleChildCheckboxChange}
-                                            name="saleInvoiceEdit"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Edit"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.saleInvoiceDelete}
-                                            onChange={handleChildCheckboxChange}
-                                            name="saleInvoiceDelete"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Delete"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border">
-                        <div className="inventual-role-category">
                             <h5>Purchase</h5>
                         </div>
                         <div className="inventual-role-checkbox-wrapper">
@@ -585,183 +483,6 @@ const TradingRoleList = () => {
                                             checked={childCheckboxStates.purchaseReturnDelete}
                                             onChange={handleChildCheckboxChange}
                                             name="purchaseReturnDelete"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Delete"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border">
-                        <div className="inventual-role-category">
-                            <h5>Purchase Invoice</h5>
-                        </div>
-                        <div className="inventual-role-checkbox-wrapper">
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.purchaseInvoiceAdd}
-                                            onChange={handleChildCheckboxChange}
-                                            name="purchaseInvoiceAdd"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Add"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.purchaseInvoiceView}
-                                            onChange={handleChildCheckboxChange}
-                                            name="purchaseInvoiceView"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="View"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.purchaseInvoiceEdit}
-                                            onChange={handleChildCheckboxChange}
-                                            name="purchaseInvoiceEdit"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Edit"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.purchaseInvoiceDelete}
-                                            onChange={handleChildCheckboxChange}
-                                            name="purchaseInvoiceDelete"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Delete"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border">
-                        <div className="inventual-role-category">
-                            <h5>Purchase Payment</h5>
-                        </div>
-                        <div className="inventual-role-checkbox-wrapper">
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.purchasePaymentAdd}
-                                            onChange={handleChildCheckboxChange}
-                                            name="purchasePaymentAdd"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Add"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.purchasePaymentView}
-                                            onChange={handleChildCheckboxChange}
-                                            name="purchasePaymentView"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="View"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.purchasePaymentEdit}
-                                            onChange={handleChildCheckboxChange}
-                                            name="purchasePaymentEdit"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Edit"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.purchasePaymentDelete}
-                                            onChange={handleChildCheckboxChange}
-                                            name="purchasePaymentDelete"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Delete"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="inventual-role-category-list custom-height-70 flex items-center border-b-0 border-solid border-border">
-                        <div className="inventual-role-category">
-                            <h5>Quotation</h5>
-                        </div>
-                        <div className="inventual-role-checkbox-wrapper">
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.QuotationAdd}
-                                            onChange={handleChildCheckboxChange}
-                                            name="QuotationAdd"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Add"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.QuotationView}
-                                            onChange={handleChildCheckboxChange}
-                                            name="QuotationView"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="View"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.QuotationEdit}
-                                            onChange={handleChildCheckboxChange}
-                                            name="QuotationEdit"
-                                            inputProps={{ 'aria-label': 'controlled' }}
-                                        />
-                                    }
-                                    label="Edit"
-                                />
-                            </div>
-                            <div className='inventual-checkbox-style'>
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={childCheckboxStates.QuotationDelete}
-                                            onChange={handleChildCheckboxChange}
-                                            name="QuotationDelete"
                                             inputProps={{ 'aria-label': 'controlled' }}
                                         />
                                     }
