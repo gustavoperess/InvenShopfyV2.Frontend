@@ -7,66 +7,30 @@ import WarehouseRoleList from './rolepermissionList/WarehouseRoleList';
 import PeopleRoleList from './rolepermissionList/PeopleRoleList';
 import ReportRoleList from './rolepermissionList/ReportRoleList';
 import SettingsRoleList from './rolepermissionList/SettingsRoleList';
-import TextField from '@mui/material/TextField';
-import { TRoleInterface,EntityPermissions } from '@/interFace/interFace';
-import { useGetRoleByNameQuery } from '@/services/Role/Role';
+import { MenuItem, TextField } from '@mui/material';
+import { TRoleInterface, EntityPermissions } from '@/interFace/interFace';
+import { useGetRoleByNameQuery, useGetAllRolesQuery } from '@/services/Role/Role';
 
 const RolePermissionList = () => {
-    const [roleName, setRoleName] = useState<string>("");  
+    const [roleName, setRoleName] = useState<string>("");
     const [permissionsByEntity, setPermissionsByEntity] = useState<EntityPermissions[]>([]);
-    const [fetchSuggestions, setFetchSuggestions] = useState(true); 
-    const [suggestions, setSuggestions] = useState<TRoleInterface[]>([]); 
+    const [fetchSuggestions, setFetchSuggestions] = useState(true);
+    const [suggestions, setSuggestions] = useState<TRoleInterface[]>([]);
+    const { data: roleNameData } = useGetAllRolesQuery();
+    const { data: roleNameDataWithDetails } = useGetRoleByNameQuery(roleName, { skip: !roleName });
 
-    // Debounced value for role name input
-    const debouncedSearchTerm = useDebounce(roleName, 500);
+    console.log(roleNameDataWithDetails, roleName);
 
-    // Debounce hook implementation
-    function useDebounce(value: string, delay: number) {
-        const [debouncedValue, setDebouncedValue] = useState(value);
-
-        useEffect(() => {
-            const handler = setTimeout(() => {
-                setDebouncedValue(value);
-            }, delay);
-            return () => clearTimeout(handler);
-        }, [value, delay]);
-
-        return debouncedValue;
-    }
-
-
-    const handleRoleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setRoleName(e.target.value);
-        setFetchSuggestions(true); 
-    };
-
-    
-    const { data: roleSuggestionsData, error } = useGetRoleByNameQuery(debouncedSearchTerm, {
-        skip: !debouncedSearchTerm.trim().length || !fetchSuggestions, 
-    });
-
-    
-    useEffect(() => {
-        if (roleSuggestionsData) {
-            setSuggestions(roleSuggestionsData); 
-        }
-    }, [roleSuggestionsData]);
-
-  
     const handleSuggestionSelect = (suggestion: TRoleInterface) => {
-        setRoleName(suggestion.roleName); 
-        setPermissionsByEntity(suggestion.permissionsByEntity)
-        setSuggestions([]); 
-        setFetchSuggestions(false); 
+        setRoleName(suggestion.roleName);
+        setPermissionsByEntity(suggestion.permissionsByEntity);
+        setSuggestions([]);
+        setFetchSuggestions(false);
     };
-
 
     const handRolePermissionFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
     };
-
-
-    // console.log(permissionsByEntity);
 
     return (
         <>
@@ -76,25 +40,32 @@ const RolePermissionList = () => {
                         <div className="inventual-form-field mb-7">
                             <h5>Search by role name</h5>
                             <div className="inventual-input-field-style flex gap-5 items-center">
-                                <div className="inventual-input-field-style search-field" style={{ flexBasis: '500px', flexShrink: 1 }}>
+                                <div className="inventual-select-field-style " style={{ flexBasis: '350px', flexShrink: 1 }}>
                                     <TextField
-                                        fullWidth
-                                        placeholder="Admin"
-                                        variant="outlined"
+                                        select
+                                        label="Select"
+                                        required
                                         value={roleName}
-                                        onChange={handleRoleNameChange}
-                                    />
-                                    {suggestions.length > 0 && (
-                                        <div className='search-dropdown dropdown-scroll'>
-                                            <ul>
-                                                {suggestions.map((role, index) => (
-                                                    <li key={`${role.roleName}-${index}`} onClick={() => handleSuggestionSelect(role)}>
-                                                        <p className='title'>{role.roleName}</p>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
+                                        onChange={(e) => setRoleName(e.target.value)}
+                                        SelectProps={{
+                                            displayEmpty: true,
+                                            renderValue: (value: any) => {
+                                                const selectRole = roleNameData?.find((role: TRoleInterface) => role.id === value);
+                                                return selectRole ? selectRole.roleName : <em>Select Role</em>;
+                                            },
+                                        }}>
+                                        {roleNameData && roleNameData.length > 0 ? (
+                                            roleNameData.map((role: TRoleInterface) => (
+                                                <MenuItem key={role.id} value={role.roleName}>
+                                                    {role.roleName}
+                                                </MenuItem>
+                                            ))
+                                        ) : (
+                                            <MenuItem value="">
+                                                <em>No Roles Available</em>
+                                            </MenuItem>
+                                        )}
+                                    </TextField>
                                 </div>
                                 <button className='inventual-btn primary-btn whitespace-nowrap'>Assign Permissions</button>
                             </div>
@@ -102,19 +73,27 @@ const RolePermissionList = () => {
                         <div className="inventual-role-area">
                             <div className="inventual-role-inner">
                                 <div className="inventual-role-inner-wrapper border border-solid border-border border-b-0 mb-7">
-                                    <ProductRoleList permissionsByEntity={
-                                        permissionsByEntity.filter(entity => 
-                                            entity.entityType === 'ProductBrand' || 
-                                            entity.entityType === 'ProductCategory' || 
-                                            entity.entityType === 'ProductUnit' || 
-                                            entity.entityType === 'Product'
-                                          )} />
-                                    <TradingRoleList />
-                                    <ExpenseRoleList />
-                                    <WarehouseRoleList />
-                                    <PeopleRoleList />
-                                    <ReportRoleList />
-                                    <SettingsRoleList />
+                                    {roleNameDataWithDetails && roleNameDataWithDetails.length > 0 ? (
+                                        <>
+                                            <ProductRoleList
+                                                permissionsByEntity={roleNameDataWithDetails.filter(
+                                                    (entity: EntityPermissions) =>
+                                                        entity.entityType === 'ProductBrand' ||
+                                                        entity.entityType === 'ProductCategory' ||
+                                                        entity.entityType === 'ProductUnit' ||
+                                                        entity.entityType === 'Product'
+                                                )}
+                                            />
+                                            <TradingRoleList />
+                                            <ExpenseRoleList />
+                                            <WarehouseRoleList />
+                                            <PeopleRoleList />
+                                            <ReportRoleList />
+                                            <SettingsRoleList />
+                                        </>
+                                    ) : (
+                                        <p>Search for a role in order to display the permissions</p> 
+                                    )}
                                 </div>
                             </div>
                         </div>

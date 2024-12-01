@@ -33,7 +33,7 @@ export const roleApi = createApi({
         }),
         getRoleByName: builder.query<any, string>({
             query: (name) => ({
-                url: `get-role-by-partial/${encodeURIComponent(name)}`,
+                url: `get-role-by-partial/${name}`,
             })
         }),
         deleteRole: builder.mutation<any, number>({
