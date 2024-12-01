@@ -36,6 +36,7 @@ const ProductRoleList = ({ permissionsByEntity }: { permissionsByEntity: any }) 
 
 
     });
+    console.log(permissionsByEntity)
     const [selectAllChecked, setSelectAllChecked] = useState(false);
 
     useEffect(() => {

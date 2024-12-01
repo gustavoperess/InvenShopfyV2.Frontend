@@ -39,19 +39,21 @@ export interface TtransferInterface {
   authorizedBy: string;
 }
 export interface Permission {
-  action: string; // e.g., "Add", "View", etc.
+  action: string;
   isAllowed: boolean;
 }
 
 export interface EntityPermissions {
-  entityType: string; // e.g., "ProductBrand", "ProductCategory"
+  entityType: string; 
   permissions: Permission[];
+  permissionsByEntity: string; 
+
 }
 
 export interface TRoleInterface {
   id: number;
   roleName: string;
-  permissionsByEntity: EntityPermissions[]; // This is an array of EntityPermissions
+  permissionsByEntity: EntityPermissions[]; 
 }
 
 export interface TSaleReturnInterface {

@@ -13,24 +13,13 @@ import { useGetRoleByNameQuery, useGetAllRolesQuery } from '@/services/Role/Role
 
 const RolePermissionList = () => {
     const [roleName, setRoleName] = useState<string>("");
-    const [permissionsByEntity, setPermissionsByEntity] = useState<EntityPermissions[]>([]);
-    const [fetchSuggestions, setFetchSuggestions] = useState(true);
-    const [suggestions, setSuggestions] = useState<TRoleInterface[]>([]);
     const { data: roleNameData } = useGetAllRolesQuery();
     const { data: roleNameDataWithDetails } = useGetRoleByNameQuery(roleName, { skip: !roleName });
-
-    console.log(roleNameDataWithDetails, roleName);
-
-    const handleSuggestionSelect = (suggestion: TRoleInterface) => {
-        setRoleName(suggestion.roleName);
-        setPermissionsByEntity(suggestion.permissionsByEntity);
-        setSuggestions([]);
-        setFetchSuggestions(false);
-    };
 
     const handRolePermissionFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
     };
+   
 
     return (
         <>
@@ -76,13 +65,14 @@ const RolePermissionList = () => {
                                     {roleNameDataWithDetails && roleNameDataWithDetails.length > 0 ? (
                                         <>
                                             <ProductRoleList
-                                                permissionsByEntity={roleNameDataWithDetails.filter(
-                                                    (entity: EntityPermissions) =>
-                                                        entity.entityType === 'ProductBrand' ||
-                                                        entity.entityType === 'ProductCategory' ||
-                                                        entity.entityType === 'ProductUnit' ||
-                                                        entity.entityType === 'Product'
-                                                )}
+                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                    ?.filter(
+                                                        (entity: EntityPermissions) =>
+                                                            entity.entityType === 'ProductBrand' ||
+                                                            entity.entityType === 'ProductCategory' ||
+                                                            entity.entityType === 'ProductUnit' ||
+                                                            entity.entityType === 'Product'
+                                                    ) || [] }
                                             />
                                             <TradingRoleList />
                                             <ExpenseRoleList />
@@ -92,11 +82,12 @@ const RolePermissionList = () => {
                                             <SettingsRoleList />
                                         </>
                                     ) : (
-                                        <p>Search for a role in order to display the permissions</p> 
+                                        <p>Search for a role in order to display the permissions</p>
                                     )}
                                 </div>
                             </div>
                         </div>
+
                     </form>
                 </div>
             </div>
