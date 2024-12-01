@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import { ChildCheckboxStates } from '@/interFace/interFace';
 
-const DEFAULT_PRODUCT_PERMISSIONS = [
+const DEFAULT_EXPENSE_PERMISSIONS = [
     { entityType: 'Expense', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
     { entityType: 'ExpenseCategory', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
     { entityType: 'ExpensePayment', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
@@ -82,7 +82,7 @@ const ExpenseRoleList = ({ permissionsByEntity, onPermissionsChange }: { permiss
                 </div>
             </div>
             <div className="inventual-role-right w-full border-s border-solid border-border">
-                {DEFAULT_PRODUCT_PERMISSIONS.map((entity: any, index: number) => (
+                {DEFAULT_EXPENSE_PERMISSIONS.map((entity: any, index: number) => (
                     <div
                         key={index}
                         className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border"

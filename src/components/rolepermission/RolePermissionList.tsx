@@ -96,13 +96,45 @@ const RolePermissionList = () => {
                                                         (entity: EntityPermissions) =>
                                                             entity.entityType === 'Expense' ||
                                                             entity.entityType === 'ExpenseCategory' ||
-                                                            entity.entityType === 'ExpensePayment' 
+                                                            entity.entityType === 'ExpensePayment'
                                                     ) || []}
                                                 onPermissionsChange={setUpdatedPermissions}
                                             />
-                                            <WarehouseRoleList />
-                                            <PeopleRoleList />
-                                            <ReportRoleList />
+                                            <WarehouseRoleList
+                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                    ?.filter(
+                                                        (entity: EntityPermissions) =>
+                                                            entity.entityType === 'Warehouse'
+                                                    ) || []}
+                                                onPermissionsChange={setUpdatedPermissions}
+                                            />
+                                            <PeopleRoleList
+                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                    ?.filter(
+                                                        (entity: EntityPermissions) =>
+                                                            entity.entityType === 'Customer' ||
+                                                            entity.entityType === 'Supplier' ||
+                                                            entity.entityType === 'Biller' ||
+                                                            entity.entityType === 'User' 
+                                                    ) || []}
+                                                onPermissionsChange={setUpdatedPermissions}
+                                            />
+                                              <ReportRoleList
+                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                    ?.filter(
+                                                        (entity: EntityPermissions) =>
+                                                            entity.entityType === 'SalesReport' ||
+                                                            entity.entityType === 'PurchaseReport' ||
+                                                            entity.entityType === 'ProductReport' ||
+                                                            entity.entityType === 'StockReport' ||
+                                                            entity.entityType === 'ExpenseReport' ||
+                                                            entity.entityType === 'UserReport' ||
+                                                            entity.entityType === 'CustomeReport' ||
+                                                            entity.entityType === 'WarehouseReport' ||
+                                                            entity.entityType === 'StockReport' 
+                                                    ) || []}
+                                                onPermissionsChange={setUpdatedPermissions}
+                                            />
                                             <SettingsRoleList />
                                         </>
                                     ) : (
