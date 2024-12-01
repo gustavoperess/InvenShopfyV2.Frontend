@@ -73,24 +73,33 @@ const RolePermissionList = () => {
                                                             entity.entityType === 'Product' ||
                                                             entity.entityType === 'ProductBrand' ||
                                                             entity.entityType === 'ProductCategory' ||
-                                                            entity.entityType === 'ProductUnit' 
-                                                    ) || [] }
-                                                    onPermissionsChange={setUpdatedPermissions}
-                                            />
-                                            <TradingRoleList 
-                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                ?.filter(
-                                                    (entity: EntityPermissions) =>
-                                                        entity.entityType === 'Sales' ||
-                                                        entity.entityType === 'PosSales' ||
-                                                        entity.entityType === 'SalesReturn' ||
-                                                        entity.entityType === 'SalesPayment' ||
-                                                        entity.entityType === 'Purchase' ||
-                                                        entity.entityType === 'PurchaseReturn' 
-                                                ) || [] }
+                                                            entity.entityType === 'ProductUnit'
+                                                    ) || []}
                                                 onPermissionsChange={setUpdatedPermissions}
-                                                />
-                                            <ExpenseRoleList />
+                                            />
+                                            <TradingRoleList
+                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                    ?.filter(
+                                                        (entity: EntityPermissions) =>
+                                                            entity.entityType === 'Sales' ||
+                                                            entity.entityType === 'PosSales' ||
+                                                            entity.entityType === 'SalesReturn' ||
+                                                            entity.entityType === 'SalesPayment' ||
+                                                            entity.entityType === 'Purchase' ||
+                                                            entity.entityType === 'PurchaseReturn'
+                                                    ) || []}
+                                                onPermissionsChange={setUpdatedPermissions}
+                                            />
+                                            <ExpenseRoleList
+                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                    ?.filter(
+                                                        (entity: EntityPermissions) =>
+                                                            entity.entityType === 'Expense' ||
+                                                            entity.entityType === 'ExpenseCategory' ||
+                                                            entity.entityType === 'ExpensePayment' 
+                                                    ) || []}
+                                                onPermissionsChange={setUpdatedPermissions}
+                                            />
                                             <WarehouseRoleList />
                                             <PeopleRoleList />
                                             <ReportRoleList />

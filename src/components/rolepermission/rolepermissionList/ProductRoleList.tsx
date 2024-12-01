@@ -62,7 +62,8 @@ const ProductRoleList = ({permissionsByEntity, onPermissionsChange}: {permission
         setSelectAllChecked(isChecked);
         setChildCheckboxStates(updatedStates);
     };
-    console.log(permissionsByEntity)
+
+
     return (
         <div className="inventual-role-list border-b border-solid border-border flex items-center">
             <div className="inventual-role-left">
