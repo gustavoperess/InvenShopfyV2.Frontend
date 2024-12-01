@@ -56,6 +56,10 @@ export interface TRoleInterface {
   permissionsByEntity: EntityPermissions[]; 
 }
 
+export interface ChildCheckboxStates {
+  [key: string]: boolean;
+}
+
 export interface TSaleReturnInterface {
   id: number;
   referenceNumber: string;

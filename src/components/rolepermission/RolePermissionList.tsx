@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ProductRoleList from './rolepermissionList/ProductRoleList';
 import TradingRoleList from './rolepermissionList/TradingRoleList';
 import ExpenseRoleList from './rolepermissionList/ExpenseRoleList';
@@ -8,18 +8,20 @@ import PeopleRoleList from './rolepermissionList/PeopleRoleList';
 import ReportRoleList from './rolepermissionList/ReportRoleList';
 import SettingsRoleList from './rolepermissionList/SettingsRoleList';
 import { MenuItem, TextField } from '@mui/material';
-import { TRoleInterface, EntityPermissions } from '@/interFace/interFace';
+import { TRoleInterface, EntityPermissions, ChildCheckboxStates } from '@/interFace/interFace';
 import { useGetRoleByNameQuery, useGetAllRolesQuery } from '@/services/Role/Role';
+
+
 
 const RolePermissionList = () => {
     const [roleName, setRoleName] = useState<string>("");
     const { data: roleNameData } = useGetAllRolesQuery();
+    const [updatedPermissions, setUpdatedPermissions] = useState<ChildCheckboxStates>({});
     const { data: roleNameDataWithDetails } = useGetRoleByNameQuery(roleName, { skip: !roleName });
 
     const handRolePermissionFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
     };
-   
 
     return (
         <>
@@ -73,6 +75,7 @@ const RolePermissionList = () => {
                                                             entity.entityType === 'ProductUnit' ||
                                                             entity.entityType === 'Product'
                                                     ) || [] }
+                                                    onPermissionsChange={setUpdatedPermissions}
                                             />
                                             <TradingRoleList />
                                             <ExpenseRoleList />
