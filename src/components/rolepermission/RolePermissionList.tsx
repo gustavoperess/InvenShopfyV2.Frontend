@@ -70,14 +70,26 @@ const RolePermissionList = () => {
                                                 permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
                                                     ?.filter(
                                                         (entity: EntityPermissions) =>
+                                                            entity.entityType === 'Product' ||
                                                             entity.entityType === 'ProductBrand' ||
                                                             entity.entityType === 'ProductCategory' ||
-                                                            entity.entityType === 'ProductUnit' ||
-                                                            entity.entityType === 'Product'
+                                                            entity.entityType === 'ProductUnit' 
                                                     ) || [] }
                                                     onPermissionsChange={setUpdatedPermissions}
                                             />
-                                            <TradingRoleList />
+                                            <TradingRoleList 
+                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                ?.filter(
+                                                    (entity: EntityPermissions) =>
+                                                        entity.entityType === 'Sales' ||
+                                                        entity.entityType === 'PosSales' ||
+                                                        entity.entityType === 'SalesReturn' ||
+                                                        entity.entityType === 'SalesPayment' ||
+                                                        entity.entityType === 'Purchase' ||
+                                                        entity.entityType === 'PurchaseReturn' 
+                                                ) || [] }
+                                                onPermissionsChange={setUpdatedPermissions}
+                                                />
                                             <ExpenseRoleList />
                                             <WarehouseRoleList />
                                             <PeopleRoleList />

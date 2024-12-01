@@ -3,13 +3,14 @@ import { Checkbox, FormControlLabel } from '@mui/material';
 import { ChildCheckboxStates } from '@/interFace/interFace';
 
 
-const ProductRoleList = ({
-    permissionsByEntity,
-    onPermissionsChange,
-}: {
-    permissionsByEntity: any;
-    onPermissionsChange: (updatedStates: ChildCheckboxStates) => void;
-}) => {
+const DEFAULT_PRODUCT_PERMISSIONS = [
+    { entityType: 'Product', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }]},
+    { entityType: 'ProductBrand', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }]},
+    { entityType: 'ProductCategory', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }]},
+    { entityType: 'ProductUnit', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }]},
+];
+
+const ProductRoleList = ({permissionsByEntity, onPermissionsChange}: {permissionsByEntity: any; onPermissionsChange: (updatedStates: ChildCheckboxStates) => void}) => {
     const [childCheckboxStates, setChildCheckboxStates] = useState<ChildCheckboxStates>({});
     const [selectAllChecked, setSelectAllChecked] = useState(false);
     const hasInitialized = useRef(false);
@@ -61,7 +62,7 @@ const ProductRoleList = ({
         setSelectAllChecked(isChecked);
         setChildCheckboxStates(updatedStates);
     };
-
+    console.log(permissionsByEntity)
     return (
         <div className="inventual-role-list border-b border-solid border-border flex items-center">
             <div className="inventual-role-left">
@@ -82,7 +83,7 @@ const ProductRoleList = ({
                 </div>
             </div>
             <div className="inventual-role-right w-full border-s border-solid border-border">
-                {permissionsByEntity.map((entity: any, index: number) => (
+                {DEFAULT_PRODUCT_PERMISSIONS.map((entity: any, index: number) => (
                     <div
                         key={index}
                         className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border"
