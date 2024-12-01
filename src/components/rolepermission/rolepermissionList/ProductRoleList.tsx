@@ -4,22 +4,30 @@ import { ChildCheckboxStates } from '@/interFace/interFace';
 
 
 const DEFAULT_PRODUCT_PERMISSIONS = [
-    { entityType: 'Product', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }]},
-    { entityType: 'ProductBrand', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }]},
-    { entityType: 'ProductCategory', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }]},
-    { entityType: 'ProductUnit', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }]},
+    { entityType: 'Product', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
+    { entityType: 'ProductBrand', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
+    { entityType: 'ProductCategory', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
+    { entityType: 'ProductUnit', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
 ];
 
-const ProductRoleList = ({permissionsByEntity, onPermissionsChange}: {permissionsByEntity: any; onPermissionsChange: (updatedStates: ChildCheckboxStates) => void}) => {
+const ProductRoleList = ({
+    permissionsByEntity,
+    onPermissionsChange,
+}: {
+    permissionsByEntity: any;
+    onPermissionsChange: (updatedStates: ChildCheckboxStates) => void;
+}) => {
     const [childCheckboxStates, setChildCheckboxStates] = useState<ChildCheckboxStates>({});
     const [selectAllChecked, setSelectAllChecked] = useState(false);
     const hasInitialized = useRef(false);
 
     useEffect(() => {
-        if (!hasInitialized.current && permissionsByEntity?.length) {
+        const entities = permissionsByEntity.length ? permissionsByEntity : DEFAULT_PRODUCT_PERMISSIONS;
+
+        if (!hasInitialized.current) {
             const initialStates: ChildCheckboxStates = {};
 
-            permissionsByEntity.forEach((entity: any) => {
+            entities.forEach((entity: any) => {
                 const entityType = entity.entityType.toLowerCase();
                 entity.permissions.forEach((permission: any) => {
                     const key = `${entityType}${permission.action}`;
@@ -28,11 +36,10 @@ const ProductRoleList = ({permissionsByEntity, onPermissionsChange}: {permission
             });
 
             setChildCheckboxStates(initialStates);
-            hasInitialized.current = true; 
+            hasInitialized.current = true;
         }
     }, [permissionsByEntity]);
 
-    
     useEffect(() => {
         if (hasInitialized.current) {
             onPermissionsChange(childCheckboxStates);
@@ -100,7 +107,7 @@ const ProductRoleList = ({permissionsByEntity, onPermissionsChange}: {permission
                                             <Checkbox
                                                 checked={
                                                     childCheckboxStates[
-                                                        `${entity.entityType.toLowerCase()}${permission.action}`
+                                                    `${entity.entityType.toLowerCase()}${permission.action}`
                                                     ] || false
                                                 }
                                                 onChange={handleChildCheckboxChange}

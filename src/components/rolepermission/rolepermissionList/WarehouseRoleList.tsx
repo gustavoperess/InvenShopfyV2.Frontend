@@ -3,23 +3,28 @@ import { Checkbox, FormControlLabel } from '@mui/material';
 import { ChildCheckboxStates } from '@/interFace/interFace';
 
 const DEFAULT_WAREHOUSE_PERMISSIONS = [
-    { entityType: 'Expense', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
-    { entityType: 'ExpenseCategory', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
-    { entityType: 'ExpensePayment', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
+    { entityType: 'Warehouse', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
 ];
 
 
-const WarehouseRoleList = ({ permissionsByEntity, onPermissionsChange }: { permissionsByEntity: any; onPermissionsChange: (updatedStates: ChildCheckboxStates) => void }) => {
+const WarehouseRoleList = ({
+    permissionsByEntity,
+    onPermissionsChange,
+}: {
+    permissionsByEntity: any;
+    onPermissionsChange: (updatedStates: ChildCheckboxStates) => void;
+}) => {
     const [childCheckboxStates, setChildCheckboxStates] = useState<ChildCheckboxStates>({});
     const [selectAllChecked, setSelectAllChecked] = useState(false);
     const hasInitialized = useRef(false);
-   
 
     useEffect(() => {
-        if (!hasInitialized.current && permissionsByEntity?.length) {
+        const entities = permissionsByEntity.length ? permissionsByEntity : DEFAULT_WAREHOUSE_PERMISSIONS;
+
+        if (!hasInitialized.current) {
             const initialStates: ChildCheckboxStates = {};
 
-            permissionsByEntity.forEach((entity: any) => {
+            entities.forEach((entity: any) => {
                 const entityType = entity.entityType.toLowerCase();
                 entity.permissions.forEach((permission: any) => {
                     const key = `${entityType}${permission.action}`;
@@ -28,11 +33,10 @@ const WarehouseRoleList = ({ permissionsByEntity, onPermissionsChange }: { permi
             });
 
             setChildCheckboxStates(initialStates);
-            hasInitialized.current = true; 
+            hasInitialized.current = true;
         }
     }, [permissionsByEntity]);
 
-    
     useEffect(() => {
         if (hasInitialized.current) {
             onPermissionsChange(childCheckboxStates);
@@ -62,6 +66,8 @@ const WarehouseRoleList = ({ permissionsByEntity, onPermissionsChange }: { permi
         setSelectAllChecked(isChecked);
         setChildCheckboxStates(updatedStates);
     };
+
+    
 
     return (
         <div className="inventual-role-list border-b border-solid border-border flex items-center">
@@ -99,7 +105,7 @@ const WarehouseRoleList = ({ permissionsByEntity, onPermissionsChange }: { permi
                                             <Checkbox
                                                 checked={
                                                     childCheckboxStates[
-                                                        `${entity.entityType.toLowerCase()}${permission.action}`
+                                                    `${entity.entityType.toLowerCase()}${permission.action}`
                                                     ] || false
                                                 }
                                                 onChange={handleChildCheckboxChange}

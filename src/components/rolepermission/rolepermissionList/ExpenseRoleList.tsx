@@ -8,17 +8,24 @@ const DEFAULT_EXPENSE_PERMISSIONS = [
     { entityType: 'ExpensePayment', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
 ];
 
-const ExpenseRoleList = ({ permissionsByEntity, onPermissionsChange }: { permissionsByEntity: any; onPermissionsChange: (updatedStates: ChildCheckboxStates) => void }) => {
+const ExpenseRoleList = ({
+    permissionsByEntity,
+    onPermissionsChange,
+}: {
+    permissionsByEntity: any;
+    onPermissionsChange: (updatedStates: ChildCheckboxStates) => void;
+}) => {
     const [childCheckboxStates, setChildCheckboxStates] = useState<ChildCheckboxStates>({});
     const [selectAllChecked, setSelectAllChecked] = useState(false);
     const hasInitialized = useRef(false);
 
-
     useEffect(() => {
-        if (!hasInitialized.current && permissionsByEntity?.length) {
+        const entities = permissionsByEntity.length ? permissionsByEntity : DEFAULT_EXPENSE_PERMISSIONS;
+
+        if (!hasInitialized.current) {
             const initialStates: ChildCheckboxStates = {};
 
-            permissionsByEntity.forEach((entity: any) => {
+            entities.forEach((entity: any) => {
                 const entityType = entity.entityType.toLowerCase();
                 entity.permissions.forEach((permission: any) => {
                     const key = `${entityType}${permission.action}`;
@@ -27,11 +34,10 @@ const ExpenseRoleList = ({ permissionsByEntity, onPermissionsChange }: { permiss
             });
 
             setChildCheckboxStates(initialStates);
-            hasInitialized.current = true; 
+            hasInitialized.current = true;
         }
     }, [permissionsByEntity]);
 
-    
     useEffect(() => {
         if (hasInitialized.current) {
             onPermissionsChange(childCheckboxStates);
@@ -98,7 +104,7 @@ const ExpenseRoleList = ({ permissionsByEntity, onPermissionsChange }: { permiss
                                             <Checkbox
                                                 checked={
                                                     childCheckboxStates[
-                                                        `${entity.entityType.toLowerCase()}${permission.action}`
+                                                    `${entity.entityType.toLowerCase()}${permission.action}`
                                                     ] || false
                                                 }
                                                 onChange={handleChildCheckboxChange}

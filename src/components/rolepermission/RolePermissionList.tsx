@@ -21,7 +21,10 @@ const RolePermissionList = () => {
 
     const handRolePermissionFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        console.log(updatedPermissions)
     };
+
+
 
     return (
         <>
@@ -41,7 +44,7 @@ const RolePermissionList = () => {
                                         SelectProps={{
                                             displayEmpty: true,
                                             renderValue: (value: any) => {
-                                                const selectRole = roleNameData?.find((role: TRoleInterface) => role.id === value);
+                                                const selectRole = roleNameData?.find((role: TRoleInterface) => role.roleName === value);
                                                 return selectRole ? selectRole.roleName : <em>Select Role</em>;
                                             },
                                         }}>
@@ -64,7 +67,7 @@ const RolePermissionList = () => {
                         <div className="inventual-role-area">
                             <div className="inventual-role-inner">
                                 <div className="inventual-role-inner-wrapper border border-solid border-border border-b-0 mb-7">
-                                    {roleNameDataWithDetails && roleNameDataWithDetails.length > 0 ? (
+                                    {roleNameDataWithDetails != undefined ? (
                                         <>
                                             <ProductRoleList
                                                 permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
@@ -130,8 +133,7 @@ const RolePermissionList = () => {
                                                             entity.entityType === 'ExpenseReport' ||
                                                             entity.entityType === 'UserReport' ||
                                                             entity.entityType === 'CustomeReport' ||
-                                                            entity.entityType === 'WarehouseReport' ||
-                                                            entity.entityType === 'StockReport' 
+                                                            entity.entityType === 'WarehouseReport' 
                                                     ) || []}
                                                 onPermissionsChange={setUpdatedPermissions}
                                             />

@@ -4,27 +4,28 @@ import { ChildCheckboxStates } from '@/interFace/interFace';
 
 
 const DEFAULT_REPORT_PERMISSIONS = [
-    { entityType: 'SalesReport', permissions: [{ action: 'View', isAllowed: false }] },
-    { entityType: 'PurchaseReport', permissions: [{ action: 'View', isAllowed: false }] },
-    { entityType: 'ProductReport', permissions: [{ action: 'View', isAllowed: false }] },
-    { entityType: 'StockReport', permissions: [{ action: 'View', isAllowed: false }] },
-    { entityType: 'ExpenseReport', permissions: [{ action: 'View', isAllowed: false }] },
-    { entityType: 'UserReport', permissions: [{ action: 'View', isAllowed: false }] },
-    { entityType: 'CustomeReport', permissions: [{ action: 'View', isAllowed: false }] },
-    { entityType: 'WarehouseReport', permissions: [{ action: 'View', isAllowed: false }] },
-    { entityType: 'SupplierReport', permissions: [{ action: 'View', isAllowed: false }] },
+    { entityType: 'Report', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Edit', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
+
 ];
 
-const ReportRoleList = ({ permissionsByEntity, onPermissionsChange }: { permissionsByEntity: any; onPermissionsChange: (updatedStates: ChildCheckboxStates) => void }) => {
+const ReportRoleList = ({
+    permissionsByEntity,
+    onPermissionsChange,
+}: {
+    permissionsByEntity: any;
+    onPermissionsChange: (updatedStates: ChildCheckboxStates) => void;
+}) => {
     const [childCheckboxStates, setChildCheckboxStates] = useState<ChildCheckboxStates>({});
     const [selectAllChecked, setSelectAllChecked] = useState(false);
     const hasInitialized = useRef(false);
 
     useEffect(() => {
-        if (!hasInitialized.current && permissionsByEntity?.length) {
+        const entities = permissionsByEntity.length ? permissionsByEntity : DEFAULT_REPORT_PERMISSIONS;
+
+        if (!hasInitialized.current) {
             const initialStates: ChildCheckboxStates = {};
 
-            permissionsByEntity.forEach((entity: any) => {
+            entities.forEach((entity: any) => {
                 const entityType = entity.entityType.toLowerCase();
                 entity.permissions.forEach((permission: any) => {
                     const key = `${entityType}${permission.action}`;
@@ -33,11 +34,10 @@ const ReportRoleList = ({ permissionsByEntity, onPermissionsChange }: { permissi
             });
 
             setChildCheckboxStates(initialStates);
-            hasInitialized.current = true; 
+            hasInitialized.current = true;
         }
     }, [permissionsByEntity]);
 
-    
     useEffect(() => {
         if (hasInitialized.current) {
             onPermissionsChange(childCheckboxStates);
@@ -104,7 +104,7 @@ const ReportRoleList = ({ permissionsByEntity, onPermissionsChange }: { permissi
                                             <Checkbox
                                                 checked={
                                                     childCheckboxStates[
-                                                        `${entity.entityType.toLowerCase()}${permission.action}`
+                                                    `${entity.entityType.toLowerCase()}${permission.action}`
                                                     ] || false
                                                 }
                                                 onChange={handleChildCheckboxChange}
