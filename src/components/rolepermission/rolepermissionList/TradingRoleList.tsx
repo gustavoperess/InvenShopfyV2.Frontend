@@ -24,21 +24,19 @@ const TradingRoleList = ({
 
     useEffect(() => {
         const entities = permissionsByEntity.length ? permissionsByEntity : DEFAULT_TRADING_PERMISSIONS;
-
-        if (!hasInitialized.current) {
-            const initialStates: ChildCheckboxStates = {};
-
-            entities.forEach((entity: any) => {
-                const entityType = entity.entityType.toLowerCase();
-                entity.permissions.forEach((permission: any) => {
-                    const key = `${entityType}${permission.action}`;
-                    initialStates[key] = permission.isAllowed;
-                });
+    
+        const initialStates: ChildCheckboxStates = {};
+    
+        entities.forEach((entity: any) => {
+            const entityType = entity.entityType.toLowerCase();
+            entity.permissions.forEach((permission: any) => {
+                const key = `${entityType}${permission.action}`;
+                initialStates[key] = permission.isAllowed;
             });
-
-            setChildCheckboxStates(initialStates);
-            hasInitialized.current = true;
-        }
+        });
+    
+        setChildCheckboxStates(initialStates);
+        setSelectAllChecked(Object.values(initialStates).every((value) => value));
     }, [permissionsByEntity]);
 
     useEffect(() => {
@@ -49,16 +47,17 @@ const TradingRoleList = ({
 
     const handleChildCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = event.target;
-
-        setChildCheckboxStates((prev) => ({
-            ...prev,
-            [name]: checked,
-        }));
+    
+        setChildCheckboxStates((prev) => {
+            const updatedStates = { ...prev, [name]: checked };
+            setSelectAllChecked(Object.values(updatedStates).every((value) => value));
+            return updatedStates;
+        });
     };
-
+    
     const handleSelectAllChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const isChecked = event.target.checked;
-
+    
         const updatedStates: ChildCheckboxStates = Object.keys(childCheckboxStates).reduce(
             (acc, key) => ({
                 ...acc,
@@ -66,7 +65,7 @@ const TradingRoleList = ({
             }),
             {}
         );
-
+    
         setSelectAllChecked(isChecked);
         setChildCheckboxStates(updatedStates);
     };

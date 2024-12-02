@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProductRoleList from './rolepermissionList/ProductRoleList';
 import TradingRoleList from './rolepermissionList/TradingRoleList';
 import ExpenseRoleList from './rolepermissionList/ExpenseRoleList';
@@ -21,10 +21,14 @@ const RolePermissionList = () => {
 
     const handRolePermissionFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log(updatedPermissions)
     };
 
-
+    const handleSetRoleName = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRoleName(event.target.value);
+        setUpdatedPermissions({});
+    };
+    console.log(updatedPermissions)
+  
 
     return (
         <>
@@ -40,7 +44,7 @@ const RolePermissionList = () => {
                                         label="Select"
                                         required
                                         value={roleName}
-                                        onChange={(e) => setRoleName(e.target.value)}
+                                        onChange={handleSetRoleName}
                                         SelectProps={{
                                             displayEmpty: true,
                                             renderValue: (value: any) => {
@@ -71,14 +75,10 @@ const RolePermissionList = () => {
                                         <>
                                             <ProductRoleList
                                                 permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                    ?.filter(
-                                                        (entity: EntityPermissions) =>
-                                                            entity.entityType === 'Product' ||
-                                                            entity.entityType === 'ProductBrand' ||
-                                                            entity.entityType === 'ProductCategory' ||
-                                                            entity.entityType === 'ProductUnit'
+                                                    ?.filter((entity: EntityPermissions) =>
+                                                        ['Product', 'ProductBrand', 'ProductCategory', 'ProductUnit'].includes(entity.entityType)
                                                     ) || []}
-                                                onPermissionsChange={setUpdatedPermissions}
+                                                // onPermissionsChange={setUpdatedPermissions}
                                             />
                                             <TradingRoleList
                                                 permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
@@ -118,22 +118,15 @@ const RolePermissionList = () => {
                                                             entity.entityType === 'Customer' ||
                                                             entity.entityType === 'Supplier' ||
                                                             entity.entityType === 'Biller' ||
-                                                            entity.entityType === 'User' 
+                                                            entity.entityType === 'User'
                                                     ) || []}
                                                 onPermissionsChange={setUpdatedPermissions}
                                             />
-                                              <ReportRoleList
+                                            <ReportRoleList
                                                 permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
                                                     ?.filter(
                                                         (entity: EntityPermissions) =>
-                                                            entity.entityType === 'SalesReport' ||
-                                                            entity.entityType === 'PurchaseReport' ||
-                                                            entity.entityType === 'ProductReport' ||
-                                                            entity.entityType === 'StockReport' ||
-                                                            entity.entityType === 'ExpenseReport' ||
-                                                            entity.entityType === 'UserReport' ||
-                                                            entity.entityType === 'CustomeReport' ||
-                                                            entity.entityType === 'WarehouseReport' 
+                                                            entity.entityType === 'Report'
                                                     ) || []}
                                                 onPermissionsChange={setUpdatedPermissions}
                                             />

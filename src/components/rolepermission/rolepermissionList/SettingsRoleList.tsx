@@ -6,25 +6,25 @@ const SettingsRoleList = () => {
     const [childCheckboxStates, setChildCheckboxStates] = useState({
 
         // first row
-        createSMS: false,
-        systemSetting: false,
-        mailSettings: false,
-        currencySetting: false,
-        language: false,
+        createSMS: true,
+        systemSetting: true,
+        mailSettings: true,
+        currencySetting: true,
+        language: true,
 
         // second row
-        sendNotification: false,
-        backupDatabase: false,
-        sendMail: false,
-        posSetting: false,
-        timeDate: false,
+        sendNotification: true,
+        backupDatabase: true,
+        sendMail: true,
+        posSetting: true,
+        timeDate: true,
 
         // third row
-        sendSMS: false,
-        mailCreate: false,
-        smsSetting: false,
-        newsletterSetting: false,
-        createRole: false,
+        sendSMS: true,
+        mailCreate: true,
+        smsSetting: true,
+        newsletterSetting: true,
+        createRole: true,
 
     });
     const [selectAllChecked, setSelectAllChecked] = useState(false);
