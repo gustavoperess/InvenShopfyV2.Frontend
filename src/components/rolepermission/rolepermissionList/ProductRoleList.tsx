@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Checkbox, FormControlLabel } from '@mui/material';
+import { EntityPermissions, RoleListProps } from '@/interFace/interFace';
 
-const DEFAULT_PRODUCT_PERMISSIONS = [
+const DEFAULT_PRODUCT_PERMISSIONS: EntityPermissions[] = [
     { entityType: 'Product', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
     { entityType: 'ProductBrand', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
     { entityType: 'ProductCategory', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
     { entityType: 'ProductUnit', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
 ];
-
-const ProductRoleList = ({ permissionsByEntity }: { permissionsByEntity: any[] }) => {
-    const [mergedPermissions, setMergedPermissions] = useState(DEFAULT_PRODUCT_PERMISSIONS);
+const ProductRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledItem, onProcessComplete, updatePermissions }) => {
+    const [mergedPermissions, setMergedPermissions] = useState<EntityPermissions[]>(DEFAULT_PRODUCT_PERMISSIONS);
     const [selectAllChecked, setSelectAllChecked] = useState(false);
 
-    console.log(mergedPermissions)
     useEffect(() => {
         const mergePermissions = () => {
             const updatedPermissions = DEFAULT_PRODUCT_PERMISSIONS.map((defaultEntity) => {
@@ -22,14 +21,14 @@ const ProductRoleList = ({ permissionsByEntity }: { permissionsByEntity: any[] }
 
                 return matchingEntity
                     ? {
-                          ...defaultEntity,
-                          permissions: defaultEntity.permissions.map((defaultPermission) => {
-                              const backendPermission = matchingEntity.permissions.find(
-                                  (p: any) => p.action === defaultPermission.action
-                              );
-                              return backendPermission || defaultPermission;
-                          }),
-                      }
+                        ...defaultEntity,
+                        permissions: defaultEntity.permissions.map((defaultPermission) => {
+                            const backendPermission = matchingEntity.permissions.find(
+                                (p: any) => p.action === defaultPermission.action
+                            );
+                            return backendPermission || defaultPermission;
+                        }),
+                    }
                     : defaultEntity;
             });
             setMergedPermissions(updatedPermissions);
@@ -58,18 +57,17 @@ const ProductRoleList = ({ permissionsByEntity }: { permissionsByEntity: any[] }
         setSelectAllChecked(isChecked);
     };
 
-
     const handlePermissionChange = (entityType: string, action: string, isChecked: boolean) => {
         const updatedPermissions = mergedPermissions.map((entity) =>
             entity.entityType === entityType
                 ? {
-                      ...entity,
-                      permissions: entity.permissions.map((permission) =>
-                          permission.action === action
-                              ? { ...permission, isAllowed: isChecked }
-                              : permission
-                      ),
-                  }
+                    ...entity,
+                    permissions: entity.permissions.map((permission) =>
+                        permission.action === action
+                            ? { ...permission, isAllowed: isChecked }
+                            : permission
+                    ),
+                }
                 : entity
         );
 
@@ -81,11 +79,20 @@ const ProductRoleList = ({ permissionsByEntity }: { permissionsByEntity: any[] }
         );
     };
 
+
+    useEffect(() => {
+        if (calledItem) {
+            updatePermissions(mergedPermissions);
+            onProcessComplete();
+        }
+    }, [calledItem, mergedPermissions, updatePermissions, onProcessComplete]);
+
+
     return (
         <div className="inventual-role-list border-b border-solid border-border flex items-center">
             <div className="inventual-role-left">
                 <div className="inventual-role-topic">
-                    <h5 className="text-[18px] font-semibold text-heading mb-4">Products</h5>
+                    <h5 className="text-[18px] font-semibold text-heading mb-4">Product</h5>
                     <div className="inventual-checkbox-style ms-3">
                         <FormControlLabel
                             control={

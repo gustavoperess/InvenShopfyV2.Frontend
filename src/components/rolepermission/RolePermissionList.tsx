@@ -8,7 +8,7 @@ import PeopleRoleList from './rolepermissionList/PeopleRoleList';
 import ReportRoleList from './rolepermissionList/ReportRoleList';
 import SettingsRoleList from './rolepermissionList/SettingsRoleList';
 import { MenuItem, TextField } from '@mui/material';
-import { TRoleInterface, EntityPermissions, ChildCheckboxStates } from '@/interFace/interFace';
+import { TRoleInterface, EntityPermissions } from '@/interFace/interFace';
 import { useGetRoleByNameQuery, useGetAllRolesQuery } from '@/services/Role/Role';
 
 
@@ -16,19 +16,27 @@ import { useGetRoleByNameQuery, useGetAllRolesQuery } from '@/services/Role/Role
 const RolePermissionList = () => {
     const [roleName, setRoleName] = useState<string>("");
     const { data: roleNameData } = useGetAllRolesQuery();
-    const [updatedPermissions, setUpdatedPermissions] = useState<ChildCheckboxStates>({});
+    const [updatedPermissions, setUpdatedPermissions] = useState<Record<string, EntityPermissions[]>>({});
+    const [callingItem, setCallingItem] = useState(false);
     const { data: roleNameDataWithDetails } = useGetRoleByNameQuery(roleName, { skip: !roleName });
-
-    const handRolePermissionFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-    };
 
     const handleSetRoleName = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRoleName(event.target.value);
         setUpdatedPermissions({});
     };
-    console.log(updatedPermissions)
-  
+    const handRolePermissionFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setCallingItem(true);
+   
+    };
+    const handleUpdatePermissions = (entityType: string, permissions: EntityPermissions[]) => {
+        setUpdatedPermissions((prev) => ({
+            ...prev,
+            [entityType]: permissions,
+        }));
+    };
+
+    console.log(updatedPermissions) 
 
     return (
         <>
@@ -78,57 +86,43 @@ const RolePermissionList = () => {
                                                     ?.filter((entity: EntityPermissions) =>
                                                         ['Product', 'ProductBrand', 'ProductCategory', 'ProductUnit'].includes(entity.entityType)
                                                     ) || []}
-                                                // onPermissionsChange={setUpdatedPermissions}
+                                                calledItem={callingItem} 
+                                                onProcessComplete={() => setCallingItem(false)} 
+                                                updatePermissions={(permissions) => handleUpdatePermissions('Product', permissions)}
+
                                             />
                                             <TradingRoleList
                                                 permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                    ?.filter(
-                                                        (entity: EntityPermissions) =>
-                                                            entity.entityType === 'Sales' ||
-                                                            entity.entityType === 'PosSales' ||
-                                                            entity.entityType === 'SalesReturn' ||
-                                                            entity.entityType === 'SalesPayment' ||
-                                                            entity.entityType === 'Purchase' ||
-                                                            entity.entityType === 'PurchaseReturn'
+                                                    ?.filter((entity: EntityPermissions) =>
+                                                        ['Sales', 'PosSales', 'SalesReturn', 'SalesPayment', 'Purchase', 'PurchaseReturn'].includes(entity.entityType)
                                                     ) || []}
-                                                onPermissionsChange={setUpdatedPermissions}
+                                                calledItem={callingItem} 
+                                                onProcessComplete={() => setCallingItem(false)} 
+                                                updatePermissions={(permissions) => handleUpdatePermissions('Trading', permissions)}
                                             />
                                             <ExpenseRoleList
                                                 permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                    ?.filter(
-                                                        (entity: EntityPermissions) =>
-                                                            entity.entityType === 'Expense' ||
-                                                            entity.entityType === 'ExpenseCategory' ||
-                                                            entity.entityType === 'ExpensePayment'
+                                                    ?.filter((entity: EntityPermissions) =>
+                                                        ['Expense', 'ExpenseCategory', 'ExpensePayment'].includes(entity.entityType)
                                                     ) || []}
-                                                onPermissionsChange={setUpdatedPermissions}
                                             />
                                             <WarehouseRoleList
                                                 permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                    ?.filter(
-                                                        (entity: EntityPermissions) =>
-                                                            entity.entityType === 'Warehouse'
+                                                    ?.filter((entity: EntityPermissions) =>
+                                                        ['Warehouse'].includes(entity.entityType)
                                                     ) || []}
-                                                onPermissionsChange={setUpdatedPermissions}
                                             />
                                             <PeopleRoleList
                                                 permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                    ?.filter(
-                                                        (entity: EntityPermissions) =>
-                                                            entity.entityType === 'Customer' ||
-                                                            entity.entityType === 'Supplier' ||
-                                                            entity.entityType === 'Biller' ||
-                                                            entity.entityType === 'User'
+                                                    ?.filter((entity: EntityPermissions) =>
+                                                        ['Customer', 'Supplier', 'Biller', 'User'].includes(entity.entityType)
                                                     ) || []}
-                                                onPermissionsChange={setUpdatedPermissions}
                                             />
                                             <ReportRoleList
                                                 permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                    ?.filter(
-                                                        (entity: EntityPermissions) =>
-                                                            entity.entityType === 'Report'
+                                                    ?.filter((entity: EntityPermissions) =>
+                                                        ['Report'].includes(entity.entityType)
                                                     ) || []}
-                                                onPermissionsChange={setUpdatedPermissions}
                                             />
                                             <SettingsRoleList />
                                         </>
@@ -138,7 +132,6 @@ const RolePermissionList = () => {
                                 </div>
                             </div>
                         </div>
-
                     </form>
                 </div>
             </div>

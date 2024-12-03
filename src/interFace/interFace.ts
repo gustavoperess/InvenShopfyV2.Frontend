@@ -38,16 +38,13 @@ export interface TtransferInterface {
   transferNote: string;
   authorizedBy: string;
 }
-export interface Permission {
-  action: string;
-  isAllowed: boolean;
-}
-
 export interface EntityPermissions {
-  entityType: string; 
-  permissions: Permission[];
-  permissionsByEntity: string; 
-
+  entityType: string;
+  permissions: {
+      action: string;
+      isAllowed: boolean;
+  }[];
+  permissionsByEntity?: EntityPermissions[];
 }
 
 export interface TRoleInterface {
@@ -56,8 +53,13 @@ export interface TRoleInterface {
   permissionsByEntity: EntityPermissions[]; 
 }
 
-export interface ChildCheckboxStates {
-  [key: string]: boolean;
+
+export interface RoleListProps {
+  calledItem: boolean;
+  permissionsByEntity: EntityPermissions[];
+  onProcessComplete: () => void; 
+  updatePermissions: (permissions: EntityPermissions[]) => void;
+
 }
 
 export interface TSaleReturnInterface {

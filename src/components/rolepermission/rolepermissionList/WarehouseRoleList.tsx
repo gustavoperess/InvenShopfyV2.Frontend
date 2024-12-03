@@ -6,67 +6,78 @@ const DEFAULT_WAREHOUSE_PERMISSIONS = [
     { entityType: 'Warehouse', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
 ];
 
+const WarehouseRoleList = ({ permissionsByEntity }: { permissionsByEntity: any[] }) => {
 
-const WarehouseRoleList = ({
-    permissionsByEntity,
-    onPermissionsChange,
-}: {
-    permissionsByEntity: any;
-    onPermissionsChange: (updatedStates: ChildCheckboxStates) => void;
-}) => {
-    const [childCheckboxStates, setChildCheckboxStates] = useState<ChildCheckboxStates>({});
+    const [mergedPermissions, setMergedPermissions] = useState(DEFAULT_WAREHOUSE_PERMISSIONS);
     const [selectAllChecked, setSelectAllChecked] = useState(false);
-    const hasInitialized = useRef(false);
 
     useEffect(() => {
-        const entities = permissionsByEntity.length ? permissionsByEntity : DEFAULT_WAREHOUSE_PERMISSIONS;
-    
-        const initialStates: ChildCheckboxStates = {};
-    
-        entities.forEach((entity: any) => {
-            const entityType = entity.entityType.toLowerCase();
-            entity.permissions.forEach((permission: any) => {
-                const key = `${entityType}${permission.action}`;
-                initialStates[key] = permission.isAllowed;
+        const mergePermissions = () => {
+            const updatedPermissions = DEFAULT_WAREHOUSE_PERMISSIONS.map((defaultEntity) => {
+                const matchingEntity = permissionsByEntity.find(
+                    (backendEntity) => backendEntity.entityType === defaultEntity.entityType
+                );
+
+                return matchingEntity
+                    ? {
+                          ...defaultEntity,
+                          permissions: defaultEntity.permissions.map((defaultPermission) => {
+                              const backendPermission = matchingEntity.permissions.find(
+                                  (p: any) => p.action === defaultPermission.action
+                              );
+                              return backendPermission || defaultPermission;
+                          }),
+                      }
+                    : defaultEntity;
             });
-        });
-    
-        setChildCheckboxStates(initialStates);
-        setSelectAllChecked(Object.values(initialStates).every((value) => value));
+            setMergedPermissions(updatedPermissions);
+            setSelectAllChecked(
+                updatedPermissions.every((entity) =>
+                    entity.permissions.every((permission) => permission.isAllowed)
+                )
+            );
+        };
+
+        mergePermissions();
     }, [permissionsByEntity]);
 
-    useEffect(() => {
-        if (hasInitialized.current) {
-            onPermissionsChange(childCheckboxStates);
-        }
-    }, [childCheckboxStates, onPermissionsChange]);
 
-    const handleChildCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, checked } = event.target;
-    
-        setChildCheckboxStates((prev) => {
-            const updatedStates = { ...prev, [name]: checked };
-            setSelectAllChecked(Object.values(updatedStates).every((value) => value));
-            return updatedStates;
-        });
-    };
-    
     const handleSelectAllChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const isChecked = event.target.checked;
-    
-        const updatedStates: ChildCheckboxStates = Object.keys(childCheckboxStates).reduce(
-            (acc, key) => ({
-                ...acc,
-                [key]: isChecked,
-            }),
-            {}
-        );
-    
+        const updatedPermissions = mergedPermissions.map((entity) => ({
+            ...entity,
+            permissions: entity.permissions.map((permission) => ({
+                ...permission,
+                isAllowed: isChecked,
+            })),
+        }));
+
+        setMergedPermissions(updatedPermissions);
         setSelectAllChecked(isChecked);
-        setChildCheckboxStates(updatedStates);
     };
 
-    
+
+    const handlePermissionChange = (entityType: string, action: string, isChecked: boolean) => {
+        const updatedPermissions = mergedPermissions.map((entity) =>
+            entity.entityType === entityType
+                ? {
+                      ...entity,
+                      permissions: entity.permissions.map((permission) =>
+                          permission.action === action
+                              ? { ...permission, isAllowed: isChecked }
+                              : permission
+                      ),
+                  }
+                : entity
+        );
+
+        setMergedPermissions(updatedPermissions);
+        setSelectAllChecked(
+            updatedPermissions.every((entity) =>
+                entity.permissions.every((permission) => permission.isAllowed)
+            )
+        );
+    };
 
     return (
         <div className="inventual-role-list border-b border-solid border-border flex items-center">
@@ -88,26 +99,28 @@ const WarehouseRoleList = ({
                 </div>
             </div>
             <div className="inventual-role-right w-full border-s border-solid border-border">
-                {DEFAULT_WAREHOUSE_PERMISSIONS.map((entity: any, index: number) => (
+                {mergedPermissions.map((entity) => (
                     <div
-                        key={index}
+                        key={entity.entityType}
                         className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border"
                     >
                         <div className="inventual-role-category">
                             <h5>{entity.entityType}</h5>
                         </div>
                         <div className="inventual-role-checkbox-wrapper">
-                            {entity.permissions.map((permission: any) => (
+                            {entity.permissions.map((permission) => (
                                 <div key={permission.action} className="inventual-checkbox-style">
                                     <FormControlLabel
                                         control={
                                             <Checkbox
-                                                checked={
-                                                    childCheckboxStates[
-                                                    `${entity.entityType.toLowerCase()}${permission.action}`
-                                                    ] || false
+                                                checked={permission.isAllowed}
+                                                onChange={(e) =>
+                                                    handlePermissionChange(
+                                                        entity.entityType,
+                                                        permission.action,
+                                                        e.target.checked
+                                                    )
                                                 }
-                                                onChange={handleChildCheckboxChange}
                                                 name={`${entity.entityType.toLowerCase()}${permission.action}`}
                                                 inputProps={{ 'aria-label': 'controlled' }}
                                             />
