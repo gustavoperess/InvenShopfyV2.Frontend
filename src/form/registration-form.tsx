@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import logo from '../../public/assets/img/logo/login-logo.png'
 import InputAdornment from '@mui/material/InputAdornment';
-import { IconButton, MenuItem, TextField, FormControl } from '@mui/material';
+import { IconButton, MenuItem, TextField, FormControl, Input } from '@mui/material';
 import Image from 'next/image';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Link from 'next/link'
@@ -10,11 +10,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import { useUserRegisterMutation } from '@/services/Authentication/Authentication';
 import { useGetAllRolesQuery } from '@/services/Role/Role';
-
-interface roleData {
-    id: number;
-    name: string;
-}
+import { CustomProps, TRoleInterface } from '@/interFace/interFace';
+import { IMaskInput } from 'react-imask';
 
 
 const RegistrationFrom = () => {
@@ -73,8 +70,8 @@ const RegistrationFrom = () => {
     const handleUserData = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (password == confirmPassword) {
-            const userData = { name, email, phoneNumber: phone, roleName: role, gender, userName, passwordHash: password }
-        
+            const userData = { name, email, phoneNumber: phone, roleId: role, gender, userName, passwordHash: password }
+
             try {
                 await registerUser(userData).unwrap();
                 toast.success("User Created successfully!");
@@ -100,7 +97,21 @@ const RegistrationFrom = () => {
 
     };
 
-
+    const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
+        function TextMaskCustom(props, ref) {
+            const { onChange, ...other } = props;
+            return (
+                <IMaskInput
+                    {...other}
+                    mask="(#00) 000-0000"
+                    definitions={{ '#': /[1-9]/ }}
+                    inputRef={ref}
+                    onComplete={(value: any) => onChange({ target: { name: props.name, value } })}
+                    overwrite
+                />
+            );
+        }
+    );
 
 
     return (
@@ -108,7 +119,7 @@ const RegistrationFrom = () => {
             <div className="inventual-login-area flex justify-center items-center w-full min-h-screen h-full">
                 <div className="inventual-login-wrapper">
                     <div className="inventual-login-logo text-center mb-12">
-                        <Image src={logo}  style={{ width: 'auto', height: "73px" }} alt="logo img" />
+                        <Image src={logo} style={{ width: 'auto', height: "73px" }} alt="logo img" />
                     </div>
                     <form onSubmit={handleUserData}>
                         <div className="inventual-input-field-style mb-5">
@@ -147,7 +158,6 @@ const RegistrationFrom = () => {
                                         <span className='inventual-input-icon'><i className="fa-regular fa-user"></i></span>
                                     </FormControl>
                                 </div>
-
                             </div>
                         </div>
                         <div className="inventual-input-field-style mb-5">
@@ -172,18 +182,17 @@ const RegistrationFrom = () => {
                             </div>
                         </div>
                         <div className="inventual-input-field-style mb-5">
-                            <div className="inventual-select-field">
-                                <div className="inventual-input-field-style has-icon">
+                            <div className="inventual-formFour-field">
+                                <div className="inventual-input-field-style">
                                     <FormControl fullWidth>
-                                        <TextField  
-                                            fullWidth
-                                            type="number"
-                                            required
+                                        <Input
                                             value={phone}
-                                            placeholder="+234 23432432"
-                                            variant="outlined"
-                                            inputProps={{ maxLength: 80 }}
+                                            placeholder="+231 2343-2432"
                                             onChange={(e) => setPhone(e.target.value)}
+                                            name="textmask"
+                                            inputProps={{ maxLength: 80 }}
+                                            id="formatted-text-mask-input"
+                                            inputComponent={TextMaskCustom as any}
                                         />
                                         <span className='inventual-input-icon'><i className="far fa-phone-alt"></i></span>
                                     </FormControl>
@@ -218,7 +227,6 @@ const RegistrationFrom = () => {
                                 </div>
                             </div>
                         </div>
-
                         <div className="inventual-select-field-style mb-5">
                             <FormControl fullWidth>
                                 <TextField
@@ -231,12 +239,15 @@ const RegistrationFrom = () => {
                                     InputLabelProps={{ shrink: true }}
                                     SelectProps={{
                                         displayEmpty: true,
-                                        renderValue: (value) => (value ? (value as string) : <em>Select Role</em>),
+                                        renderValue: (value: any) => {
+                                            const selectedRole = rolesData?.find((role: TRoleInterface) => role.id === value);
+                                            return selectedRole ? selectedRole.roleName : <em>Select Role</em>;
+                                        },
                                     }}>
                                     {rolesData && rolesData.length > 0 ? (
-                                        rolesData.map((role: roleData) => (
-                                            <MenuItem key={role.id} value={role.name}>
-                                                {role.name}
+                                        rolesData.map((role: TRoleInterface) => (
+                                            <MenuItem key={role.id} value={role.id}>
+                                                {role.roleName}
                                             </MenuItem>
                                         ))
                                     ) : (

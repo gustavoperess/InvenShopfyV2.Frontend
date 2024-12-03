@@ -197,7 +197,6 @@ const AddProduct = () => {
                                                         required
                                                         value={subCategory}
                                                         onChange={(e) => setSubCategory(e.target.value)}
-
                                                         SelectProps={{
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {

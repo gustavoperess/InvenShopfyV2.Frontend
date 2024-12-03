@@ -1,44 +1,50 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Checkbox, FormControlLabel } from '@mui/material';
+import { EntityPermissions, RoleListProps } from '@/interFace/interFace';
 
 
-const DEFAULT_REPORT_PERMISSIONS = [
+
+const DEFAULT_REPORT_PERMISSIONS: EntityPermissions[] = [
     { entityType: 'Report', permissions: [
         { action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, 
         { action: 'Edit', isAllowed: false }, { action: 'Delete', isAllowed: false }]}
 ];
-const ReportRoleList = ({ permissionsByEntity }: { permissionsByEntity: any[] }) => {
+
+const ReportRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledItem, onProcessComplete, updatePermissions, setIsReadyToSubmit }) => {
+
     const [mergedPermissions, setMergedPermissions] = useState(DEFAULT_REPORT_PERMISSIONS);
     const [selectAllChecked, setSelectAllChecked] = useState(false);
 
     useEffect(() => {
-        const mergePermissions = () => {
-            const updatedPermissions = DEFAULT_REPORT_PERMISSIONS.map((defaultEntity) => {
-                const matchingEntity = permissionsByEntity.find(
-                    (backendEntity) => backendEntity.entityType === defaultEntity.entityType
+        if(!setIsReadyToSubmit) {
+            const mergePermissions = () => {
+                const updatedPermissions = DEFAULT_REPORT_PERMISSIONS.map((defaultEntity) => {
+                    const matchingEntity = permissionsByEntity.find(
+                        (backendEntity) => backendEntity.entityType === defaultEntity.entityType
+                    );
+    
+                    return matchingEntity
+                        ? {
+                            ...defaultEntity,
+                            permissions: defaultEntity.permissions.map((defaultPermission) => {
+                                const backendPermission = matchingEntity.permissions.find(
+                                    (p: any) => p.action === defaultPermission.action
+                                );
+                                return backendPermission || defaultPermission;
+                            }),
+                        }
+                        : defaultEntity;
+                });
+                setMergedPermissions(updatedPermissions);
+                setSelectAllChecked(
+                    updatedPermissions.every((entity) =>
+                        entity.permissions.every((permission) => permission.isAllowed)
+                    )
                 );
-
-                return matchingEntity
-                    ? {
-                          ...defaultEntity,
-                          permissions: defaultEntity.permissions.map((defaultPermission) => {
-                              const backendPermission = matchingEntity.permissions.find(
-                                  (p: any) => p.action === defaultPermission.action
-                              );
-                              return backendPermission || defaultPermission;
-                          }),
-                      }
-                    : defaultEntity;
-            });
-            setMergedPermissions(updatedPermissions);
-            setSelectAllChecked(
-                updatedPermissions.every((entity) =>
-                    entity.permissions.every((permission) => permission.isAllowed)
-                )
-            );
-        };
-
-        mergePermissions();
+            };
+    
+            mergePermissions();
+        }
     }, [permissionsByEntity]);
 
 
@@ -78,6 +84,16 @@ const ReportRoleList = ({ permissionsByEntity }: { permissionsByEntity: any[] })
             )
         );
     };
+
+
+    useEffect(() => {
+        if (calledItem) {
+            updatePermissions(mergedPermissions);
+            onProcessComplete();
+        }
+    }, [calledItem, mergedPermissions, updatePermissions, onProcessComplete]);
+
+
 
     return (
         <div className="inventual-role-list border-b border-solid border-border flex items-center">

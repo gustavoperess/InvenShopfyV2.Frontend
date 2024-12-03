@@ -8,38 +8,41 @@ const DEFAULT_PRODUCT_PERMISSIONS: EntityPermissions[] = [
     { entityType: 'ProductCategory', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
     { entityType: 'ProductUnit', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
 ];
-const ProductRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledItem, onProcessComplete, updatePermissions }) => {
+const ProductRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledItem, onProcessComplete, updatePermissions, setIsReadyToSubmit }) => {
     const [mergedPermissions, setMergedPermissions] = useState<EntityPermissions[]>(DEFAULT_PRODUCT_PERMISSIONS);
     const [selectAllChecked, setSelectAllChecked] = useState(false);
 
+
     useEffect(() => {
-        const mergePermissions = () => {
-            const updatedPermissions = DEFAULT_PRODUCT_PERMISSIONS.map((defaultEntity) => {
-                const matchingEntity = permissionsByEntity.find(
-                    (backendEntity) => backendEntity.entityType === defaultEntity.entityType
+        if(!setIsReadyToSubmit) {
+            const mergePermissions = () => {
+                const updatedPermissions = DEFAULT_PRODUCT_PERMISSIONS.map((defaultEntity) => {
+                    const matchingEntity = permissionsByEntity.find(
+                        (backendEntity) => backendEntity.entityType === defaultEntity.entityType
+                    );
+    
+                    return matchingEntity
+                        ? {
+                            ...defaultEntity,
+                            permissions: defaultEntity.permissions.map((defaultPermission) => {
+                                const backendPermission = matchingEntity.permissions.find(
+                                    (p: any) => p.action === defaultPermission.action
+                                );
+                                return backendPermission || defaultPermission;
+                            }),
+                        }
+                        : defaultEntity;
+                });
+                setMergedPermissions(updatedPermissions);
+                setSelectAllChecked(
+                    updatedPermissions.every((entity) =>
+                        entity.permissions.every((permission) => permission.isAllowed)
+                    )
                 );
-
-                return matchingEntity
-                    ? {
-                        ...defaultEntity,
-                        permissions: defaultEntity.permissions.map((defaultPermission) => {
-                            const backendPermission = matchingEntity.permissions.find(
-                                (p: any) => p.action === defaultPermission.action
-                            );
-                            return backendPermission || defaultPermission;
-                        }),
-                    }
-                    : defaultEntity;
-            });
-            setMergedPermissions(updatedPermissions);
-            setSelectAllChecked(
-                updatedPermissions.every((entity) =>
-                    entity.permissions.every((permission) => permission.isAllowed)
-                )
-            );
-        };
-
-        mergePermissions();
+            };
+    
+            mergePermissions();
+        }
     }, [permissionsByEntity]);
 
 

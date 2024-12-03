@@ -31,6 +31,13 @@ export const roleApi = createApi({
                 body,
             }),
         }),
+        assignPermissionsToRole: builder.mutation<any, any>({
+            query: (body) => ({
+                url: `assign-permissions-to-role`,
+                method: 'POST',
+                body,
+            }),
+        }),
         getRoleByName: builder.query<any, string>({
             query: (name) => ({
                 url: `get-role-by-partial/${name}`,
@@ -47,6 +54,7 @@ export const roleApi = createApi({
 
 
 export const { 
+    useAssignPermissionsToRoleMutation,
     useGetRoleByNameQuery,
     useCreateRoleMutation,
     useGetAllRolesQuery,

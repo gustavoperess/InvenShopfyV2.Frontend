@@ -4,11 +4,8 @@ import { toast } from 'react-toastify';
 import { useCreateWarehouseMutation } from '@/services/Warehouse/Warehouse';
 import { TextField, FormControl,Input } from '@mui/material';
 import { IMaskInput } from 'react-imask';
+import { CustomProps } from '@/interFace/interFace';
 
-interface CustomProps {
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-}
 
 
 const AddWarehouse = () => {

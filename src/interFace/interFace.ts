@@ -56,6 +56,7 @@ export interface TRoleInterface {
 
 export interface RoleListProps {
   calledItem: boolean;
+  setIsReadyToSubmit: boolean;
   permissionsByEntity: EntityPermissions[];
   onProcessComplete: () => void; 
   updatePermissions: (permissions: EntityPermissions[]) => void;

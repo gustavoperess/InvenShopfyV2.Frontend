@@ -11,38 +11,40 @@ const DEFAULT_TRADING_PERMISSIONS: EntityPermissions[] = [
     { entityType: 'PurchaseReturn', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
 ];
 
-const TradingRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledItem, onProcessComplete, updatePermissions }) => {
+const TradingRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledItem, onProcessComplete, updatePermissions, setIsReadyToSubmit }) => {
     const [mergedPermissions, setMergedPermissions] = useState(DEFAULT_TRADING_PERMISSIONS);
     const [selectAllChecked, setSelectAllChecked] = useState(false);
 
     useEffect(() => {
-        const mergePermissions = () => {
-            const updatedPermissions = DEFAULT_TRADING_PERMISSIONS.map((defaultEntity) => {
-                const matchingEntity = permissionsByEntity.find(
-                    (backendEntity) => backendEntity.entityType === defaultEntity.entityType
+        if(!setIsReadyToSubmit) {
+            const mergePermissions = () => {
+                const updatedPermissions = DEFAULT_TRADING_PERMISSIONS.map((defaultEntity) => {
+                    const matchingEntity = permissionsByEntity.find(
+                        (backendEntity) => backendEntity.entityType === defaultEntity.entityType
+                    );
+    
+                    return matchingEntity
+                        ? {
+                            ...defaultEntity,
+                            permissions: defaultEntity.permissions.map((defaultPermission) => {
+                                const backendPermission = matchingEntity.permissions.find(
+                                    (p: any) => p.action === defaultPermission.action
+                                );
+                                return backendPermission || defaultPermission;
+                            }),
+                        }
+                        : defaultEntity;
+                });
+                setMergedPermissions(updatedPermissions);
+                setSelectAllChecked(
+                    updatedPermissions.every((entity) =>
+                        entity.permissions.every((permission) => permission.isAllowed)
+                    )
                 );
-
-                return matchingEntity
-                    ? {
-                        ...defaultEntity,
-                        permissions: defaultEntity.permissions.map((defaultPermission) => {
-                            const backendPermission = matchingEntity.permissions.find(
-                                (p: any) => p.action === defaultPermission.action
-                            );
-                            return backendPermission || defaultPermission;
-                        }),
-                    }
-                    : defaultEntity;
-            });
-            setMergedPermissions(updatedPermissions);
-            setSelectAllChecked(
-                updatedPermissions.every((entity) =>
-                    entity.permissions.every((permission) => permission.isAllowed)
-                )
-            );
-        };
-
-        mergePermissions();
+            };
+    
+            mergePermissions();
+        }
     }, [permissionsByEntity]);
 
 
@@ -82,6 +84,7 @@ const TradingRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledI
             )
         );
     };
+
  
     useEffect(() => {
         if (calledItem) {
@@ -89,7 +92,6 @@ const TradingRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledI
             onProcessComplete();
         }
     }, [calledItem, mergedPermissions, updatePermissions, onProcessComplete]);
-
 
     return (
         <div className="inventual-role-list border-b border-solid border-border flex items-center">

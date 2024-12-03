@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Checkbox, FormControlLabel } from '@mui/material';
+import { EntityPermissions, RoleListProps } from '@/interFace/interFace';
 
-const DEFAULT_PEOPLE_PERMISSIONS = [
+
+const DEFAULT_PEOPLE_PERMISSIONS : EntityPermissions[] = [
     { entityType: 'Customer', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
     { entityType: 'Supplier', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
     { entityType: 'Biller', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
@@ -9,38 +11,41 @@ const DEFAULT_PEOPLE_PERMISSIONS = [
 ];
 
 
-const PeopleRoleList = ({ permissionsByEntity }: { permissionsByEntity: any[] }) => {
+const PeopleRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledItem, onProcessComplete, updatePermissions, setIsReadyToSubmit }) => {
+
     const [mergedPermissions, setMergedPermissions] = useState(DEFAULT_PEOPLE_PERMISSIONS);
     const [selectAllChecked, setSelectAllChecked] = useState(false);
 
     useEffect(() => {
-        const mergePermissions = () => {
-            const updatedPermissions = DEFAULT_PEOPLE_PERMISSIONS.map((defaultEntity) => {
-                const matchingEntity = permissionsByEntity.find(
-                    (backendEntity) => backendEntity.entityType === defaultEntity.entityType
+        if(!setIsReadyToSubmit) {
+            const mergePermissions = () => {
+                const updatedPermissions = DEFAULT_PEOPLE_PERMISSIONS.map((defaultEntity) => {
+                    const matchingEntity = permissionsByEntity.find(
+                        (backendEntity) => backendEntity.entityType === defaultEntity.entityType
+                    );
+    
+                    return matchingEntity
+                        ? {
+                            ...defaultEntity,
+                            permissions: defaultEntity.permissions.map((defaultPermission) => {
+                                const backendPermission = matchingEntity.permissions.find(
+                                    (p: any) => p.action === defaultPermission.action
+                                );
+                                return backendPermission || defaultPermission;
+                            }),
+                        }
+                        : defaultEntity;
+                });
+                setMergedPermissions(updatedPermissions);
+                setSelectAllChecked(
+                    updatedPermissions.every((entity) =>
+                        entity.permissions.every((permission) => permission.isAllowed)
+                    )
                 );
-
-                return matchingEntity
-                    ? {
-                          ...defaultEntity,
-                          permissions: defaultEntity.permissions.map((defaultPermission) => {
-                              const backendPermission = matchingEntity.permissions.find(
-                                  (p: any) => p.action === defaultPermission.action
-                              );
-                              return backendPermission || defaultPermission;
-                          }),
-                      }
-                    : defaultEntity;
-            });
-            setMergedPermissions(updatedPermissions);
-            setSelectAllChecked(
-                updatedPermissions.every((entity) =>
-                    entity.permissions.every((permission) => permission.isAllowed)
-                )
-            );
-        };
-
-        mergePermissions();
+            };
+    
+            mergePermissions();
+        }
     }, [permissionsByEntity]);
 
 
@@ -80,6 +85,13 @@ const PeopleRoleList = ({ permissionsByEntity }: { permissionsByEntity: any[] })
             )
         );
     };
+
+    useEffect(() => {
+        if (calledItem) {
+            updatePermissions(mergedPermissions);
+            onProcessComplete();
+        }
+    }, [calledItem, mergedPermissions, updatePermissions, onProcessComplete]);
 
     return (
         <div className="inventual-role-list border-b border-solid border-border flex items-center">
