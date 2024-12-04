@@ -48,7 +48,7 @@ const ExpenseCategory = () => {
   const [orderBy, setOrderBy] = useState<keyof TMainCategoryInterface>('id');
   const [deleteExpenseCategory] = useDeleteExpenseCategoryMutation();
   const [addExpenseCategory] = useAddExepenseCategoryMutation();
-  const { data: expenseCategoryData,isLoading: expenseCategoryLoading ,refetch } = useGetAllExpenseCategoriesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
+  const { data: expenseCategoryData, isLoading: expenseCategoryLoading, refetch } = useGetAllExpenseCategoriesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
 
   // handle pagination 
@@ -73,17 +73,27 @@ const ExpenseCategory = () => {
   }
 
   // handle delete submission
+
+
+  // handle delete submission
   const handleDelete = async () => {
     if (expenseCategory > 0) {
       try {
-        await deleteExpenseCategory(expenseCategory);
+        const result = await deleteExpenseCategory(expenseCategory).unwrap();
         setOpen(false);
-        refetch()
-      } catch (err) {
-        console.error('Error deleting the expenseCategory:', err);
+        refetch();
+        toast.success("Expense category deleted successfully.");
+      } catch (error: any) {
+        if (error?.data?.message) {
+          toast.error(error.data.message);
+        } else {
+          toast.error("Failed to delete expense category. Please try again later.");
+        }
       }
     }
   };
+
+
   // Handlers for sorting
   const handleRequestSort = (property: keyof TMainCategoryInterface) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -159,6 +169,8 @@ const ExpenseCategory = () => {
     catch (error: any) {
       if (error?.data?.message) {
         toast.error(error?.data?.message);
+        setExpenseCategoryMainCategory('');
+        setExpenseCategorySubCategory('');
       } else {
         // Fallback error message
         toast.error("Failed to create Category. Please try again later.");
@@ -265,46 +277,56 @@ const ExpenseCategory = () => {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                        {expenseCategoryLoading ? (
-                              <tr>
-                                <td colSpan={3}>
-                                  <div className="inventual-loading-container">
-                                    <span className="inventual-loading"></span>
-                                  </div>
-                                </td>
-                              </tr>
-                            ) : sortedRows?.map((expenseCategory: any) => (
-                            <TableRow
-                              key={expenseCategory.id}
-                              hover
-                              onClick={() => handleClick(expenseCategory.id)}
-                              role="checkbox"
-                              aria-checked={isSelected(expenseCategory.id)}
-                              selected={isSelected(expenseCategory.id)}>
-                              <TableCell>
-                                <Checkbox checked={isSelected(expenseCategory.id)} />
-                              </TableCell>
-                              <TableCell>{expenseCategory.mainCategory}</TableCell>
-                              <TableCell>{Array.isArray(expenseCategory?.subCategory) ? expenseCategory.subCategory.join(', ') : expenseCategory?.subCategory}</TableCell>
-                              <TableCell>
-                                <div className="inventual-list-action-style">
-                                  <PopupState variant="popover">
-                                    {(popupState: any) => (
-                                      <React.Fragment>
-                                        <button className='' type='button' {...bindTrigger(popupState)}>
-                                          Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                        </button>
-                                        <Menu {...bindMenu(popupState)}>
-                                          <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i> Edit</MenuItem>
-                                          <MenuItem onClick={() => handleOpenDelete(expenseCategory.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                        </Menu>
-                                      </React.Fragment>
-                                    )}
-                                  </PopupState>
+                          {expenseCategoryLoading ? (
+                            <tr>
+                              <td colSpan={14}>
+                                <div className="inventual-loading-container">
+                                  <span className="inventual-loading"></span>
                                 </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                              </td>
+                            </tr>
+                          ) : expenseCategoryData?.message === "User is not authorized to do this task" ? (
+                            <tr>
+                              <td colSpan={14}>
+                                <div className="inventual-loading-container">
+                                  <h1>User is not authorized to do this task</h1>
+                                </div>
+                              </td>
+                            </tr>
+                          ) : (
+                            sortedRows?.map((expenseCategory: any) => (
+                              <TableRow
+                                key={expenseCategory.id}
+                                hover
+                                onClick={() => handleClick(expenseCategory.id)}
+                                role="checkbox"
+                                aria-checked={isSelected(expenseCategory.id)}
+                                selected={isSelected(expenseCategory.id)}>
+                                <TableCell>
+                                  <Checkbox checked={isSelected(expenseCategory.id)} />
+                                </TableCell>
+                                <TableCell>{expenseCategory.mainCategory}</TableCell>
+                                <TableCell>{Array.isArray(expenseCategory?.subCategory) ? expenseCategory.subCategory.join(', ') : expenseCategory?.subCategory}</TableCell>
+                                <TableCell>
+                                  <div className="inventual-list-action-style">
+                                    <PopupState variant="popover">
+                                      {(popupState: any) => (
+                                        <React.Fragment>
+                                          <button className='' type='button' {...bindTrigger(popupState)}>
+                                            Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                          </button>
+                                          <Menu {...bindMenu(popupState)}>
+                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i> Edit</MenuItem>
+                                            <MenuItem onClick={() => handleOpenDelete(expenseCategory.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                          </Menu>
+                                        </React.Fragment>
+                                      )}
+                                    </PopupState>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )}
                         </TableBody>
                       </Table>
                     </TableContainer>
