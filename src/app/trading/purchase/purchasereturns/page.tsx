@@ -8,7 +8,7 @@ const page = () => {
         <>
             <Wrapper>
                 <main>
-                    <BreadCrumb title='Purchase Returns' subTitleOne='Trading' subTitleTwo='Sale' subTitleThree='Purchase Returns' />
+                    <BreadCrumb title='Purchase Returns' subTitleOne='Trading' subTitleTwo='Purchase' subTitleThree='Purchase Returns' />
                     <PurchaseReturnsList/>
                 </main>
             </Wrapper>

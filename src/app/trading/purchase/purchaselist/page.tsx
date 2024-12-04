@@ -1,5 +1,5 @@
 import BreadCrumb from '@/components/sharedComponents/BreadCrumb';
-import ManagePurchaseList from '@/components/trading/purchase/managepurchase/ManagePurchaseList';
+import PurchaseList from '@/components/trading/purchase/purchaselist/purchaseList';
 import Wrapper from '@/layout/DefaultWrapper';
 import React from 'react';
 
@@ -8,8 +8,8 @@ const page = () => {
         <>
             <Wrapper>
                 <main>
-                    <BreadCrumb title='Purchase List' subTitleOne='Trading' subTitleTwo='Sale' subTitleThree='Manage Purchase' />
-                    <ManagePurchaseList/>
+                    <BreadCrumb title='Purchase List' subTitleOne='Trading' subTitleTwo='Purchase' subTitleThree='Purchase List' />
+                    <PurchaseList/>
                 </main>
             </Wrapper>
         </>

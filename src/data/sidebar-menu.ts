@@ -70,7 +70,7 @@ export const menuData: MenuItem[] = [
                 routeLink: "#",
                 subSubItems: [
                     { label: "Add Purchase", routeLink: "/trading/purchase/addpurchase" },
-                    { label: "Manage Purchase", routeLink: "/trading/purchase/managepurchase" },
+                    { label: "Purchase List", routeLink: "/trading/purchase/purchaselist" },
                     { label: "Purchase Returns", routeLink: "/trading/purchase/purchasereturns" },
                 ],
             },

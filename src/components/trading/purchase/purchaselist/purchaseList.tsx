@@ -27,7 +27,7 @@ import autoTable from 'jspdf-autotable'
 import { saveAs } from 'file-saver';
 
 
-const ManagePurchaseList = () => {
+const PurchaseList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
@@ -381,16 +381,25 @@ const handleDocument = (type: string) => {
                           </TableHead>
                           {/* Table body */}
                           <TableBody>
-                            {/* Rows */}
-                            {purchaseLoading ? (
-                              <tr>
-                                <td colSpan={8}>
-                                  <div className="inventual-loading-container">
-                                    <span className="inventual-loading"></span>
-                                  </div>
-                                </td>
-                              </tr>
-                            ) : sortedRows?.map((purchase: any) => (         
+                            {/* Rows */}    
+                              {purchaseLoading ? (
+                                <tr>
+                                  <td colSpan={14}>
+                                    <div className="inventual-loading-container">
+                                      <span className="inventual-loading"></span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : purchaseData?.message === "User is not authorized to do this task" ? (
+                                <tr>
+                                  <td colSpan={14}>
+                                    <div className="inventual-loading-container">
+                                      <h1>User is not authorized to do this task</h1>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : (
+                                sortedRows?.map((purchase: any) => (
                                 <TableRow
                                   key={purchase.id}
                                   hover
@@ -433,7 +442,7 @@ const handleDocument = (type: string) => {
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
                                               <MenuItem onClick={() => {handleViewPurchaseDialogOpen(purchase.id);  popupState.close()}}> <i className="fa-regular fa-eye"></i>View Purchase</MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/trading/sales/newsale'>View Purchase</Link></MenuItem>
+                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/trading/sales/newsale'>Add Purchase</Link></MenuItem>
                                               {/* <MenuItem onClick={() => {handleGenerateInvoiceDialogOpen();  popupState.close()}}> <i className="fa-regular fa-print"></i>Generate Invoice</MenuItem>
                                               <MenuItem onClick={() => {handleAddPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-circle-plus"></i>Add Purchase</MenuItem>
                                               <MenuItem onClick={() => {handleViewPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-money-check-dollar"></i>View Payment</MenuItem> */}
@@ -445,7 +454,8 @@ const handleDocument = (type: string) => {
                                     </div>
                                   </TableCell>
                                 </TableRow>
-                              ))}
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>
@@ -477,4 +487,4 @@ const handleDocument = (type: string) => {
   );
 }
 
-export default ManagePurchaseList
+export default PurchaseList

@@ -1,5 +1,6 @@
 "use client"
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import { styled } from '@mui/material/styles';
 import {
   Paper,
@@ -97,18 +98,26 @@ const PurchaseReturnsList = () => {
     setOpen(false);
   }
 
-  //  handle delete submission
-  const handleDelete = async () => {
-    if (purchaseReturn > 0) {
-      try {
-        await deletePurchaseReturn(purchaseReturn);
-        setOpen(false);
-        refetch()
-      } catch (err) {
-        console.error('Error deleting the purchase:', err);
+
+
+    // handle delete submission
+    const handleDelete = async () => {
+      if (purchaseReturn > 0) {
+        try {
+          const result = await deletePurchaseReturn(purchaseReturn).unwrap();
+          setOpen(false);
+          refetch();
+          toast.success("Product deleted successfully.");
+        } catch (error: any) {
+          if (error?.data?.message) {
+            toast.error(error.data.message);
+          } else {
+            toast.error("Failed to delete Product. Please try again later.");
+          }
+        }
       }
-    }
-  };
+    };
+  
 
 
   // Handlers for sorting
@@ -372,15 +381,24 @@ const PurchaseReturnsList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {purchaseReturnLoading ? (
-                              <tr>
-                                <td colSpan={7}>
-                                  <div className="inventual-loading-container">
-                                    <span className="inventual-loading"></span>
-                                  </div>
-                                </td>
-                              </tr>
-                            ) : sortedRows?.map((purchaseReturn: any) => (
+                              {purchaseReturnLoading ? (
+                                <tr>
+                                  <td colSpan={14}>
+                                    <div className="inventual-loading-container">
+                                      <span className="inventual-loading"></span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : purchaseReturnData?.message === "User is not authorized to do this task" ? (
+                                <tr>
+                                  <td colSpan={14}>
+                                    <div className="inventual-loading-container">
+                                      <h1>User is not authorized to do this task</h1>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : (
+                                sortedRows?.map((purchaseReturn: any) => (
                                 <TableRow
                                   key={purchaseReturn.id}
                                   hover
@@ -421,7 +439,8 @@ const PurchaseReturnsList = () => {
                                     </div>
                                   </TableCell>
                                 </TableRow>
-                              ))}
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>
