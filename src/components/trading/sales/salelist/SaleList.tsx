@@ -33,25 +33,25 @@ const SaleList = () => {
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof TSaleInterface>('id');
-  const [selectedSaleId, setSelectedSaleId] = useState<number | undefined>(); 
+  const [selectedSaleId, setSelectedSaleId] = useState<number | undefined>();
   const [searchQuery, setSearchQuery] = useState('');
   const { data: salesData, error: salesError, isLoading: salesLoading, refetch } = useGetAllSalesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
 
 
-    // handle pagination 
-    const handlePageChange = (event: unknown, newPage: number) => {
-      setCurrentPageNumber(newPage);
-      refetch();
-    };
-  
-      // handle pagination 
-      const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCurrentPageSize(parseInt(event.target.value, 10));
-        setCurrentPageNumber(1); 
-        refetch();
-      };
-    
+  // handle pagination 
+  const handlePageChange = (event: unknown, newPage: number) => {
+    setCurrentPageNumber(newPage);
+    refetch();
+  };
+
+  // handle pagination 
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentPageSize(parseInt(event.target.value, 10));
+    setCurrentPageNumber(1);
+    refetch();
+  };
+
 
 
   // AddPayment Popup Start
@@ -97,9 +97,9 @@ const SaleList = () => {
   };
   const handleViewSaleDialogClose = () => {
     setOpenViewSaleDialog(false);
-    setSelectedSaleId(undefined); 
+    setSelectedSaleId(undefined);
   };
-  
+
 
   // Handlers for sorting
   const handleRequestSort = (property: keyof TSaleInterface) => {
@@ -146,18 +146,18 @@ const SaleList = () => {
   };
 
   const filteredData = salesData?.data.filter((item: any) =>
-    item.customerName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    item.referenceNumber.toLowerCase().includes(searchQuery.toLowerCase()) 
+    item.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.referenceNumber.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
   // Function to sort data
   const sortedRows = filteredData.slice().sort((a: any, b: any) => {
     if (!orderBy) return 0;
     const isAsc = order === 'asc';
-    const aValue = a[orderBy as keyof TSaleInterface]; 
-    const bValue = b[orderBy as keyof TSaleInterface]; 
+    const aValue = a[orderBy as keyof TSaleInterface];
+    const bValue = b[orderBy as keyof TSaleInterface];
     if (aValue === undefined || bValue === undefined) {
-      return 0; 
+      return 0;
     }
 
     if (aValue < bValue) {
@@ -171,7 +171,7 @@ const SaleList = () => {
 
   const handleDocument = (type: string) => {
     if (!salesData?.data?.length) return;
-  
+
     const headers = [
       "ID",
       "Sale Date",
@@ -183,7 +183,7 @@ const SaleList = () => {
       "Total Amount",
       "Quantity Sold",
     ];
-  
+
     // Map data for CSV as strings and for PDF as arrays
     const rows = salesData.data.map((item: any) => [
       item.id,
@@ -196,40 +196,40 @@ const SaleList = () => {
       item.totalAmount,
       item.totalQuantitySold
     ]);
-  
+
     if (type === "csv") {
       // Convert rows to CSV format (string)
       const csvRows = rows.map((row: (string | number)[]) => row.join(","));
       const csvContent = [headers.join(","), ...csvRows].join("\n");
-  
+
       // Create a Blob and trigger download
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       saveAs(blob, "sale_list.csv");
     } else if (type === "pdf") {
       // Generate PDF
       const doc = new jsPDF();
-  
+
       autoTable(doc, {
         head: [headers],
         body: rows,
         startY: 20,
         theme: "grid",
-        headStyles: { fillColor: [22, 160, 133] }, 
+        headStyles: { fillColor: [22, 160, 133] },
       });
-  
+
       // Save the PDF
       doc.save("sale_list.pdf");
     }
   };
 
-  
+
   return (
 
     <>
       <div className="inventual-content-area px-4 sm:px-7">
         <div className="inventual-salelist-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
           <div className="inventual-product-top-btn flex flex-wrap gap-5 mb-7">
-          <Link className='inventual-btn secondary-btn' href="/trading/sales/newsale"><span><i className="fa-regular fa-circle-plus"></i></span>Add Sale</Link>
+            <Link className='inventual-btn secondary-btn' href="/trading/sales/newsale"><span><i className="fa-regular fa-circle-plus"></i></span>Add Sale</Link>
             <div className="file-import-btn-wrapper">
               <Link className='inventual-btn primary-btn' href="/report/salereport"><span><i className="fa-regular fa-file-chart-column"></i></span>Sales Reports</Link>
             </div>
@@ -238,11 +238,11 @@ const SaleList = () => {
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">
               <div className="col-span-12 md:col-span-7 lg:col-span-7 xl:col-span-5">
                 <div className="inventual-table-header-search relative">
-                <input
+                  <input
                     type="text"
                     placeholder="Search List"
-                    value={searchQuery}  
-                    onChange={handleSearchChange} 
+                    value={searchQuery}
+                    onChange={handleSearchChange}
                   />
                   <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                 </div>
@@ -257,9 +257,9 @@ const SaleList = () => {
                             <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={() => {handleRequestSort("salesDate"); popupState.close()}}>Date</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("customerName"); popupState.close()}}>Customer Name</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("paymentStatus"); popupState.close()}}>Payment Status</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("salesDate"); popupState.close() }}>Date</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("customerName"); popupState.close() }}>Customer Name</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("paymentStatus"); popupState.close() }}>Payment Status</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -382,13 +382,22 @@ const SaleList = () => {
                             {/* Rows */}
                             {salesLoading ? (
                               <tr>
-                                <td colSpan={9}>
+                                <td colSpan={14}>
                                   <div className="inventual-loading-container">
                                     <span className="inventual-loading"></span>
                                   </div>
                                 </td>
                               </tr>
-                            ) : sortedRows?.map((sales: any) => (                             
+                            ) : salesData?.message === "User is not authorized to do this task" ? (
+                              <tr>
+                                <td colSpan={14}>
+                                  <div className="inventual-loading-container">
+                                    <h1>User is not authorized to do this task</h1>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : (
+                              sortedRows?.map((sales: any) => (
                                 <TableRow
                                   key={sales.id}
                                   hover
@@ -412,7 +421,7 @@ const SaleList = () => {
                                         <span className='badge badge-success'>{sales.saleStatus}</span>
                                       ) : (
                                         sales.saleStatus.toLowerCase() === "unpaid" ? (
-                                          <span className='badge badge-warning'>{sales.saleStatus}</span> 
+                                          <span className='badge badge-warning'>{sales.saleStatus}</span>
                                         ) : (<span className='badge badge-teal'>{sales.saleStatus}</span>)
                                       )
                                     }
@@ -429,38 +438,38 @@ const SaleList = () => {
                                               Action <i className="fa-sharp fa-solid fa-sort-down"></i>
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={() => {handleViewSale(sales.id);  popupState.close()}}> <i className="fa-regular fa-eye"></i>View Sale</MenuItem>
+                                              <MenuItem onClick={() => { handleViewSale(sales.id); popupState.close() }}> <i className="fa-regular fa-eye"></i>View Sale</MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/trading/sales/newsale'>Add Sale</Link></MenuItem>
-                                              <MenuItem onClick={() => {handleGenerateInvoiceDialogOpen(sales.id);  popupState.close()}}> <i className="fa-regular fa-print"></i>Generate Invoice</MenuItem>
+                                              <MenuItem onClick={() => { handleGenerateInvoiceDialogOpen(sales.id); popupState.close() }}> <i className="fa-regular fa-print"></i>Generate Invoice</MenuItem>
                                               <MenuItem
-                                              onClick={() => {
-                                                if (sales.saleStatus !== "Paid") {
-                                                  handleAddPaymentDialogOpen(sales.id);
-                                                  popupState.close();
-                                                }
-                                              }}
-                                              disabled={sales.saleStatus === "Paid"}
-                                              style={{
-                                                color: sales.saleStatus === "Paid" ? '#c0c0c0' : 'inherit',
-                                                pointerEvents: sales.saleStatus === "Paid" ? 'none' : 'auto'
-                                              }}
-                                            >
-                                              <i className={`fa-regular fa-circle-plus ${sales.saleStatus !== "Paid" ? '' : 'disabled'}`}></i>
-                                              Add Payment
-                                            </MenuItem>
+                                                onClick={() => {
+                                                  if (sales.saleStatus !== "Paid") {
+                                                    handleAddPaymentDialogOpen(sales.id);
+                                                    popupState.close();
+                                                  }
+                                                }}
+                                                disabled={sales.saleStatus === "Paid"}
+                                                style={{
+                                                  color: sales.saleStatus === "Paid" ? '#c0c0c0' : 'inherit',
+                                                  pointerEvents: sales.saleStatus === "Paid" ? 'none' : 'auto'
+                                                }}
+                                              >
+                                                <i className={`fa-regular fa-circle-plus ${sales.saleStatus !== "Paid" ? '' : 'disabled'}`}></i>
+                                                Add Payment
+                                              </MenuItem>
                                               {/* <MenuItem onClick={() => {handleViewPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-money-check-dollar"></i>View Payment</MenuItem> */}
 
                                               <MenuItem
-                                              onClick={() => {if (sales.saleStatus == "Paid") {handleViewPaymentDialogOpen(sales.id); popupState.close()}}}
-                                              disabled={sales.saleStatus !== "Paid"}
-                                              style={{
-                                                color: sales.saleStatus !== "Paid" ? '#c0c0c0' : 'inherit',
-                                                pointerEvents: sales.saleStatus !== "Paid" ? 'none' : 'auto'
-                                              }}
-                                            >
-                                              <i className={`fa-regular fa-money-check-dollar ${sales.saleStatus === "Paid" ? '' : 'disabled'}`}></i>
-                                              View Payment
-                                            </MenuItem>       
+                                                onClick={() => { if (sales.saleStatus == "Paid") { handleViewPaymentDialogOpen(sales.id); popupState.close() } }}
+                                                disabled={sales.saleStatus !== "Paid"}
+                                                style={{
+                                                  color: sales.saleStatus !== "Paid" ? '#c0c0c0' : 'inherit',
+                                                  pointerEvents: sales.saleStatus !== "Paid" ? 'none' : 'auto'
+                                                }}
+                                              >
+                                                <i className={`fa-regular fa-money-check-dollar ${sales.saleStatus === "Paid" ? '' : 'disabled'}`}></i>
+                                                View Payment
+                                              </MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
                                           </React.Fragment>
@@ -469,7 +478,8 @@ const SaleList = () => {
                                     </div>
                                   </TableCell>
                                 </TableRow>
-                              ))}
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>
@@ -495,7 +505,7 @@ const SaleList = () => {
       <ViewSalePopup saleId={selectedSaleId} open={openViewSaleDialog} handleViewSaleDialogClose={handleViewSaleDialogClose} />
       <TradingSalesListAddPayemnt saleId={selectedSaleId} open={openeAddPaymentDialog} handleAddPaymentDialogClose={handleAddPaymentDialogClose} />
       <TradingSalesListViewPayment saleId={selectedSaleId} open={openeViewPaymentDialog} handleViewPaymentDialogClose={handleViewPaymentDialogClose} />
-      <TradingSalesListInvoice  saleId={selectedSaleId} open={openeGenerateInvoiceDialog} handleGenerateInvoiceDialogClose={handleGenerateInvoiceDialogClose} />
+      <TradingSalesListInvoice saleId={selectedSaleId} open={openeGenerateInvoiceDialog} handleGenerateInvoiceDialogClose={handleGenerateInvoiceDialogClose} />
     </>
 
 

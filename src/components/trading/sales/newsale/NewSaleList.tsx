@@ -8,7 +8,6 @@ import { NumericFormat } from 'react-number-format';
 import { useCreateSaleMutation } from '@/services/Sales/Sales';
 import { useGetWarehouseNamesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetCustomerNamesQuery } from '@/services/People/Customer';
-// import { useGetBillerNamesQuery } from '@/services/People/Biller';
 import { useGetAllBillersNewQuery } from '@/services/User/User';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
 import { TProductInterface, TWarehouseInterface, TCustomerInterface, MoneyFormat, TBillerInterfaceTwo } from '@/interFace/interFace';

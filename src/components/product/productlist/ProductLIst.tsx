@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { toast } from 'react-toastify';
+
 
 import Link from 'next/link';
 import {
@@ -64,15 +66,22 @@ const ProductList = () => {
     setOpen(false);
   }
 
+
+
   // handle delete submission
   const handleDelete = async () => {
     if (product > 0) {
       try {
-        await deleteProduct(product);
+        const result = await deleteProduct(product).unwrap();
         setOpen(false);
-        refetch()
-      } catch (err) {
-        console.error('Error deleting the category:', err);
+        refetch();
+        toast.success("Product deleted successfully.");
+      } catch (error: any) {
+        if (error?.data?.message) {
+          toast.error(error.data.message);
+        } else {
+          toast.error("Failed to delete Product. Please try again later.");
+        }
       }
     }
   };
@@ -394,7 +403,7 @@ const ProductList = () => {
                             {/* Rows */}
                             {productLoading ? (
                               <tr>
-                                <td colSpan={6}>
+                                <td colSpan={14}>
                                   <div className="inventual-loading-container">
                                     <span className="inventual-loading"></span>
                                   </div>
@@ -402,7 +411,7 @@ const ProductList = () => {
                               </tr>
                             ) : productData?.message === "User is not authorized to do this task" ? (
                               <tr>
-                                <td colSpan={11}>
+                                <td colSpan={14}>
                                   <div className="inventual-loading-container">
                                     <h1>User is not authorized to do this task</h1>
                                   </div>
