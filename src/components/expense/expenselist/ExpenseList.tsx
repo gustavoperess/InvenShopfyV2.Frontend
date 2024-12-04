@@ -1,5 +1,6 @@
 "use client"
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 import {
   Paper,
   Table,
@@ -91,15 +92,21 @@ const ExpenseList = () => {
     setOpen(false);
   }
 
+
   // handle delete submission
   const handleDelete = async () => {
     if (expense > 0) {
       try {
-        await deleteExpense(expense);
+        const result = await deleteExpense(expense).unwrap();
         setOpen(false);
-        refetch()
-      } catch (err) {
-        console.error('Error deleting the expense:', err);
+        refetch();
+        toast.success("Product deleted successfully.");
+      } catch (error: any) {
+        if (error?.data?.message) {
+          toast.error(error.data.message);
+        } else {
+          toast.error("Failed to delete Product. Please try again later.");
+        }
       }
     }
   };
@@ -383,15 +390,24 @@ const ExpenseList = () => {
                           {/* Table body */}
                           <TableBody>
                             {/* Rows */}
-                            {expenseLoading ? (
-                              <tr>
-                                <td colSpan={9}>
-                                  <div className="inventual-loading-container">
-                                    <span className="inventual-loading"></span>
-                                  </div>
-                                </td>
-                              </tr>
-                            ) : sortedRows?.map((expense: any) => (
+                              {expenseLoading ? (
+                                <tr>
+                                  <td colSpan={14}>
+                                    <div className="inventual-loading-container">
+                                      <span className="inventual-loading"></span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : expenseData?.message === "User is not authorized to do this task" ? (
+                                <tr>
+                                  <td colSpan={14}>
+                                    <div className="inventual-loading-container">
+                                      <h1>User is not authorized to do this task</h1>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : (
+                                sortedRows?.map((expense: any) => (
                               <TableRow
                                 key={expense.id}
                                 hover
@@ -469,7 +485,8 @@ const ExpenseList = () => {
                                   </div>
                                 </TableCell>
                               </TableRow>
-                            ))}
+                            ))
+                          )}
                           </TableBody>
                         </Table>
                       </TableContainer>
