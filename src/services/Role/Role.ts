@@ -9,6 +9,7 @@ export const roleApi = createApi({
         baseUrl: `${BACKEND_URL}/v2/identity/`,
         credentials: 'include', 
     }),
+    tagTypes: ['Roles'],  
     endpoints: (builder) => ({
         getAllRoles: builder.query<any, void>({
             query: () => ({
@@ -16,6 +17,7 @@ export const roleApi = createApi({
                 method: "GET",
     
             }),
+            providesTags: ['Roles'], 
         }),
         getMangerAdminUsers: builder.query<any, void>({
             query: () => ({
@@ -23,6 +25,7 @@ export const roleApi = createApi({
                 method: "GET",
     
             }),
+            providesTags: ['Roles'], 
         }),
         createRole: builder.mutation<any, any>({
             query: (body) => ({
@@ -30,6 +33,7 @@ export const roleApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['Roles']
         }),
         assignPermissionsToRole: builder.mutation<any, any>({
             query: (body) => ({
@@ -37,17 +41,20 @@ export const roleApi = createApi({
                 method: 'POST',
                 body,
             }),
+            invalidatesTags: ['Roles']
         }),
         getRoleByName: builder.query<any, string>({
             query: (name) => ({
                 url: `get-role-by-partial/${name}`,
-            })
+            }),
+            providesTags: ['Roles'], 
         }),
         deleteRole: builder.mutation<any, number>({
             query: (id) => ({
                 url: `delete-role-custom/${id}`,
                 method: 'DELETE',
             }),
+            invalidatesTags: ['Roles']
         }),
     })
 });

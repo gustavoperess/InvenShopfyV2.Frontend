@@ -60,7 +60,7 @@ const RolePermissionList = () => {
 
         try {
             await assingRole(jsonData).unwrap();
-            toast.success("Permissions assigned successfully!");
+            toast.success("New permissions will be assigned next time you log in");
             setCallingItem(false)
             setIsReadyToSubmit(false);
             refetch();

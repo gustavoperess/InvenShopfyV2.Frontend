@@ -146,62 +146,62 @@ const ProductList = () => {
   });
 
 
-const handleDocument = (type: string) => {
-  if (!productData?.data?.length) return;
+  const handleDocument = (type: string) => {
+    if (!productData?.data?.length) return;
 
-  const headers = [
-    "ID",
-    "Product Name",
-    "Product Code",
-    "Category Name",
-    "Brand Name",
-    "Stock Quantity",
-    "Product Price",
-    "Sub Categories",
-    "Tax Percentage",
-    "Unit Name",
-    "Margin Range",
-  ];
+    const headers = [
+      "ID",
+      "Product Name",
+      "Product Code",
+      "Category Name",
+      "Brand Name",
+      "Stock Quantity",
+      "Product Price",
+      "Sub Categories",
+      "Tax Percentage",
+      "Unit Name",
+      "Margin Range",
+    ];
 
-  // Map data for CSV as strings and for PDF as arrays
-  const rows = productData.data.map((item: any) => [
-    item.id,
-    item.productName,
-    item.productCode,
-    item.categoryName,
-    item.brandName,
-    item.stockQuantity,
-    item.productPrice,
-    item.subCategories,
-    item.taxPercentage,
-    item.unitName,
-    item.marginRange,
-  ]);
+    // Map data for CSV as strings and for PDF as arrays
+    const rows = productData.data.map((item: any) => [
+      item.id,
+      item.productName,
+      item.productCode,
+      item.categoryName,
+      item.brandName,
+      item.stockQuantity,
+      item.productPrice,
+      item.subCategories,
+      item.taxPercentage,
+      item.unitName,
+      item.marginRange,
+    ]);
 
-  if (type === "csv") {
-    // Convert rows to CSV format (string)
-    const csvRows = rows.map((row: (string | number)[]) => row.join(","));
-    const csvContent = [headers.join(","), ...csvRows].join("\n");
+    if (type === "csv") {
+      // Convert rows to CSV format (string)
+      const csvRows = rows.map((row: (string | number)[]) => row.join(","));
+      const csvContent = [headers.join(","), ...csvRows].join("\n");
 
-    // Create a Blob and trigger download
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, "product_list.csv");
-  } else if (type === "pdf") {
-    // Generate PDF
-    const doc = new jsPDF();
+      // Create a Blob and trigger download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      saveAs(blob, "product_list.csv");
+    } else if (type === "pdf") {
+      // Generate PDF
+      const doc = new jsPDF();
 
-    autoTable(doc, {
-      head: [headers],
-      body: rows,
-      startY: 20,
-      theme: "grid",
-      headStyles: { fillColor: [22, 160, 133] }, 
-    });
+      autoTable(doc, {
+        head: [headers],
+        body: rows,
+        startY: 20,
+        theme: "grid",
+        headStyles: { fillColor: [22, 160, 133] },
+      });
 
-    // Save the PDF
-    doc.save("product_list.pdf");
-  }
-};
+      // Save the PDF
+      doc.save("product_list.pdf");
+    }
+  };
 
 
 
@@ -394,69 +394,79 @@ const handleDocument = (type: string) => {
                             {/* Rows */}
                             {productLoading ? (
                               <tr>
-                                <td colSpan={11}>
+                                <td colSpan={6}>
                                   <div className="inventual-loading-container">
                                     <span className="inventual-loading"></span>
                                   </div>
                                 </td>
                               </tr>
-                            ) : sortedRows?.map((product: any) => (
-                              <TableRow
-                                key={product.id}
-                                hover
-                                onClick={() => handleClick(product.id)}
-                                role="checkbox"
-                                aria-checked={isSelected(product.id)}
-                                selected={isSelected(product.id)}
-                              >
-                                {/* Checkbox for row selection */}
-                                <TableCell>
-                                  <Checkbox checked={isSelected(product.id)} />
-                                </TableCell>
-                                {/* Data cells */}
-                                <TableCell>{product.id}</TableCell>
-                                <TableCell>{product.productName}</TableCell>
-                                <TableCell>
-                                  <div className="min-h-[70px] inline-flex items-center justify-cente">
-                                    <div className="inner px-2 py-2 bg-[#F4F5F8] rounded-[5px]">
-                                      <Image
-                                        src={product.productImage}
-                                        width="0"
-                                        height="0"
-                                        alt={product.productName}
-                                        sizes="100vw"
-                                        style={{ maxHeight: '80px', width: '80px', objectFit: 'contain' }}
-                                      />
+                            ) : productData?.message === "User is not authorized to do this task" ? (
+                              <tr>
+                                <td colSpan={11}>
+                                  <div className="inventual-loading-container">
+                                    <h1>User is not authorized to do this task</h1>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : (
+                              sortedRows?.map((product: any) => (
+                                <TableRow
+                                  key={product.id}
+                                  hover
+                                  onClick={() => handleClick(product.id)}
+                                  role="checkbox"
+                                  aria-checked={isSelected(product.id)}
+                                  selected={isSelected(product.id)}
+                                >
+                                  {/* Checkbox for row selection */}
+                                  <TableCell>
+                                    <Checkbox checked={isSelected(product.id)} />
+                                  </TableCell>
+                                  {/* Data cells */}
+                                  <TableCell>{product.id}</TableCell>
+                                  <TableCell>{product.productName}</TableCell>
+                                  <TableCell>
+                                    <div className="min-h-[70px] inline-flex items-center justify-cente">
+                                      <div className="inner px-2 py-2 bg-[#F4F5F8] rounded-[5px]">
+                                        <Image
+                                          src={product.productImage}
+                                          width="0"
+                                          height="0"
+                                          alt={product.productName}
+                                          sizes="100vw"
+                                          style={{ maxHeight: '80px', width: '80px', objectFit: 'contain' }}
+                                        />
+                                      </div>
                                     </div>
-                                  </div>
-                                </TableCell>
-                                <TableCell>{MoneyFormat.format(product.productPrice)}</TableCell>
-                                <TableCell>{product.taxPercentage}%</TableCell>
-                                <TableCell>{product.marginRange}</TableCell>
-                                <TableCell>{product.productCode}</TableCell>
-                                <TableCell>{product.stockQuantity}</TableCell>
-                                <TableCell>{product.categoryName} [{product.subCategories}]</TableCell>
-                                <TableCell>{product.unitName}</TableCell>
-                                <TableCell>{product.brandName}</TableCell>
-                                <TableCell>
-                                  <div className="inventual-list-action-style">
-                                    <PopupState variant="popover">
-                                      {(popupState: any) => (
-                                        <React.Fragment>
-                                          <button className='' type='button' {...bindTrigger(popupState)}>
-                                            Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                          </button>
-                                          <Menu {...bindMenu(popupState)}>
-                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href="/product/addadjustment">Edit</Link></MenuItem>
-                                            <MenuItem onClick={() => handleOpenDelete(product.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                          </Menu>
-                                        </React.Fragment>
-                                      )}
-                                    </PopupState>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                                  </TableCell>
+                                  <TableCell>{MoneyFormat.format(product.productPrice)}</TableCell>
+                                  <TableCell>{product.taxPercentage}%</TableCell>
+                                  <TableCell>{product.marginRange}</TableCell>
+                                  <TableCell>{product.productCode}</TableCell>
+                                  <TableCell>{product.stockQuantity}</TableCell>
+                                  <TableCell>{product.categoryName} [{product.subCategories}]</TableCell>
+                                  <TableCell>{product.unitName}</TableCell>
+                                  <TableCell>{product.brandName}</TableCell>
+                                  <TableCell>
+                                    <div className="inventual-list-action-style">
+                                      <PopupState variant="popover">
+                                        {(popupState: any) => (
+                                          <React.Fragment>
+                                            <button className='' type='button' {...bindTrigger(popupState)}>
+                                              Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                            </button>
+                                            <Menu {...bindMenu(popupState)}>
+                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href="/product/addadjustment">Edit</Link></MenuItem>
+                                              <MenuItem onClick={() => handleOpenDelete(product.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                            </Menu>
+                                          </React.Fragment>
+                                        )}
+                                      </PopupState>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>

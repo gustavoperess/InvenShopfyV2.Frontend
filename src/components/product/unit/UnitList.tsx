@@ -64,11 +64,16 @@ const UnitList = () => {
     const handleDelete = async () => {
         if (unit > 0) {
             try {
-                await deleteUnit(unit);
+                const result = await deleteUnit(unit).unwrap();
                 setOpen(false);
-                refetch()
-            } catch (err) {
-                console.error('Error deleting the unit:', err);
+                refetch();
+                toast.success("Unit deleted successfully.");
+            } catch (error: any) {
+                if (error?.data?.message) {
+                    toast.error(error.data.message);
+                } else {
+                    toast.error("Failed to delete Unit. Please try again later.");
+                }
             }
         }
     };
@@ -146,6 +151,8 @@ const UnitList = () => {
         catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);
+                setUnitName("");
+                setunitShortName("");
             } else {
                 // Fallback error message
                 toast.error("Failed to create product create. Please try again later.")
@@ -252,45 +259,55 @@ const UnitList = () => {
                                                 <TableBody>
                                                     {unitLoading ? (
                                                         <tr>
-                                                            <td colSpan={3}>
+                                                            <td colSpan={5}>
                                                                 <div className="inventual-loading-container">
                                                                     <span className="inventual-loading"></span>
                                                                 </div>
                                                             </td>
                                                         </tr>
-                                                    ) : sortedRows?.map((unit: any) => (
-                                                        <TableRow
-                                                            key={unit.id}
-                                                            hover
-                                                            onClick={() => handleClick(unit.id)}
-                                                            role="checkbox"
-                                                            aria-checked={isSelected(unit.id)}
-                                                            selected={isSelected(unit.id)}
-                                                        >
-                                                            <TableCell>
-                                                                <Checkbox checked={isSelected(unit.id)} />
-                                                            </TableCell>
-                                                            <TableCell>{unit.unitName}</TableCell>
-                                                            <TableCell>{unit.unitShortName}</TableCell>
-                                                            <TableCell>
-                                                                <div className="inventual-list-action-style">
-                                                                    <PopupState variant="popover">
-                                                                        {(popupState: any) => (
-                                                                            <React.Fragment>
-                                                                                <button className='' type='button' {...bindTrigger(popupState)}>
-                                                                                    Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                                                                </button>
-                                                                                <Menu {...bindMenu(popupState)}>
-                                                                                    <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
-                                                                                    <MenuItem onClick={() => handleOpenDelete(unit.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                                                                </Menu>
-                                                                            </React.Fragment>
-                                                                        )}
-                                                                    </PopupState>
+                                                    ) : unitData?.message === "User is not authorized to do this task" ? (
+                                                        <tr>
+                                                            <td colSpan={5}>
+                                                                <div className="inventual-loading-container">
+                                                                    <h1>User is not authorized to do this task</h1>
                                                                 </div>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
+                                                            </td>
+                                                        </tr>
+                                                    ) : (
+                                                        sortedRows?.map((unit: any) => (
+                                                            <TableRow
+                                                                key={unit.id}
+                                                                hover
+                                                                onClick={() => handleClick(unit.id)}
+                                                                role="checkbox"
+                                                                aria-checked={isSelected(unit.id)}
+                                                                selected={isSelected(unit.id)}
+                                                            >
+                                                                <TableCell>
+                                                                    <Checkbox checked={isSelected(unit.id)} />
+                                                                </TableCell>
+                                                                <TableCell>{unit.unitName}</TableCell>
+                                                                <TableCell>{unit.unitShortName}</TableCell>
+                                                                <TableCell>
+                                                                    <div className="inventual-list-action-style">
+                                                                        <PopupState variant="popover">
+                                                                            {(popupState: any) => (
+                                                                                <React.Fragment>
+                                                                                    <button className='' type='button' {...bindTrigger(popupState)}>
+                                                                                        Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                                                                    </button>
+                                                                                    <Menu {...bindMenu(popupState)}>
+                                                                                        <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
+                                                                                        <MenuItem onClick={() => handleOpenDelete(unit.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                                                                    </Menu>
+                                                                                </React.Fragment>
+                                                                            )}
+                                                                        </PopupState>
+                                                                    </div>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        ))
+                                                    )}
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>
