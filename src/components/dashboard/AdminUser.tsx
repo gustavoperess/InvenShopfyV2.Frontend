@@ -20,6 +20,9 @@ const AdminUser = () => {
             const words = string.split(" ");
             const firstName = words[0];
             const lastName = words[words.length - 1];
+            if(firstName.length > 7) {
+                return firstName
+            } 
             return `${firstName} ${lastName}`;
         }
     };
