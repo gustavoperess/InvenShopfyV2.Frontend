@@ -7,7 +7,7 @@ import { EntityPermissions, RoleListProps } from '@/interFace/interFace';
 const DEFAULT_REPORT_PERMISSIONS: EntityPermissions[] = [
     { entityType: 'Report', permissions: [
         { action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, 
-        { action: 'Edit', isAllowed: false }, { action: 'Delete', isAllowed: false }]}
+        { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }]}
 ];
 
 const ReportRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledItem, onProcessComplete, updatePermissions, setIsReadyToSubmit }) => {
@@ -96,8 +96,8 @@ const ReportRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledIt
 
 
     return (
-        <div className="inventual-role-list border-b border-solid border-border flex items-center">
-            <div className="inventual-role-left">
+        <div className="inventual-role-list border-b border-solid border-border flex items-center h-[150px]">
+            <div className="inventual-role-left flex items-center">
                 <div className="inventual-role-topic">
                     <h5 className="text-[18px] font-semibold text-heading mb-4">Reports</h5>
                     <div className="inventual-checkbox-style ms-3">
@@ -118,7 +118,7 @@ const ReportRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledIt
                 {mergedPermissions.map((entity) => (
                     <div
                         key={entity.entityType}
-                        className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border"
+                      className="inventual-role-category-list h-[150px] flex items-center border-b border-solid border-border"
                     >
                         <div className="inventual-role-category">
                             <h5>{entity.entityType}</h5>

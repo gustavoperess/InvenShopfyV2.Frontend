@@ -26,6 +26,9 @@ import { TSupplierInterface } from '@/interFace/interFace';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { toast } from 'react-toastify';
+
+
 
 const SupplierList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
@@ -66,14 +69,21 @@ const SupplierList = () => {
   const handleDelete = async () => {
     if (supplier > 0) {
       try {
-        await deleteSupplier(supplier);
+        await deleteSupplier(supplier).unwrap();
         setOpen(false);
-        refetch()
-      } catch (err) {
-        console.error('Error deleting the supplier:', err);
+        refetch();
+        toast.success("Supplier deleted successfully.");
+      } catch (error: any) {
+        if (error?.data?.message) {
+          toast.error(error.data.message);
+        } else {
+          toast.error("Failed to delete Supplier. Please try again later.");
+        }
       }
     }
   };
+
+
   // Handlers for sorting
   const handleRequestSort = (property: keyof TSupplierInterface) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -119,8 +129,8 @@ const SupplierList = () => {
   };
 
   const filteredData = supplierData?.data.filter((item: any) =>
-    item.supplierName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    item.company.toLowerCase().includes(searchQuery.toLowerCase()) 
+    item.supplierName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.company.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
   // Function to sort data
@@ -144,7 +154,7 @@ const SupplierList = () => {
 
   const handleDocument = (type: string) => {
     if (!supplierData?.data?.length) return;
-  
+
     const headers = [
       "ID",
       "Name",
@@ -156,7 +166,7 @@ const SupplierList = () => {
       "Address",
       "Zip Code",
     ];
-  
+
     // Map data for CSV as strings and for PDF as arrays
     const rows = supplierData.data.map((item: any) => [
       item.id,
@@ -169,32 +179,32 @@ const SupplierList = () => {
       item.address,
       item.zipCode,
     ]);
-  
+
     if (type === "csv") {
       // Convert rows to CSV format (string)
       const csvRows = rows.map((row: (string | number)[]) => row.join(","));
       const csvContent = [headers.join(","), ...csvRows].join("\n");
-  
+
       // Create a Blob and trigger download
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       saveAs(blob, "supplier_list.csv");
     } else if (type === "pdf") {
       // Generate PDF
       const doc = new jsPDF();
-  
+
       autoTable(doc, {
         head: [headers],
         body: rows,
         startY: 20,
         theme: "grid",
-        headStyles: { fillColor: [22, 160, 133] }, 
+        headStyles: { fillColor: [22, 160, 133] },
       });
-  
+
       // Save the PDF
       doc.save("supplier_list.pdf");
     }
   };
-  
+
   return (
 
     <>
@@ -202,17 +212,17 @@ const SupplierList = () => {
         <div className="inventual-report-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
           <div className="inventual-product-top-btn flex flex-wrap gap-5 mb-7">
             <Link className='inventual-btn secondary-btn' href="/people/addsupplier"><span><i className="fa-regular fa-circle-plus"></i></span> Add Supplier</Link>
-           
+
           </div>
           <div className="inventual-table-header-search-area">
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">
               <div className="col-span-12 md:col-span-7 lg:col-span-7 xl:col-span-5">
                 <div className="inventual-table-header-search relative">
-                <input
+                  <input
                     type="text"
                     placeholder="Search List"
-                    value={searchQuery}  
-                    onChange={handleSearchChange} 
+                    value={searchQuery}
+                    onChange={handleSearchChange}
                   />
                   <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                 </div>
@@ -298,7 +308,7 @@ const SupplierList = () => {
                                 >
                                   email
                                 </TableSortLabel>
-                                
+
                               </TableCell>
                               <TableCell>
                                 <TableSortLabel
@@ -326,51 +336,61 @@ const SupplierList = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                          {supplierLoading ? (
+                            {supplierLoading ? (
                               <tr>
-                                <td colSpan={6}>
+                                <td colSpan={10}>
                                   <div className="inventual-loading-container">
                                     <span className="inventual-loading"></span>
                                   </div>
                                 </td>
                               </tr>
-                            ) : sortedRows?.map((supplier: any) => (
-                              <TableRow
-                                key={supplier.id}
-                                hover
-                                onClick={() => handleClick(supplier.id)}
-                                role="checkbox"
-                                aria-checked={isSelected(supplier.id)}
-                                selected={isSelected(supplier.id)}
-                              >
-                                <TableCell>
-                                  <Checkbox checked={isSelected(supplier.id)} />
-                                </TableCell>
-                                <TableCell>{supplier.supplierCode}</TableCell>
-                                <TableCell>{supplier.supplierName}</TableCell>
-                                <TableCell>{supplier.phoneNumber}</TableCell>
-                                <TableCell>{supplier.email}</TableCell>
-                                <TableCell>{supplier.company}</TableCell>
-                                <TableCell>{supplier.city} {supplier.country} {supplier.zipCode}</TableCell>
-                                <TableCell>
-                                  <div className="inventual-list-action-style">
-                                    <PopupState variant="popover">
-                                      {(popupState: any) => (
-                                        <React.Fragment>
-                                          <button className='' type='button' {...bindTrigger(popupState)}>
-                                            Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                          </button>
-                                          <Menu {...bindMenu(popupState)}>
-                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
-                                            <MenuItem onClick={() => handleOpenDelete(supplier.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                          </Menu>
-                                        </React.Fragment>
-                                      )}
-                                    </PopupState>
+                            ) : supplierData?.message === "User is not authorized to do this task" ? (
+                              <tr>
+                                <td colSpan={10}>
+                                  <div className="inventual-loading-container">
+                                    <h1>User is not authorized to do this task</h1>
                                   </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                                </td>
+                              </tr>
+                            ) : (
+                              sortedRows?.map((supplier: any) => (
+                                <TableRow
+                                  key={supplier.id}
+                                  hover
+                                  onClick={() => handleClick(supplier.id)}
+                                  role="checkbox"
+                                  aria-checked={isSelected(supplier.id)}
+                                  selected={isSelected(supplier.id)}
+                                >
+                                  <TableCell>
+                                    <Checkbox checked={isSelected(supplier.id)} />
+                                  </TableCell>
+                                  <TableCell>{supplier.supplierCode}</TableCell>
+                                  <TableCell>{supplier.supplierName}</TableCell>
+                                  <TableCell>{supplier.phoneNumber}</TableCell>
+                                  <TableCell>{supplier.email}</TableCell>
+                                  <TableCell>{supplier.company}</TableCell>
+                                  <TableCell>{supplier.city} {supplier.country} {supplier.zipCode}</TableCell>
+                                  <TableCell>
+                                    <div className="inventual-list-action-style">
+                                      <PopupState variant="popover">
+                                        {(popupState: any) => (
+                                          <React.Fragment>
+                                            <button className='' type='button' {...bindTrigger(popupState)}>
+                                              Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                            </button>
+                                            <Menu {...bindMenu(popupState)}>
+                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
+                                              <MenuItem onClick={() => handleOpenDelete(supplier.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                            </Menu>
+                                          </React.Fragment>
+                                        )}
+                                      </PopupState>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>

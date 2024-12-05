@@ -3,19 +3,19 @@ import { Checkbox, FormControlLabel } from '@mui/material';
 import { EntityPermissions, RoleListProps } from '@/interFace/interFace';
 
 
-const DEFAULT_WAREHOUSE_PERMISSIONS: EntityPermissions[] = [
-    { entityType: 'Warehouse', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
+const DEFAULT_ROLES_PERMISSIONS: EntityPermissions[] = [
+    { entityType: 'Roles', permissions: [{ action: 'View', isAllowed: false }, { action: 'Add', isAllowed: false }, { action: 'Update', isAllowed: false }, { action: 'Delete', isAllowed: false }] },
 ];
 
-const WarehouseRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledItem, onProcessComplete, updatePermissions, setIsReadyToSubmit }) => {
+const RoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledItem, onProcessComplete, updatePermissions, setIsReadyToSubmit }) => {
 
-    const [mergedPermissions, setMergedPermissions] = useState(DEFAULT_WAREHOUSE_PERMISSIONS);
+    const [mergedPermissions, setMergedPermissions] = useState(DEFAULT_ROLES_PERMISSIONS);
     const [selectAllChecked, setSelectAllChecked] = useState(false);
 
     useEffect(() => {
         if (!setIsReadyToSubmit) {
             const mergePermissions = () => {
-                const updatedPermissions = DEFAULT_WAREHOUSE_PERMISSIONS.map((defaultEntity) => {
+                const updatedPermissions = DEFAULT_ROLES_PERMISSIONS.map((defaultEntity) => {
                     const matchingEntity = permissionsByEntity.find(
                         (backendEntity) => backendEntity.entityType === defaultEntity.entityType
                     );
@@ -94,7 +94,7 @@ const WarehouseRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calle
         <div className="inventual-role-list border-b border-solid border-border flex items-center h-[150px]">
             <div className="inventual-role-left flex items-center">
                 <div className="inventual-role-topic">
-                    <h5 className="text-[18px] font-semibold text-heading mb-4">Warehouse</h5>
+                    <h5 className="text-[18px] font-semibold text-heading mb-4">Roles</h5>
                     <div className="inventual-checkbox-style ms-3">
                         <FormControlLabel
                             control={
@@ -109,7 +109,7 @@ const WarehouseRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calle
                     </div>
                 </div>
             </div>
-            <div className="inventual-role-right w-full border-s border-solid border-border">
+            <div className="inventual-role-right w-full border-s border-solid border-border h-full">
                 {mergedPermissions.map((entity) => (
                     <div
                         key={entity.entityType}
@@ -148,4 +148,4 @@ const WarehouseRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calle
     );
 };
 
-export default WarehouseRoleList;
+export default RoleList;

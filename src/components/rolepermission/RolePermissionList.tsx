@@ -1,5 +1,3 @@
-
-
 "use client";
 import React, { useState } from 'react';
 import ProductRoleList from './rolepermissionList/ProductRoleList';
@@ -8,6 +6,7 @@ import ExpenseRoleList from './rolepermissionList/ExpenseRoleList';
 import WarehouseRoleList from './rolepermissionList/WarehouseRoleList';
 import PeopleRoleList from './rolepermissionList/PeopleRoleList';
 import ReportRoleList from './rolepermissionList/ReportRoleList';
+import RoleList from './rolepermissionList/RoleList';
 import SettingsRoleList from './rolepermissionList/SettingsRoleList';
 import { MenuItem, TextField } from '@mui/material';
 import { TRoleInterface, EntityPermissions } from '@/interFace/interFace';
@@ -133,6 +132,15 @@ const RolePermissionList = () => {
                             <div className="inventual-role-inner-wrapper border border-solid border-border border-b-0 mb-7">
                                 {roleNameDataWithDetails ? (
                                     <>
+                                        <RoleList
+                                            permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                ?.filter((entity: EntityPermissions) =>
+                                                    ['Roles'].includes(entity.entityType)) || []}
+                                            calledItem={callingItem}
+                                            setIsReadyToSubmit={isReadyToSubmit} 
+                                            onProcessComplete={() => {setCallingItem(false)}}
+                                            updatePermissions={permissions => handleUpdatePermissions('Roles', permissions)}
+                                        />
                                          <ProductRoleList
                                             permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
                                                 ?.filter((entity: EntityPermissions) =>

@@ -1,6 +1,8 @@
 "use client"
 import React, { useState } from 'react';
-import Image, { StaticImageData } from 'next/image';
+import Image from 'next/image';
+import { toast } from 'react-toastify';
+
 import {
   Paper,
   Table,
@@ -32,10 +34,8 @@ import autoTable from 'jspdf-autotable'
 const UserList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
-  const [page, setPage] = useState(0);
   const [user, setUser] = useState<number>(0);
   const [open, setOpen] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof TUserInterface>('userId');
@@ -68,15 +68,22 @@ const UserList = () => {
     setOpen(false);
   }
 
-   // handle delete submission
+
+  
+  // handle delete submission
   const handleDelete = async () => {
     if (user > 0) {
       try {
-        await deleteUser(user);
+        await deleteUser(user).unwrap();
         setOpen(false);
-        refetch()
-      } catch (err) {
-        console.error('Error deleting the user:', err);
+        refetch();
+        toast.success("User deleted successfully.");
+      } catch (error: any) {
+        if (error?.data?.message) {
+          toast.error(error.data.message);
+        } else {
+          toast.error("Failed to delete user. Please try again later.");
+        }
       }
     }
   };
@@ -125,7 +132,7 @@ const UserList = () => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredData = userData?.filter((item: any) =>
+  const filteredData = userData?.data.filter((item: any) =>
     item.userName.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
@@ -194,6 +201,7 @@ const UserList = () => {
       doc.save("user_list.pdf");
     }
   };
+
 
   return (
 
@@ -340,15 +348,24 @@ const UserList = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                          {userLoading ? (
-                              <tr>
-                                <td colSpan={8}>
-                                  <div className="inventual-loading-container">
-                                    <span className="inventual-loading"></span>
-                                  </div>
-                                </td>
-                              </tr>
-                            ) : sortedRows?.map((user: any) => (
+                              {userLoading ? (
+                                <tr>
+                                  <td colSpan={10}>
+                                    <div className="inventual-loading-container">
+                                      <span className="inventual-loading"></span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : userData?.message === "User is not authorized to do this task" ? (
+                                <tr>
+                                  <td colSpan={14}>
+                                    <div className="inventual-loading-container">
+                                      <h1>User is not authorized to do this task</h1>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : (
+                                sortedRows?.map((user: any) => (
                                 <TableRow
                                   key={user.userId}
                                   hover
@@ -403,7 +420,8 @@ const UserList = () => {
                                     </div>
                                   </TableCell>
                                 </TableRow>
-                              ))}
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>
@@ -452,5 +470,6 @@ const UserList = () => {
 
   );
 }
+
 
 export default UserList

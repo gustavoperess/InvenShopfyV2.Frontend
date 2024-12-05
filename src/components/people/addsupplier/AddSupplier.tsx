@@ -41,6 +41,15 @@ const AddSupplier = () => {
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);
+                setSupplierName('');
+                setSupplierCode('');
+                setPhone('');
+                setEmail('');
+                setCountry('');
+                setCity('');
+                setAddress('');
+                setZipCode('');
+                setCompany('');
             } else {
                 // Fallback error message
                 toast.error("Failed to create Supplier. Please try again later.");

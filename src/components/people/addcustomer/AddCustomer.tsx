@@ -41,6 +41,15 @@ const AddCustomer = () => {
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);
+                setCustomerName('');
+                setCustomerGroup('');
+                setPhone('');
+                setEmail('');
+                setCountry('');
+                setCity('');
+                setAddress('');
+                setZipCode('');
+                setRewardPoint(undefined);
             } else {
                 // Fallback error message
                 toast.error("Failed to create Customer. Please try again later.");

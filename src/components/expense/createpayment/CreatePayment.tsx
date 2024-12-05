@@ -100,6 +100,13 @@ const CreatePayment = () => {
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);
+                setExpenseAmount("");
+                setExpenseNumber("");
+                setCreditCard("");
+                setExpenseDate(new Date())
+                setPaymentStatus("");
+                setExpenseCategory("");
+                setExpenseNote("")
             } else {
                 // Fallback error message
                 toast.error("Failed to create payment. Please try again later.");

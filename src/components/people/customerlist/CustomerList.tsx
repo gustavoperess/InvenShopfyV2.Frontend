@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Paper,
   Table,
@@ -26,6 +26,8 @@ import { TCustomerInterface } from '@/interFace/interFace';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { toast } from 'react-toastify';
+
 
 const CustomerList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
@@ -61,15 +63,21 @@ const CustomerList = () => {
     setOpen(false);
   }
 
+
   // handle delete submission
   const handleDelete = async () => {
     if (customer > 0) {
       try {
-        await deleteCustomer(customer);
+        await deleteCustomer(customer).unwrap();
         setOpen(false);
-        refetch()
-      } catch (err) {
-        console.error('Error deleting the customer:', err);
+        refetch();
+        toast.success("Customer deleted successfully.");
+      } catch (error: any) {
+        if (error?.data?.message) {
+          toast.error(error.data.message);
+        } else {
+          toast.error("Failed to delete Customer. Please try again later.");
+        }
       }
     }
   };
@@ -150,7 +158,7 @@ const CustomerList = () => {
 
   const handleDocument = (type: string) => {
     if (!customerData?.data?.length) return;
-  
+
     const headers = [
       "ID",
       "Name",
@@ -162,7 +170,7 @@ const CustomerList = () => {
       "Address",
       "Zip Code",
     ];
-  
+
     // Map data for CSV as strings and for PDF as arrays
     const rows = customerData.data.map((item: any) => [
       item.id,
@@ -175,27 +183,27 @@ const CustomerList = () => {
       item.address,
       item.zipCode,
     ]);
-  
+
     if (type === "csv") {
       // Convert rows to CSV format (string)
       const csvRows = rows.map((row: (string | number)[]) => row.join(","));
       const csvContent = [headers.join(","), ...csvRows].join("\n");
-  
+
       // Create a Blob and trigger download
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       saveAs(blob, "customer_list.csv");
     } else if (type === "pdf") {
       // Generate PDF
       const doc = new jsPDF();
-  
+
       autoTable(doc, {
         head: [headers],
         body: rows,
         startY: 20,
         theme: "grid",
-        headStyles: { fillColor: [22, 160, 133] }, 
+        headStyles: { fillColor: [22, 160, 133] },
       });
-  
+
       // Save the PDF
       doc.save("customer_list.pdf");
     }
@@ -346,51 +354,61 @@ const CustomerList = () => {
                             {/* Rows */}
                             {customerLoading ? (
                               <tr>
-                                <td colSpan={7}>
+                                <td colSpan={10}>
                                   <div className="inventual-loading-container">
                                     <span className="inventual-loading"></span>
                                   </div>
                                 </td>
                               </tr>
-                            ) : sortedRows?.map((customer: any) => (
-                              <TableRow
-                                key={customer.id}
-                                hover
-                                onClick={() => handleClick(customer.id)}
-                                role="checkbox"
-                                aria-checked={isSelected(customer.id)}
-                                selected={isSelected(customer.id)}
-                              >
-                                {/* Checkbox for row selection */}
-                                <TableCell>
-                                  <Checkbox checked={isSelected(customer.id)} />
-                                </TableCell>
-                                {/* Data cells */}
-                                <TableCell>{customer.customerName}</TableCell>
-                                <TableCell>{customer.phoneNumber}</TableCell>
-                                <TableCell>{customer.email}</TableCell>
-                                <TableCell>{customer.customerGroup}</TableCell>
-                                <TableCell>{customer.rewardPoint}</TableCell>
-                                <TableCell>{customer.city} {customer.country} {customer.zipCode} </TableCell>
-                                <TableCell>
-                                  <div className="inventual-list-action-style">
-                                    <PopupState variant="popover">
-                                      {(popupState: any) => (
-                                        <React.Fragment>
-                                          <button className='' type='button' {...bindTrigger(popupState)}>
-                                            Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                          </button>
-                                          <Menu {...bindMenu(popupState)}>
-                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/people/addcustomer'>Edit</Link></MenuItem>
-                                            <MenuItem onClick={() => handleOpenDelete(customer.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                          </Menu>
-                                        </React.Fragment>
-                                      )}
-                                    </PopupState>
+                            ) : customerData?.message === "User is not authorized to do this task" ? (
+                              <tr>
+                                <td colSpan={10}>
+                                  <div className="inventual-loading-container">
+                                    <h1>User is not authorized to do this task</h1>
                                   </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                                </td>
+                              </tr>
+                            ) : (
+                              sortedRows?.map((customer: any) => (
+                                <TableRow
+                                  key={customer.id}
+                                  hover
+                                  onClick={() => handleClick(customer.id)}
+                                  role="checkbox"
+                                  aria-checked={isSelected(customer.id)}
+                                  selected={isSelected(customer.id)}
+                                >
+                                  {/* Checkbox for row selection */}
+                                  <TableCell>
+                                    <Checkbox checked={isSelected(customer.id)} />
+                                  </TableCell>
+                                  {/* Data cells */}
+                                  <TableCell>{customer.customerName}</TableCell>
+                                  <TableCell>{customer.phoneNumber}</TableCell>
+                                  <TableCell>{customer.email}</TableCell>
+                                  <TableCell>{customer.customerGroup}</TableCell>
+                                  <TableCell>{customer.rewardPoint}</TableCell>
+                                  <TableCell>{customer.city} {customer.country} {customer.zipCode} </TableCell>
+                                  <TableCell>
+                                    <div className="inventual-list-action-style">
+                                      <PopupState variant="popover">
+                                        {(popupState: any) => (
+                                          <React.Fragment>
+                                            <button className='' type='button' {...bindTrigger(popupState)}>
+                                              Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                            </button>
+                                            <Menu {...bindMenu(popupState)}>
+                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/people/addcustomer'>Edit</Link></MenuItem>
+                                              <MenuItem onClick={() => handleOpenDelete(customer.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                            </Menu>
+                                          </React.Fragment>
+                                        )}
+                                      </PopupState>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>

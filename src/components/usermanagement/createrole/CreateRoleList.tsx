@@ -161,7 +161,6 @@ const CreateRoleList = () => {
         }
     }
 
-
     return (
         <>
             <div className="inventual-content-area px-4 sm:px-7">
@@ -274,7 +273,7 @@ const CreateRoleList = () => {
                                                             <TableCell>
                                                                 <Checkbox checked={isSelected(role.id)} />
                                                             </TableCell>
-                                                            <TableCell>{role.name}</TableCell>
+                                                            <TableCell>{role.roleName}</TableCell>
                                                             <TableCell>{role.description}</TableCell>
                                                             <TableCell>
                                                                 <div className="inventual-list-action-style">
