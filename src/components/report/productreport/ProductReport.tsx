@@ -206,24 +206,34 @@ const ProductReport = () => {
                           <TableBody>
                             {productReportLoading ? (
                               <tr>
-                                <td colSpan={7}>
+                                <td colSpan={14}>
                                   <div className="inventual-loading-container">
                                     <span className="inventual-loading"></span>
                                   </div>
                                 </td>
                               </tr>
-                            ) : sortedRows?.map((poreport: any) => (
-                              <TableRow key={poreport.productId}>
-                                 <TableCell>{poreport.productCode}</TableCell>
-                                <TableCell>{poreport.productName}</TableCell>
-                                <TableCell>{poreport.totalQuantityBought}</TableCell>
-                                <TableCell>{MoneyFormat.format(poreport.totalAmountPaid)}</TableCell>
-                                <TableCell>{MoneyFormat.format(poreport.totalPaidInTaxes)}</TableCell>
-                                <TableCell>{poreport.totalQuantitySold}</TableCell>
-                                <TableCell>{MoneyFormat.format(poreport.totalRevenue)}</TableCell>
-                                <TableCell>{poreport.stockQuantity}</TableCell>
-                              </TableRow>
-                            ))}
+                            ) : productReportData?.message === "User is not authorized to do this task" ? (
+                              <tr>
+                                <td colSpan={14}>
+                                  <div className="inventual-loading-container">
+                                    <h1>User is not authorized to do this task</h1>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : (
+                              sortedRows?.map((poreport: any) => (
+                                <TableRow key={poreport.productId}>
+                                  <TableCell>{poreport.productCode}</TableCell>
+                                  <TableCell>{poreport.productName}</TableCell>
+                                  <TableCell>{poreport.totalQuantityBought}</TableCell>
+                                  <TableCell>{MoneyFormat.format(poreport.totalAmountPaid)}</TableCell>
+                                  <TableCell>{MoneyFormat.format(poreport.totalPaidInTaxes)}</TableCell>
+                                  <TableCell>{poreport.totalQuantitySold}</TableCell>
+                                  <TableCell>{MoneyFormat.format(poreport.totalRevenue)}</TableCell>
+                                  <TableCell>{poreport.stockQuantity}</TableCell>
+                                </TableRow>
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>

@@ -66,18 +66,25 @@ const CreateRoleList = () => {
         setOpen(false);
     }
 
+
     // handle delete submission
     const handleDelete = async () => {
         if (role > 0) {
             try {
-                await deleteRole(role);
+                const result = await deleteRole(role).unwrap();
                 setOpen(false);
-                refetch()
-            } catch (err) {
-                console.error('Error deleting the Role:', err);
+                refetch();
+                toast.success("Role deleted successfully.");
+            } catch (error: any) {
+                if (error?.data?.message) {
+                    toast.error(error.data.message);
+                } else {
+                    toast.error("Failed to delete Role. Please try again later.");
+                }
             }
         }
     };
+
     // Handlers for sorting
     const handleRequestSort = (property: keyof TUserInterface) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -121,7 +128,7 @@ const CreateRoleList = () => {
     const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
     // Function to sort data
-    const sortedRows = roleData?.slice().sort((a: any, b: any) => {
+    const sortedRows = roleData?.data.slice().sort((a: any, b: any) => {
         if (!orderBy) return 0;
         const isAsc = order === 'asc';
         const aValue = a[orderBy as keyof TUserInterface];
@@ -141,7 +148,7 @@ const CreateRoleList = () => {
 
 
     //handle role data
-    const handleRoleData =  async (e: any) => {
+    const handleRoleData = async (e: any) => {
         e.preventDefault();
         const roleDataToSubmit = { roleName: roleTitle, description: roleDescription };
         try {
@@ -261,39 +268,47 @@ const CreateRoleList = () => {
                                                     </TableRow>
                                                 </TableHead>
                                                 <TableBody>
-                                                    {sortedRows?.map((role: any) => (
-                                                        <TableRow
-                                                            key={role.id}
-                                                            hover
-                                                            onClick={() => handleClick(role.id)}
-                                                            role="checkbox"
-                                                            aria-checked={isSelected(role.id)}
-                                                            selected={isSelected(role.id)}
-                                                        >
-                                                            <TableCell>
-                                                                <Checkbox checked={isSelected(role.id)} />
-                                                            </TableCell>
-                                                            <TableCell>{role.roleName}</TableCell>
-                                                            <TableCell>{role.description}</TableCell>
-                                                            <TableCell>
-                                                                <div className="inventual-list-action-style">
-                                                                    <PopupState variant="popover">
-                                                                        {(popupState: any) => (
-                                                                            <React.Fragment>
-                                                                                <button className='' type='button' {...bindTrigger(popupState)}>
-                                                                                    Action <i className="fa-sharp fa-solid fa-sort-down"></i>
-                                                                                </button>
-                                                                                <Menu {...bindMenu(popupState)}>
-                                                                                    <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
-                                                                                    <MenuItem onClick={() => handleOpenDelete(role.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                                                                </Menu>
-                                                                            </React.Fragment>
-                                                                        )}
-                                                                    </PopupState>
+                                                    {roleData?.message === "User is not authorized to do this task" ? (
+                                                        <tr>
+                                                            <td colSpan={14}>
+                                                                <div className="inventual-loading-container">
+                                                                    <h1>User is not authorized to do this task</h1>
                                                                 </div>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
+                                                            </td>
+                                                        </tr>
+                                                    ) : sortedRows?.map((role: any) => (
+                                                            <TableRow
+                                                                key={role.id}
+                                                                hover
+                                                                onClick={() => handleClick(role.id)}
+                                                                role="checkbox"
+                                                                aria-checked={isSelected(role.id)}
+                                                                selected={isSelected(role.id)}
+                                                            >
+                                                                <TableCell>
+                                                                    <Checkbox checked={isSelected(role.id)} />
+                                                                </TableCell>
+                                                                <TableCell>{role.roleName}</TableCell>
+                                                                <TableCell>{role.description}</TableCell>
+                                                                <TableCell>
+                                                                    <div className="inventual-list-action-style">
+                                                                        <PopupState variant="popover">
+                                                                            {(popupState: any) => (
+                                                                                <React.Fragment>
+                                                                                    <button className='' type='button' {...bindTrigger(popupState)}>
+                                                                                        Action <i className="fa-sharp fa-solid fa-sort-down"></i>
+                                                                                    </button>
+                                                                                    <Menu {...bindMenu(popupState)}>
+                                                                                        <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit</MenuItem>
+                                                                                        <MenuItem onClick={() => handleOpenDelete(role.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                                                                    </Menu>
+                                                                                </React.Fragment>
+                                                                            )}
+                                                                        </PopupState>
+                                                                    </div>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        ))}
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>

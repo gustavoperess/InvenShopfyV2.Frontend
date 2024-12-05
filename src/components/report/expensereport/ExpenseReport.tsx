@@ -85,7 +85,7 @@ const ExpenseReport = () => {
   });
   const handleDocument = (type: string) => {
     if (!expenseReportData?.data?.length) return;
-  
+
     const headers = [
       "ID",
       "Name",
@@ -93,7 +93,7 @@ const ExpenseReport = () => {
       "Shipping",
       "Total Cost",
     ];
-  
+
     // Map data for CSV as strings and for PDF as arrays
     const rows = expenseReportData.data.map((item: any) => [
       item.id,
@@ -102,27 +102,27 @@ const ExpenseReport = () => {
       item.shippingCost,
       item.totalCost,
     ]);
-  
+
     if (type === "csv") {
       // Convert rows to CSV format (string)
       const csvRows = rows.map((row: (string | number)[]) => row.join(","));
       const csvContent = [headers.join(","), ...csvRows].join("\n");
-  
+
       // Create a Blob and trigger download
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       saveAs(blob, "expense_report.csv");
     } else if (type === "pdf") {
       // Generate PDF
       const doc = new jsPDF();
-  
+
       autoTable(doc, {
         head: [headers],
         body: rows,
         startY: 20,
         theme: "grid",
-        headStyles: { fillColor: [22, 160, 133] }, 
+        headStyles: { fillColor: [22, 160, 133] },
       });
-  
+
       // Save the PDF
       doc.save("expense_report.pdf");
     }
@@ -287,20 +287,30 @@ const ExpenseReport = () => {
                           <TableBody>
                             {expenseReportLoading ? (
                               <tr>
-                                <td colSpan={7}>
+                                <td colSpan={14}>
                                   <div className="inventual-loading-container">
                                     <span className="inventual-loading"></span>
                                   </div>
                                 </td>
                               </tr>
-                            ) : sortedRows?.map((exreport: any) => (
-                              <TableRow key={exreport.id}>
-                                <TableCell>{exreport.name}</TableCell>
-                                <TableCell>{exreport.numberOfTimesUsed}</TableCell>
-                                <TableCell>{MoneyFormat.format(exreport.shippingCost)}</TableCell>
-                                <TableCell>{MoneyFormat.format(exreport.totalCost)}</TableCell>
-                              </TableRow>
-                            ))}
+                            ) : expenseReportData?.message === "User is not authorized to do this task" ? (
+                              <tr>
+                                <td colSpan={14}>
+                                  <div className="inventual-loading-container">
+                                    <h1>User is not authorized to do this task</h1>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : (
+                              sortedRows?.map((exreport: any) => (
+                                <TableRow key={exreport.id}>
+                                  <TableCell>{exreport.name}</TableCell>
+                                  <TableCell>{exreport.numberOfTimesUsed}</TableCell>
+                                  <TableCell>{MoneyFormat.format(exreport.shippingCost)}</TableCell>
+                                  <TableCell>{MoneyFormat.format(exreport.totalCost)}</TableCell>
+                                </TableRow>
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>

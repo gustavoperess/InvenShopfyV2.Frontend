@@ -26,6 +26,7 @@ import { TWarehouseInterface } from '@/interFace/interFace';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { toast } from 'react-toastify';
 
 
 
@@ -73,15 +74,21 @@ const WarehouseList = () => {
   }
 
   
+
   // handle delete submission
   const handleDelete = async () => {
     if (warehouse > 0) {
       try {
-        await deleteWarehouse(warehouse);
+        const result = await deleteWarehouse(warehouse).unwrap();
         setOpen(false);
-        refetch()
-      } catch (err) {
-        console.error('Error deleting the warehouse:', err);
+        refetch();
+        toast.success("Product deleted successfully.");
+      } catch (error: any) {
+        if (error?.data?.message) {
+          toast.error(error.data.message);
+        } else {
+          toast.error("Failed to delete Product. Please try again later.");
+        }
       }
     }
   };
@@ -337,15 +344,24 @@ const WarehouseList = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {warehouseLoading ? (
-                              <tr>
-                                <td colSpan={7}>
-                                  <div className="inventual-loading-container">
-                                    <span className="inventual-loading"></span>
-                                  </div>
-                                </td>
-                              </tr>
-                            ) : sortedRows?.map((warehouse: any) => (
+                              {warehouseLoading ? (
+                                <tr>
+                                  <td colSpan={14}>
+                                    <div className="inventual-loading-container">
+                                      <span className="inventual-loading"></span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : warehouseData?.message === "User is not authorized to do this task" ? (
+                                <tr>
+                                  <td colSpan={14}>
+                                    <div className="inventual-loading-container">
+                                      <h1>User is not authorized to do this task</h1>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : (
+                                sortedRows?.map((warehouse: any) => (
                               <TableRow key={warehouse.id} hover
                                 onClick={() => handleClick(warehouse.id)}
                                 role="checkbox"
@@ -378,7 +394,8 @@ const WarehouseList = () => {
                                   </div>
                                 </TableCell>
                               </TableRow>
-                            ))}
+                            ))
+                          )}
                           </TableBody>
                         </Table>
                       </TableContainer>

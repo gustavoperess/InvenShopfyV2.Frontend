@@ -36,6 +36,13 @@ const AddWarehouse = () => {
         } 
         catch (error: any) {
             if (error?.data?.message) {
+                setWarehouseName('');
+                setWarehousePhoneNumber('');
+                setWarehouseEmailAddress('');
+                setWarehouseCity('');  
+                setWarehouseCountry(''); 
+                setWarehouseZipCode(''); 
+                setWarehouseOpeningNotes('');
                 toast.error(error?.data?.message);
             } else {
                 // Fallback error message

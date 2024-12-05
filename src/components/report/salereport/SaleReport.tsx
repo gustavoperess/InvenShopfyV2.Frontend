@@ -88,7 +88,7 @@ const SaleReport = () => {
 
   const handleDocument = (type: string) => {
     if (!salesReportData?.data?.length) return;
-  
+
     const headers = [
       "ID",
       "Start Date",
@@ -100,7 +100,7 @@ const SaleReport = () => {
       "Shipping",
       "Tax",
     ];
-  
+
     // Map data for CSV as strings and for PDF as arrays
     const rows = salesReportData.data.map((item: any) => [
       item.billerId,
@@ -113,27 +113,27 @@ const SaleReport = () => {
       MoneyFormat.format(item.totalShippingPaid),
       MoneyFormat.format(item.totalTaxPaid),
     ]);
-  
+
     if (type === "csv") {
       // Convert rows to CSV format (string)
       const csvRows = rows.map((row: (string | number)[]) => row.join(","));
       const csvContent = [headers.join(","), ...csvRows].join("\n");
-  
+
       // Create a Blob and trigger download
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       saveAs(blob, "sales_report.csv");
     } else if (type === "pdf") {
       // Generate PDF
       const doc = new jsPDF();
-  
+
       autoTable(doc, {
         head: [headers],
         body: rows,
         startY: 20,
         theme: "grid",
-        headStyles: { fillColor: [22, 160, 133] }, 
+        headStyles: { fillColor: [22, 160, 133] },
       });
-  
+
       // Save the PDF
       doc.save("sales_report.pdf");
     }
@@ -155,7 +155,7 @@ const SaleReport = () => {
                       selected={startDate ? new Date(startDate) : undefined}
                       onChange={(date) => {
                         if (date) {
-                          const formattedDate = formatDate(date); 
+                          const formattedDate = formatDate(date);
                           setStartDate(formattedDate); // Store formatted date
                         } else {
                           setStartDate(undefined); // Reset to undefined
@@ -174,10 +174,10 @@ const SaleReport = () => {
                       selected={endDate ? new Date(endDate) : undefined}
                       onChange={(date) => {
                         if (date) {
-                          const formattedDate = formatDate(date); 
-                          setEndDate(formattedDate); 
+                          const formattedDate = formatDate(date);
+                          setEndDate(formattedDate);
                         } else {
-                          setEndDate(undefined); 
+                          setEndDate(undefined);
                         }
                       }}
                       placeholderText="DD/MM/YYYY"
@@ -279,7 +279,7 @@ const SaleReport = () => {
                                   direction={orderBy === 'totalQuantitySold' ? order : 'asc'}
                                   onClick={() => handleRequestSort('totalQuantitySold')}
                                 >
-                                Qty sold
+                                  Qty sold
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -328,23 +328,33 @@ const SaleReport = () => {
                           <TableBody>
                             {salesReportLoading ? (
                               <tr>
-                                <td colSpan={7}>
+                                <td colSpan={14}>
                                   <div className="inventual-loading-container">
                                     <span className="inventual-loading"></span>
                                   </div>
                                 </td>
                               </tr>
-                            ) : sortedRows?.map((sreport: any) => (
-                              <TableRow key={sreport.billerId}>
-                                <TableCell>{sreport.name}</TableCell>
-                                <TableCell>{sreport.totalQuantitySold}</TableCell>
-                                <TableCell>{sreport.startDate} - {sreport.endDate}</TableCell>
-                                <TableCell>{MoneyFormat.format(sreport.totalTaxPaid)}</TableCell>
-                                <TableCell>{MoneyFormat.format(sreport.totalShippingPaid)}</TableCell>
-                                <TableCell>{MoneyFormat.format(sreport.totalProfit)}</TableCell>
-                                <TableCell>{MoneyFormat.format(sreport.totalAmount)}</TableCell>
-                              </TableRow>
-                            ))}
+                            ) : salesReportData?.message === "User is not authorized to do this task" ? (
+                              <tr>
+                                <td colSpan={14}>
+                                  <div className="inventual-loading-container">
+                                    <h1>User is not authorized to do this task</h1>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : (
+                              sortedRows?.map((sreport: any) => (
+                                <TableRow key={sreport.billerId}>
+                                  <TableCell>{sreport.name}</TableCell>
+                                  <TableCell>{sreport.totalQuantitySold}</TableCell>
+                                  <TableCell>{sreport.startDate} - {sreport.endDate}</TableCell>
+                                  <TableCell>{MoneyFormat.format(sreport.totalTaxPaid)}</TableCell>
+                                  <TableCell>{MoneyFormat.format(sreport.totalShippingPaid)}</TableCell>
+                                  <TableCell>{MoneyFormat.format(sreport.totalProfit)}</TableCell>
+                                  <TableCell>{MoneyFormat.format(sreport.totalAmount)}</TableCell>
+                                </TableRow>
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>

@@ -86,7 +86,7 @@ const CustomerReport = () => {
   });
   const handleDocument = (type: string) => {
     if (!customerReportData?.data?.length) return;
-  
+
     const headers = [
       "ID",
       "Customer",
@@ -99,7 +99,7 @@ const CustomerReport = () => {
       "Tax",
       "Profit",
     ];
-  
+
     // Map data for CSV as strings and for PDF as arrays
     const rows = customerReportData.data.map((item: any) => [
       item.id,
@@ -113,27 +113,27 @@ const CustomerReport = () => {
       MoneyFormat.format(item.totalPaidInTaxes),
       MoneyFormat.format(item.totalProfit),
     ]);
-  
+
     if (type === "csv") {
       // Convert rows to CSV format (string)
       const csvRows = rows.map((row: (string | number)[]) => row.join(","));
       const csvContent = [headers.join(","), ...csvRows].join("\n");
-  
+
       // Create a Blob and trigger download
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       saveAs(blob, "customer_report.csv");
     } else if (type === "pdf") {
       // Generate PDF
       const doc = new jsPDF();
-  
+
       autoTable(doc, {
         head: [headers],
         body: rows,
         startY: 20,
         theme: "grid",
-        headStyles: { fillColor: [22, 160, 133] }, 
+        headStyles: { fillColor: [22, 160, 133] },
       });
-  
+
       // Save the PDF
       doc.save("customer_report.pdf");
     }
@@ -347,26 +347,35 @@ const CustomerReport = () => {
                             {/* Rows */}
                             {customerReportLoading ? (
                               <tr>
-                                <td colSpan={7}>
+                                <td colSpan={14}>
                                   <div className="inventual-loading-container">
                                     <span className="inventual-loading"></span>
                                   </div>
                                 </td>
                               </tr>
-                            ) : sortedRows?.map((cureport: any) => (
-                              <TableRow key={cureport.id}>
-                                <TableCell>{cureport.customerName}</TableCell>
-                                <TableCell>{cureport.rewardPoints}</TableCell>
-                                <TableCell>{cureport.numberOfPurchases}</TableCell>
-                                <TableCell>{cureport.numberOfProductsBought}</TableCell>
-                                <TableCell>{MoneyFormat.format(cureport.totalPaidInShipping)}</TableCell>
-                                <TableCell>{MoneyFormat.format(cureport.totalPaidInTaxes)}</TableCell>
-                                <TableCell>{MoneyFormat.format(cureport.totalProfit)}</TableCell>
-                                <TableCell>{cureport.lastPurchase}</TableCell>
-                                <TableCell>{MoneyFormat.format(cureport.totalAmount)}</TableCell>
-                              </TableRow>
-                            ))}
-
+                            ) : customerReportData?.message === "User is not authorized to do this task" ? (
+                              <tr>
+                                <td colSpan={14}>
+                                  <div className="inventual-loading-container">
+                                    <h1>User is not authorized to do this task</h1>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : (
+                              sortedRows?.map((cureport: any) => (
+                                <TableRow key={cureport.id}>
+                                  <TableCell>{cureport.customerName}</TableCell>
+                                  <TableCell>{cureport.rewardPoints}</TableCell>
+                                  <TableCell>{cureport.numberOfPurchases}</TableCell>
+                                  <TableCell>{cureport.numberOfProductsBought}</TableCell>
+                                  <TableCell>{MoneyFormat.format(cureport.totalPaidInShipping)}</TableCell>
+                                  <TableCell>{MoneyFormat.format(cureport.totalPaidInTaxes)}</TableCell>
+                                  <TableCell>{MoneyFormat.format(cureport.totalProfit)}</TableCell>
+                                  <TableCell>{cureport.lastPurchase}</TableCell>
+                                  <TableCell>{MoneyFormat.format(cureport.totalAmount)}</TableCell>
+                                </TableRow>
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>

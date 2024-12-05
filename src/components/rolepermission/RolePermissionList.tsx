@@ -95,12 +95,12 @@ const RolePermissionList = () => {
                                     SelectProps={{
                                         displayEmpty: true,
                                         renderValue: (value: any) => {
-                                            const selectRole = roleNameData?.find((role: TRoleInterface) => role.roleName === value);
+                                            const selectRole = roleNameData?.data.find((role: TRoleInterface) => role.roleName === value);
                                             return selectRole ? selectRole.roleName : <em>Select Role</em>;
                                         },
                                     }}>
-                                    {roleNameData && roleNameData.length > 0 ? (
-                                        roleNameData.map((role: TRoleInterface) => (
+                                    {roleNameData && roleNameData.data.length > 0 ? (
+                                        roleNameData.data.map((role: TRoleInterface) => (
                                             <MenuItem key={role.id} value={role.roleName}>
                                                 {role.roleName}
                                             </MenuItem>

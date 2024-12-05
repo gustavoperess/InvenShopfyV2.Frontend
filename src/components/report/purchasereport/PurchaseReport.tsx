@@ -91,7 +91,7 @@ const PurchaseReport = () => {
 
   const handleDocument = (type: string) => {
     if (!purchaseReportData?.data?.length) return;
-  
+
     const headers = [
       "ID",
       "Product",
@@ -103,7 +103,7 @@ const PurchaseReport = () => {
       "Qty Bought",
       "warehouseName",
     ];
-  
+
     // Map data for CSV as strings and for PDF as arrays
     const rows = purchaseReportData.data.map((item: any) => [
       item.billerId,
@@ -115,32 +115,32 @@ const PurchaseReport = () => {
       item.totalPricePaidPerProduct,
       item.totalQuantityBoughtPerProduct,
     ]);
-  
+
     if (type === "csv") {
       // Convert rows to CSV format (string)
       const csvRows = rows.map((row: (string | number)[]) => row.join(","));
       const csvContent = [headers.join(","), ...csvRows].join("\n");
-  
+
       // Create a Blob and trigger download
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       saveAs(blob, "product_report.csv");
     } else if (type === "pdf") {
       // Generate PDF
       const doc = new jsPDF();
-  
+
       autoTable(doc, {
         head: [headers],
         body: rows,
         startY: 20,
         theme: "grid",
-        headStyles: { fillColor: [22, 160, 133] }, 
+        headStyles: { fillColor: [22, 160, 133] },
       });
-  
+
       // Save the PDF
       doc.save("product_report.pdf");
     }
   };
-  
+
 
   return (
 
@@ -283,7 +283,7 @@ const PurchaseReport = () => {
                                   active={orderBy === 'supplierName'}
                                   direction={orderBy === 'supplierName' ? order : 'asc'}
                                   onClick={() => handleRequestSort('supplierName')}>
-                                 Supplier
+                                  Supplier
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -291,7 +291,7 @@ const PurchaseReport = () => {
                                   active={orderBy === 'warehouseName'}
                                   direction={orderBy === 'warehouseName' ? order : 'asc'}
                                   onClick={() => handleRequestSort('warehouseName')}>
-                                 Warehouse
+                                  Warehouse
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -335,24 +335,34 @@ const PurchaseReport = () => {
                           <TableBody>
                             {purchaseReportLoading ? (
                               <tr>
-                                <td colSpan={7}>
+                                <td colSpan={14}>
                                   <div className="inventual-loading-container">
                                     <span className="inventual-loading"></span>
                                   </div>
                                 </td>
                               </tr>
-                            ) : sortedRows?.map((pureport: any) => (
-                              <TableRow key={pureport.tempKey}>
-                                <TableCell>{pureport.productName}</TableCell>
-                                <TableCell>{pureport.purchaseReferenceNumber}</TableCell>
-                                <TableCell>{pureport.supplierName}</TableCell>
-                                <TableCell>{pureport.warehouseName}</TableCell>
-                                <TableCell>{pureport.purchaseDate}</TableCell>
-                                <TableCell>{pureport.totalQuantityBoughtPerProduct}</TableCell>
-                                <TableCell>{MoneyFormat.format(pureport.totalPricePaidPerProduct)}</TableCell>
-                                <TableCell>{MoneyFormat.format(pureport.totalInTaxPaidPerProduct)}</TableCell>
-                              </TableRow>
-                            ))}
+                            ) : purchaseReportData?.message === "User is not authorized to do this task" ? (
+                              <tr>
+                                <td colSpan={14}>
+                                  <div className="inventual-loading-container">
+                                    <h1>User is not authorized to do this task</h1>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : (
+                              sortedRows?.map((pureport: any) => (
+                                <TableRow key={pureport.tempKey}>
+                                  <TableCell>{pureport.productName}</TableCell>
+                                  <TableCell>{pureport.purchaseReferenceNumber}</TableCell>
+                                  <TableCell>{pureport.supplierName}</TableCell>
+                                  <TableCell>{pureport.warehouseName}</TableCell>
+                                  <TableCell>{pureport.purchaseDate}</TableCell>
+                                  <TableCell>{pureport.totalQuantityBoughtPerProduct}</TableCell>
+                                  <TableCell>{MoneyFormat.format(pureport.totalPricePaidPerProduct)}</TableCell>
+                                  <TableCell>{MoneyFormat.format(pureport.totalInTaxPaidPerProduct)}</TableCell>
+                                </TableRow>
+                              ))
+                            )}
                           </TableBody>
                         </Table>
                       </TableContainer>
