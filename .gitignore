@@ -39,3 +39,7 @@ next-env.d.ts
 
 
 .env
+
+eslintrc.json
+env.d.ts
+Notes.txt

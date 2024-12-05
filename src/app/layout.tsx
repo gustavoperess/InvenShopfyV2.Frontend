@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <>
-    <AppProvider>
+      <AppProvider>
         <html lang="en">
           <head>
             <meta httpEquiv="x-ua-compatible" content="ie=edge" />
@@ -27,9 +27,8 @@ export default function RootLayout({
             />
             <link rel="icon" href="/favicon.ico" />
           </head>
-
           <body suppressHydrationWarning={true}>
-              {children}
+            {children}
             <RtlMain />
           </body>
         </html>

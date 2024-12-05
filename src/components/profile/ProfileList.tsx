@@ -8,8 +8,6 @@ import Image from 'next/image';
 import { IMaskInput } from 'react-imask';
 import { useGetCurrentUserQuery } from '@/services/User/User';
 import { CustomProps } from '@/interFace/interFace';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import { useUpdateUserMutation } from '@/services/User/User';
 import { toast } from 'react-toastify';
 
@@ -191,7 +189,7 @@ const ProfileList = () => {
                                             )}
                                             <div className="col-span-12">
                                                 <button type="submit" className="edit-picture-btn">
-                                                    <FontAwesomeIcon icon={faCamera} />
+                                                    <i className="fa-solid fa-camera"></i>
                                                 </button>
                                             </div>
                                         </div>
