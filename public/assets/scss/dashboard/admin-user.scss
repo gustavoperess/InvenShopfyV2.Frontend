@@ -1,5 +1,5 @@
 //AdminUser
-.inventual-dashboard-user{
+.invenShopfy-dashboard-user{
     &.users-view{
         @apply flex justify-between items-center;
         .view-btn{
@@ -7,12 +7,12 @@
         }
     }
 }
-.inventual-dashboard-user-list-start-img {
+.invenShopfy-dashboard-user-list-start-img {
     & img {
         @apply rounded-[5px];
     }
 }
-.inventual-dashboard-user-list-right {
+.invenShopfy-dashboard-user-list-right {
     & span {
         @apply rounded-[100px];
     }

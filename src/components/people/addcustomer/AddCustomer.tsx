@@ -97,14 +97,14 @@ const AddCustomer = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7 max2Xl:pb-0 pb-[180px]">
-                <div className="inventual-addcustomer-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+            <div className="invenShopfy-content-area px-4 sm:px-7 max2Xl:pb-0 pb-[180px]">
+                <div className="invenShopfy-addcustomer-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
                     <form onSubmit={handleAddCustomer}>
                         <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Customer Name</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -120,9 +120,9 @@ const AddCustomer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Customer Group</h5>
-                                    <div className="inventual-select-field-style">
+                                    <div className="invenShopfy-select-field-style">
                                         <TextField
                                             select
                                             required
@@ -152,8 +152,8 @@ const AddCustomer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-formFour-field">
-                                    <div className="inventual-input-field-style">
+                                <div className="invenShopfy-formFour-field">
+                                    <div className="invenShopfy-input-field-style">
                                         <h5>Phone</h5>
                                         <FormControl fullWidth>
                                             <Input
@@ -169,9 +169,9 @@ const AddCustomer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Email</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -190,9 +190,9 @@ const AddCustomer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Country</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -209,9 +209,9 @@ const AddCustomer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>City</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -228,9 +228,9 @@ const AddCustomer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Address</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -247,9 +247,9 @@ const AddCustomer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Zip Code</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -266,9 +266,9 @@ const AddCustomer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Reward Point</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                          <TextField
                                             fullWidth
@@ -285,7 +285,7 @@ const AddCustomer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 flex justify-end">
-                                <button type="submit" className="inventual-btn">Create Customer</button>
+                                <button type="submit" className="invenShopfy-btn">Create Customer</button>
                             </div>
                         </div>
                     </form>

@@ -28,20 +28,20 @@ const PaymentViewListPopup = ({ open, handleViewPaymentDialogClose }: ViewPaymen
 
     return (
         <>
-            <div className='inventual-common-modal'>
+            <div className='invenShopfy-common-modal'>
                 <BootstrapDialog
                     onClose={handleViewPaymentDialogClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
                 >
-                    <div className='inventual-modal-title'>
+                    <div className='invenShopfy-modal-title'>
                         <h4>View Payment</h4>
                         <button autoFocus onClick={handleViewPaymentDialogClose} type='button'><i className="fa-regular fa-xmark"></i></button>
                     </div>
                     <DialogContent dividers>
-                        <div className='inventual-common-modal-width width-full'>
+                        <div className='invenShopfy-common-modal-width width-full'>
                             <form onSubmit={dummyData}>
-                                <div className="inventual-common-small-table mt-0.5 xs:overflow-x-auto">
+                                <div className="invenShopfy-common-small-table mt-0.5 xs:overflow-x-auto">
                                     <table>
                                         <thead>
                                             <tr className='bg-lightest'>
@@ -59,7 +59,7 @@ const PaymentViewListPopup = ({ open, handleViewPaymentDialogClose }: ViewPaymen
                                                 <td>Cash</td>
                                                 <td>$4,582</td>
                                                 <td>
-                                                    <div className="inventual-list-action-style">
+                                                    <div className="invenShopfy-list-action-style">
                                                         <PopupState variant="popover">
                                                             {(popupState: any) => (
                                                                 <React.Fragment>

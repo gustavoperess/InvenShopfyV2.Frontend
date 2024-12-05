@@ -85,24 +85,24 @@ const AddExpenseListPopup = ({ open, expenseId, handleAddPaymentDialogClose }: A
 
     return (
         <>
-            <div className='inventual-common-modal'>
+            <div className='invenShopfy-common-modal'>
                 <BootstrapDialog
                     onClose={handleAddPaymentDialogClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
                 >
-                    <div className='inventual-modal-title'>
+                    <div className='invenShopfy-modal-title'>
                         <h4>Add Payment</h4>
                         <button autoFocus onClick={handleAddPaymentDialogClose} type='button'><i className="fa-regular fa-xmark"></i></button>
                     </div>
                     <DialogContent dividers>
-                        <div className='inventual-common-modal-width width-full'>
+                        <div className='invenShopfy-common-modal-width width-full'>
                             <form onSubmit={handleCreatePayment}>
                                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-formTree-field">
+                                        <div className="invenShopfy-formTree-field">
                                             <h5>Voucher Number</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     required
                                                     value={expenseData ? expenseData?.data.voucherNumber : ""}
@@ -118,9 +118,9 @@ const AddExpenseListPopup = ({ open, expenseId, handleAddPaymentDialogClose }: A
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-formTree-field">
+                                        <div className="invenShopfy-formTree-field">
                                             <h5>Payment status</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     required
                                                     value={expenseData ? expenseData?.data.paymentStatus : ""}
@@ -136,10 +136,10 @@ const AddExpenseListPopup = ({ open, expenseId, handleAddPaymentDialogClose }: A
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Expense Price</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <NumericFormat
                                                         value={expenseData ? expenseData?.data.expenseCost : ""}
                                                         thousandSeparator
@@ -157,9 +157,9 @@ const AddExpenseListPopup = ({ open, expenseId, handleAddPaymentDialogClose }: A
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-formTree-field">
+                                        <div className="invenShopfy-formTree-field">
                                             <h5>Category</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     required
                                                     value={expenseData ? expenseData?.data.expenseCategory : ""}
@@ -175,9 +175,9 @@ const AddExpenseListPopup = ({ open, expenseId, handleAddPaymentDialogClose }: A
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Card Number</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <TextField
                                                     fullWidth
                                                     type="text"
@@ -197,9 +197,9 @@ const AddExpenseListPopup = ({ open, expenseId, handleAddPaymentDialogClose }: A
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-formTwo-field">
+                                        <div className="invenShopfy-formTwo-field">
                                             <h5>Date</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <DatePicker
                                                     selected={expenseDate}
                                                     required
@@ -217,7 +217,7 @@ const AddExpenseListPopup = ({ open, expenseId, handleAddPaymentDialogClose }: A
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
-                                        <div className="inventual-input-field-style">
+                                        <div className="invenShopfy-input-field-style">
                                             <TextField
                                                 fullWidth
                                                 multiline
@@ -232,7 +232,7 @@ const AddExpenseListPopup = ({ open, expenseId, handleAddPaymentDialogClose }: A
                                     </div>
                                 </div>
                                 <DialogActions>
-                                    <button className='inventual-btn' type='submit'>
+                                    <button className='invenShopfy-btn' type='submit'>
                                         Pay Now
                                     </button>
                                 </DialogActions>

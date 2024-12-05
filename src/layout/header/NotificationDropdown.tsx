@@ -11,8 +11,8 @@ const NotificationDropdown = () => {
 
     if (notificationLoading) {
         return (
-            <div className="inventual-loading-container">
-                <span className="inventual-loading"></span>
+            <div className="invenShopfy-loading-container">
+                <span className="invenShopfy-loading"></span>
             </div>
         );
     }
@@ -27,7 +27,7 @@ const NotificationDropdown = () => {
             {notifications.length > 0 ? (
                 notifications.map((notification: any) => (
                     <li key={notification.id}>
-                        <div className="inventual-notify-dropdown-item">
+                        <div className="invenShopfy-notify-dropdown-item">
                             <div className="thumb">
                                 <Link href={notification.href}>
                                     <Image

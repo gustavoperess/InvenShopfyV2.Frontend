@@ -106,14 +106,14 @@ const AddBiller = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7 max2Xl:pb-0 pb-[170px]">
-                <div className="inventual-create-payment-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+            <div className="invenShopfy-content-area px-4 sm:px-7 max2Xl:pb-0 pb-[170px]">
+                <div className="invenShopfy-create-payment-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
                     <form onSubmit={handleBillerForm}>
                         <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Name</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -129,9 +129,9 @@ const AddBiller = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-formTwo-field">
+                                <div className="invenShopfy-formTwo-field">
                                     <h5>Date of Join</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <DatePicker
                                             selected={startDate}
                                             required
@@ -149,8 +149,8 @@ const AddBiller = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-formFour-field">
-                                    <div className="inventual-input-field-style">
+                                <div className="invenShopfy-formFour-field">
+                                    <div className="invenShopfy-input-field-style">
                                         <h5>Phone</h5>
                                         <FormControl fullWidth>
                                             <Input
@@ -166,9 +166,9 @@ const AddBiller = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Email</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -187,9 +187,9 @@ const AddBiller = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>NID or Passport Number</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -206,9 +206,9 @@ const AddBiller = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Warehouse</h5>
-                                    <div className="inventual-select-field-style">
+                                    <div className="invenShopfy-select-field-style">
                                         <TextField
                                             select
                                             label="Select"
@@ -238,9 +238,9 @@ const AddBiller = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Address</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -257,9 +257,9 @@ const AddBiller = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Country</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -276,9 +276,9 @@ const AddBiller = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Zip Code</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
@@ -295,9 +295,9 @@ const AddBiller = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Biller Code</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <TextField
                                             fullWidth
                                             type="number"
@@ -322,7 +322,7 @@ const AddBiller = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 flex justify-end">
-                                <button type="submit" className="inventual-btn">Create Now</button>
+                                <button type="submit" className="invenShopfy-btn">Create Now</button>
                             </div>
                         </div>
                     </form>

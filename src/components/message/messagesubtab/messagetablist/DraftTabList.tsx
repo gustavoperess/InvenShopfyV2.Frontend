@@ -48,12 +48,12 @@ const DraftTabList = () => {
     };
     return (
         <>
-            <div className="inventual-inbox-top-wrapper mb-2.5">
-                <div className="inventual-inbox-top-wrapper mb-2.5">
+            <div className="invenShopfy-inbox-top-wrapper mb-2.5">
+                <div className="invenShopfy-inbox-top-wrapper mb-2.5">
                     <div className="grid grid-cols-12 items-center mb-5 gap-5">
                         <div className="col-span-12 lg:col-span-8">
-                            <div className="inventual-notification-search">
-                                <div className="inventual-message-search relative">
+                            <div className="invenShopfy-notification-search">
+                                <div className="invenShopfy-message-search relative">
                                     <input type="text" placeholder="Search mail" />
                                     <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                                 </div>
@@ -61,8 +61,8 @@ const DraftTabList = () => {
                         </div>
                     </div>
                 </div>
-                <div className="inventual-newmessage-wrapper flex flex-col md:flex-row gap-12 minMax2Xl:gap-7">
-                    <div className="inventual-message-vertical-subtab">
+                <div className="invenShopfy-newmessage-wrapper flex flex-col md:flex-row gap-12 minMax2Xl:gap-7">
+                    <div className="invenShopfy-message-vertical-subtab">
                         <Tabs value={subTabValue}
                             onChange={handleSubTabChange}
                             TabIndicatorProps={{
@@ -73,8 +73,8 @@ const DraftTabList = () => {
                             {
                                 userTabList.slice(12, 15).map((item) => (
                                     <Tab key={item.id} {...a11yProps(item.indexNum)} label={
-                                        <div className='inventual-inbox-user'>
-                                            <div className="inventual-inbox-user-thumb">
+                                        <div className='invenShopfy-inbox-user'>
+                                            <div className="invenShopfy-inbox-user-thumb">
                                                 <Image src={item.image} style={{ width: '100%', height: "100%" }} alt="Index image not found" />
                                             </div>
                                             <div className="inventua-inbox-user-text w-full text-start">
@@ -89,13 +89,13 @@ const DraftTabList = () => {
                             }
                         </Tabs>
                     </div>
-                    <div className="inventual-inbox-wrapper-inner w-full">
+                    <div className="invenShopfy-inbox-wrapper-inner w-full">
                         {
                             IndexMailTabData.slice(12, 15).map((item) => (
                                 <CustomTabPanel value={subTabValue} index={item.indexNum} key={item.id}>
-                                    <div className="inventual-notification-body">
+                                    <div className="invenShopfy-notification-body">
                                         <div className="col-span-12 lg:col-span-4 gap-5">
-                                            <div className="inventual-notification-action flex justify-end gap-2">
+                                            <div className="invenShopfy-notification-action flex justify-end gap-2">
                                                 <button type="button">
                                                     <DownloadSvg />
                                                 </button>
@@ -120,12 +120,12 @@ const DraftTabList = () => {
                                         <p className="text-[16px] font-normal leading-[26px] mb-6">{item.descriptionTwo}</p>
                                         <p className="text-[16px] font-normal leading-[26px] mb-12 pb-0.5">{item.descriptionThree}</p>
                                         <p className="text-[16px] font-normal mb-12">Thanks!</p>
-                                        <div className="inventual-notification-feedback default-light-theme flex flex-wrap gap-3">
-                                            <a href="/newmessage" className="inventual-btn outline-btn h-38">
+                                        <div className="invenShopfy-notification-feedback default-light-theme flex flex-wrap gap-3">
+                                            <a href="/newmessage" className="invenShopfy-btn outline-btn h-38">
                                                 <span><i className="fa-sharp fa-solid fa-reply"></i></span>Reply
                                             </a>
-                                            <button className='inventual-btn outline-btn h-38' type="submit"><span><i className="fa-solid fa-right-long"></i></span>Forward</button>
-                                            <button className='inventual-btn outline-btn h-38' type="submit"><span><i className="fa-light fa-trash-can"></i></span>Delete</button>
+                                            <button className='invenShopfy-btn outline-btn h-38' type="submit"><span><i className="fa-solid fa-right-long"></i></span>Forward</button>
+                                            <button className='invenShopfy-btn outline-btn h-38' type="submit"><span><i className="fa-light fa-trash-can"></i></span>Delete</button>
                                         </div>
                                     </div>
                                 </CustomTabPanel>

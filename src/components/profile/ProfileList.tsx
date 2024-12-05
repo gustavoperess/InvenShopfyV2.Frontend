@@ -163,14 +163,14 @@ const ProfileList = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7">
-                <div className="inventual-create-payment-area bg-white p-5 sm:p-7 custom-shadow rounded-8">
-                    <div className="inventual-profile-area">
+            <div className="invenShopfy-content-area px-4 sm:px-7">
+                <div className="invenShopfy-create-payment-area bg-white p-5 sm:p-7 custom-shadow rounded-8">
+                    <div className="invenShopfy-profile-area">
                         <form onSubmit={handleProfileFormSubmit}>
                     
-                            <div className="inventual-profile-wrapper flex items-center flex-wrap gap-x-12 gap-y-5 mb-14">
-                                <div className="inventual-profile-info flex flex-wrap items-center gap-5">
-                                    <div className="inventual-profile-info-img">
+                            <div className="invenShopfy-profile-wrapper flex items-center flex-wrap gap-x-12 gap-y-5 mb-14">
+                                <div className="invenShopfy-profile-info flex flex-wrap items-center gap-5">
+                                    <div className="invenShopfy-profile-info-img">
                                         <div {...getRootProps({ className: 'dropzone-two' })}>
                                             <input {...getInputProps()} />
                                             {userPicture ? (
@@ -194,7 +194,7 @@ const ProfileList = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="inventual-profile-info-text">
+                                    <div className="invenShopfy-profile-info-text">
                                         {userLoading ? (
                                             <div>Loading...</div>
                                         )
@@ -212,9 +212,9 @@ const ProfileList = () => {
                                 <div className="col-span-12">
                                     <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                                         <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                            <div className="inventual-form-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Full name</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <TextField
                                                         fullWidth
                                                         type="text"
@@ -227,8 +227,8 @@ const ProfileList = () => {
                                             </div>
                                         </div>
                                         <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                            <div className="inventual-formFour-field">
-                                                <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-formFour-field">
+                                                <div className="invenShopfy-input-field-style">
                                                     <h5>Phone</h5>
                                                     <FormControl fullWidth>
                                                         <Input
@@ -244,9 +244,9 @@ const ProfileList = () => {
                                             </div>
                                         </div>
                                         <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                            <div className="inventual-form-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Email</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <TextField
                                                         fullWidth
                                                         type="email"
@@ -263,10 +263,10 @@ const ProfileList = () => {
                                             </div>
                                         </div>
                                         <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                            <div className="inventual-select-field">
-                                                <div className="inventual-form-field">
+                                            <div className="invenShopfy-select-field">
+                                                <div className="invenShopfy-form-field">
                                                     <h5>Gender</h5>
-                                                    <div className="inventual-select-field-style">
+                                                    <div className="invenShopfy-select-field-style">
                                                         <TextField
                                                             select
                                                             label="Select"
@@ -289,9 +289,9 @@ const ProfileList = () => {
                                             </div>
                                         </div>
                                         <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                            <div className="inventual-form-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Username</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <TextField
                                                         fullWidth
                                                         type="text"
@@ -304,9 +304,9 @@ const ProfileList = () => {
                                             </div>
                                         </div>
                                         <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                            <div className="inventual-formTree-field">
+                                            <div className="invenShopfy-formTree-field">
                                                 <h5>Joing Data</h5>
-                                                <div className="inventual-select-field-style">
+                                                <div className="invenShopfy-select-field-style">
                                                     <TextField
                                                         disabled={userData?.dateOfJoin !== ''}
                                                         placeholder={userData?.dateOfJoin.split("T")[0]}>
@@ -315,9 +315,9 @@ const ProfileList = () => {
                                             </div>
                                         </div>
                                         <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                            <div className="inventual-form-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Current Password</h5>
-                                                <div className="inventual-input-eye-style">
+                                                <div className="invenShopfy-input-eye-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             type={showPassword ? 'text' : 'password'}
@@ -350,9 +350,9 @@ const ProfileList = () => {
                                             </div>
                                         </div>
                                         <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                            <div className="inventual-form-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>New Password</h5>
-                                                <div className="inventual-input-eye-style">
+                                                <div className="invenShopfy-input-eye-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             type={showNewPassword ? 'text' : 'password'}
@@ -385,7 +385,7 @@ const ProfileList = () => {
                                             </div>
                                         </div>
                                         <div className="col-span-12">
-                                            <button type="submit" className="inventual-btn">Update Profile</button>
+                                            <button type="submit" className="invenShopfy-btn">Update Profile</button>
                                         </div>
                                     </div>
                                 </div>

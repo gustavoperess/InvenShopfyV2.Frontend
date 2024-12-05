@@ -2,10 +2,10 @@ import React from 'react';
 
 const BadgeElements = () => {
     return (
-        <div className="inventual-common-card mb-5">
+        <div className="invenShopfy-common-card mb-5">
             <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                 <div className="col-span-12 md:col-span-6">
-                    <div className="inventual-form-field">
+                    <div className="invenShopfy-form-field">
                         <h5>Selector Styles</h5>
                         <div className="flex flex-wrap gap-2.5 mb-5">
                             <span className='badge badge-primary'>Primary</span>

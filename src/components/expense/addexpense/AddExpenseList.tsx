@@ -94,14 +94,14 @@ const AddExpenseList = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7 max2Xl:pb-0 pb-[170px]">
-                <div className="inventual-add-expense-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+            <div className="invenShopfy-content-area px-4 sm:px-7 max2Xl:pb-0 pb-[170px]">
+                <div className="invenShopfy-add-expense-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
                     <form onSubmit={handleExpenseListData}>
                         <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-formTwo-field">
+                                <div className="invenShopfy-formTwo-field">
                                     <h5>Date</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <DatePicker
                                             selected={startDate}
                                             required
@@ -120,10 +120,10 @@ const AddExpenseList = () => {
                             </div>
 
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-select-field">
-                                    <div className="inventual-form-field">
+                                <div className="invenShopfy-select-field">
+                                    <div className="invenShopfy-form-field">
                                         <h5>Expense Name</h5>
-                                        <div className="inventual-input-field-style">
+                                        <div className="invenShopfy-input-field-style">
                                             <FormControl fullWidth>
                                                 <TextField
                                                     fullWidth
@@ -139,10 +139,10 @@ const AddExpenseList = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-select-field">
-                                    <div className="inventual-form-field">
+                                <div className="invenShopfy-select-field">
+                                    <div className="invenShopfy-form-field">
                                         <h5>Select Warehouse</h5>
-                                        <div className="inventual-select-field-style">
+                                        <div className="invenShopfy-select-field-style">
                                             <TextField
                                                 select
                                                 label="Select"
@@ -174,10 +174,10 @@ const AddExpenseList = () => {
                             </div>
 
                             <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                <div className="inventual-select-field">
-                                    <div className="inventual-form-field">
+                                <div className="invenShopfy-select-field">
+                                    <div className="invenShopfy-form-field">
                                         <h5>Expense Type</h5>
-                                        <div className="inventual-select-field-style">
+                                        <div className="invenShopfy-select-field-style">
                                             <FormControl fullWidth>
                                                 <TextField
                                                     label="Select"
@@ -216,10 +216,10 @@ const AddExpenseList = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                <div className="inventual-select-field">
-                                    <div className="inventual-form-field">
+                                <div className="invenShopfy-select-field">
+                                    <div className="invenShopfy-form-field">
                                         <h5>Sub-Category</h5>
-                                        <div className="inventual-select-field-style">
+                                        <div className="invenShopfy-select-field-style">
                                             <TextField
                                                 select
                                                 label="Select"
@@ -251,10 +251,10 @@ const AddExpenseList = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                <div className="inventual-select-field">
-                                    <div className="inventual-form-field">
+                                <div className="invenShopfy-select-field">
+                                    <div className="invenShopfy-form-field">
                                         <h5>Expense Cost</h5>
-                                        <div className="inventual-input-field-style">
+                                        <div className="invenShopfy-input-field-style">
                                             <NumericFormat
                                                 customInput={TextField}
                                                 thousandSeparator=","
@@ -278,9 +278,9 @@ const AddExpenseList = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Status</h5>
-                                    <div className="inventual-select-field-style">
+                                    <div className="invenShopfy-select-field-style">
                                         <TextField
                                             select
                                             required
@@ -305,7 +305,7 @@ const AddExpenseList = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Shipping Cost</h5>
                                     <NumericFormat
                                         customInput={TextField}
@@ -329,7 +329,7 @@ const AddExpenseList = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
-                                <div className="inventual-input-field-style">
+                                <div className="invenShopfy-input-field-style">
                                     <TextField
                                         fullWidth
                                         multiline
@@ -342,7 +342,7 @@ const AddExpenseList = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 flex justify-end">
-                                <button type="submit" className="inventual-btn">Create Expense</button>
+                                <button type="submit" className="invenShopfy-btn">Create Expense</button>
                             </div>
                         </div>
                     </form>

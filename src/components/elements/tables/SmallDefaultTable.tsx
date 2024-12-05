@@ -6,8 +6,8 @@ import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
 const SmallDefaultTable = () => {
     return (
-        <div className="inventual-common-card mb-5">
-            <div className="inventual-common-small-table mt-0.5 xs:overflow-x-auto">
+        <div className="invenShopfy-common-card mb-5">
+            <div className="invenShopfy-common-small-table mt-0.5 xs:overflow-x-auto">
                 <table>
                     <thead>
                         <tr className='bg-lightest'>
@@ -23,7 +23,7 @@ const SmallDefaultTable = () => {
                             <td>Social Media</td>
                             <td>Lorem, ipsum dolor.</td>
                             <td>
-                                <div className="inventual-list-action-style">
+                                <div className="invenShopfy-list-action-style">
                                     <PopupState variant="popover">
                                         {(popupState:any) => (
                                             <React.Fragment>
@@ -45,7 +45,7 @@ const SmallDefaultTable = () => {
                             <td>Online</td>
                             <td>Lorem, ipsum dolor.</td>
                             <td>
-                                <div className="inventual-list-action-style">
+                                <div className="invenShopfy-list-action-style">
                                     <PopupState variant="popover">
                                         {(popupState:any) => (
                                             <React.Fragment>

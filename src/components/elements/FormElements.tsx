@@ -23,29 +23,29 @@ const FormElements = () => {
     };
 
     return (
-        <div className="inventual-common-card mb-5">
+        <div className="invenShopfy-common-card mb-5">
             <form onSubmit={dummyData}>
                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                     <div className="col-span-12 md:col-span-6">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Input Style</h5>
-                            <div className="inventual-input-field-style">
+                            <div className="invenShopfy-input-field-style">
                                 <input type="text" placeholder='Steven Smith' />
                             </div>
                         </div>
                     </div>
                     <div className="col-span-12 md:col-span-6">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Email Style</h5>
-                            <div className="inventual-input-field-style">
+                            <div className="invenShopfy-input-field-style">
                                 <input type="email" placeholder='Steven@gmail.com' />
                             </div>
                         </div>
                     </div>
                     <div className="col-span-12 md:col-span-6">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Eye Style</h5>
-                            <div className="inventual-input-eye-style">
+                            <div className="invenShopfy-input-eye-style">
                                 <FilledInput
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="Enter your password"
@@ -66,44 +66,44 @@ const FormElements = () => {
                         </div>
                     </div>
                     <div className="col-span-12 md:col-span-6">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Input With Icon</h5>
-                            <div className="inventual-input-field-style has-icon">
+                            <div className="invenShopfy-input-field-style has-icon">
                                 <input type="text" placeholder='User name' />
-                                <span className='inventual-input-icon'><i className="fa-regular fa-user"></i></span>
+                                <span className='invenShopfy-input-icon'><i className="fa-regular fa-user"></i></span>
                             </div>
                         </div>
                     </div>
                     <div className="col-span-12 md:col-span-6">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Input With Icon</h5>
-                            <div className="inventual-input-field-style has-icon-outline">
+                            <div className="invenShopfy-input-field-style has-icon-outline">
                                 <input type="text" placeholder='User name' />
-                                <span className='inventual-input-icon'><span>&</span></span>
+                                <span className='invenShopfy-input-icon'><span>&</span></span>
                             </div>
                         </div>
                     </div>
                     <div className="col-span-12 md:col-span-6">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Input With Icon</h5>
-                            <div className="inventual-input-field-style has-icon-outline">
+                            <div className="invenShopfy-input-field-style has-icon-outline">
                                 <input type="text" placeholder='User name' />
-                                <span className='inventual-input-icon'><span>$</span></span>
+                                <span className='invenShopfy-input-icon'><span>$</span></span>
                             </div>
                         </div>
                     </div>
                     <div className="col-span-12">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Input Type File</h5>
-                            <div className="inventual-input-field-file-choose">
+                            <div className="invenShopfy-input-field-file-choose">
                                 <input type="file" id="fileUploadN" />
                             </div>
                         </div>
                     </div>
                     <div className="col-span-12">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Textarea Style</h5>
-                            <div className="inventual-input-field-style">
+                            <div className="invenShopfy-input-field-style">
                                 <textarea placeholder='Write your message'></textarea>
                             </div>
                         </div>

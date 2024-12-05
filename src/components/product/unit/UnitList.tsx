@@ -162,17 +162,17 @@ const UnitList = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7">
-                <div className="inventual-product-unit-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+            <div className="invenShopfy-content-area px-4 sm:px-7">
+                <div className="invenShopfy-product-unit-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
                     <div className="grid grid-cols-12 gap-7 maxSm:gap-x-0">
                         <div className="col-span-12 lg:col-span-4">
                             <form onSubmit={handleUnitList}>
                                 <div className="grid grid-cols-12 gap-7 maxSm:gap-x-0">
                                     <div className="col-span-12 md:col-span-6 lg:col-span-12">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Unit/Value Name</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             fullWidth
@@ -190,10 +190,10 @@ const UnitList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-12">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Short Name</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             fullWidth
@@ -211,13 +211,13 @@ const UnitList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12">
-                                        <button type="submit" className='inventual-btn'>Create Value</button>
+                                        <button type="submit" className='invenShopfy-btn'>Create Value</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <div className="col-span-12 lg:col-span-8">
-                            <div className="inventual-common-mat-list w-full mt-0.5">
+                            <div className="invenShopfy-common-mat-list w-full mt-0.5">
                                 <div className='w-full'>
                                     <Paper sx={{ width: '100%', mb: 2 }}>
                                         <TableContainer>
@@ -260,15 +260,15 @@ const UnitList = () => {
                                                     {unitLoading ? (
                                                         <tr>
                                                             <td colSpan={5}>
-                                                                <div className="inventual-loading-container">
-                                                                    <span className="inventual-loading"></span>
+                                                                <div className="invenShopfy-loading-container">
+                                                                    <span className="invenShopfy-loading"></span>
                                                                 </div>
                                                             </td>
                                                         </tr>
                                                     ) : unitData?.message === "User is not authorized to do this task" ? (
                                                         <tr>
                                                             <td colSpan={5}>
-                                                                <div className="inventual-loading-container">
+                                                                <div className="invenShopfy-loading-container">
                                                                     <h1>User is not authorized to do this task</h1>
                                                                 </div>
                                                             </td>
@@ -289,7 +289,7 @@ const UnitList = () => {
                                                                 <TableCell>{unit.unitName}</TableCell>
                                                                 <TableCell>{unit.unitShortName}</TableCell>
                                                                 <TableCell>
-                                                                    <div className="inventual-list-action-style">
+                                                                    <div className="invenShopfy-list-action-style">
                                                                         <PopupState variant="popover">
                                                                             {(popupState: any) => (
                                                                                 <React.Fragment>

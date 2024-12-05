@@ -1,5 +1,5 @@
-.inventual-form-field,
-.inventual-start-input-label-style {
+.invenShopfy-form-field,
+.invenShopfy-start-input-label-style {
     @apply relative;
     h5, h6 {
         @apply text-[15px] text-heading font-semibold mb-3;
@@ -70,8 +70,8 @@
 }
 
 
-.inventual-formTwo-field,
-.inventual-start-input-label-style {
+.invenShopfy-formTwo-field,
+.invenShopfy-start-input-label-style {
     @apply relative;
     h5, h6 {
         @apply text-[15px] text-heading font-semibold mb-3;
@@ -141,8 +141,8 @@
     }
 }
 
-.inventual-formFour-field,
-.inventual-start-input-label-style {
+.invenShopfy-formFour-field,
+.invenShopfy-start-input-label-style {
     @apply relative;
     
     h5, h6 {
@@ -231,8 +231,8 @@
 }
 
 
-.inventual-formTree-field,
-.inventual-start-input-label-style {
+.invenShopfy-formTree-field,
+.invenShopfy-start-input-label-style {
     @apply relative;
     
     h5, h6 {
@@ -323,7 +323,7 @@
 
 
 // input type file style
-div.inventual-input-type-file-style {
+div.invenShopfy-input-type-file-style {
     input {
         @apply h-10 leading-10 border-[0.5px] border-border rounded outline-none outline-0 focus:ring-transparent focus:border-transparent focus:outline-primary text-heading text-[14px] font-primary font-medium px-4 bg-lightest w-full box-border cursor-pointer;
     }
@@ -332,7 +332,7 @@ div.inventual-input-type-file-style {
     }
 }
 // Material select field styles
-.inventual-select-field-style {
+.invenShopfy-select-field-style {
     .MuiInputBase-root {
         @apply bg-gray focus:bg-white w-full h-12 text-body border-border border shadow-none outline-none text-[14px] font-normal font-primary hover:border-border cursor-pointer;
         .MuiButtonBase-root.Mui-selected {
@@ -360,7 +360,7 @@ div.inventual-input-type-file-style {
 }
 
 // Material list action btn style
-.inventual-list-action-style {
+.invenShopfy-list-action-style {
     button {
         @apply border border-solid border-primary/50 h-9 rounded text-primary text-[14px] w-auto min-w-[85px] inline-flex items-center gap-2.5 px-4 font-primary;
         i {
@@ -385,8 +385,8 @@ div.inventual-input-type-file-style {
 }
 
 // Material Input Eye Style
-.inventual-form-field {
-    .inventual-input-eye-style {
+.invenShopfy-form-field {
+    .invenShopfy-input-eye-style {
         input {
             @apply py-4;
             &::placeholder {
@@ -410,7 +410,7 @@ div.inventual-input-type-file-style {
 }
 
 // Input type file style
-.inventual-input-field-file-choose {
+.invenShopfy-input-field-file-choose {
     input {
         @apply text-heading cursor-pointer ps-0;
     }
@@ -421,14 +421,14 @@ div.inventual-input-type-file-style {
 
 //checkbox styles
 .check-spacing {
-	.inventual-checkbox-field-style label {
+	.invenShopfy-checkbox-field-style label {
 		@apply ms-1.5 cursor-pointer;
 	}
 }
-.inventual-checkbox-field-style label {
+.invenShopfy-checkbox-field-style label {
     @apply inline-flex items-start gap-1;
 }
-.inventual-checkbox-style {
+.invenShopfy-checkbox-style {
     .MuiFormControlLabel-root {
         @apply m-0;
     }
@@ -445,14 +445,14 @@ div.inventual-input-type-file-style {
         @apply h-6 w-6;
     }
 }
-.inventual-add-product-content {
-    .inventual-checkbox-style .MuiFormControlLabel-root {
+.invenShopfy-add-product-content {
+    .invenShopfy-checkbox-style .MuiFormControlLabel-root {
         @apply gap-1.5;
     }
 }
 
 // input multiple style
-.inventual-input-field-style {
+.invenShopfy-input-field-style {
 	&.multiple-field {
         @apply flex flex-wrap gap-1 w-full;
 		input {

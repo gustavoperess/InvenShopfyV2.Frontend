@@ -1,14 +1,14 @@
 //Generatebarcode style
-.inventual-addsale-product-list {
+.invenShopfy-addsale-product-list {
     @apply flex;
 }
-.inventual-addsale-product-name,
-.inventual-addsale-product-code,
-.inventual-addsale-product-qty,
-.inventual-addsale-product-action {
+.invenShopfy-addsale-product-name,
+.invenShopfy-addsale-product-code,
+.invenShopfy-addsale-product-qty,
+.invenShopfy-addsale-product-action {
     @apply flex flex-col justify-center h-full max2Xl:ps-2;
 }
-.inventual-barcode-print-checkbox {
+.invenShopfy-barcode-print-checkbox {
 	label {
 		@apply inline-flex ms-1 cursor-pointer;
 	}
@@ -16,7 +16,7 @@
 		@apply translate-x-[-1px];
 	}
 }
-.inventual-addsale-product-qty {
+.invenShopfy-addsale-product-qty {
 	button {
 		@apply h-[30px] w-[30px] border-2 border-[#C1D5FE] text-primary inline-flex items-center justify-center rounded-[3px];
 		&:hover{

@@ -1,4 +1,4 @@
-.inventual-dashboard-main {
+.invenShopfy-dashboard-main {
 	@apply flex justify-between;
 	&-content {
 		&-body {
@@ -11,31 +11,31 @@
 .custom-boxshadow{
 	box-shadow: 0px 20px 40px rgba(18,42,91,0.05);
 }
-.inventual-dashboard-main-sidebar {
+.invenShopfy-dashboard-main-sidebar {
 	&.show-dashboard-sidebar {
 		@apply maxXl:start-[-320px] maxXl:min-w-[320px] maxXl:top-0 maxXl:absolute maxXl:z-[99];
 		@apply maxSm:min-w-[280px] maxSm:max-w-[280px] maxSm:start-[-320px];
 		
-		.inventual-sidebar-main {
+		.invenShopfy-sidebar-main {
 			@apply w-[300px] max-w-[300px] minMax2Xl:w-[275px] minMax2Xl:max-w-[275px] minMax3Xl:max-w-[275px] min-h-screen;
 		}
-		.inventual-sidebar-icon-bar {
+		.invenShopfy-sidebar-icon-bar {
 			@apply maxSm:end-[-58px];
 		}
 	}
 	&.hidden-dashboard-sidebar {
-		.inventual-sidebar-main {
+		.invenShopfy-sidebar-main {
 			@apply min-h-screen;
 		}
 		@media screen and (min-width: 1400px) {
-			.inventual-sidebar-main {
+			.invenShopfy-sidebar-main {
 				@apply w-[72px];
-				.inventual-sidebar-navigation {
+				.invenShopfy-sidebar-navigation {
 					span, .sidenav-nav-link-icon {
 						@apply hidden;
 					}
 				}
-				.inventual-sidebar-footer {
+				.invenShopfy-sidebar-footer {
 					h5,span {
 						@apply hidden;
 					}
@@ -153,21 +153,21 @@
 		@apply maxSm:min-w-[280px] maxSm:max-w-[280px] maxSm:start-0;
 	}
 }
-.inventual-mis-report-menu-area,
-.inventual-header-search-bar-main,
-.inventual-dashboard-main-content-body-wrap,
-.inventual-dashboard-main-sidebar,
-.inventual-dashboard-main-sidebar.show-dashboard-sidebar,
-.inventual-dashboard-main-sidebar.hidden-dashboard-sidebar {
+.invenShopfy-mis-report-menu-area,
+.invenShopfy-header-search-bar-main,
+.invenShopfy-dashboard-main-content-body-wrap,
+.invenShopfy-dashboard-main-sidebar,
+.invenShopfy-dashboard-main-sidebar.show-dashboard-sidebar,
+.invenShopfy-dashboard-main-sidebar.hidden-dashboard-sidebar {
 	-webkit-transition: all linear 0.3s;
 	-moz-transition: all linear 0.3s;
 	-o-transition: all linear 0.3s;
 	transition: all linear 0.3s;
 }
-.inventual-dashboard-main-content {
+.invenShopfy-dashboard-main-content {
 	&.hidden-dashboard-content { 
-		.inventual-mis-report-menu-area,
-		.inventual-dashboard-main-content-body-wrap {
+		.invenShopfy-mis-report-menu-area,
+		.invenShopfy-dashboard-main-content-body-wrap {
 			@apply ps-[30px] font-primary;
 			-webkit-transition: all linear 0.3s;
 			-moz-transition: all linear 0.3s;
@@ -177,13 +177,13 @@
 		}
 	}
 }
-.inventual-dashboard-menu-overlay.hidden-menu-overlay {
+.invenShopfy-dashboard-menu-overlay.hidden-menu-overlay {
 	@media screen and (max-width: 1399px) {
 		@apply fixed min-h-full h-full w-full bg-[rgba(0,0,0,0.6)] top-0 start-0 z-[91];
 		transition: all 0.3s;
 	}
 }
-.inventual-dashboard-main-content {
+.invenShopfy-dashboard-main-content {
 	&.show-dashboard-content {
 		width: calc(100% - 300px);
 		transition: all linear 0.3s;

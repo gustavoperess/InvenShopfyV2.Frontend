@@ -4,10 +4,10 @@
         @apply max-w-[200px] min-w-[200px];
 	}
 }
-.inventual-sidebar-area {
+.invenShopfy-sidebar-area {
     @apply bg-white border-e border-border h-full fixed;
 }
-.inventual-sidebar-main {
+.invenShopfy-sidebar-main {
     -webkit-transition: all linear 0.3s;
 	-moz-transition: all linear 0.3s;
 	-o-transition: all linear 0.3s;
@@ -19,7 +19,7 @@
         width: 300px !important;
     }
 }
-.inventual-sidebar-school {
+.invenShopfy-sidebar-school {
     @apply ps-[30px] py-[22px] minMax2Xl:ps-[30px] maxSm:ps-5 pe-5;
     span {
         @apply font-medium text-lightest;
@@ -28,16 +28,16 @@
         }
     }
 }
-.inventual-sidebar-nav-title {
+.invenShopfy-sidebar-nav-title {
     @apply mx-5 py-3 border-t ps-10 maxSm:ps-5 border-border/20;
     span {
         @apply font-medium text-lightest;
     }
 }
-.inventual-sidebar-main-logo-bar {
+.invenShopfy-sidebar-main-logo-bar {
     @apply min-w-full w-full px-4 pt-5 pb-5 maxSm:min-w-[40px] relative;
 }
-.inventual-sidebar-navigation {
+.invenShopfy-sidebar-navigation {
     @apply px-0 h-screen overflow-y-scroll mb-7 pb-7;
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
@@ -180,7 +180,7 @@
 		}
 	}
 }
-.inventual-dashboard-main-sidebar {
+.invenShopfy-dashboard-main-sidebar {
 	&.hidden-dashboard-sidebar {
 		.sidebar-logo {
 			@apply hidden;
@@ -201,10 +201,10 @@
 .sidebar-small-logo {
     @apply hidden;
 }
-.inventual-dashboard-main-sidebar {
+.invenShopfy-dashboard-main-sidebar {
 	&.hidden-dashboard-sidebar {
         @apply relative z-[99];
-		.inventual-sidebar-navigation {
+		.invenShopfy-sidebar-navigation {
             @apply overflow-visible;
             @media (max-width: 1399px) {
                 @apply overflow-y-scroll;

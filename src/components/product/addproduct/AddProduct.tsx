@@ -118,17 +118,17 @@ const AddProduct = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7">
-                <div className="inventual-addproduct-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5 mt-7">
+            <div className="invenShopfy-content-area px-4 sm:px-7">
+                <div className="invenShopfy-addproduct-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5 mt-7">
                     <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                         <div className="col-span-12 xl:col-span-9 lg:col-span-8 lg:order-1 maxMd:order-2">
                             <form onSubmit={handleFormSubmit}>
                                 <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                                     <div className="col-span-12 xl:col-span-12 lg:col-span-12">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Product Name</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             fullWidth
@@ -145,10 +145,10 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Category</h5>
-                                                <div className="inventual-select-field-style">
+                                                <div className="invenShopfy-select-field-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             label="Select"
@@ -187,10 +187,10 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Sub-Category</h5>
-                                                <div className="inventual-select-field-style">
+                                                <div className="invenShopfy-select-field-style">
                                                     <TextField
                                                         select
                                                         label="Select"
@@ -221,10 +221,10 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Product Code</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             fullWidth
@@ -240,10 +240,10 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Brand</h5>
-                                                <div className="inventual-select-field-style">
+                                                <div className="invenShopfy-select-field-style">
                                                     <TextField
                                                         select
                                                         label="Select"
@@ -274,10 +274,10 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Product Unit</h5>
-                                                <div className="inventual-select-field-style">
+                                                <div className="invenShopfy-select-field-style">
                                                     <TextField
                                                         select
                                                         label="Select"
@@ -308,10 +308,10 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Product Price</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <NumericFormat
                                                         customInput={TextField}
                                                         thousandSeparator=","
@@ -335,9 +335,9 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Tax</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     select
                                                     label="Select"
@@ -362,9 +362,9 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Margin Range</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     select
                                                     label="Select"
@@ -385,8 +385,8 @@ const AddProduct = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="inventual-add-product-content mt-7">
-                                    <div className='inventual-checkbox-style mb-2'>
+                                <div className="invenShopfy-add-product-content mt-7">
+                                    <div className='invenShopfy-checkbox-style mb-2'>
                                         <FormControlLabel
                                             control={<Checkbox
                                                 checked={featured}
@@ -396,7 +396,7 @@ const AddProduct = () => {
                                         />
                                     </div>
                                     <span className="block text-[14px] italic mb-7">This product will be displayed in POS</span>
-                                    <div className='inventual-checkbox-style mb-5'>
+                                    <div className='invenShopfy-checkbox-style mb-5'>
                                         <FormControlLabel
                                             control={<Checkbox
                                                 checked={expired}
@@ -405,7 +405,7 @@ const AddProduct = () => {
                                             label="This product has date expired"
                                         />
                                     </div>
-                                    <div className='inventual-checkbox-style mb-5'>
+                                    <div className='invenShopfy-checkbox-style mb-5'>
                                         <FormControlLabel
                                             control={<Checkbox
                                                 checked={sale}
@@ -414,7 +414,7 @@ const AddProduct = () => {
                                             label="Add Promotional Sale"
                                         />
                                     </div>
-                                    <div className='inventual-checkbox-style mb-5'>
+                                    <div className='invenShopfy-checkbox-style mb-5'>
                                         <FormControlLabel
                                             control={<Checkbox
                                                 checked={warehousePrice}
@@ -423,14 +423,14 @@ const AddProduct = () => {
                                             label="Different Price for other warehouses?"
                                         />
                                     </div>
-                                    <div className="inventual-submit-btn pt-2.5">
-                                        <button type="submit" className="inventual-btn">Create Product</button>
+                                    <div className="invenShopfy-submit-btn pt-2.5">
+                                        <button type="submit" className="invenShopfy-btn">Create Product</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <div className="col-span-12 xl:col-span-3 lg:col-span-4 lg:order-2 maxMd:order-1">
-                            <div className="inventual-product-dragdrop ngx-file-drop__drop-zone text-center border border-dashed border-primary bg-[#F8FAFF] p-4">
+                            <div className="invenShopfy-product-dragdrop ngx-file-drop__drop-zone text-center border border-dashed border-primary bg-[#F8FAFF] p-4">
                                 <div {...getRootProps({ className: 'dropzone-two' })}>
                                     <input {...getInputProps()} />
                                     {productImage ? (
@@ -441,7 +441,7 @@ const AddProduct = () => {
                                         <>
                                             <h3 className="text-[20px] font-semibold text-heading mb-4">Drop product image here</h3>
                                             <span className="block text-[20px] font-semibold text-heading mb-7">Or</span>
-                                            <button type="submit" className="inventual-btn">Browse File</button>
+                                            <button type="submit" className="invenShopfy-btn">Browse File</button>
                                             <span className="text-[14px] text-heading font-medium block pt-7">Allowed JPEG, JPG & PNG format  |  Max 100 mb</span>
                                         </>
                                     )}

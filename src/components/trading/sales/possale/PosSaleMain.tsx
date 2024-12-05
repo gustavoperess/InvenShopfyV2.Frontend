@@ -13,8 +13,8 @@ const PosSaleMain = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7 mt-7">
-                <div className="inventual-possale-area">
+            <div className="invenShopfy-content-area px-4 sm:px-7 mt-7">
+                <div className="invenShopfy-possale-area">
                     <div className="grid grid-cols-12 gap-5">
                         <div className="col-span-12 xl:col-span-7">
                             <PosSaleList

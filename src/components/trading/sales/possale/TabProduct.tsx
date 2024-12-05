@@ -103,29 +103,29 @@ const TabProduct = (
 
     return (
         <>
-            <div className="inventual-common-card min-h-full">
+            <div className="invenShopfy-common-card min-h-full">
                 <div className=" rounded mb-5">
                     <div className='flex flex-wrap justify-between items-center gap-5 mb-5'>
                         <button
-                            className='inventual-btn primary-btn flex-grow'
+                            className='invenShopfy-btn primary-btn flex-grow'
                             onClick={handleAllProductClick}
                         >
                             All Product
                         </button>
                         <button
-                            className='inventual-btn secondary-btn flex-grow'
+                            className='invenShopfy-btn secondary-btn flex-grow'
                             onClick={() => { handleFirstDialogOpen(), handleCategoryClick(); }}
                         >
                             Category
                         </button>
                         <button
-                            className='inventual-btn warning-btn flex-grow'
+                            className='invenShopfy-btn warning-btn flex-grow'
                             onClick={() => { handleBrandDialogOpen(); handleBrandClick(); }}
                         >
                             Brand
                         </button>
                         <button
-                            className='inventual-btn teal-btn flex-grow'
+                            className='invenShopfy-btn teal-btn flex-grow'
                             onClick={handleFeatureProduct}
                         >
                             Feature
@@ -137,11 +137,11 @@ const TabProduct = (
                                 <div
                                     key={item.productId}
                                     onClick={() => handleProductData(item.productId)}
-                                    className={`col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-4 xxxl:col-span-3 ${activeProducts[item.productId] ? "inventual-possale-tab-product-acitve" : "inventual-possale-tab-product"
+                                    className={`col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-4 xxxl:col-span-3 ${activeProducts[item.productId] ? "invenShopfy-possale-tab-product-acitve" : "invenShopfy-possale-tab-product"
                                         } text-center`}
                                 >
                                     <div>
-                                        <div className="inventual-possale-tab-product-img inline-block">
+                                        <div className="invenShopfy-possale-tab-product-img inline-block">
                                             <Image
                                                 src={item.productImage}
                                                 width="0"
@@ -151,7 +151,7 @@ const TabProduct = (
                                                 style={{ width: '42px', height: '32px' }}
                                             />
                                         </div>
-                                        <div className="inventual-possale-tab-product-text">
+                                        <div className="invenShopfy-possale-tab-product-text">
                                             <h5>{item.productName}</h5>
                                             <p className="text-heading">{item.productName}</p>
                                             <span className="text-heading">{item.batchNo}</span>
@@ -164,11 +164,11 @@ const TabProduct = (
                                     <div
                                         key={item.productId}
                                         onClick={() => handleProductData(item.productId)}
-                                        className={`col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-4 xxxl:col-span-3 ${activeProducts[item.productId] ? "inventual-possale-tab-product-acitve" : "inventual-possale-tab-product"
+                                        className={`col-span-12 sm:col-span-6 md:col-span-4 lg:col-span-4 xxxl:col-span-3 ${activeProducts[item.productId] ? "invenShopfy-possale-tab-product-acitve" : "invenShopfy-possale-tab-product"
                                             } text-center`}
                                     >
                                         <div>
-                                            <div className="inventual-possale-tab-product-img inline-block">
+                                            <div className="invenShopfy-possale-tab-product-img inline-block">
                                                 <Image
                                                     src={item.productImage}
                                                     width="0"
@@ -178,7 +178,7 @@ const TabProduct = (
                                                     style={{ width: '42px', height: '32px' }}
                                                 />
                                             </div>
-                                            <div className="inventual-possale-tab-product-text">
+                                            <div className="invenShopfy-possale-tab-product-text">
                                                 <h5>{item.productName}</h5>
                                                 <p className="text-heading">{item.productName}</p>
                                                 <span className="text-heading">{item.batchNo}</span>

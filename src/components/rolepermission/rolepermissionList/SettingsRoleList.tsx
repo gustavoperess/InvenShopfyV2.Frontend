@@ -74,11 +74,11 @@ const SettingsRoleList = () => {
 
     return (
         <>
-            <div className="inventual-role-list border-b border-solid border-gray-borderThree flex items-center">
-                <div className="inventual-role-left">
-                    <div className="inventual-role-topic">
+            <div className="invenShopfy-role-list border-b border-solid border-gray-borderThree flex items-center">
+                <div className="invenShopfy-role-left">
+                    <div className="invenShopfy-role-topic">
                         <h5 className="text-[18px] font-semibold text-heading mb-4">Settings</h5>
-                        <div className='inventual-checkbox-style ms-3'>
+                        <div className='invenShopfy-checkbox-style ms-3'>
                             <FormControlLabel
                                 control={
                                     <Checkbox
@@ -92,10 +92,10 @@ const SettingsRoleList = () => {
                         </div>
                     </div>
                 </div>
-                <div className="inventual-role-right w-full border-s border-solid border-gray-borderThree">
-                    <div className="inventual-role-category-list custom-height-50 flex items-center">
-                        <div className="inventual-role-checkbox-wrapper inventual-role-checkbox-wrapper2">
-                            <div className='inventual-checkbox-style'>
+                <div className="invenShopfy-role-right w-full border-s border-solid border-gray-borderThree">
+                    <div className="invenShopfy-role-category-list custom-height-50 flex items-center">
+                        <div className="invenShopfy-role-checkbox-wrapper invenShopfy-role-checkbox-wrapper2">
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -108,7 +108,7 @@ const SettingsRoleList = () => {
                                     label="Create SMS"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -121,7 +121,7 @@ const SettingsRoleList = () => {
                                     label="System Setting"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -134,7 +134,7 @@ const SettingsRoleList = () => {
                                     label="Mail Settings"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -147,7 +147,7 @@ const SettingsRoleList = () => {
                                     label="Currency Setting"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -162,9 +162,9 @@ const SettingsRoleList = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="inventual-role-category-list custom-height-50 flex items-center">
-                        <div className="inventual-role-checkbox-wrapper inventual-role-checkbox-wrapper2">
-                            <div className='inventual-checkbox-style'>
+                    <div className="invenShopfy-role-category-list custom-height-50 flex items-center">
+                        <div className="invenShopfy-role-checkbox-wrapper invenShopfy-role-checkbox-wrapper2">
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -177,7 +177,7 @@ const SettingsRoleList = () => {
                                     label="Send Notification"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -190,7 +190,7 @@ const SettingsRoleList = () => {
                                     label="Backup Database"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -203,7 +203,7 @@ const SettingsRoleList = () => {
                                     label="Send Mail"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -216,7 +216,7 @@ const SettingsRoleList = () => {
                                     label="POS Setting"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -231,9 +231,9 @@ const SettingsRoleList = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="inventual-role-category-list custom-height-50 flex items-center">
-                        <div className="inventual-role-checkbox-wrapper inventual-role-checkbox-wrapper2">
-                            <div className='inventual-checkbox-style'>
+                    <div className="invenShopfy-role-category-list custom-height-50 flex items-center">
+                        <div className="invenShopfy-role-checkbox-wrapper invenShopfy-role-checkbox-wrapper2">
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -246,7 +246,7 @@ const SettingsRoleList = () => {
                                     label="Send SMS"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -259,7 +259,7 @@ const SettingsRoleList = () => {
                                     label="Mail Create"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -272,7 +272,7 @@ const SettingsRoleList = () => {
                                     label="SMS Setting"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox
@@ -285,7 +285,7 @@ const SettingsRoleList = () => {
                                     label="Newsletter Setting"
                                 />
                             </div>
-                            <div className='inventual-checkbox-style'>
+                            <div className='invenShopfy-checkbox-style'>
                                 <FormControlLabel
                                     control={
                                         <Checkbox

@@ -132,14 +132,14 @@ const AddTransfer = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7">
-                <div className="inventual-add-transfer-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+            <div className="invenShopfy-content-area px-4 sm:px-7">
+                <div className="invenShopfy-add-transfer-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
                     <form onSubmit={handleTransferData}>
                         <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                             <div className="col-span-12">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Search by Product Name</h5>
-                                    <div className="inventual-input-field-style search-field">
+                                    <div className="invenShopfy-input-field-style search-field">
                                         <TextField
                                             fullWidth
                                             placeholder="Macbook..."
@@ -162,9 +162,9 @@ const AddTransfer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-formTwo-field">
+                                <div className="invenShopfy-formTwo-field">
                                     <h5>Date</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <DatePicker
                                             selected={transferDate}
                                             required
@@ -182,9 +182,9 @@ const AddTransfer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-formTree-field">
+                                <div className="invenShopfy-formTree-field">
                                     <h5>Product Code</h5>
-                                    <div className="inventual-select-field-style">
+                                    <div className="invenShopfy-select-field-style">
                                         <TextField
                                             required
                                             value={productCode}
@@ -200,10 +200,10 @@ const AddTransfer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="inventual-form-field">
-                                    <div className="inventual-select-field">
+                                <div className="invenShopfy-form-field">
+                                    <div className="invenShopfy-select-field">
                                         <h5>Authorized By</h5>
-                                        <div className="inventual-select-field-style">
+                                        <div className="invenShopfy-select-field-style">
                                             <TextField
                                                 select
                                                 label="Select"
@@ -234,10 +234,10 @@ const AddTransfer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-                                <div className="inventual-form-field">
-                                    <div className="inventual-select-field">
+                                <div className="invenShopfy-form-field">
+                                    <div className="invenShopfy-select-field">
                                         <h5>From Warehouse</h5>
-                                        <div className="inventual-select-field-style">
+                                        <div className="invenShopfy-select-field-style">
                                             <TextField
                                                 select
                                                 label="Select"
@@ -269,10 +269,10 @@ const AddTransfer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-3">
-                                <div className="inventual-form-field">
-                                    <div className="inventual-select-field">
+                                <div className="invenShopfy-form-field">
+                                    <div className="invenShopfy-select-field">
                                         <h5>To Warehouse</h5>
-                                        <div className="inventual-select-field-style">
+                                        <div className="invenShopfy-select-field-style">
                                             <TextField
                                                 select
                                                 label="Select"
@@ -304,10 +304,10 @@ const AddTransfer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-3">
-                                <div className="inventual-form-field">
-                                    <div className="inventual-select-field">
+                                <div className="invenShopfy-form-field">
+                                    <div className="invenShopfy-select-field">
                                         <h5>Quantity</h5>
-                                        <div className="inventual-input-field-style">
+                                        <div className="invenShopfy-input-field-style">
                                             <TextField
                                                 fullWidth
                                                 type="number"
@@ -324,9 +324,9 @@ const AddTransfer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-3">
-                                <div className="inventual-formTree-field">
+                                <div className="invenShopfy-formTree-field">
                                     <h5>Quantity in stock</h5>
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <TextField
                                             required
                                             value={quantityByWarehouseData?.data.quantity !== undefined ? quantityByWarehouseData.data.quantity : ""}
@@ -342,9 +342,9 @@ const AddTransfer = () => {
                             </div>
 
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                                <div className="inventual-form-field">
+                                <div className="invenShopfy-form-field">
                                     <h5>Reason</h5>
-                                    <div className="inventual-input-field-style search-field">
+                                    <div className="invenShopfy-input-field-style search-field">
                                         <TextField
                                             fullWidth
                                             placeholder='Stock Rebalancing'
@@ -356,10 +356,10 @@ const AddTransfer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                                <div className="inventual-select-field">
-                                    <div className="inventual-form-field">
+                                <div className="invenShopfy-select-field">
+                                    <div className="invenShopfy-form-field">
                                         <h5>Status</h5>
-                                        <div className="inventual-select-field-style">
+                                        <div className="invenShopfy-select-field-style">
                                             <TextField
                                                 select
                                                 label="Select"
@@ -390,7 +390,7 @@ const AddTransfer = () => {
                             </div>
 
                             <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
-                                <div className="inventual-input-field-style">
+                                <div className="invenShopfy-input-field-style">
                                     <TextField
                                         fullWidth
                                         multiline
@@ -403,7 +403,7 @@ const AddTransfer = () => {
                                 </div>
                             </div>
                             <div className="col-span-12 flex justify-end">
-                                <button type="submit" className="inventual-btn">Create Transfer</button>
+                                <button type="submit" className="invenShopfy-btn">Create Transfer</button>
                             </div>
                         </div>
                     </form>

@@ -16,14 +16,14 @@ const TopSales = () => {
 
     return (
         <>
-            <div className=" custom-boxshadow inventual-dashboard-topseller-wrapper p-5 sm:p-7 bg-white rounded-8">
-                <div className="inventual-dashboard-supplier-header flex gap-2.5 items-center justify-between mb-5 m-0.5">
+            <div className=" custom-boxshadow invenShopfy-dashboard-topseller-wrapper p-5 sm:p-7 bg-white rounded-8">
+                <div className="invenShopfy-dashboard-supplier-header flex gap-2.5 items-center justify-between mb-5 m-0.5">
                     <h5 className="text-[18px] text-heading font-bold">Top Sales <span className="text-[18px] text-heading font-normal">({monthName})</span></h5>
                     <span className="common-blue-badge">
                         <Link href="trading/sales/salelist">View All</Link>
                     </span>
                 </div>
-                <div className="inventual-common-small-table top-sellar-table overflow-y-scroll cursor-grab sm:overflow-y-hidden">
+                <div className="invenShopfy-common-small-table top-sellar-table overflow-y-scroll cursor-grab sm:overflow-y-hidden">
                     <table>
                         <thead>
                             <tr>
@@ -36,8 +36,8 @@ const TopSales = () => {
                             {isLoading ? (
                                 <tr>
                                     <td colSpan={3}>
-                                        <div className="inventual-loading-container">
-                                            <span className="inventual-loading"></span>
+                                        <div className="invenShopfy-loading-container">
+                                            <span className="invenShopfy-loading"></span>
                                         </div>
                                     </td>
                                 </tr>
@@ -45,7 +45,7 @@ const TopSales = () => {
                                 data?.data.map((item: any, index: any) => <tr key={index}>
                                     <td>{item.id}</td>
                                     <td>
-                                        <div className="inventual-dashboard-sellar-list-name">
+                                        <div className="invenShopfy-dashboard-sellar-list-name">
                                             <a className="text-[15px] font-normal block mb-3">{item.productName}</a>
                                             <span className="text-[15px] font-normal block">{item.productCode}</span>
                                         </div>

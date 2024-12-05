@@ -109,8 +109,8 @@ export default function EnhancedTable() {
   });
 
   return (
-    <div className="inventual-common-card xs:pb-6 mb-5">
-      <div className="inventual-common-mat-list w-full mt-0.5">
+    <div className="invenShopfy-common-card xs:pb-6 mb-5">
+      <div className="invenShopfy-common-mat-list w-full mt-0.5">
         <div className='w-full'>
           <Paper sx={{ width: '100%', mb: 2 }}>
             {/* Table container */}
@@ -199,7 +199,7 @@ export default function EnhancedTable() {
                         <TableCell>{row.fat}</TableCell>
                         <TableCell>{row.carbs}</TableCell>
                         <TableCell>
-                            <div className="inventual-list-action-style">
+                            <div className="invenShopfy-list-action-style">
                                 <PopupState variant="popover">
                                     {(popupState:any) => (
                                         <React.Fragment>

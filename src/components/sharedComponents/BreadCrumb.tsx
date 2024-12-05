@@ -8,10 +8,10 @@ interface propsType {
 const BreadCrumb = ({ title, subTitleOne, subTitleTwo, subTitleThree }: propsType) => {
   return (
     <>
-      <div className="inventual-breadcrumb-area px-7 py-9 bg-white mb-5">
-        <div className="inventual-breadcrumb-area-inner px-0.5">
+      <div className="invenShopfy-breadcrumb-area px-7 py-9 bg-white mb-5">
+        <div className="invenShopfy-breadcrumb-area-inner px-0.5">
           <h5 className="text-[20px] text-heading font-bold mb-3">{title}</h5>
-          <div className="inventual-breadcrumb-area-inner-wrap">
+          <div className="invenShopfy-breadcrumb-area-inner-wrap">
             <span className="text-[14px] text-body font-normal inline-block me-2">{subTitleOne}</span>
             {subTitleTwo &&
               <>

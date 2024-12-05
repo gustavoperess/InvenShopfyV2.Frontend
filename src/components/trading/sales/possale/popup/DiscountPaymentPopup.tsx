@@ -60,23 +60,23 @@ const DiscountPaymentPopup = ({ open, handleDiscountPaymentDialogClose }: Discou
 
     return (
         <>
-            <div className='inventual-common-modal'>
+            <div className='invenShopfy-common-modal'>
                 <BootstrapDialog
                     onClose={handleDiscountPaymentDialogClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
                 >
-                    <div className='inventual-modal-title'>
+                    <div className='invenShopfy-modal-title'>
                         <h4>Order Discount</h4>
                         <button autoFocus onClick={handleDiscountPaymentDialogClose} type='button'><i className="fa-regular fa-xmark"></i></button>
                     </div>
                     <DialogContent dividers>
-                        <div className='inventual-common-modal-width width-full discount-popup'>
+                        <div className='invenShopfy-common-modal-width width-full discount-popup'>
                             <form onSubmit={dummyData}>
                                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[15px]">
                                     <div className="col-span-12">
                                         <div className="col-span-12">
-                                            <div className="inventual-radio-field flex flex-wrap gap-x-5 gap-y-0.5">
+                                            <div className="invenShopfy-radio-field flex flex-wrap gap-x-5 gap-y-0.5">
                                             <FormControlLabel 
                                                     onClick={handleOptionChange} 
                                                     value="Discount" 
@@ -95,9 +95,9 @@ const DiscountPaymentPopup = ({ open, handleDiscountPaymentDialogClose }: Discou
                                         </div>
                                     </div>
                                     <div className="col-span-12">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Phone</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <input type="tel" placeholder='+02 872 360 930' />
                                             </div>
                                         </div>
@@ -107,7 +107,7 @@ const DiscountPaymentPopup = ({ open, handleDiscountPaymentDialogClose }: Discou
                         </div>
                     </DialogContent>
                     <DialogActions>
-                        <button onClick={handlePopupOpen} className='inventual-btn' type='button'>
+                        <button onClick={handlePopupOpen} className='invenShopfy-btn' type='button'>
                             Check Eligibility
                         </button>
                     </DialogActions>

@@ -191,13 +191,13 @@ const AddBrandList = () => {
 
   return (
     <>
-      <div className="inventual-content-area px-4 sm:px-7">
-        <div className="inventual-add-brand-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+      <div className="invenShopfy-content-area px-4 sm:px-7">
+        <div className="invenShopfy-add-brand-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
           <div className="grid grid-cols-12 gap-7 maxSm:gap-x-0">
             <div className="col-span-12 md:col-span-4">
               <form onSubmit={handleBrandForm}>
                 <div className="col-span-12 xl:col-span-3 lg:col-span-4 lg:order-2 maxMd:order-1">
-                  <div className="inventual-product-dragdrop ngx-file-drop__drop-zone text-center border border-dashed border-primary bg-[#F8FAFF] p-4"
+                  <div className="invenShopfy-product-dragdrop ngx-file-drop__drop-zone text-center border border-dashed border-primary bg-[#F8FAFF] p-4"
                     style={{ padding: '10px', marginBottom: '10px' }}
                   >
                     <div {...getRootProps({ className: 'dropzone-two' })}>
@@ -210,17 +210,17 @@ const AddBrandList = () => {
                         <>
                           <h3 className="text-[20px] font-semibold text-heading mb-4">Drop brand image here</h3>
                           <span className="block text-[20px] font-semibold text-heading mb-7">Or</span>
-                          <button type="submit" className="inventual-btn">Browse File</button>
+                          <button type="submit" className="invenShopfy-btn">Browse File</button>
                           <span className="text-[14px] text-heading font-medium block pt-7">Allowed JPEG, JPG & PNG format  |  Max 100 mb</span>
                         </>
                       )}
                     </div>
                   </div>
                 </div>
-                <div className="inventual-select-field w-full mb-5">
-                  <div className="inventual-form-field">
+                <div className="invenShopfy-select-field w-full mb-5">
+                  <div className="invenShopfy-form-field">
                     <h5>Brand Name</h5>
-                    <div className="inventual-input-field-style">
+                    <div className="invenShopfy-input-field-style">
                       <FormControl fullWidth>
                         <TextField
                           fullWidth
@@ -237,13 +237,13 @@ const AddBrandList = () => {
                   </div>
                 </div>
                 <div className="col-span-12">
-                  <button type='submit' className='inventual-btn'>Create Brand</button>
+                  <button type='submit' className='invenShopfy-btn'>Create Brand</button>
                 </div>
               </form>
             </div>
             <div className="col-span-12 md:col-span-8">
-              <div className="inventual-manageproduct-table-area">
-                <div className="inventual-common-mat-list w-full mt-0.5">
+              <div className="invenShopfy-manageproduct-table-area">
+                <div className="invenShopfy-common-mat-list w-full mt-0.5">
                   <div className="inner max2Xl:overflow-x-scroll">
                     <Paper sx={{ width: '100%', mb: 2 }}>
                       <TableContainer>
@@ -286,15 +286,15 @@ const AddBrandList = () => {
                             {brandLoading ? (
                               <tr>
                                 <td colSpan={6}>
-                                  <div className="inventual-loading-container">
-                                    <span className="inventual-loading"></span>
+                                  <div className="invenShopfy-loading-container">
+                                    <span className="invenShopfy-loading"></span>
                                   </div>
                                 </td>
                               </tr>
                             ) : brandData?.message === "User is not authorized to do this task" ? (
                               <tr>
                                 <td colSpan={6}>
-                                  <div className="inventual-loading-container">
+                                  <div className="invenShopfy-loading-container">
                                     <h1>User is not authorized to do this task</h1>
                                   </div>
                                 </td>
@@ -328,7 +328,7 @@ const AddBrandList = () => {
                                   </TableCell>
                                   <TableCell>{brand.brandName}</TableCell>
                                   <TableCell>
-                                    <div className="inventual-list-action-style">
+                                    <div className="invenShopfy-list-action-style">
                                       <PopupState variant="popover">
                                         {(popupState: any) => (
                                           <React.Fragment>
@@ -356,7 +356,7 @@ const AddBrandList = () => {
                       </TableContainer>
                     </Paper>
                   </div>
-                  <div className="inventual-pagination-area">
+                  <div className="invenShopfy-pagination-area">
                     {/* Pagination */}
                     <TablePagination
                       component="div"

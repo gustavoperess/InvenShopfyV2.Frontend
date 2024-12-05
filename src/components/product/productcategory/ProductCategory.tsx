@@ -165,17 +165,17 @@ const ProductCategory = () => {
 
   return (
     <>
-      <div className="inventual-content-area px-4 sm:px-7">
-        <div className="inventual-productc-category-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5 mt-7">
+      <div className="invenShopfy-content-area px-4 sm:px-7">
+        <div className="invenShopfy-productc-category-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5 mt-7">
           <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
             <div className="col-span-12 lg:col-span-3">
               <form onSubmit={handleCategory}>
                 <div className="grid grid-cols-12 gap-y-7 minMaxMd:gap-7">
                   <div className="col-span-12 md:col-span-6 lg:col-span-12">
-                    <div className="inventual-select-field">
-                      <div className="inventual-form-field">
+                    <div className="invenShopfy-select-field">
+                      <div className="invenShopfy-form-field">
                         <h5>Main-Category</h5>
-                        <div className="inventual-input-field-style">
+                        <div className="invenShopfy-input-field-style">
                           <FormControl fullWidth>
                             <TextField
                               fullWidth
@@ -193,10 +193,10 @@ const ProductCategory = () => {
                     </div>
                   </div>
                   <div className="col-span-12 md:col-span-6 lg:col-span-12">
-                    <div className="inventual-select-field">
-                      <div className="inventual-form-field">
+                    <div className="invenShopfy-select-field">
+                      <div className="invenShopfy-form-field">
                         <h5>Sub-Category</h5>
-                        <div className="inventual-input-field-style">
+                        <div className="invenShopfy-input-field-style">
                           <FormControl fullWidth>
                             <TextField
                               fullWidth
@@ -214,13 +214,13 @@ const ProductCategory = () => {
                     </div>
                   </div>
                   <div className="col-span-12">
-                    <button type='submit' className='inventual-btn'>Create Category</button>
+                    <button type='submit' className='invenShopfy-btn'>Create Category</button>
                   </div>
                 </div>
               </form>
             </div>
             <div className="col-span-12 lg:col-span-9">
-              <div className="inventual-common-mat-list w-full mt-0.5 whitespace-nowrap">
+              <div className="invenShopfy-common-mat-list w-full mt-0.5 whitespace-nowrap">
                 <div className='w-full'>
                   <Paper sx={{ width: '100%', mb: 2 }}>
                     <TableContainer>
@@ -263,15 +263,15 @@ const ProductCategory = () => {
                           {categoryLoading ? (
                             <tr>
                               <td colSpan={5}>
-                                <div className="inventual-loading-container">
-                                  <span className="inventual-loading"></span>
+                                <div className="invenShopfy-loading-container">
+                                  <span className="invenShopfy-loading"></span>
                                 </div>
                               </td>
                             </tr>
                           ) : categorytData?.message === "User is not authorized to do this task" ? (
                             <tr>
                               <td colSpan={5}>
-                                <div className="inventual-loading-container">
+                                <div className="invenShopfy-loading-container">
                                   <h1>User is not authorized to do this task</h1>
                                 </div>
                               </td>
@@ -293,7 +293,7 @@ const ProductCategory = () => {
                                 <TableCell>{category.mainCategory}</TableCell>
                                 <TableCell>{Array.isArray(category?.subCategory) ? category.subCategory.join(', ') : category?.subCategory}</TableCell>
                                 <TableCell>
-                                  <div className="inventual-list-action-style">
+                                  <div className="invenShopfy-list-action-style">
                                     <PopupState variant="popover">
                                       {(popupState: any) => (
                                         <React.Fragment>

@@ -8,8 +8,8 @@ const EmailDropdown = () => {
    
     if (messagesLoading) {
         return (
-            <div className="inventual-loading-container">
-                <span className="inventual-loading"></span>
+            <div className="invenShopfy-loading-container">
+                <span className="invenShopfy-loading"></span>
             </div>
         );
     }
@@ -24,7 +24,7 @@ const EmailDropdown = () => {
             {messages.length > 0 ? (
                 messages.map((msg: any) => (
                     <li key={msg.id}>
-                        <div className="inventual-notify-dropdown-item">
+                        <div className="invenShopfy-notify-dropdown-item">
                             <div className="thumb">
                                 <Link href="/message">
                                     <Image
@@ -54,7 +54,7 @@ const EmailDropdown = () => {
             <div className="border-t border-gray-300 my-2"></div>
             <li>
                 <Link href="/message">
-                    <div className="inventual-notify-dropdown-list py-1 flex items-center justify-center cursor-pointer">
+                    <div className="invenShopfy-notify-dropdown-list py-1 flex items-center justify-center cursor-pointer">
                         <div className="thumb flex items-center">
                             See All
                             <span className="ml-2">

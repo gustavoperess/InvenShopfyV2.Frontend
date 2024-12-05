@@ -8,7 +8,7 @@ import FormLabel from '@mui/material/FormLabel';
 const RadioElements = () => {
     return (
         <>
-            <div className="inventual-common-card mb-5">
+            <div className="invenShopfy-common-card mb-5">
                 <FormControl>
                     <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel>
                     <RadioGroup

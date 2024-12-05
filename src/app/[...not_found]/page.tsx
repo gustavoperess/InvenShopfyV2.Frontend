@@ -24,7 +24,7 @@ const page = () => {
                             </p>
                         </div>
                         <div className="error-btn text-center">
-                            <Link href="/dashboard" className="inventual-btn primary-btn">
+                            <Link href="/dashboard" className="invenShopfy-btn primary-btn">
                                 Back to Dashboard
                             </Link>
                         </div>

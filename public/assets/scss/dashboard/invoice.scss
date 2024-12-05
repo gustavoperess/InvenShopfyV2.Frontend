@@ -1,4 +1,4 @@
-.inventual-invoice-popup-address {
+.invenShopfy-invoice-popup-address {
     h5 {
         @apply text-[16px] font-bold text-heading mb-4;
     }
@@ -12,19 +12,19 @@
     }
 }
 
-.inventual-invoice-table-list {
+.invenShopfy-invoice-table-list {
     @apply flex items-center border-b border-solid border-border; 
 }
-.inventual-invoice-table-sl,
-.inventual-invoice-table-sll,
-.inventual-invoice-table-product,
-.inventual-invoice-table-batch,
-.inventual-invoice-table-unit,
-.inventual-invoice-table-price,
-.inventual-invoice-table-qty,
-.inventual-invoice-table-tax,
-.inventual-invoice-table-discount,
-.inventual-invoice-table-total {
+.invenShopfy-invoice-table-sl,
+.invenShopfy-invoice-table-sll,
+.invenShopfy-invoice-table-product,
+.invenShopfy-invoice-table-batch,
+.invenShopfy-invoice-table-unit,
+.invenShopfy-invoice-table-price,
+.invenShopfy-invoice-table-qty,
+.invenShopfy-invoice-table-tax,
+.invenShopfy-invoice-table-discount,
+.invenShopfy-invoice-table-total {
     @apply flex justify-center flex-col h-full px-2.5;
     h5 {
         @apply text-[15px] font-semibold text-heading;
@@ -34,43 +34,43 @@
     }
 }
 
-.inventual-invoice-table-sl {
+.invenShopfy-invoice-table-sl {
     @apply min-w-[40px] w-10;
   }
-.inventual-invoice-table-product {
+.invenShopfy-invoice-table-product {
     @apply min-w-[170px] w-[170px];
 }
-.inventual-invoice-table-sll {
+.invenShopfy-invoice-table-sll {
     @apply min-w-[209px] w-[209px];
 }
-.inventual-invoice-table-batch {
+.invenShopfy-invoice-table-batch {
     @apply min-w-[95px] w-[95px];
 }
-.inventual-invoice-table-unit {
+.invenShopfy-invoice-table-unit {
     @apply min-w-[50px] w-[50px];
 }
-.inventual-invoice-table-price {
+.invenShopfy-invoice-table-price {
     @apply min-w-[90px] w-[90px];
 }
-.inventual-invoice-table-qty {
+.invenShopfy-invoice-table-qty {
     @apply min-w-[50px] w-[50px];
 }
-.inventual-invoice-table-tax {
+.invenShopfy-invoice-table-tax {
     @apply min-w-[90px] w-[90px];
 }
-.inventual-invoice-table-discount {
+.invenShopfy-invoice-table-discount {
     @apply min-w-[90px] w-[90px];
 }
-.inventual-invoice-table-total {
+.invenShopfy-invoice-table-total {
     @apply border-e-0;
 }
 .custom-height-70 {
     @apply h-[70px];
 }
-.inventual-invoice-popup-btn.inventual-table-header-search-action-btn {
+.invenShopfy-invoice-popup-btn.invenShopfy-table-header-search-action-btn {
     @apply flex flex-wrap gap-4 justify-end;
 }
-.inventual-invoice-popup-btn.inventual-table-header-search-action-btn button {
+.invenShopfy-invoice-popup-btn.invenShopfy-table-header-search-action-btn button {
     width: inherit;
     @apply px-4 inline-flex items-center m-0 text-[14px] font-semibold leading-[38px];
     & svg {
@@ -86,20 +86,20 @@
         @apply text-danger border rounded-[4px] border-danger;
     }
 }
-.inventual-invoice-table-inner {
+.invenShopfy-invoice-table-inner {
 	@media (max-width: 991px) {
 		overflow-x: auto;
 		scrollbar-height: thin;
 	}
 }
-.inventual-invoice-table-inner-wrapper {
+.invenShopfy-invoice-table-inner-wrapper {
 	@media (max-width: 991px) {
 		min-width: 100%;
         width: 740px;
 		scrollbar-height: thin;
 	}
 }
-.inventual-invoice-popup-heading {
+.invenShopfy-invoice-popup-heading {
     ul {
         li {
             @apply border-e-0;

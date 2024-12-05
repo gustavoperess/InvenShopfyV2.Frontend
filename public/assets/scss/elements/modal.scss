@@ -16,7 +16,7 @@ div.MuiDialog-paper {
         scrollbar-width: none;
     }
 }
-.inventual-modal-title {
+.invenShopfy-modal-title {
     @apply flex flex-wrap gap-2.5 pb-2.5 items-center justify-between;
     h4 {
         @apply text-[20px] text-heading font-bold leading-none;
@@ -25,7 +25,7 @@ div.MuiDialog-paper {
         @apply h-9 w-9 leading-[34px] text-center inline-block border border-danger text-danger rounded text-[18px];
     }
 }
-.inventual-common-modal-width {
+.invenShopfy-common-modal-width {
     @apply w-[850px];
     &.width-full {
         @apply maxMd:w-full;
@@ -34,7 +34,7 @@ div.MuiDialog-paper {
         @apply max-w-[700px];
     }
 }
-.inventual-common-modal-width-medium {
+.invenShopfy-common-modal-width-medium {
     @apply w-[650px];
     &.width-full {
         @apply maxMd:w-full;

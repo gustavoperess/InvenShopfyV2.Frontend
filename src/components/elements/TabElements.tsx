@@ -43,8 +43,8 @@ const TabElements = () => {
     };
 
     return (
-        <div className="inventual-common-card mb-5">
-            <div className='inventual-common-tab-menus'>
+        <div className="invenShopfy-common-card mb-5">
+            <div className='invenShopfy-common-tab-menus'>
                 <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons allowScrollButtonsMobile aria-label="basic tabs example">
                     <Tab label="Sale" {...a11yProps(0)} />
                     <Tab label="Purchase" {...a11yProps(1)} />

@@ -30,48 +30,48 @@ const PaymentManageListPopup = ({ open, handleAddPaymentDialogClose }: AddPaymen
 
     return (
         <>
-            <div className='inventual-common-modal'>
+            <div className='invenShopfy-common-modal'>
                 <BootstrapDialog
                     onClose={handleAddPaymentDialogClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
                 >
-                    <div className='inventual-modal-title'>
+                    <div className='invenShopfy-modal-title'>
                         <h4>Add Payment</h4>
                         <button autoFocus onClick={handleAddPaymentDialogClose} type='button'><i className="fa-regular fa-xmark"></i></button>
                     </div>
                     <DialogContent dividers>
-                        <div className='inventual-common-modal-width width-full'>
+                        <div className='invenShopfy-common-modal-width width-full'>
                             <form onSubmit={dummyData}>
                                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Received Amount</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <input type="email" placeholder='$4595.00' />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Paying Amount</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <input type="email" placeholder='$3595.00' />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Change</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <input type="number" placeholder='Type phone' />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Payment Type</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     select
                                                     label="Select"
@@ -97,17 +97,17 @@ const PaymentManageListPopup = ({ open, handleAddPaymentDialogClose }: AddPaymen
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Card Number</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <input type="text" placeholder='XXXX XXXX XXXX XXXX' />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Expired Date</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <ReactDatePicker
                                                     selected={startDate}
                                                     onChange={(date) => setStartDate(date)}
@@ -125,9 +125,9 @@ const PaymentManageListPopup = ({ open, handleAddPaymentDialogClose }: AddPaymen
                                         </div>
                                     </div>
                                     <div className="col-span-12">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Sale Note</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <textarea placeholder='Type sales note'></textarea>
                                             </div>
                                         </div>
@@ -137,7 +137,7 @@ const PaymentManageListPopup = ({ open, handleAddPaymentDialogClose }: AddPaymen
                         </div>
                     </DialogContent>
                     <DialogActions>
-                        <button className='inventual-btn' type='button'>
+                        <button className='invenShopfy-btn' type='button'>
                             Pay Now
                         </button>
                     </DialogActions>

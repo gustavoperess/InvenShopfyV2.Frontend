@@ -12,13 +12,13 @@ const CalenderElements = () => {
     };
 
     return (
-        <div className="inventual-common-card mb-5">
+        <div className="invenShopfy-common-card mb-5">
             <form onSubmit={dummyData}>
                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                     <div className="col-span-12 md:col-span-6">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Calender Style</h5>
-                            <div className="inventual-input-field-style">
+                            <div className="invenShopfy-input-field-style">
                                 <DatePicker
                                     selected={startDate}
                                     onChange={(date) => setStartDate(date)}
@@ -36,9 +36,9 @@ const CalenderElements = () => {
                         </div>
                     </div>
                     <div className="col-span-12 md:col-span-6">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Calender Style</h5>
-                            <div className="inventual-input-field-style">
+                            <div className="invenShopfy-input-field-style">
                                 <DatePicker
                                     selected={endDate}
                                     onChange={(date) => setEndDate(date)}

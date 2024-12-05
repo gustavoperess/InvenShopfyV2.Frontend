@@ -1,10 +1,10 @@
-.inventual-header-shortmenu {
+.invenShopfy-header-shortmenu {
     @apply relative z-[9];
     @media (max-width: 359px) {
         @apply hidden;
     }
 }
-.inventual-header-language-content {
+.invenShopfy-header-language-content {
     & ul {
         & li {
             @apply leading-none;
@@ -14,35 +14,35 @@
         @apply text-body text-[14px];
     }
 }
-.inventual-header-language-content {
+.invenShopfy-header-language-content {
 	transform: translateY(-2px);
 }
-.inventual-header-bar {
+.invenShopfy-header-bar {
     @apply leading-none;
 }
 .custom-height-70 {
     @apply h-[70px];
 }
-.inventual-header-notify-wrapper {
+.invenShopfy-header-notify-wrapper {
     & svg {
         @apply min-w-[18px];
     }
 }
-.inventual-header-profile-info {
+.invenShopfy-header-profile-info {
     & i {
         @apply text-[16px] absolute top-[5px] end-0 text-heading;
     }
 }
-.inventual-header-bar span {
+.invenShopfy-header-bar span {
     @apply mb-[1px];
 }
-.inventual-quick-pro-dropdown {
+.invenShopfy-quick-pro-dropdown {
     i {
         @apply me-1;
     }
 }
 //shortcut dropdown
-.inventual-quick-dropdown {
+.invenShopfy-quick-dropdown {
     @apply absolute top-full start-0 w-[220px] z-[9] border border-solid border-border py-3 px-5 bg-white opacity-0 invisible;
     box-shadow: 0px 20px 40px rgba(18, 42, 91, 0.05);
     transform: scale(0);
@@ -66,21 +66,21 @@
         }
     }
 }
-.inventual-quick-lang-dropdown {
+.invenShopfy-quick-lang-dropdown {
     @apply w-[160px];
     &.langmenu-enable {
         @apply start-auto;
         @apply end-0 top-[45px];
     }
 }
-.inventual-quick-pro-dropdown {
+.invenShopfy-quick-pro-dropdown {
     @apply w-[195px];
     &.promenu-enable {
         @apply start-auto;
         @apply end-0 top-[59px];
     }
 }
-.inventual-quick-pro-dropdown {
+.invenShopfy-quick-pro-dropdown {
     & a {
         @apply inline-flex items-center;
         .mat-icon {
@@ -91,11 +91,11 @@
     }
 }
 // notify dropdown
-.inventual-notify-dropdown-list {
-    .inventual-notify-img {
+.invenShopfy-notify-dropdown-list {
+    .invenShopfy-notify-img {
         @apply w-[50px] rounded-[5px] me-4;
     }
-    .inventual-notify-text {
+    .invenShopfy-notify-text {
         h6 {
             @apply text-[14px] font-semibold text-heading mb-2;
         }
@@ -104,7 +104,7 @@
         }
     }
 }
-.inventual-notify-dropdown-list a {
+.invenShopfy-notify-dropdown-list a {
     @apply text-body inline-flex;
     &:hover {
         @apply text-primary;
@@ -114,56 +114,56 @@
     }
 }
 // header-shortmenu
-.inventual-header-shortmenu {
+.invenShopfy-header-shortmenu {
     a.short {
         @apply z-[9] relative;
     }
 }
-.inventual-header-profile {
+.invenShopfy-header-profile {
     @apply z-[9] relative;
 }
-.inventual-header-notification {
+.invenShopfy-header-notification {
     .noti {
         @apply z-[9] relative text-[20px] text-body leading-none hover:text-primary;
     }
 }
-.inventual-header-email {
+.invenShopfy-header-email {
     .emai {
         @apply z-[9] relative text-[20px] text-body leading-none hover:text-primary;
     }
 }
-.inventual-header-language {
+.invenShopfy-header-language {
     @apply cursor-pointer z-[9] relative;
 }
-.inventual-quick-dropdown,
-.inventual-notify-dropdown {
+.invenShopfy-quick-dropdown,
+.invenShopfy-notify-dropdown {
     @apply z-[9];
 }
-.inventual-header-overlay.promenu-enable,
-.inventual-header-overlay.shortmenu-enable,
-.inventual-header-overlay.notifydropdown-enable,
-.inventual-header-overlay.emaildropdown-enable,
-.inventual-header-overlay.langmenu-enable {
+.invenShopfy-header-overlay.promenu-enable,
+.invenShopfy-header-overlay.shortmenu-enable,
+.invenShopfy-header-overlay.notifydropdown-enable,
+.invenShopfy-header-overlay.emaildropdown-enable,
+.invenShopfy-header-overlay.langmenu-enable {
     @apply block;
 }
-.inventual-header-overlay {
+.invenShopfy-header-overlay {
     @apply fixed hidden top-0 start-0 end-0 w-full h-full z-[8];
 }
 
-.inventual-sidebar-icon-bar {
+.invenShopfy-sidebar-icon-bar {
     @apply inline-flex h-10 w-10 cursor-pointer bg-lightest justify-center items-center rounded border-border border;
     i {
         @apply text-heading text-[20px];
     }
 }
-.inventual-header-language:hover {
+.invenShopfy-header-language:hover {
     i,button {
         @apply text-primary;
     }
 }
 
 // NotificationStyle
-.inventual-notify-dropdown {
+.invenShopfy-notify-dropdown {
     @apply absolute top-[45px] start-0 z-[9] w-[300px] bg-white p-[20px] maxSm:w-[290px] shadow-[0_0px_70px_rgb(15,38,71,0.2)];
     ul {
         li {
@@ -173,7 +173,7 @@
         }
     }
 }
-.inventual-notify-dropdown-item {
+.invenShopfy-notify-dropdown-item {
     @apply flex items-start gap-[10px];
     .thumb {
         @apply w-[58px] h-[58px] min-w-[58px] rounded;
@@ -189,7 +189,7 @@
         }
     }
 }
-.inventual-notify-dropdown {
+.invenShopfy-notify-dropdown {
     transform: scale(0);
     visibility: hidden;
     &.notifydropdown-enable,

@@ -79,13 +79,13 @@ const RolePermissionList = () => {
     };
 
     return (
-        <div className="inventual-content-area px-4 sm:px-7">
-            <div className="inventual-managesale-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5">
+        <div className="invenShopfy-content-area px-4 sm:px-7">
+            <div className="invenShopfy-managesale-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5">
                 <form onSubmit={(e) => e.preventDefault()}>
-                    <div className="inventual-form-field mb-7">
+                    <div className="invenShopfy-form-field mb-7">
                         <h5>Search by role name</h5>
-                        <div className="inventual-input-field-style flex gap-5 items-center">
-                            <div className="inventual-select-field-style" style={{ flexBasis: '350px', flexShrink: 1 }}>
+                        <div className="invenShopfy-input-field-style flex gap-5 items-center">
+                            <div className="invenShopfy-select-field-style" style={{ flexBasis: '350px', flexShrink: 1 }}>
                                 <TextField
                                     select
                                     label="Select"
@@ -115,21 +115,21 @@ const RolePermissionList = () => {
                             <button
                                 type="button"
                                 onClick={handleSetUpSubmit}
-                                className="inventual-btn primary-btn whitespace-nowrap">
+                                className="invenShopfy-btn primary-btn whitespace-nowrap">
                                 SetUp Permissions
                             </button>
                             <button
                                 type="button"
                                 onClick={handleAssignPermissions}
                                 disabled={!isReadyToSubmit}
-                                className={`inventual-btn primary-btn whitespace-nowrap ${!isReadyToSubmit ? 'disabled' : ''}`}>
+                                className={`invenShopfy-btn primary-btn whitespace-nowrap ${!isReadyToSubmit ? 'disabled' : ''}`}>
                                 Assign Permissions
                             </button>
                         </div>
                     </div>
-                    <div className="inventual-role-area">
-                        <div className="inventual-role-inner">
-                            <div className="inventual-role-inner-wrapper border border-solid border-border border-b-0 mb-7">
+                    <div className="invenShopfy-role-area">
+                        <div className="invenShopfy-role-inner">
+                            <div className="invenShopfy-role-inner-wrapper border border-solid border-border border-b-0 mb-7">
                                 {roleNameDataWithDetails ? (
                                     <>
                                         <RoleList

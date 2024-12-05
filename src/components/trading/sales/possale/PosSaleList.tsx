@@ -151,12 +151,12 @@ const PosSaleList = (
 
     return (
         <>
-            <div className="inventual-common-card min-h-full">
+            <div className="invenShopfy-common-card min-h-full">
                 <div className="grid grid-cols-12 gap-x-5 gap-y-6">
                     <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Search by reference number</h5>
-                            <div className="inventual-input-field-style search-field">
+                            <div className="invenShopfy-input-field-style search-field">
                                 <TextField
                                     fullWidth
                                     placeholder="B-874739"
@@ -181,10 +181,10 @@ const PosSaleList = (
                     </div>
                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
                         <div className="flex items-center w-full">
-                            <div className="inventual-form-field w-full">
+                            <div className="invenShopfy-form-field w-full">
                                 <div className="col-span-12 md:col-span-6">
-                                    <div className="inventual-formTree-field">
-                                        <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-formTree-field">
+                                        <div className="invenShopfy-input-field-style">
                                             <TextField
                                                 required
                                                 value={customerName}
@@ -204,10 +204,10 @@ const PosSaleList = (
                     </div>
                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
                         <div className="flex items-center w-full">
-                            <div className="inventual-form-field w-full">
+                            <div className="invenShopfy-form-field w-full">
                                 <div className="col-span-12 md:col-span-6">
-                                    <div className="inventual-formTree-field">
-                                        <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-formTree-field">
+                                        <div className="invenShopfy-input-field-style">
                                             <TextField
                                                 required
                                                 value={billerName}
@@ -227,10 +227,10 @@ const PosSaleList = (
                     </div>
                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
                         <div className="flex items-center w-full">
-                            <div className="inventual-form-field w-full">
+                            <div className="invenShopfy-form-field w-full">
                                 <div className="col-span-12 md:col-span-6">
-                                    <div className="inventual-formTree-field">
-                                        <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-formTree-field">
+                                        <div className="invenShopfy-input-field-style">
                                             <TextField
                                                 required
                                                 value={warehouseName}
@@ -250,10 +250,10 @@ const PosSaleList = (
                     </div>
                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
                         <div className="flex items-center w-full">
-                            <div className="inventual-form-field w-full">
+                            <div className="invenShopfy-form-field w-full">
                                 <div className="col-span-12 md:col-span-6">
-                                    <div className="inventual-formTree-field">
-                                        <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-formTree-field">
+                                        <div className="invenShopfy-input-field-style">
                                             <TextField
                                                 required
                                                 value={saleStatus}
@@ -272,8 +272,8 @@ const PosSaleList = (
                         </div>
                     </div>
                     <div className="col-span-12">
-                        <div className="inventual-add-adjustment-table overflow-y-scroll xl:overflow-hidden min-h-[240px]">
-                            <div className="inventual-common-small-table mt-0.5 w-[1150px] xl:w-full">
+                        <div className="invenShopfy-add-adjustment-table overflow-y-scroll xl:overflow-hidden min-h-[240px]">
+                            <div className="invenShopfy-common-small-table mt-0.5 w-[1150px] xl:w-full">
                                 <table>
                                     <thead>
                                         <tr className='bg-lightest'>
@@ -303,11 +303,11 @@ const PosSaleList = (
                                 </table>
                             </div>
                         </div>
-                        <div className="inventual-possale-total-area border-t border-[#C1D5FE] border-solid pt-6 pb-1">
-                            <div className="inventual-possale-total-wrapper flex justify-between flex-wrap">
-                                <div className="inventual-possale-total-tax mb-4">
+                        <div className="invenShopfy-possale-total-area border-t border-[#C1D5FE] border-solid pt-6 pb-1">
+                            <div className="invenShopfy-possale-total-wrapper flex justify-between flex-wrap">
+                                <div className="invenShopfy-possale-total-tax mb-4">
                                     <h5 className="text-[16px] font-semibold text-heading mb-[11px]">Total Amount</h5>
-                                    <div className="inventual-possale-total-field small-width">
+                                    <div className="invenShopfy-possale-total-field small-width">
                                         <input
                                             id="tax"
                                             name="tax"
@@ -317,9 +317,9 @@ const PosSaleList = (
                                         />
                                     </div>
                                 </div>
-                                <div className="inventual-possale-total-tax mb-4">
+                                <div className="invenShopfy-possale-total-tax mb-4">
                                     <h5 className="text-[16px] font-semibold text-heading mb-[11px]">Profit</h5>
-                                    <div className="inventual-possale-total-field small-width">
+                                    <div className="invenShopfy-possale-total-field small-width">
                                         <input
                                             id="tax"
                                             name="tax"
@@ -330,9 +330,9 @@ const PosSaleList = (
                                    
                                     </div>
                                 </div>
-                                <div className="inventual-possale-total-tax mb-4">
+                                <div className="invenShopfy-possale-total-tax mb-4">
                                     <h5 className="text-[16px] font-semibold text-heading mb-[11px]">Tax</h5>
-                                    <div className="inventual-possale-total-field small-width">
+                                    <div className="invenShopfy-possale-total-field small-width">
                                         <input
                                             id="tax"
                                             name="tax"
@@ -343,9 +343,9 @@ const PosSaleList = (
                                
                                     </div>
                                 </div>
-                                <div className="inventual-possale-total-discount mb-4">
+                                <div className="invenShopfy-possale-total-discount mb-4">
                                     <h5 className="text-[16px] font-semibold text-heading mb-[11px]">Discount</h5>
-                                    <div className="inventual-possale-total-field small-width">
+                                    <div className="invenShopfy-possale-total-field small-width">
                                         <input
                                             id="discount"
                                             name="discount"
@@ -356,9 +356,9 @@ const PosSaleList = (
                                   
                                     </div>
                                 </div>
-                                <div className="inventual-possale-total-shipping mb-4">
+                                <div className="invenShopfy-possale-total-shipping mb-4">
                                     <h5 className="text-[16px] font-semibold text-heading mb-[11px]">Shipping</h5>
-                                    <div className="inventual-possale-total-field small-width">
+                                    <div className="invenShopfy-possale-total-field small-width">
                                         <input
                                             id="shipping"
                                             name="shipping"
@@ -374,9 +374,9 @@ const PosSaleList = (
                             </h4>
                             <div className="grid grid-cols-12 gap-y-5 sm:gap-7">
                                 <div className="col-span-12 sm:col-span-3">
-                                    <div className="inventual-material-btn-item">
+                                    <div className="invenShopfy-material-btn-item">
                                         <button
-                                            className='inventual-btn w-full secondary-btn'
+                                            className='invenShopfy-btn w-full secondary-btn'
                                             type="button"
                                             onClick={handlePosFormReset}>
                                             Reset All
@@ -384,15 +384,15 @@ const PosSaleList = (
                                     </div>
                                 </div>
                                 <div className="col-span-12 sm:col-span-3">
-                                    <div className="inventual-material-btn-item">
-                                        <button onClick={handleSaveDraft} className='inventual-btn w-full danger-btn' type="button">Save Draft</button>
+                                    <div className="invenShopfy-material-btn-item">
+                                        <button onClick={handleSaveDraft} className='invenShopfy-btn w-full danger-btn' type="button">Save Draft</button>
                                     </div>
                                 </div>
                                 <div className="col-span-12 sm:col-span-6">
-                                    <div className="inventual-material-btn-item">
+                                    <div className="invenShopfy-material-btn-item">
                                         <button
                                             onClick={() => productInformation.length > 0 ? handleMakePaymentDialogOpen() : null}
-                                            className={`inventual-btn w-full ${productInformation.length > 0 && customerData && billerData && warehouseData ? '' : 'disabled'}`}
+                                            className={`invenShopfy-btn w-full ${productInformation.length > 0 && customerData && billerData && warehouseData ? '' : 'disabled'}`}
                                             type="button">
                                             Calculate new total
                                         </button>

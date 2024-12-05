@@ -94,11 +94,11 @@ const ExpenseRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledI
 
 
     return (
-        <div className="inventual-role-list border-b border-solid border-border flex items-center">
-            <div className="inventual-role-left">
-                <div className="inventual-role-topic">
+        <div className="invenShopfy-role-list border-b border-solid border-border flex items-center">
+            <div className="invenShopfy-role-left">
+                <div className="invenShopfy-role-topic">
                     <h5 className="text-[18px] font-semibold text-heading mb-4">Expenses</h5>
-                    <div className="inventual-checkbox-style ms-3">
+                    <div className="invenShopfy-checkbox-style ms-3">
                         <FormControlLabel
                             control={
                                 <Checkbox
@@ -112,18 +112,18 @@ const ExpenseRoleList: React.FC<RoleListProps> = ({ permissionsByEntity, calledI
                     </div>
                 </div>
             </div>
-            <div className="inventual-role-right w-full border-s border-solid border-border">
+            <div className="invenShopfy-role-right w-full border-s border-solid border-border">
                 {mergedPermissions.map((entity) => (
                     <div
                         key={entity.entityType}
-                        className="inventual-role-category-list custom-height-70 flex items-center border-b border-solid border-border"
+                        className="invenShopfy-role-category-list custom-height-70 flex items-center border-b border-solid border-border"
                     >
-                        <div className="inventual-role-category">
+                        <div className="invenShopfy-role-category">
                             <h5>{entity.entityType}</h5>
                         </div>
-                        <div className="inventual-role-checkbox-wrapper">
+                        <div className="invenShopfy-role-checkbox-wrapper">
                             {entity.permissions.map((permission) => (
-                                <div key={permission.action} className="inventual-checkbox-style">
+                                <div key={permission.action} className="invenShopfy-checkbox-style">
                                     <FormControlLabel
                                         control={
                                             <Checkbox

@@ -130,23 +130,23 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
 
 
     return (
-        <div className='inventual-common-modal'>
+        <div className='invenShopfy-common-modal'>
             <BootstrapDialog
                 onClose={handleReturnDialogClose}
                 aria-labelledby="customized-dialog-title"
                 open={open}>
-                <div className='inventual-modal-title'>
+                <div className='invenShopfy-modal-title'>
                     <h4>Add Return</h4>
                     <button type='button' onClick={handleReturnDialogClose}><i className="fa-regular fa-xmark"></i></button>
                 </div>
                 <DialogContent dividers>
-                    <div className='inventual-common-modal-width width-full'>
+                    <div className='invenShopfy-common-modal-width width-full'>
                         <form onSubmit={handleReturnFormSubmit}>
                             <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                                 <div className="col-span-12">
-                                    <div className="inventual-form-field">
+                                    <div className="invenShopfy-form-field">
                                         <h5>Search by reference number</h5>
-                                        <div className="inventual-input-field-style search-field">
+                                        <div className="invenShopfy-input-field-style search-field">
                                             <TextField
                                                 fullWidth
                                                 placeholder="U-450158"
@@ -169,9 +169,9 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-6">
-                                    <div className="inventual-formTwo-field">
+                                    <div className="invenShopfy-formTwo-field">
                                         <h5>Date</h5>
-                                        <div className="inventual-input-field-style">
+                                        <div className="invenShopfy-input-field-style">
                                             <DatePicker
                                                 selected={returnDate}
                                                 onChange={handleDateChange}
@@ -188,9 +188,9 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-6">
-                                    <div className="inventual-formTree-field">
+                                    <div className="invenShopfy-formTree-field">
                                         <h5>Customer</h5>
-                                        <div className="inventual-select-field-style">
+                                        <div className="invenShopfy-select-field-style">
                                             <TextField
                                                 required
                                                 value={customerName}
@@ -206,9 +206,9 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-6">
-                                    <div className="inventual-formTree-field">
+                                    <div className="invenShopfy-formTree-field">
                                         <h5>Warehouse</h5>
-                                        <div className="inventual-select-field-style">
+                                        <div className="invenShopfy-select-field-style">
                                             <TextField
                                                 required
                                                 value={warehouseName}
@@ -224,9 +224,9 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-6">
-                                    <div className="inventual-formTree-field">
+                                    <div className="invenShopfy-formTree-field">
                                         <h5>Biller</h5>
-                                        <div className="inventual-input-field-style">
+                                        <div className="invenShopfy-input-field-style">
                                             <TextField
                                                 required
                                                 value={billerName}
@@ -241,9 +241,9 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-6">
-                                    <div className="inventual-form-field">
+                                    <div className="invenShopfy-form-field">
                                         <h5>Amount</h5>
-                                        <div className="inventual-input-field-style">
+                                        <div className="invenShopfy-input-field-style">
                                             <NumericFormat
                                                 value={totalAmount}
                                                 thousandSeparator
@@ -260,9 +260,9 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-6">
-                                    <div className="inventual-form-field">
+                                    <div className="invenShopfy-form-field">
                                         <h5>Remark</h5>
-                                        <div className="inventual-select-field-style">
+                                        <div className="invenShopfy-select-field-style">
                                             <TextField
                                                 select
                                                 label="Select"
@@ -290,7 +290,7 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
                                     </div>
                                 </div>
                                 <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
-                                    <div className="inventual-input-field-style">
+                                    <div className="invenShopfy-input-field-style">
                                         <TextField
                                             fullWidth
                                             multiline
@@ -305,7 +305,7 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
                                 </div>
                             </div>
                             <DialogActions>
-                                <button className='inventual-btn' type='submit'>
+                                <button className='invenShopfy-btn' type='submit'>
                                     Add Now
                                 </button>
                             </DialogActions>

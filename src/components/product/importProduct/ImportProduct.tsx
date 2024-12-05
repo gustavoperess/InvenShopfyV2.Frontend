@@ -11,7 +11,7 @@ const DownloadTemplateButton = () => {
   };
 
   return (
-    <button className='inventual-btn btn-low-padding primary-btn' onClick={handleDownloadTemplate}>
+    <button className='invenShopfy-btn btn-low-padding primary-btn' onClick={handleDownloadTemplate}>
       <span><i className="fa-sharp fa-regular fa-download"></i></span>
         Download Template
     </button>
@@ -37,18 +37,18 @@ const ImportProduct = () => {
   return (
     <>
       <form onSubmit={handleSubmit}>
-      <div className="inventual-content-area px-4 sm:px-7">
-        <div className="inventual-import-porduct-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5 mt-10">
+      <div className="invenShopfy-content-area px-4 sm:px-7">
+        <div className="invenShopfy-import-porduct-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5 mt-10">
           <div className="grid grid-cols-12 gap-7">
             <div className="col-span-12 lg:col-span-6">
               <div className='flex flex-wrap sm:flex-nowrap justify-between items-end gap-5'>
-                <div className="inventual-form-field w-full">
+                <div className="invenShopfy-form-field w-full">
                   <h5>Upload Product Data</h5>
-                  <div className="inventual-input-field-file-choose">
+                  <div className="invenShopfy-input-field-file-choose">
                   <input ref={fileInputRef} type="file" accept='.xlsx' required id="fileUploadN" />
                   </div>
                 </div>
-                <button type='submit' className='inventual-btn secondary-btn'><span><i className="fa-sharp fa-regular fa-upload"></i></span>Upload</button>
+                <button type='submit' className='invenShopfy-btn secondary-btn'><span><i className="fa-sharp fa-regular fa-upload"></i></span>Upload</button>
               </div>
             </div>
             <div className="col-span-12 lg:col-span-6">

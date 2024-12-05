@@ -116,12 +116,12 @@ const AddUserList = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7 max2Xl:pb-0 pb-[170px]">
-                <div className="inventual-adduser-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+            <div className="invenShopfy-content-area px-4 sm:px-7 max2Xl:pb-0 pb-[170px]">
+                <div className="invenShopfy-adduser-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
                     <form onSubmit={handleUserData}>
                         <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                             <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-4">
-                                <div className="inventual-product-dragdrop ngx-file-drop__drop-zone text-center border border-dashed border-primary bg-[#F8FAFF] p-4"
+                                <div className="invenShopfy-product-dragdrop ngx-file-drop__drop-zone text-center border border-dashed border-primary bg-[#F8FAFF] p-4"
                                     style={{ padding: '10px', marginBottom: '10px' }}>
                                     <div {...getRootProps({ className: 'dropzone-two' })}>
                                         <input {...getInputProps()} />
@@ -133,7 +133,7 @@ const AddUserList = () => {
                                             <>
                                                 <h3 className="text-[20px] font-semibold text-heading mb-4">Drop User's image here</h3>
                                                 <span className="block text-[20px] font-semibold text-heading mb-7">Or</span>
-                                                <button type="submit" className="inventual-btn">Browse Picture</button>
+                                                <button type="submit" className="invenShopfy-btn">Browse Picture</button>
                                                 <span className="text-[14px] text-heading font-medium block pt-7">Allowed JPEG, JPG & PNG format  |  Max 100 mb</span>
                                             </>
                                         )}
@@ -143,9 +143,9 @@ const AddUserList = () => {
                             <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-8">
                                 <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                                     <div className="col-span-12 md:col-span-6 xl:col-span-12">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Full Name</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <FormControl fullWidth>
                                                     <TextField
                                                         fullWidth
@@ -162,10 +162,10 @@ const AddUserList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Username</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             fullWidth
@@ -183,10 +183,10 @@ const AddUserList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Email</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             fullWidth
@@ -206,10 +206,10 @@ const AddUserList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Phone</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <FormControl fullWidth>
                                                         <TextField  // NEED TO CHECK PHONE NUMBER REQUIREMENTS 
                                                             fullWidth
@@ -227,9 +227,9 @@ const AddUserList = () => {
                                     </div>
 
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Gender</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     select
                                                     label="Select"
@@ -257,9 +257,9 @@ const AddUserList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Role</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <FormControl fullWidth>
                                                     <TextField
                                                         label="Select"
@@ -291,10 +291,10 @@ const AddUserList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                                        <div className="inventual-input-field-style inventual-input-field-style-eye">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-input-field-style invenShopfy-input-field-style-eye">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Password</h5>
-                                                <div className="inventual-input-eye-style">
+                                                <div className="invenShopfy-input-eye-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             type={showPassword ? 'text' : 'password'}
@@ -330,10 +330,10 @@ const AddUserList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                                        <div className="inventual-input-field-style inventual-input-field-style-eye">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-input-field-style invenShopfy-input-field-style-eye">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Confirm Password</h5>
-                                                <div className="inventual-input-eye-style">
+                                                <div className="invenShopfy-input-eye-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             type={showConfirmPassowrd ? 'text' : 'password'}
@@ -366,7 +366,7 @@ const AddUserList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 flex justify-end">
-                                        <button type="submit" className="inventual-btn">Create Now</button>
+                                        <button type="submit" className="invenShopfy-btn">Create Now</button>
                                     </div>
                                 </div>
                             </div>

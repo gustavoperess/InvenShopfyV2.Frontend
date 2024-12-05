@@ -56,13 +56,13 @@ const MakePaymentPopup = ({ open, handleMakePaymentDialogClose, calculateGrandTo
 
     return (
         <>
-            <div className='inventual-common-modal'>
+            <div className='invenShopfy-common-modal'>
                 <BootstrapDialog
                     onClose={handleMakePaymentDialogClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
                 >
-                    <div className='inventual-modal-title'>
+                    <div className='invenShopfy-modal-title'>
                         <h4>Make Payment</h4>
                         <button autoFocus onClick={handleMakePaymentDialogClose} type='button'>
                             <i className="fa-regular fa-xmark"></i>
@@ -70,12 +70,12 @@ const MakePaymentPopup = ({ open, handleMakePaymentDialogClose, calculateGrandTo
                     </div>
                     <form onSubmit={handlePaymentData}>
                         <DialogContent dividers>
-                            <div className='inventual-common-modal-width width-full'>
+                            <div className='invenShopfy-common-modal-width width-full'>
                                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Received Amount</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <input
                                                     type="text"
                                                     required
@@ -87,9 +87,9 @@ const MakePaymentPopup = ({ open, handleMakePaymentDialogClose, calculateGrandTo
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Paying Amount</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <input
                                                     defaultValue={grandTotalAmount}
                                                     type="text"
@@ -100,9 +100,9 @@ const MakePaymentPopup = ({ open, handleMakePaymentDialogClose, calculateGrandTo
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Change</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <input
                                                     type="text"
                                                     placeholder='$0.00'
@@ -114,9 +114,9 @@ const MakePaymentPopup = ({ open, handleMakePaymentDialogClose, calculateGrandTo
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Payment Type</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     select
                                                     required
@@ -145,9 +145,9 @@ const MakePaymentPopup = ({ open, handleMakePaymentDialogClose, calculateGrandTo
                                     </div>
                                     {selectedPayment === "Card" && (
                                         <div className="col-span-12 md:col-span-6">
-                                            <div className="inventual-form-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Card Number</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <input required type="text" placeholder='XXXX XXXX XXXX XXXX' />
                                                 </div>
                                             </div>
@@ -155,18 +155,18 @@ const MakePaymentPopup = ({ open, handleMakePaymentDialogClose, calculateGrandTo
                                     )}
                                     {selectedPayment === "Bank" && (
                                         <div className="col-span-12 md:col-span-6">
-                                            <div className="inventual-form-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Bank Account Number</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <input required type="text" placeholder='XXXX XXXX XXXX XXXX' />
                                                 </div>
                                             </div>
                                         </div>
                                     )}
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Expiry Date</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <DatePicker
                                                     selected={startDate}
                                                     required
@@ -185,9 +185,9 @@ const MakePaymentPopup = ({ open, handleMakePaymentDialogClose, calculateGrandTo
                                         </div>
                                     </div>
                                     <div className="col-span-12">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Sale Note</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <textarea placeholder='Type sales note'></textarea>
                                             </div>
                                         </div>
@@ -198,7 +198,7 @@ const MakePaymentPopup = ({ open, handleMakePaymentDialogClose, calculateGrandTo
                         <DialogActions>
                             <button
                                 type='submit'
-                                className={`inventual-btn ${payNow ? 'cursor-pointer' : 'cursor-no-drop'}`}
+                                className={`invenShopfy-btn ${payNow ? 'cursor-pointer' : 'cursor-no-drop'}`}
                                 disabled={!payNow}
                             >
                                 Pay Now

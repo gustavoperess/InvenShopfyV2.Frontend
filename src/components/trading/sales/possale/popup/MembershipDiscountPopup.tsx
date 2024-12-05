@@ -28,20 +28,20 @@ const MembershipDiscountPopup = ({ open, handleMembershipDiscountDialogClose }: 
     };
     return (
         <>
-            <div className='inventual-common-modal'>
+            <div className='invenShopfy-common-modal'>
                 <BootstrapDialog
                     onClose={handleMembershipDiscountDialogClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
                 >
-                    <div className='inventual-modal-title'>
+                    <div className='invenShopfy-modal-title'>
                         <h4>Membership Discount</h4>
                         <button autoFocus onClick={handleMembershipDiscountDialogClose} type='button'><i className="fa-regular fa-xmark"></i></button>
                     </div>
                     <DialogContent dividers>
-                    <div className='inventual-common-modal-width width-full discount-popup'>
+                    <div className='invenShopfy-common-modal-width width-full discount-popup'>
                             <form onSubmit={dummyData}>
-                                <div className="inventual-popup-discount-eligibity mt-[10px]">
+                                <div className="invenShopfy-popup-discount-eligibity mt-[10px]">
                                     <div className="grid grid-cols-12">
                                         <div className="col-span-12 sm:col-span-8">
                                             <h6 className="text-[16px] font-semibold text-heading mb-2">Daniyel Machman</h6>
@@ -55,8 +55,8 @@ const MembershipDiscountPopup = ({ open, handleMembershipDiscountDialogClose }: 
                                     </div>
                                     <div className="grid grid-cols-12 pt-7">
                                         <div className="col-span-12 sm:col-span-4">
-                                            <div className="inventual-form-field">
-                                                <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-form-field">
+                                                <div className="invenShopfy-select-field-style">
                                                     <TextField
                                                         select
                                                         label="Select"
@@ -82,8 +82,8 @@ const MembershipDiscountPopup = ({ open, handleMembershipDiscountDialogClose }: 
                                             </div>
                                         </div>
                                         <div className="col-span-12 sm:col-span-8">
-                                            <div className="inventual-form-field">
-                                                <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-form-field">
+                                                <div className="invenShopfy-input-field-style">
                                                     <input type="text" placeholder='$25.00' />
                                                 </div>
                                             </div>
@@ -94,7 +94,7 @@ const MembershipDiscountPopup = ({ open, handleMembershipDiscountDialogClose }: 
                         </div>
                     </DialogContent >
                     <DialogActions>
-                        <button className='inventual-btn' type="button">Submit</button>
+                        <button className='invenShopfy-btn' type="button">Submit</button>
                     </DialogActions>
                 </BootstrapDialog >
             </div >

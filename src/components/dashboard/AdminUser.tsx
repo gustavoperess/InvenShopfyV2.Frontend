@@ -28,23 +28,23 @@ const AdminUser = () => {
     };
 
     return (
-        <div className="custom-boxshadow inventual-dashboard-user-wrapper p-5 sm:p-7 bg-white rounded-8">
-            <div className="inventual-dashboard-user users-view gap-2.5 mb-5">
-                <h5 className="text-[18px] text-heading font-bold">User</h5>
+        <div className="custom-boxshadow invenShopfy-dashboard-user-wrapper p-5 sm:p-7 bg-white rounded-8">
+            <div className="invenShopfy-dashboard-user users-view gap-2.5 mb-5">
+                <h5 className="text-[18px] text-heading font-bold">Users</h5>
                 <span className='badge badge-primary view-btn'>
                     <Link href="/client/userlist">View All</Link>
                 </span>
             </div>
-            <div className="inventual-dashboard-user">
+            <div className="invenShopfy-dashboard-user">
                 {userLoading ? (
                     <div>Loading...</div>
                 ) : userError ? (
                     <div>Error loading user data</div>
                 ) : userData?.length > 0 ? (
                     userData.map((item: any, index: number) => (
-                        <div key={index} className="inventual-dashboard-user-list flex flex-wrap justify-between items-center mb-5 last:mb-0">
-                            <div className="inventual-dashboard-user-list-left flex flex-wrap items-center gap-4">
-                                <div className="inventual-dashboard-user-list-left-img">
+                        <div key={index} className="invenShopfy-dashboard-user-list flex flex-wrap justify-between items-center mb-5 last:mb-0">
+                            <div className="invenShopfy-dashboard-user-list-left flex flex-wrap items-center gap-4">
+                                <div className="invenShopfy-dashboard-user-list-left-img">
                                     <Image
                                         src={item.profilePicture}
                                         width="0"
@@ -54,7 +54,7 @@ const AdminUser = () => {
                                         style={{ width: '60px', height: '50px', maxHeight: '60px', maxWidth: '50px', objectFit: 'contain' }}
                                     />
                                 </div>
-                                <div className="inventual-dashboard-user-list-left-text">
+                                <div className="invenShopfy-dashboard-user-list-left-text">
                                     <h5 className="text-[16px] text-heading font-semibold">
                                         <Link href="#">{splitname(item.userName)}</Link>
                                     </h5>
@@ -64,7 +64,7 @@ const AdminUser = () => {
                                     </span>
                                 </div>
                             </div>
-                            <div className="inventual-dashboard-user-list-right">
+                            <div className="invenShopfy-dashboard-user-list-right">
                                 {item.isOnline === true ? (
                                     <span className='badge-stroke badge-success'>online</span>
                                 ) : (

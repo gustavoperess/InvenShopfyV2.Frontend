@@ -133,18 +133,18 @@ const GenerateBarcodeList = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7">
-                <div className="inventual-addbrand-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
-                    <div className="inventual-barcode-area">
+            <div className="invenShopfy-content-area px-4 sm:px-7">
+                <div className="invenShopfy-addbrand-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+                    <div className="invenShopfy-barcode-area">
                         <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                             <div className="col-span-12 lg:col-span-6">
                                 <form onSubmit={handleGenerateBarcode}>
-                                    <div className="inventual-barcode-left h-full md:mb-7 sm:mb-7">
-                                        <div className="inventual-select-field mb-5">
-                                            <div className="inventual-select-field">
-                                                <div className="inventual-form-field">
+                                    <div className="invenShopfy-barcode-left h-full md:mb-7 sm:mb-7">
+                                        <div className="invenShopfy-select-field mb-5">
+                                            <div className="invenShopfy-select-field">
+                                                <div className="invenShopfy-form-field">
                                                     <h5>Select Product</h5>
-                                                    <div className="inventual-input-field-style search-field">
+                                                    <div className="invenShopfy-input-field-style search-field">
                                                         <TextField
                                                             fullWidth
                                                             placeholder="Macbook..."
@@ -186,9 +186,9 @@ const GenerateBarcodeList = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="inventual-addsale-product-wrapper">
-                                            <div className="inventual-add-adjustment-table mb-5 overflow-y-scroll lg:overflow-hidden">
-                                                <div className="inventual-common-small-table mt-0.5 w-[950px] lg:w-full">
+                                        <div className="invenShopfy-addsale-product-wrapper">
+                                            <div className="invenShopfy-add-adjustment-table mb-5 overflow-y-scroll lg:overflow-hidden">
+                                                <div className="invenShopfy-common-small-table mt-0.5 w-[950px] lg:w-full">
                                                     <table>
                                                         <thead>
                                                             <tr className='bg-lightest'>
@@ -219,7 +219,7 @@ const GenerateBarcodeList = () => {
                                                                         <td>{product.productCode}</td>
                                                                         <td>{MoneyFormat.format(product.productPrice)}</td>
                                                                         <td>
-                                                                            <div className="inventual-addsale-product-action">
+                                                                            <div className="invenShopfy-addsale-product-action">
                                                                                 <button
                                                                                     onClick={() => handleRemoveProduct(product.id)}
                                                                                     className="product-delete-btn"
@@ -238,10 +238,10 @@ const GenerateBarcodeList = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="inventual-barcode-print-checkbox">
+                                        <div className="invenShopfy-barcode-print-checkbox">
                                             <span className="text-heading text-[15px] font-bold block pt-6 mb-4">Print Information</span>
-                                            <div className="inventual-barcode-checkbox-wrapper flex flex-wrap gap-x-7 gap-y-3 mb-2">
-                                                <div className='inventual-checkbox-style'>
+                                            <div className="invenShopfy-barcode-checkbox-wrapper flex flex-wrap gap-x-7 gap-y-3 mb-2">
+                                                <div className='invenShopfy-checkbox-style'>
                                                     <FormControlLabel
                                                         control={<Checkbox inputProps={{ 'aria-label': 'controlled' }}
                                                             checked={name}
@@ -251,7 +251,7 @@ const GenerateBarcodeList = () => {
                                                         label="Name"
                                                     />
                                                 </div>
-                                                <div className='inventual-checkbox-style'>
+                                                <div className='invenShopfy-checkbox-style'>
                                                     <FormControlLabel
                                                         control={<Checkbox inputProps={{ 'aria-label': 'controlled' }}
                                                             checked={code}
@@ -260,7 +260,7 @@ const GenerateBarcodeList = () => {
                                                         label="Code"
                                                     />
                                                 </div>
-                                                <div className='inventual-checkbox-style'>
+                                                <div className='invenShopfy-checkbox-style'>
                                                     <FormControlLabel
                                                         control={
                                                             <Checkbox
@@ -273,10 +273,10 @@ const GenerateBarcodeList = () => {
                                                     />
                                                 </div>
                                             </div>
-                                            <div className="inventual-select-field mb-7 pt-3">
-                                                <div className="inventual-form-field">
+                                            <div className="invenShopfy-select-field mb-7 pt-3">
+                                                <div className="invenShopfy-form-field">
                                                     <h5>Paper Size</h5>
-                                                    <div className="inventual-select-field-style">
+                                                    <div className="invenShopfy-select-field-style">
                                                         <TextField
                                                             select
                                                             label="Select"
@@ -301,20 +301,20 @@ const GenerateBarcodeList = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="inventual-btn-wrapper flex gap-5 justify-end">
-                                                <button className='inventual-btn secondary-btn' type="submit">Update</button>
-                                                <button className='inventual-btn' type="submit">Print</button>
+                                            <div className="invenShopfy-btn-wrapper flex gap-5 justify-end">
+                                                <button className='invenShopfy-btn secondary-btn' type="submit">Update</button>
+                                                <button className='invenShopfy-btn' type="submit">Print</button>
                                             </div>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             <div className="col-span-12 lg:col-span-6">
-                                <div className="inventual-barcode-right bg-white p-7 rounded-[3px] border border-solid border-gray-borderThree h-full">
+                                <div className="invenShopfy-barcode-right bg-white p-7 rounded-[3px] border border-solid border-gray-borderThree h-full">
                                     <div className="col-span-12 lg:col-span-6 flex items-center justify-center">
                                         {productCodeName && (
                                             <div className="col-span-6 lg:col-span-4">
-                                                <div className="inventual-barcode mb-10 text-center">
+                                                <div className="invenShopfy-barcode mb-10 text-center">
                                                     <Barcode value={productCodeName} textPosition={"top"} height={Number(selectBarSize)} />
                                                     {(productCodePrice || productCodeNumber) && (
                                                         <h1

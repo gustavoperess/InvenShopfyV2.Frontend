@@ -49,25 +49,25 @@ const NewMessage = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7">
-                <div className="inventual-add-expense-area bg-white p-7 custom-shadow rounded-8 mb-5">
+            <div className="invenShopfy-content-area px-4 sm:px-7">
+                <div className="invenShopfy-add-expense-area bg-white p-7 custom-shadow rounded-8 mb-5">
                     <h4 className="text-[20px] text-heading font-bold mb-10">New Message</h4>
-                    <div className="inventual-newmessage-inbox-wrapper">
-                        <div className="inventual-newmessage-wrapper flex">
-                            <div className="inventual-newmessage-nav">
+                    <div className="invenShopfy-newmessage-inbox-wrapper">
+                        <div className="invenShopfy-newmessage-wrapper flex">
+                            <div className="invenShopfy-newmessage-nav">
                                 <Link className='link' href="/message"><span><i className="fa-solid fa-message-lines"></i>Inbox</span><span>({totalAmountInboxMessages?.data})</span></Link>
                                 <Link className='link' href="/message"><span><i className="fa-sharp fa-regular fa-paper-plane"></i>Send</span><span>({totalAmountSentMessages?.data})</span></Link>
                                 <Link className='link' href="/message"><span><i className="fa-solid fa-envelope-open"></i>Draft</span><span>(3)</span></Link>
                                 <Link className='link' href="/message"><span><i className="fa-sharp fa-solid fa-circle-exclamation"></i>Important</span><span>({totalAmountImportantMessages?.data})</span></Link>
                                 <Link className='link' href="/message"><span><i className="fa-solid fa-trash"></i>Trash</span><span>({totalAmounTrashMessages?.data})</span></Link>
                             </div>
-                            <div className="inventual-newmessage-content">
+                            <div className="invenShopfy-newmessage-content">
                                 <form onSubmit={handleMessageSubmit}>
                                     <div className="grid grid-cols-12 gap-7">
                                         <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                                            <div className="inventual-select-field">
-                                                <div className="inventual-form-field">
-                                                    <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field">
+                                                <div className="invenShopfy-form-field">
+                                                    <div className="invenShopfy-select-field-style">
                                                         <TextField
                                                             select
                                                             label="Select"
@@ -97,8 +97,8 @@ const NewMessage = () => {
                                             </div>
                                         </div>
                                         <div className="col-span-12 md:col-span-9">
-                                            <div className="inventual-form-field">
-                                                <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-form-field">
+                                                <div className="invenShopfy-input-field-style">
                                                     <TextField
                                                         fullWidth
                                                         type="text"
@@ -112,8 +112,8 @@ const NewMessage = () => {
                                             </div>
                                         </div>
                                         <div className="col-span-12 md:col-span-9">
-                                            <div className="inventual-form-field">
-                                                <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-form-field">
+                                                <div className="invenShopfy-input-field-style">
                                                     <TextField
                                                         fullWidth
                                                         type="text"
@@ -140,7 +140,7 @@ const NewMessage = () => {
                                             </div>
                                         </div>
                                         <div className="col-span-12">
-                                            <button type="submit" className="inventual-btn">Send</button>
+                                            <button type="submit" className="invenShopfy-btn">Send</button>
                                         </div>
                                     </div>
                                 </form>

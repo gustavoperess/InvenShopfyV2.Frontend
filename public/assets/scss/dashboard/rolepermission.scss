@@ -1,7 +1,7 @@
-.inventual-role-category h5 {
+.invenShopfy-role-category h5 {
     @apply text-[15px] font-semibold text-heading;
 }
-.inventual-role-left {
+.invenShopfy-role-left {
 	@apply min-w-[250px] w-[250px] ps-7 h-full;
     @media (min-width: 1201px) and (max-width: 1600px) {
         @apply min-w-[210px] w-[210px];
@@ -13,7 +13,7 @@
         @apply min-w-[180px] w-[180px] ps-4;
     }
 }
-.inventual-role-category {
+.invenShopfy-role-category {
 	@apply  min-w-[250px] w-[250px] ps-7 border-e border-solid border-border h-full flex flex-col justify-center;
     @media (min-width: 1201px) and (max-width: 1600px) {
         @apply min-w-[210px] w-[210px];
@@ -28,24 +28,24 @@
         @apply border-e-0 w-full min-w-full h-auto ps-4;
     }
 }
-.inventual-role-checkbox-wrapper {
+.invenShopfy-role-checkbox-wrapper {
     @apply flex items-center w-full px-7 justify-between maxLg:flex-wrap;
     @media (max-width: 1200px) {
         @apply ps-4;
     }
-	&.inventual-role-checkbox-wrapper2 {
+	&.invenShopfy-role-checkbox-wrapper2 {
         @apply minMaxLg:justify-start minMaxLg:flex-wrap minMaxLg:self-stretch ;
-		.inventual-checkbox-style {
+		.invenShopfy-checkbox-style {
 			@apply basis-2/4 lg:basis-4/12  ;
 		}
 	}
 }
-.inventual-role-category-list.custom-height-50 {
+.invenShopfy-role-category-list.custom-height-50 {
     @media (max-width: 1200px) {
         @apply h-[100px];
     }
 }
-.inventual-role-category-list {
+.invenShopfy-role-category-list {
     @media (max-width: 991px) {
         display: inherit;
         @apply flex flex-col justify-center;
@@ -54,13 +54,13 @@
         }
     }
 }
-.inventual-role-inner {
+.invenShopfy-role-inner {
 	@media (max-width: 1199px) {
         @apply overflow-x-auto;
 		scrollbar-height: thin;
 	}
 }
-.inventual-role-inner-wrapper {
+.invenShopfy-role-inner-wrapper {
 	@media (max-width: 767px) {
         @apply w-[650px] min-w-[100%];
 		scrollbar-height: thin;

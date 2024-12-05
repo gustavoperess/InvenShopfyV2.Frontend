@@ -57,13 +57,13 @@ const LoginForm = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="inventual-login-wrapper">
-                <div className="inventual-login-logo text-center mb-12">
+            <form onSubmit={handleSubmit} className="invenShopfy-login-wrapper">
+                <div className="invenShopfy-login-logo text-center mb-12">
                     <Image src={logo}  style={{ width: 'auto', height: 'auto' }} alt="logo img" />
                 </div>
-                <div className="inventual-input-field-style mb-5">
-                    <div className="inventual-form-field">
-                        <div className="inventual-input-field-style has-icon">
+                <div className="invenShopfy-input-field-style mb-5">
+                    <div className="invenShopfy-form-field">
+                        <div className="invenShopfy-input-field-style has-icon">
                             <FormControl fullWidth>
                                 <TextField
                                     fullWidth
@@ -76,14 +76,14 @@ const LoginForm = () => {
                                     onChange={(e) => setUsername(e.target.value)}
 
                                 />
-                                <span className='inventual-input-icon'><i className="fa-regular fa-user"></i></span>
+                                <span className='invenShopfy-input-icon'><i className="fa-regular fa-user"></i></span>
                             </FormControl>
                         </div>
                     </div>
                 </div>
-                <div className="inventual-input-field-style inventual-input-field-style-eye mb-5">
-                    <div className="inventual-form-field">
-                        <div className="inventual-input-eye-style">
+                <div className="invenShopfy-input-field-style invenShopfy-input-field-style-eye mb-5">
+                    <div className="invenShopfy-form-field">
+                        <div className="invenShopfy-input-eye-style">
                             <FormControl fullWidth>
                                 <TextField
                                     type={showPassword ? 'text' : 'password'}
@@ -119,14 +119,14 @@ const LoginForm = () => {
                 </div>
                 {/* Display login error message */}
                 {loginError && <p className="text-red-500 text-center mb-5">{loginError}</p>}
-                <div className="inventual-login-footer-forgot mb-5">
+                <div className="invenShopfy-login-footer-forgot mb-5">
                     <Link className="text-[16px] inline-block text-primary" href="/forgotpassword">Forgot Password?</Link>
                 </div>
-                <div className="inventual-login-btn mb-7">
-                    <button type="submit" className="inventual-btn w-full" disabled={isBtnDisable}>Log in</button>
+                <div className="invenShopfy-login-btn mb-7">
+                    <button type="submit" className="invenShopfy-btn w-full" disabled={isBtnDisable}>Log in</button>
                 </div>
-                <div className="inventual-login-footer">
-                    <div className="inventual-login-footer-account text-center">
+                <div className="invenShopfy-login-footer">
+                    <div className="invenShopfy-login-footer-account text-center">
                         <span className="text-[16px] inline-block text-body">
                             Don't have an account? <Link className="text-[16px] text-primary" href="/registration">Register</Link>
                         </span>

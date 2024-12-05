@@ -68,15 +68,15 @@ const MessageList = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7">
-                <div className="inventual-addbrand-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5">
+            <div className="invenShopfy-content-area px-4 sm:px-7">
+                <div className="invenShopfy-addbrand-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mb-5">
                     <h4 className="text-[20px] font-bold text-heading mb-9">Message</h4>
-                    <div className="inventual-message-inbox-wrapper">
+                    <div className="invenShopfy-message-inbox-wrapper">
                         <div className="btn-wrapper mb-8">
-                            <Link className='inventual-btn' href="/newmessage"><span><i className="fa-regular fa-circle-plus"></i></span>New Message</Link>
+                            <Link className='invenShopfy-btn' href="/newmessage"><span><i className="fa-regular fa-circle-plus"></i></span>New Message</Link>
                         </div>
-                        <div className="inventual-newmessage-wrapper flex flex-col lg:flex-row gap-[50px] minMax2Xl:gap-7">
-                            <div className="inventual-message-vertical">
+                        <div className="invenShopfy-newmessage-wrapper flex flex-col lg:flex-row gap-[50px] minMax2Xl:gap-7">
+                            <div className="invenShopfy-message-vertical">
                                 <Tabs
                                     value={mainTabValue}
                                     onChange={handleMainTabChange}
@@ -92,14 +92,14 @@ const MessageList = () => {
                                         },
                                       }}                                      
                                     scrollButtons allowScrollButtonsMobile aria-label="basic tabs example">
-                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fas fa-message-lines"></i>Inbox</span><span>({totalAmountInboxMessages?.data})</span></div>} {...a11yProps(0)} />
-                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-sharp fa-regular fa-paper-plane"></i>Send</span><span>({totalAmountSentMessages?.data})</span></div>} {...a11yProps(1)} />
-                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-solid fa-envelope-open"></i>Draft</span><span>(3)</span></div>} {...a11yProps(2)} />
-                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-sharp fa-solid fa-circle-exclamation"></i>Important</span><span>({totalAmountImportantMessages?.data})</span></div>} {...a11yProps(3)} />
-                                    <Tab label={<div className="inventual-newmessage-nav-menu"><span className='inventual-newmessage-nav-menu-title'><i className="fa-solid fa-trash"></i>Trash</span><span>({totalAmounTrashMessages?.data})</span></div>} {...a11yProps(4)} />
+                                    <Tab label={<div className="invenShopfy-newmessage-nav-menu"><span className='invenShopfy-newmessage-nav-menu-title'><i className="fas fa-message-lines"></i>Inbox</span><span>({totalAmountInboxMessages?.data})</span></div>} {...a11yProps(0)} />
+                                    <Tab label={<div className="invenShopfy-newmessage-nav-menu"><span className='invenShopfy-newmessage-nav-menu-title'><i className="fa-sharp fa-regular fa-paper-plane"></i>Send</span><span>({totalAmountSentMessages?.data})</span></div>} {...a11yProps(1)} />
+                                    <Tab label={<div className="invenShopfy-newmessage-nav-menu"><span className='invenShopfy-newmessage-nav-menu-title'><i className="fa-solid fa-envelope-open"></i>Draft</span><span>(3)</span></div>} {...a11yProps(2)} />
+                                    <Tab label={<div className="invenShopfy-newmessage-nav-menu"><span className='invenShopfy-newmessage-nav-menu-title'><i className="fa-sharp fa-solid fa-circle-exclamation"></i>Important</span><span>({totalAmountImportantMessages?.data})</span></div>} {...a11yProps(3)} />
+                                    <Tab label={<div className="invenShopfy-newmessage-nav-menu"><span className='invenShopfy-newmessage-nav-menu-title'><i className="fa-solid fa-trash"></i>Trash</span><span>({totalAmounTrashMessages?.data})</span></div>} {...a11yProps(4)} />
                                 </Tabs>
                             </div>
-                            <div className="inventual-inbox-wrapper-inner w-full">
+                            <div className="invenShopfy-inbox-wrapper-inner w-full">
                                 <CustomTabPanel value={mainTabValue} index={0}>
                                     <IndexTabList />
                                 </CustomTabPanel>

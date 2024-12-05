@@ -8,7 +8,7 @@ const ElementsPage = () => {
         <Wrapper>
             <main>
                 <BreadCrumb title='Elements' subTitleOne='Elements' />
-                <div className="inventual-content-area px-4 sm:px-7">
+                <div className="invenShopfy-content-area px-4 sm:px-7">
                     <ElementsMain />
                 </div>
             </main>

@@ -1,4 +1,4 @@
-.inventual-possale-tab-product-text {
+.invenShopfy-possale-tab-product-text {
     h5 {
         @apply text-[15px] font-bold text-heading mb-2;
     }
@@ -8,23 +8,23 @@
     }
 }
 
-.inventual-possale-tab-product-img {
+.invenShopfy-possale-tab-product-img {
     @apply h-[130px] flex flex-col justify-center items-center;
 }
 
-.inventual-possale-tab-product {
+.invenShopfy-possale-tab-product {
     @apply border border-solid border-border pb-4 px-2 rounded-[5px] hover:border-primary cursor-pointer;
     min-height: calc(100% - 10px);
     transition: all linear 0.3s;
 }
 
-.inventual-possale-tab-product-acitve {
+.invenShopfy-possale-tab-product-acitve {
     @apply border border-solid pb-4 px-2 rounded-[5px] border-primary cursor-pointer;
     min-height: calc(100% - 10px);
     transition: all linear 0.3s;
 }
 
-.inventual-possale-tab-menu-pagination {
+.invenShopfy-possale-tab-menu-pagination {
     & a {
         @apply mx-2.5;
         @apply inline-block;
@@ -38,7 +38,7 @@
 }
 
 //pos sale botom from 
-.inventual-possale-total-field {
+.invenShopfy-possale-total-field {
     @apply relative;
 
     &.small-width {

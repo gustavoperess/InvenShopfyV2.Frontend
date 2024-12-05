@@ -15,10 +15,10 @@ const PopupElements = () => {
     // First Popup End
 
     return (
-        <div className="inventual-common-card mb-5">
+        <div className="invenShopfy-common-card mb-5">
             {/* First Popup Start */}
             <div>
-                <button className='inventual-btn' type='button' onClick={handleFirstDialogOpen}>
+                <button className='invenShopfy-btn' type='button' onClick={handleFirstDialogOpen}>
                     First Popup Btn
                 </button>
                 <FirstPopup open={openFirstDialog} handleFirstDialogClose={handleFirstDialogClose} />

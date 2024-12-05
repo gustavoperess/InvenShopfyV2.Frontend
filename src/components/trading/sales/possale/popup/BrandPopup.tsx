@@ -53,22 +53,22 @@ const BrandPopup: React.FC<FirstPopupProps> = ({ open, handleBrandDialogClose, p
 
 
     return (
-        <div className='inventual-common-modal'>
+        <div className='invenShopfy-common-modal'>
             <BootstrapDialog
                 onClose={handleBrandDialogClose}
                 aria-labelledby="customized-dialog-title"
                 open={open}
             >
-                <div className='inventual-modal-title'>
+                <div className='invenShopfy-modal-title'>
                     <div className="pb-3">
                         <h5 className='text-[22px]'>Select Brand</h5>
                     </div>
                     <button autoFocus onClick={handleBrandDialogClose} type='button'><i className="fa-regular fa-xmark"></i></button>
                 </div>
                 <DialogContent dividers>
-                    <div className='inventual-common-modal-width-medium width-full'>
-                        <div className="inventual-popup-form-wrapper">
-                            <div className="inventual-popup-form pt-5 pb-5 maxSm:py-4 flex flex-col gap-3">
+                    <div className='invenShopfy-common-modal-width-medium width-full'>
+                        <div className="invenShopfy-popup-form-wrapper">
+                            <div className="invenShopfy-popup-form pt-5 pb-5 maxSm:py-4 flex flex-col gap-3">
                                 <div className='flex flex-wrap justify-center md:justify-between gap-5'>
                                 {productInformation?.map((item: any) =>
                                         item.brandId != null ? (
@@ -96,7 +96,7 @@ const BrandPopup: React.FC<FirstPopupProps> = ({ open, handleBrandDialogClose, p
 
                 <DialogActions>
                     <button
-                        className='inventual-btn' type='button'
+                        className='invenShopfy-btn' type='button'
                         onClick={
                             (e) => {
                                 handleProductbrandData()

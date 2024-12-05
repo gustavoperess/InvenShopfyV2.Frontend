@@ -1,22 +1,22 @@
-.inventual-input-field-file-image1 {
+.invenShopfy-input-field-file-image1 {
     @apply w-56;
     input {
         @apply hidden;
     }
 }
-.inventual-product-dragdrop {
+.invenShopfy-product-dragdrop {
 	@apply text-center px-[20px] py-[30px] sm:py-[100px] rounded-[10px] h-auto border-[#2C6AE5] outline-none;
     &:focus-visible {
 		outline: none;
 	  }
 }
-.inventual-input-upload-file {
+.invenShopfy-input-upload-file {
     @apply h-auto w-full inline-block outline-2 outline-transparent;
     outline: 0px solid transparent !important;
 }
 
 //sales short table
-.inventual-addsale-product-cost {
+.invenShopfy-addsale-product-cost {
     ul {
         @apply maxXs:max-w-[100%] maxXs:min-w-[100%] max-w-[400px] min-w-[400px]  inline-block text-start;
         li {
@@ -24,6 +24,6 @@
         }
     }
 }
-.inventual-input-upload-btn {
+.invenShopfy-input-upload-btn {
     outline: none !important;
 }

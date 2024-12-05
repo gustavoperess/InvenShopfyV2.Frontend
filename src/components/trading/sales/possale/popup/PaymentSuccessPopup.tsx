@@ -35,14 +35,14 @@ const PaymentSuccessPopup: React.FC<FirstPopupProps> = ({ open, handleFirstDialo
 
     return (
         <>
-            <div className='inventual-common-modal'>
+            <div className='invenShopfy-common-modal'>
                 <BootstrapDialog
                     onClose={handleFirstDialogClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
                 >
                     <DialogContent dividers className='no-border'>
-                        <div className='inventual-common-modal-width width-full py-5'>
+                        <div className='invenShopfy-common-modal-width width-full py-5'>
                             <div className="payment-successful text-center">
                                 <i className="fa-solid fa-check"></i>
                                 <h4>Payment Completed Successfully</h4>
@@ -54,7 +54,7 @@ const PaymentSuccessPopup: React.FC<FirstPopupProps> = ({ open, handleFirstDialo
 
                                     } }
                                     type="button"
-                                    className="inventual-btn secondary-btn"
+                                    className="invenShopfy-btn secondary-btn"
                                 >
                                     View Invoice
                                 </button>

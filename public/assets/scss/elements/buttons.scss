@@ -22,7 +22,7 @@
 }
 
 
-.inventual-btn {
+.invenShopfy-btn {
     @apply h-[48px] px-[30px] inline-flex items-center justify-center gap-[6px] bg-primary text-white font-semibold capitalize text-[16px] rounded-[5px] font-primary;
     box-shadow:  0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     &:hover {
@@ -35,38 +35,38 @@
         @apply cursor-not-allowed opacity-[60%];
     }
 }
-.inventual-btn.primary-btn {
+.invenShopfy-btn.primary-btn {
     @apply bg-primary;
     &:hover {
         @apply bg-success;
     }
 }
-.inventual-btn.secondary-btn {
+.invenShopfy-btn.secondary-btn {
     @apply bg-success;
     &:hover {
         @apply bg-primary;
     }
 }
-.inventual-btn.warning-btn {
+.invenShopfy-btn.warning-btn {
     @apply bg-warning;
     &:hover {
         @apply bg-primary;
     }
 }
-.inventual-btn.teal-btn {
+.invenShopfy-btn.teal-btn {
     @apply bg-teal;
     &:hover {
         @apply bg-primary;
     }
 }
-.inventual-btn.danger-btn {
+.invenShopfy-btn.danger-btn {
     @apply bg-danger;
     &:hover {
         @apply bg-primary;
     }
 }
 //outline btn
-.inventual-btn.outline-btn {
+.invenShopfy-btn.outline-btn {
     @apply bg-transparent shadow-none text-body font-bold border border-border rounded-[5px];
     &:hover {
         @apply bg-primary border-transparent;
@@ -74,27 +74,27 @@
         box-shadow:  0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
     }
 }
-.inventual-btn.outline-btn.secondary-btn {
+.invenShopfy-btn.outline-btn.secondary-btn {
     &:hover {
         @apply bg-success
     }
 }
-.inventual-btn.outline-btn.h-38 {
+.invenShopfy-btn.outline-btn.h-38 {
     @apply h-[38px] px-[20px] hover:bg-white hover:text-body;
     &:focus {
         box-shadow: (0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12));
     }
 }
-.inventual-outline-btn {
+.invenShopfy-outline-btn {
     @apply inline-flex items-center justify-center h-12 text-[16px] font-bold px-6 border border-border rounded-[5px] hover:bg-primary hover:border-primary hover:text-white;
     transition: all linear 0.3s;
 }
 
 //action btn
-.inventual-action-btn-wrapper {
+.invenShopfy-action-btn-wrapper {
     @apply flex items-center gap-2;
 }
-.inventual-action-btn {
+.invenShopfy-action-btn {
     @apply h-[2.5rem] w-[2.5rem] flex items-center justify-center rounded-[3px] border  border-primary text-[14px] fill-primary;
 	svg {
 		* {

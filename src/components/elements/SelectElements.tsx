@@ -10,13 +10,13 @@ const SelectElements = () => {
     };
 
     return (
-        <div className="inventual-common-card mb-5">
+        <div className="invenShopfy-common-card mb-5">
             <form onSubmit={dummyData}>
                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                     <div className="col-span-12 md:col-span-6">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Selector Style</h5>
-                            <div className="inventual-select-field-style">
+                            <div className="invenShopfy-select-field-style">
                                 <TextField
                                     select
                                     label="Select"
@@ -42,9 +42,9 @@ const SelectElements = () => {
                         </div>
                     </div>
                     <div className="col-span-12 md:col-span-6">
-                        <div className="inventual-form-field">
+                        <div className="invenShopfy-form-field">
                             <h5>Selector Style Two</h5>
-                            <div className="inventual-select-field-style">
+                            <div className="invenShopfy-select-field-style">
                                 <TextField
                                     select
                                     label="Select"

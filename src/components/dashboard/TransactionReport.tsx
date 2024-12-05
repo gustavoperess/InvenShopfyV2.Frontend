@@ -54,8 +54,8 @@ const TransactionReport = () => {
     const rows = value === 0 ? salesData?.data : (value === 1 ? purchaseData?.data : (value === 2 ? salesReturnData?.data : (value === 3 ? expenseData?.data : expenseData?.data)));
     
     return (
-        <div className=" custom-boxshadow inventual-dashboard-transaction-wrapper p-5 sm:p-7 bg-white rounded-8">
-            <div className='inventual-common-tab-menus mb-5'>
+        <div className=" custom-boxshadow invenShopfy-dashboard-transaction-wrapper p-5 sm:p-7 bg-white rounded-8">
+            <div className='invenShopfy-common-tab-menus mb-5'>
                 <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons allowScrollButtonsMobile aria-label="basic tabs example">
                     <Tab label="Sale" {...a11yProps(0)} />
                     <Tab label="Purchase" {...a11yProps(1)} />
@@ -64,7 +64,7 @@ const TransactionReport = () => {
                 </Tabs>
             </div>
             <CustomTabPanel value={value} index={0}>
-                <div className="inventual-common-small-table mt-0.5 xs:overflow-x-auto whitespace-nowrap">
+                <div className="invenShopfy-common-small-table mt-0.5 xs:overflow-x-auto whitespace-nowrap">
                     <table>
                         <thead>
                             <tr className='bg-lightest'>
@@ -80,8 +80,8 @@ const TransactionReport = () => {
                             {salesDataLoading ? (
                                 <tr>
                                     <td colSpan={6}>
-                                        <div className="inventual-loading-container">
-                                            <span className="inventual-loading"></span>
+                                        <div className="invenShopfy-loading-container">
+                                            <span className="invenShopfy-loading"></span>
                                         </div>
                                     </td>
                                 </tr>
@@ -115,7 +115,7 @@ const TransactionReport = () => {
                 </div>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-                <div className="inventual-common-small-table mt-0.5 xs:overflow-x-auto whitespace-nowrap">
+                <div className="invenShopfy-common-small-table mt-0.5 xs:overflow-x-auto whitespace-nowrap">
                     <table>
                         <thead>
                             <tr className='bg-lightest'>
@@ -131,8 +131,8 @@ const TransactionReport = () => {
                             {purchaseDataLoading ? (
                                 <tr>
                                     <td colSpan={6}>
-                                        <div className="inventual-loading-container">
-                                            <span className="inventual-loading"></span>
+                                        <div className="invenShopfy-loading-container">
+                                            <span className="invenShopfy-loading"></span>
                                         </div>
                                     </td>
                                 </tr>
@@ -168,7 +168,7 @@ const TransactionReport = () => {
             </CustomTabPanel>
 
             <CustomTabPanel value={value} index={2}>
-                <div className="inventual-common-small-table mt-0.5 xs:overflow-x-auto whitespace-nowrap">
+                <div className="invenShopfy-common-small-table mt-0.5 xs:overflow-x-auto whitespace-nowrap">
                     <table>
                         <thead>
                             <tr className='bg-lightest'>
@@ -184,8 +184,8 @@ const TransactionReport = () => {
                             {salesReturnDataLoading ? (
                                 <tr>
                                     <td colSpan={6}>
-                                        <div className="inventual-loading-container">
-                                            <span className="inventual-loading"></span>
+                                        <div className="invenShopfy-loading-container">
+                                            <span className="invenShopfy-loading"></span>
                                         </div>
                                     </td>
                                 </tr>
@@ -210,7 +210,7 @@ const TransactionReport = () => {
                 </div>
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
-                <div className="inventual-common-small-table mt-0.5 xs:overflow-x-auto whitespace-nowrap">
+                <div className="invenShopfy-common-small-table mt-0.5 xs:overflow-x-auto whitespace-nowrap">
                     <table>
                         <thead>
                             <tr className='bg-lightest'>
@@ -226,8 +226,8 @@ const TransactionReport = () => {
                             {expenseDataLoading ? (
                                 <tr>
                                     <td colSpan={6}>
-                                        <div className="inventual-loading-container">
-                                            <span className="inventual-loading"></span>
+                                        <div className="invenShopfy-loading-container">
+                                            <span className="invenShopfy-loading"></span>
                                         </div>
                                     </td>
                                 </tr>

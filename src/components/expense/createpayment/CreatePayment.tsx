@@ -115,16 +115,16 @@ const CreatePayment = () => {
     };
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7 max2Xl:pb-0 pb-[170px]">
-                <div className="inventual-create-payment-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+            <div className="invenShopfy-content-area px-4 sm:px-7 max2Xl:pb-0 pb-[170px]">
+                <div className="invenShopfy-create-payment-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
                     <form onSubmit={handleCreatePayment}>
                         <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                             <div className="col-span-12">
                                 <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                                     <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-4">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Search by Voucher number</h5>
-                                            <div className="inventual-input-field-style search-field">
+                                            <div className="invenShopfy-input-field-style search-field">
                                                 <TextField
                                                     fullWidth
                                                     placeholder="D-422134"
@@ -147,9 +147,9 @@ const CreatePayment = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-4">
-                                        <div className="inventual-formTree-field">
+                                        <div className="invenShopfy-formTree-field">
                                             <h5>Payment status</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     required
                                                     value={paymentStatus}
@@ -165,10 +165,10 @@ const CreatePayment = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-4">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Expense Price</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <NumericFormat
                                                         value={expenseAmount}
                                                         thousandSeparator
@@ -186,9 +186,9 @@ const CreatePayment = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-formTree-field">
+                                        <div className="invenShopfy-formTree-field">
                                             <h5>Category</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     required
                                                     value={expenseCategory}
@@ -204,9 +204,9 @@ const CreatePayment = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-formTwo-field">
+                                        <div className="invenShopfy-formTwo-field">
                                             <h5>Date</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <DatePicker
                                                     selected={expenseDate}
                                                     required
@@ -224,9 +224,9 @@ const CreatePayment = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Payment Type</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     select
                                                     label="Select"
@@ -247,9 +247,9 @@ const CreatePayment = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Card Number</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <TextField
                                                     fullWidth
                                                     type="text"
@@ -269,7 +269,7 @@ const CreatePayment = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
-                                        <div className="inventual-input-field-style">
+                                        <div className="invenShopfy-input-field-style">
                                             <TextField
                                                 fullWidth
                                                 multiline
@@ -284,7 +284,7 @@ const CreatePayment = () => {
                                     </div>
                                     <div className="col-span-12 flex justify-end">
                                         <button
-                                            className={`inventual-btn w-full ${paymentStatus != "Paid" ? '' : 'disabled'}`}
+                                            className={`invenShopfy-btn w-full ${paymentStatus != "Paid" ? '' : 'disabled'}`}
                                             type="submit">
                                             Pay Now
                                         </button>

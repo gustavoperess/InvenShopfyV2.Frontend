@@ -146,14 +146,14 @@ const AddAdjustmentList = () => {
 
     return (
         <>
-            <div className="inventual-content-area px-4 sm:px-7">
-                <div className="inventual-addadjustment-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+            <div className="invenShopfy-content-area px-4 sm:px-7">
+                <div className="invenShopfy-addadjustment-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
                     <form onSubmit={handleAdjustmentForm}>
-                        <div className="inventual-barcode-area">
-                            <div className="inventual-addbrand-upload-area flex maxSm:flex-wrap gap-7 mb-7">
+                        <div className="invenShopfy-barcode-area">
+                            <div className="invenShopfy-addbrand-upload-area flex maxSm:flex-wrap gap-7 mb-7">
                                 <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-4">
                                     <div
-                                        className="inventual-product-dragdrop ngx-file-drop__drop-zone text-center border border-dashed border-primary bg-[#F8FAFF] p-4"
+                                        className="invenShopfy-product-dragdrop ngx-file-drop__drop-zone text-center border border-dashed border-primary bg-[#F8FAFF] p-4"
                                         style={{ padding: "10px", marginBottom: "10px" }}
                                     >
                                         <div {...getRootProps({ className: "dropzone-two" })}>
@@ -172,7 +172,7 @@ const AddAdjustmentList = () => {
                                                     <span className="block text-[20px] font-semibold text-heading mb-7">
                                                         Or
                                                     </span>
-                                                    <button type="button" className="inventual-btn">
+                                                    <button type="button" className="invenShopfy-btn">
                                                         Browse Picture
                                                     </button>
                                                     <span className="text-[14px] text-heading font-medium block pt-7">
@@ -185,9 +185,9 @@ const AddAdjustmentList = () => {
                                 </div>
                                 <div className="grid grid-cols-12 w-full gap-5">
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-8">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Search by Product Name</h5>
-                                            <div className="inventual-input-field-style search-field">
+                                            <div className="invenShopfy-input-field-style search-field">
                                                 <TextField
                                                     fullWidth
                                                     placeholder="Macbook..."
@@ -210,10 +210,10 @@ const AddAdjustmentList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Product Price</h5>
-                                                <div className="inventual-input-field-style">
+                                                <div className="invenShopfy-input-field-style">
                                                     <NumericFormat
                                                         customInput={TextField}
                                                         thousandSeparator=","
@@ -236,10 +236,10 @@ const AddAdjustmentList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Category</h5>
-                                                <div className="inventual-select-field-style">
+                                                <div className="invenShopfy-select-field-style">
                                                     <FormControl fullWidth>
                                                         <TextField
                                                             label="Category"
@@ -284,10 +284,10 @@ const AddAdjustmentList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Sub-Category</h5>
-                                                <div className="inventual-select-field-style">
+                                                <div className="invenShopfy-select-field-style">
                                                     <TextField
                                                         select
                                                         label="Select"
@@ -318,10 +318,10 @@ const AddAdjustmentList = () => {
                                     </div>
 
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Brand</h5>
-                                                <div className="inventual-select-field-style">
+                                                <div className="invenShopfy-select-field-style">
                                                     <TextField
                                                         select
                                                         label="Select"
@@ -350,9 +350,9 @@ const AddAdjustmentList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Tax</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     select
                                                     label="Select"
@@ -376,9 +376,9 @@ const AddAdjustmentList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Margin Range</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     select
                                                     label="Select"
@@ -398,10 +398,10 @@ const AddAdjustmentList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 xl:col-span-4 md:col-span-6">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Product Unit</h5>
-                                                <div className="inventual-select-field-style">
+                                                <div className="invenShopfy-select-field-style">
                                                     <TextField
                                                         select
                                                         label="Select"
@@ -433,7 +433,7 @@ const AddAdjustmentList = () => {
                             </div>
                         </div>
                         <div className="flex justify-end">
-                            <button className='inventual-btn primary-btn' type="submit">Create Adjustment</button>
+                            <button className='invenShopfy-btn primary-btn' type="submit">Create Adjustment</button>
                         </div>
                     </form>
                 </div>

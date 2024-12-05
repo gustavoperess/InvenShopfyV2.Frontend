@@ -8,11 +8,11 @@ import useGlobalContext from '@/hooks/use-context';
 const SidebarMenu = () => {
     const { setShowingNavigationDropdown, showingNavigationDropdown } = useGlobalContext()
     return (
-        <div className='inventual-sidebar-area'>
-            <div className="inventual-sidebar-main">
-                <div className="inventual-sidebar-main-logo-bar">
-                    <div className="inventual-sidebar-main-logo-bar-wrap">
-                        <div className="inventual-sidebar-main-logo">
+        <div className='invenShopfy-sidebar-area'>
+            <div className="invenShopfy-sidebar-main">
+                <div className="invenShopfy-sidebar-main-logo-bar">
+                    <div className="invenShopfy-sidebar-main-logo-bar-wrap">
+                        <div className="invenShopfy-sidebar-main-logo">
                             <div className="sidebar-logo">
                                 <Link href="/dashboard">
                                     <Image 
@@ -38,14 +38,14 @@ const SidebarMenu = () => {
                                 </Link>
                             </div>
                         </div>
-                        <div className="inventual-sidebar-icon-bar !hidden" onClick={() => setShowingNavigationDropdown(!showingNavigationDropdown)}>
+                        <div className="invenShopfy-sidebar-icon-bar !hidden" onClick={() => setShowingNavigationDropdown(!showingNavigationDropdown)}>
                             <button type="button">
                                 <i className="fa-solid fa-bars-sort"></i>
                             </button>
                         </div>
                     </div>
                 </div>
-                <div className="inventual-sidebar-navigation mb-6">
+                <div className="invenShopfy-sidebar-navigation mb-6">
                     <nav>
                         <SidebarNavs />
                     </nav>

@@ -229,15 +229,15 @@ const AddPurchaseList = () => {
     return (
         <>
             <form onSubmit={handleNewSaleForm}>
-                <div className="inventual-content-area px-4 sm:px-7">
-                    <div className="inventual-add-purchase-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
+                <div className="invenShopfy-content-area px-4 sm:px-7">
+                    <div className="invenShopfy-add-purchase-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
                         <div className="grid grid-cols-12 gap-y-5 sm:gap-7">
                             <div className="col-span-12">
                                 <div className="grid grid-cols-12 gap-y-5 sm:gap-7">
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-formTwo-field">
+                                        <div className="invenShopfy-formTwo-field">
                                             <h5>Date</h5>
-                                            <div className="inventual-input-field-style">
+                                            <div className="invenShopfy-input-field-style">
                                                 <DatePicker
                                                     selected={purchaseDate}
                                                     required
@@ -255,10 +255,10 @@ const AddPurchaseList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-form-field">
-                                            <div className="inventual-select-field">
+                                        <div className="invenShopfy-form-field">
+                                            <div className="invenShopfy-select-field">
                                                 <h5>Select Warehouse</h5>
-                                                <div className="inventual-select-field-style">
+                                                <div className="invenShopfy-select-field-style">
                                                     <TextField
                                                         select
                                                         label="Select"
@@ -290,10 +290,10 @@ const AddPurchaseList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Select Supplier</h5>
-                                                <div className="inventual-select-field-style">
+                                                <div className="invenShopfy-select-field-style">
                                                     <TextField
                                                         select
                                                         label="Select"
@@ -324,10 +324,10 @@ const AddPurchaseList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12">
-                                        <div className="inventual-select-field">
-                                            <div className="inventual-form-field">
+                                        <div className="invenShopfy-select-field">
+                                            <div className="invenShopfy-form-field">
                                                 <h5>Select Product</h5>
-                                                <div className="inventual-input-field-style search-field">
+                                                <div className="invenShopfy-input-field-style search-field">
                                                     <TextField
                                                         fullWidth
                                                         placeholder="Macbook..."
@@ -377,8 +377,8 @@ const AddPurchaseList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12">
-                                        <div className="inventual-add-adjustment-table mt-5 overflow-y-scroll xl:overflow-hidden">
-                                            <div className="inventual-common-small-table mt-0.5 w-[1150px] xl:w-full">
+                                        <div className="invenShopfy-add-adjustment-table mt-5 overflow-y-scroll xl:overflow-hidden">
+                                            <div className="invenShopfy-common-small-table mt-0.5 w-[1150px] xl:w-full">
                                                 <table>
                                                     <thead>
                                                         <tr className='bg-lightest'>
@@ -430,7 +430,7 @@ const AddPurchaseList = () => {
                                                                         />
                                                                     </td>
                                                                     <td>
-                                                                        <div className="inventual-addsale-product-action">
+                                                                        <div className="invenShopfy-addsale-product-action">
                                                                             <button
                                                                                 onClick={() => handleRemoveProduct(product.id)}
                                                                                 className="product-delete-btn"
@@ -449,7 +449,7 @@ const AddPurchaseList = () => {
                                                 </table>
                                             </div>
                                         </div>
-                                        <div className="inventual-addsale-product-cost text-end pt-9 pb-9 border border-t-0 border-border">
+                                        <div className="invenShopfy-addsale-product-cost text-end pt-9 pb-9 border border-t-0 border-border">
                                             <ul>
                                                 <li className="px-4 py-2.5 border-b border-solid border-border bg-lightest">
                                                     <span className="text-[15px] font-normal text-heading w-40 inline-block">
@@ -490,7 +490,7 @@ const AddPurchaseList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-3">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Shipping Cost</h5>
                                             <NumericFormat
                                                 customInput={TextField}
@@ -514,9 +514,9 @@ const AddPurchaseList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-                                        <div className="inventual-form-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>Purchase Status</h5>
-                                            <div className="inventual-select-field-style">
+                                            <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     select
                                                     label="Select"
@@ -543,7 +543,7 @@ const AddPurchaseList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
-                                        <div className="inventual-input-field-style">
+                                        <div className="invenShopfy-input-field-style">
                                             <TextField
                                                 fullWidth
                                                 multiline
@@ -556,7 +556,7 @@ const AddPurchaseList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 flex justify-end">
-                                        <button type="submit" className="inventual-btn">Create Purchase</button>
+                                        <button type="submit" className="invenShopfy-btn">Create Purchase</button>
                                     </div>
                                 </div>
                             </div>

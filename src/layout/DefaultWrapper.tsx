@@ -15,28 +15,28 @@ const Wrapper: React.FC<WrapperProps> = ({ children }) => {
 
   return (
     <>
-      <div className="inventual-dashboard-area">
+      <div className="invenShopfy-dashboard-area">
         <ToastContainer></ToastContainer>
-        <div className="inventual-dashboard-main">
-          <div className={`inventual-dashboard-main-sidebar ${!showingNavigationDropdown ? "show-dashboard-sidebar" : "hidden-dashboard-sidebar"}`}>
+        <div className="invenShopfy-dashboard-main">
+          <div className={`invenShopfy-dashboard-main-sidebar ${!showingNavigationDropdown ? "show-dashboard-sidebar" : "hidden-dashboard-sidebar"}`}>
             <SidebarMenu />
           </div>
-          <div className={`inventual-dashboard-main-content w-full ${!showingNavigationDropdown ? "show-dashboard-content" : "hidden-dashboard-content"}`}>
-            <div className="inventual-dashboard-main-content-wrap">
+          <div className={`invenShopfy-dashboard-main-content w-full ${!showingNavigationDropdown ? "show-dashboard-content" : "hidden-dashboard-content"}`}>
+            <div className="invenShopfy-dashboard-main-content-wrap">
               <header>
-                <div className="inventual-header-area">
-                  <div className="inventual-header-wrapper custom-height-70 px-5 sm:px-7 custom-height-70 bg-white border-b border-solid border-border">
+                <div className="invenShopfy-header-area">
+                  <div className="invenShopfy-header-wrapper custom-height-70 px-5 sm:px-7 custom-height-70 bg-white border-b border-solid border-border">
                     <Header />
                   </div>
                 </div>
               </header>
               {children}
               <footer>
-                <div className="inventual-copyright-area">
+                <div className="invenShopfy-copyright-area">
                   <FooterCopyright />
                 </div>
               </footer>
-              <div className={`inventual-dashboard-menu-overlay ${!showingNavigationDropdown ? "show-menu-overlay" : "hidden-menu-overlay"}`} onClick={() => setShowingNavigationDropdown(!showingNavigationDropdown)}></div>
+              <div className={`invenShopfy-dashboard-menu-overlay ${!showingNavigationDropdown ? "show-menu-overlay" : "hidden-menu-overlay"}`} onClick={() => setShowingNavigationDropdown(!showingNavigationDropdown)}></div>
             </div>
           </div>
         </div>
