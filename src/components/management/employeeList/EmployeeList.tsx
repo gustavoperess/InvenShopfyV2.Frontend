@@ -25,6 +25,7 @@ import {
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import Link from 'next/link';
 import { useGetAllUsersQuery, useDeleteUsersMutation } from '@/services/User/User';
+import EditEmployeeListPopup from './employeeListPopup/EmplyeeRolePopup';
 import { TUserInterface } from '@/interFace/interFace';
 import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf'
@@ -41,7 +42,25 @@ const EmployeeList = () => {
   const [orderBy, setOrderBy] = useState<keyof TUserInterface>('userId');
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteUser] = useDeleteUsersMutation();
+  const [userId, setUserId] = useState<number | undefined>();
   const { data: userData, error: userError, isLoading: userLoading, refetch } = useGetAllUsersQuery();
+
+
+
+
+  // AddPayment Popup Start
+  const [openeEditEmployeeDialog, setOpeneEditEmployeeDialog] = useState<boolean>(false);
+
+  const handleEditEmployeeDialogOpen = (expenseId: number) => {
+    // setExpenseId(expenseId)
+    setOpeneEditEmployeeDialog(true);
+  };
+  const handleEditEmployeeDialogClose = () => {
+    setOpeneEditEmployeeDialog(false);
+    refetch();
+  };
+
+
 
 
   // handle pagination 
@@ -413,6 +432,7 @@ const EmployeeList = () => {
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
                                               <MenuItem onClick={() => handleOpenDelete(user.userId)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                              <MenuItem onClick={() => handleEditEmployeeDialogOpen(user.userId)}><i className="fa-light fa-pen-to-square"></i>Edit Role</MenuItem>
                                             </Menu>
                                           </React.Fragment>
                                         )}
@@ -466,6 +486,8 @@ const EmployeeList = () => {
           </div>
         </div>
       </div>
+      <EditEmployeeListPopup userId={userId} open={openeEditEmployeeDialog} handleEditEmployeeDialogClose={handleEditEmployeeDialogClose} />
+
     </>
 
   );
