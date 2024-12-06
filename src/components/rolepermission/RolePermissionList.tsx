@@ -6,6 +6,7 @@ import ExpenseRoleList from './rolepermissionList/ExpenseRoleList';
 import WarehouseRoleList from './rolepermissionList/WarehouseRoleList';
 import PeopleRoleList from './rolepermissionList/PeopleRoleList';
 import ReportRoleList from './rolepermissionList/ReportRoleList';
+import TransferRoleList from './rolepermissionList/TransferRoleList';
 import RoleList from './rolepermissionList/RoleList';
 import SettingsRoleList from './rolepermissionList/SettingsRoleList';
 import { MenuItem, TextField } from '@mui/material';
@@ -26,7 +27,7 @@ const RolePermissionList = () => {
     const handleSetRoleName = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRoleName(event.target.value);
         setUpdatedPermissions({});
-        setIsReadyToSubmit(false); 
+        setIsReadyToSubmit(false);
     };
 
     const handleSetUpSubmit = () => {
@@ -39,7 +40,7 @@ const RolePermissionList = () => {
         toast.info("Permissions are set up and ready for submission.");
     };
 
-    
+
     const handleAssignPermissions = async () => {
         const permissionsArray = Object.entries(updatedPermissions).flatMap(([entityType, permissions]) =>
             permissions.flatMap(permissionEntry =>
@@ -137,72 +138,79 @@ const RolePermissionList = () => {
                                                 ?.filter((entity: EntityPermissions) =>
                                                     ['Roles'].includes(entity.entityType)) || []}
                                             calledItem={callingItem}
-                                            setIsReadyToSubmit={isReadyToSubmit} 
-                                            onProcessComplete={() => {setCallingItem(false)}}
+                                            setIsReadyToSubmit={isReadyToSubmit}
+                                            onProcessComplete={() => { setCallingItem(false) }}
                                             updatePermissions={permissions => handleUpdatePermissions('Roles', permissions)}
                                         />
-                                         <ProductRoleList
+                                        <TransferRoleList
+                                            permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                ?.filter((entity: EntityPermissions) =>
+                                                    ['Transfers'].includes(entity.entityType)) || []}
+                                            calledItem={callingItem}
+                                            setIsReadyToSubmit={isReadyToSubmit}
+                                            onProcessComplete={() => { setCallingItem(false) }}
+                                            updatePermissions={permissions => handleUpdatePermissions('Transfers', permissions)}
+                                        />
+                                        <ReportRoleList
+                                            permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                ?.filter((entity: EntityPermissions) =>
+                                                    ['Report'].includes(entity.entityType)
+                                                ) || []}
+                                            calledItem={callingItem}
+                                            setIsReadyToSubmit={isReadyToSubmit}
+                                            onProcessComplete={() => setCallingItem(false)}
+                                            updatePermissions={(permissions) => handleUpdatePermissions('Report', permissions)}
+                                        />
+                                        <ProductRoleList
                                             permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
                                                 ?.filter((entity: EntityPermissions) =>
                                                     ['Product', 'ProductBrand', 'ProductCategory', 'ProductUnit'].includes(entity.entityType)) || []}
                                             calledItem={callingItem}
-                                            setIsReadyToSubmit={isReadyToSubmit} 
-                                            onProcessComplete={() => {setCallingItem(false)}}
+                                            setIsReadyToSubmit={isReadyToSubmit}
+                                            onProcessComplete={() => { setCallingItem(false) }}
                                             updatePermissions={permissions => handleUpdatePermissions('Product', permissions)}
                                         />
                                         <TradingRoleList
-                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                    ?.filter((entity: EntityPermissions) =>
-                                                        ['Sales', 'PosSales', 'SalesReturn', 'SalesPayment', 'Purchase', 'PurchaseReturn'].includes(entity.entityType)
-                                                    ) || []}
-                                                calledItem={callingItem}
-                                                setIsReadyToSubmit={isReadyToSubmit} 
-                                                onProcessComplete={() => setCallingItem(false)}
-                                                updatePermissions={(permissions) => handleUpdatePermissions('Trading', permissions)}
-                                            />
-                                            <ExpenseRoleList
-                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                    ?.filter((entity: EntityPermissions) =>
-                                                        ['Expense', 'ExpenseCategory', 'ExpensePayment'].includes(entity.entityType)
-                                                    ) || []}
-                                                calledItem={callingItem}
-                                                setIsReadyToSubmit={isReadyToSubmit} 
-                                                onProcessComplete={() => setCallingItem(false)}
-                                                updatePermissions={(permissions) => handleUpdatePermissions('Expense', permissions)}
-                                            />
-                                            <WarehouseRoleList
-                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                    ?.filter((entity: EntityPermissions) =>
-                                                        ['Warehouse'].includes(entity.entityType)
-                                                    ) || []}
-                                                calledItem={callingItem}
-                                                setIsReadyToSubmit={isReadyToSubmit} 
-                                                onProcessComplete={() => setCallingItem(false)}
-                                                updatePermissions={(permissions) => handleUpdatePermissions('Warehouse', permissions)}
-                                            />
-                                            <PeopleRoleList
-                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                    ?.filter((entity: EntityPermissions) =>
-                                                        ['Customer', 'Supplier', 'Biller', 'User'].includes(entity.entityType)
-                                                    ) || []}
-                                                calledItem={callingItem}
-                                                setIsReadyToSubmit={isReadyToSubmit} 
-                                                onProcessComplete={() => setCallingItem(false)}
-                                                updatePermissions={(permissions) => handleUpdatePermissions('People', permissions)}
-                                            />
-                                            <ReportRoleList
-                                                permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
-                                                    ?.filter((entity: EntityPermissions) =>
-                                                        ['Report'].includes(entity.entityType)
-                                                    ) || []}
-                                                calledItem={callingItem}
-                                                setIsReadyToSubmit={isReadyToSubmit} 
-                                                onProcessComplete={() => setCallingItem(false)}
-                                                updatePermissions={(permissions) => handleUpdatePermissions('Report', permissions)}
-                                            />
-                                            <SettingsRoleList />
-                                        
-                                                
+                                            permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                ?.filter((entity: EntityPermissions) =>
+                                                    ['Sales', 'PosSales', 'SalesReturn', 'SalesPayment', 'Purchase', 'PurchaseReturn'].includes(entity.entityType)
+                                                ) || []}
+                                            calledItem={callingItem}
+                                            setIsReadyToSubmit={isReadyToSubmit}
+                                            onProcessComplete={() => setCallingItem(false)}
+                                            updatePermissions={(permissions) => handleUpdatePermissions('Trading', permissions)}
+                                        />
+                                        <ExpenseRoleList
+                                            permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                ?.filter((entity: EntityPermissions) =>
+                                                    ['Expense', 'ExpenseCategory', 'ExpensePayment'].includes(entity.entityType)
+                                                ) || []}
+                                            calledItem={callingItem}
+                                            setIsReadyToSubmit={isReadyToSubmit}
+                                            onProcessComplete={() => setCallingItem(false)}
+                                            updatePermissions={(permissions) => handleUpdatePermissions('Expense', permissions)}
+                                        />
+                                        <WarehouseRoleList
+                                            permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                ?.filter((entity: EntityPermissions) =>
+                                                    ['Warehouse'].includes(entity.entityType)
+                                                ) || []}
+                                            calledItem={callingItem}
+                                            setIsReadyToSubmit={isReadyToSubmit}
+                                            onProcessComplete={() => setCallingItem(false)}
+                                            updatePermissions={(permissions) => handleUpdatePermissions('Warehouse', permissions)}
+                                        />
+                                        <PeopleRoleList
+                                            permissionsByEntity={roleNameDataWithDetails?.flatMap((role: TRoleInterface) => role.permissionsByEntity)
+                                                ?.filter((entity: EntityPermissions) =>
+                                                    ['Customer', 'Supplier', 'Biller', 'User'].includes(entity.entityType)
+                                                ) || []}
+                                            calledItem={callingItem}
+                                            setIsReadyToSubmit={isReadyToSubmit}
+                                            onProcessComplete={() => setCallingItem(false)}
+                                            updatePermissions={(permissions) => handleUpdatePermissions('People', permissions)}
+                                        />
+                                        <SettingsRoleList />
                                     </>
                                 ) : (
                                     <p>Search for a role in order to display the permissions</p>

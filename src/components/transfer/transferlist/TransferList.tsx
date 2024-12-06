@@ -333,15 +333,24 @@ const TransferList = () => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                          {transferLoading ? (
-                              <tr>
-                                <td colSpan={10}>
-                                  <div className="invenShopfy-loading-container">
-                                    <span className="invenShopfy-loading"></span>
-                                  </div>
-                                </td>
-                              </tr>
-                            ) : sortedRows?.map((transfer: any) => (
+                              {transferLoading ? (
+                                <tr>
+                                  <td colSpan={14}>
+                                    <div className="invenShopfy-loading-container">
+                                      <span className="invenShopfy-loading"></span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : transferData?.message === "User is not authorized to do this task" ? (
+                                <tr>
+                                  <td colSpan={14}>
+                                    <div className="invenShopfy-loading-container">
+                                      <h1>User is not authorized to do this task</h1>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ) : (
+                                sortedRows?.map((transfer: any) => (
                               <TableRow
                                 key={transfer.id}
                                 hover
@@ -396,7 +405,8 @@ const TransferList = () => {
                                   </div>
                                 </TableCell>
                               </TableRow>
-                            ))}
+                            ))
+                          )}
                           </TableBody>
                         </Table>
                       </TableContainer>
