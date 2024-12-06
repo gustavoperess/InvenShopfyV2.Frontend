@@ -1,13 +1,15 @@
 "use client"
 import React, { useState, useCallback } from 'react';
-import { MenuItem, TextField, FormControl } from '@mui/material';
+import { MenuItem, TextField, FormControl, Input } from '@mui/material';
 import { IconButton, InputAdornment } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Accept, useDropzone } from "react-dropzone";
 import { useGetAllRolesQuery } from '@/services/Role/Role';
 import { useUserRegisterMutation } from '@/services/Authentication/Authentication';
 import { toast } from 'react-toastify';
-import { TUserInterface } from '@/interFace/interFace';
+import { TRoleInterface, CustomProps } from '@/interFace/interFace';
+import { IMaskInput } from 'react-imask';
+
 
 const AddEmployeeList = () => {
     const [phone, setPhone] = useState('');
@@ -85,10 +87,26 @@ const AddEmployeeList = () => {
         setPasswordErrorTwo(!passwordPatern.test(password));
     }
 
+    const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
+        function TextMaskCustom(props, ref) {
+            const { onChange, ...other } = props;
+            return (
+                <IMaskInput
+                    {...other}
+                    mask="(#00) 000-0000"
+                    definitions={{ '#': /[1-9]/ }}
+                    inputRef={ref}
+                    onComplete={(value: any) => onChange({ target: { name: props.name, value } })}
+                    overwrite
+                />
+            );
+        }
+    );
+
     const handleUserData = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (password == confirmPassword) {
-            const userData = { name, email, gender, phoneNumber: phone, profilePicture: userImage, roleName: role, userName, passwordHash: password }
+            const userData = { name, email, gender, phoneNumber: phone, profilePicture: userImage, roleId: role, userName, passwordHash: password }
             try {
                 await registerUser(userData).unwrap();
                 toast.success("User Created successfully!");
@@ -206,22 +224,20 @@ const AddEmployeeList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                        <div className="invenShopfy-select-field">
+                                        <div className="invenShopfy-formFour-field">
                                             <div className="invenShopfy-form-field">
                                                 <h5>Phone</h5>
-                                                <div className="invenShopfy-input-field-style">
-                                                    <FormControl fullWidth>
-                                                        <TextField  // NEED TO CHECK PHONE NUMBER REQUIREMENTS 
-                                                            fullWidth
-                                                            type="number"
-                                                            required
-                                                            value={phone}
-                                                            placeholder="+234 23432432"
-                                                            variant="outlined"
-                                                            inputProps={{ maxLength: 80 }}
-                                                            onChange={(e) => setPhone(e.target.value)} />
-                                                    </FormControl>
-                                                </div>
+                                                <FormControl fullWidth>
+                                                    <Input
+                                                        value={phone}
+                                                        placeholder="+231 2343-2432"
+                                                        onChange={(e) => setPhone(e.target.value)}
+                                                        name="textmask"
+                                                        inputProps={{ maxLength: 80 }}
+                                                        id="formatted-text-mask-input"
+                                                        inputComponent={TextMaskCustom as any}
+                                                    />
+                                                </FormControl>
                                             </div>
                                         </div>
                                     </div>
@@ -258,25 +274,27 @@ const AddEmployeeList = () => {
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                         <div className="invenShopfy-form-field">
-                                            <h5>Role</h5>
+                                            <h5>Gender</h5>
                                             <div className="invenShopfy-select-field-style">
                                                 <FormControl fullWidth>
                                                     <TextField
                                                         label="Select"
                                                         select
                                                         required
-                                                        helperText="Please select a Role"
                                                         value={role}
                                                         onChange={(e) => setRole(e.target.value)}
                                                         fullWidth
                                                         InputLabelProps={{ shrink: true }}
                                                         SelectProps={{
                                                             displayEmpty: true,
-                                                            renderValue: (value) => (value ? (value as string) : <em>Select Role</em>),
+                                                            renderValue: (value: any) => {
+                                                                const selectedRole = rolesData?.data.find((role: TRoleInterface) => role.id === value);
+                                                                return selectedRole ? selectedRole.roleName : <em>Select Role</em>;
+                                                            },
                                                         }}>
                                                         {rolesData && rolesData.data.length > 0 ? (
-                                                            rolesData.data.map((role: TUserInterface) => (
-                                                                <MenuItem key={role.id} value={role.roleName}>
+                                                            rolesData.data.map((role: TRoleInterface) => (
+                                                                <MenuItem key={role.id} value={role.id}>
                                                                     {role.roleName}
                                                                 </MenuItem>
                                                             ))
@@ -372,9 +390,8 @@ const AddEmployeeList = () => {
                             </div>
                         </div>
                     </form>
-                </div>
-
-            </div>
+                </div >
+            </div >
         </>
     );
 };

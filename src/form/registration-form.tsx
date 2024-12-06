@@ -116,15 +116,15 @@ const RegistrationFrom = () => {
 
     return (
         <>
-            <div className="invenShopfy-login-area flex justify-center items-center w-full min-h-screen h-full">
-                <div className="invenShopfy-login-wrapper">
-                    <div className="invenShopfy-login-logo text-center mb-12">
+            <div className="inventual-login-area flex justify-center items-center w-full min-h-screen h-full">
+                <div className="inventual-login-wrapper">
+                    <div className="inventual-login-logo text-center mb-12">
                         <Image src={logo} style={{ width: 'auto', height: "73px" }} alt="logo img" />
                     </div>
                     <form onSubmit={handleUserData}>
-                        <div className="invenShopfy-input-field-style mb-5">
-                            <div className="invenShopfy-form-field">
-                                <div className="invenShopfy-input-field-style has-icon">
+                        <div className="inventual-input-field-style mb-5">
+                            <div className="inventual-form-field">
+                                <div className="inventual-input-field-style has-icon">
                                     <FormControl fullWidth>
                                         <TextField
                                             fullWidth
@@ -136,14 +136,14 @@ const RegistrationFrom = () => {
                                             inputProps={{ maxLength: 80 }}
                                             onChange={(e) => setName(e.target.value)}
                                         />
-                                        <span className='invenShopfy-input-icon'><i className="fa-regular fa-user"></i></span>
+                                        <span className='inventual-input-icon'><i className="fa-regular fa-user"></i></span>
                                     </FormControl>
                                 </div>
                             </div>
                         </div>
-                        <div className="invenShopfy-input-field-style mb-5">
-                            <div className="invenShopfy-form-field">
-                                <div className="invenShopfy-input-field-style has-icon">
+                        <div className="inventual-input-field-style mb-5">
+                            <div className="inventual-form-field">
+                                <div className="inventual-input-field-style has-icon">
                                     <FormControl fullWidth>
                                         <TextField
                                             fullWidth
@@ -155,14 +155,14 @@ const RegistrationFrom = () => {
                                             inputProps={{ maxLength: 80 }}
                                             onChange={(e) => setUserName(e.target.value)}
                                         />
-                                        <span className='invenShopfy-input-icon'><i className="fa-regular fa-user"></i></span>
+                                        <span className='inventual-input-icon'><i className="fa-regular fa-user"></i></span>
                                     </FormControl>
                                 </div>
                             </div>
                         </div>
-                        <div className="invenShopfy-input-field-style mb-5">
-                            <div className="invenShopfy-form-field">
-                                <div className="invenShopfy-input-field-style has-icon">
+                        <div className="inventual-input-field-style mb-5">
+                            <div className="inventual-form-field">
+                                <div className="inventual-input-field-style has-icon">
                                     <FormControl fullWidth>
                                         <TextField
                                             fullWidth
@@ -176,14 +176,14 @@ const RegistrationFrom = () => {
                                             error={emailError}
                                             helperText={emailError ? "Please enter a valid email address" : ""}
                                         />
-                                        <span className='invenShopfy-input-icon'><i className="far fa-envelope"></i></span>
+                                        <span className='inventual-input-icon'><i className="far fa-envelope"></i></span>
                                     </FormControl>
                                 </div>
                             </div>
                         </div>
-                        <div className="invenShopfy-input-field-style mb-5">
-                            <div className="invenShopfy-formFour-field">
-                                <div className="invenShopfy-input-field-style">
+                        <div className="inventual-input-field-style mb-5">
+                            <div className="inventual-formFour-field">
+                                <div className="inventual-input-field-style">
                                     <FormControl fullWidth>
                                         <Input
                                             value={phone}
@@ -194,14 +194,14 @@ const RegistrationFrom = () => {
                                             id="formatted-text-mask-input"
                                             inputComponent={TextMaskCustom as any}
                                         />
-                                        <span className='invenShopfy-input-icon'><i className="far fa-phone-alt"></i></span>
+                                        <span className='inventual-input-icon'><i className="far fa-phone-alt"></i></span>
                                     </FormControl>
                                 </div>
                             </div>
                         </div>
-                        <div className="invenShopfy-input-field-style mb-5">
-                            <div className="invenShopfy-select-field">
-                                <div className="invenShopfy-select-field-style">
+                        <div className="inventual-input-field-style mb-5">
+                            <div className="inventual-select-field">
+                                <div className="inventual-select-field-style">
                                     <TextField
                                         select
                                         label="Select"
@@ -227,7 +227,7 @@ const RegistrationFrom = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="invenShopfy-select-field-style mb-5">
+                        <div className="inventual-select-field-style mb-5">
                             <FormControl fullWidth>
                                 <TextField
                                     label="Select"
@@ -258,9 +258,9 @@ const RegistrationFrom = () => {
                                 </TextField>
                             </FormControl>
                         </div>
-                        <div className="invenShopfy-input-field-style invenShopfy-input-field-style-eye mb-5">
-                            <div className="invenShopfy-form-field">
-                                <div className="invenShopfy-input-eye-style">
+                        <div className="inventual-input-field-style inventual-input-field-style-eye mb-5">
+                            <div className="inventual-form-field">
+                                <div className="inventual-input-eye-style">
                                     <FormControl fullWidth>
                                         <TextField
                                             type={showPassword ? 'text' : 'password'}
@@ -295,9 +295,9 @@ const RegistrationFrom = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="invenShopfy-input-field-style invenShopfy-input-field-style-eye mb-5">
-                            <div className="invenShopfy-form-field">
-                                <div className="invenShopfy-input-eye-style">
+                        <div className="inventual-input-field-style inventual-input-field-style-eye mb-5">
+                            <div className="inventual-form-field">
+                                <div className="inventual-input-eye-style">
                                     <FormControl fullWidth>
                                         <TextField
                                             type={showConfirmPassowrd ? 'text' : 'password'}
@@ -328,8 +328,8 @@ const RegistrationFrom = () => {
                             </div>
                         </div>
 
-                        <div className="invenShopfy-login-btn mb-7">
-                            <button type='submit' className='invenShopfy-btn w-full'>Register</button>
+                        <div className="inventual-login-btn mb-7">
+                            <button type='submit' className='inventual-btn w-full'>Register</button>
                         </div>
                     </form>
                     <ToastContainer
@@ -342,8 +342,8 @@ const RegistrationFrom = () => {
                         draggable
                         pauseOnHover
                     />
-                    <div className="invenShopfy-login-footer">
-                        <div className="invenShopfy-login-footer-account text-center">
+                    <div className="inventual-login-footer">
+                        <div className="inventual-login-footer-account text-center">
                             <span className="text-[16px] inline-block text-body">
                                 Already have an account? <Link className="text-[16px] text-primary" href="/">Login</Link>
                             </span>
