@@ -3,17 +3,14 @@ import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import { useGetExpenseByIdQuery } from '@/services/Expense/Expense';
-import DatePicker from "react-datepicker"; 
 import { toast } from 'react-toastify';
-import { NumericFormat } from 'react-number-format';
-import { useAddPaymentExpenseMutation } from '@/services/Expense/ExpensePayment';
 import { TextField } from '@mui/material';
 
 
 interface EditUserRoleProps {
     open: boolean;
     userId: number | undefined;
+    currentRole: string;
     handleEditEmployeeDialogClose: () => void;
 }
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -25,53 +22,21 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-const EditEmployeeListPopup = ({ open, userId, handleEditEmployeeDialogClose }: EditUserRoleProps) => {
-    const [paymentType, setPaymentType] = useState<string>("Card");
-    const [creditCard, setCreditCard] = useState<string>("");
-    const [expenseNote, setExpenseNote] = useState<string>("");
-    const [expenseDate, setExpenseDate] = useState(new Date());
-    const [addPayment] = useAddPaymentExpenseMutation();
+const EditEmployeeListPopup = ({ open, userId, currentRole, handleEditEmployeeDialogClose }: EditUserRoleProps) => {
 
-    const { data: expenseData, refetch } = useGetExpenseByIdQuery(
-        userId as number,
-        { skip: userId === undefined }
-    );
-
-    useEffect(() => {
-        if (userId !== undefined) {
-            refetch();
-        }
-    }, [userId, refetch]);
+   
 
 
-    const handleDateChange = (date: Date | null) => {
-        setExpenseDate(date || new Date());
-    };
-
-    const handleCreditCardChange = (event: any) => {
-        let value = event.target.value.replace(/\D/g, '');
-        value = value.slice(0, 16);
-        const formattedValue = value.replace(/(.{4})/g, '$1 ').trim();
-        setCreditCard(formattedValue);
-
-    }
-    const formatDate = (date: Date) => {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    };
-
+  
 
     const handleCreatePayment = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        let date = formatDate(expenseDate)
-        const PaymentData = { date, cardNumber: creditCard, userId, expenseNote, paymentType, }
+
+        const PaymentData = {   }
         try {
-            await addPayment(PaymentData).unwrap();
+            // await addPayment(PaymentData).unwrap();
             toast.success("Payment Created successfully!");
-            setExpenseNote("")
-            setCreditCard("")
+      
             handleEditEmployeeDialogClose();
         } catch (error: any) {
             if (error?.data?.message) {
@@ -101,15 +66,15 @@ const EditEmployeeListPopup = ({ open, userId, handleEditEmployeeDialogClose }: 
                                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                                     <div className="col-span-12 md:col-span-6">
                                         <div className="invenShopfy-formTree-field">
-                                            <h5>Voucher Number</h5>
+                                            <h5>Current Role</h5>
                                             <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     required
-                                                    value={expenseData ? expenseData?.data.voucherNumber : ""}
-                                                    disabled={expenseData?.data.voucherNumber !== ''}
+                                                    value={currentRole}
+                                                    disabled={currentRole !== ''}
                                                     style={{
-                                                        backgroundColor: expenseData?.data.voucherNumber !== '' ? '#e0e0e0' : 'inherit',
-                                                        color: expenseData?.data.voucherNumber !== '' ? '#757575' : 'inherit',
+                                                        backgroundColor: currentRole !== '' ? '#e0e0e0' : 'inherit',
+                                                        color: currentRole !== '' ? '#757575' : 'inherit',
                                                         width: '100%',
                                                     }}
                                                 >
@@ -119,121 +84,16 @@ const EditEmployeeListPopup = ({ open, userId, handleEditEmployeeDialogClose }: 
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
                                         <div className="invenShopfy-formTree-field">
-                                            <h5>Payment status</h5>
+                                            <h5>New Role</h5>
                                             <div className="invenShopfy-select-field-style">
-                                                <TextField
-                                                    required
-                                                    value={expenseData ? expenseData?.data.paymentStatus : ""}
-                                                    disabled={expenseData?.data.paymentStatus !== ''}
-                                                    style={{
-                                                        backgroundColor: expenseData?.data.paymentStatus !== '' ? '#e0e0e0' : 'inherit',
-                                                        color: expenseData?.data.paymentStatus !== '' ? '#757575' : 'inherit',
-                                                        width: '100%',
-                                                    }}
-                                                >
-                                                </TextField>
+                                           
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12 md:col-span-6">
-                                        <div className="invenShopfy-select-field">
-                                            <div className="invenShopfy-form-field">
-                                                <h5>Expense Price</h5>
-                                                <div className="invenShopfy-input-field-style">
-                                                    <NumericFormat
-                                                        value={expenseData ? expenseData?.data.expenseCost : ""}
-                                                        thousandSeparator
-                                                        valueIsNumericString
-                                                        disabled={expenseData?.data.expenseCost !== ''}
-                                                        prefix="£"
-                                                        style={{
-                                                            backgroundColor: expenseData?.data.expenseCost !== '' ? '#e0e0e0' : 'inherit',
-                                                            color: expenseData?.data.expenseCost !== '' ? '#757575' : 'inherit',
-                                                            height: "48px"
-                                                        }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12 md:col-span-6">
-                                        <div className="invenShopfy-formTree-field">
-                                            <h5>Category</h5>
-                                            <div className="invenShopfy-select-field-style">
-                                                <TextField
-                                                    required
-                                                    value={expenseData ? expenseData?.data.expenseCategory : ""}
-                                                    disabled={expenseData?.data.expenseCategory !== ''}
-                                                    style={{
-                                                        backgroundColor: expenseData?.data.expenseCategory !== '' ? '#e0e0e0' : 'inherit',
-                                                        color: expenseData?.data.expenseCategory !== '' ? '#757575' : 'inherit',
-                                                        width: '100%',
-                                                    }}
-                                                >
-                                                </TextField>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12 md:col-span-6">
-                                        <div className="invenShopfy-form-field">
-                                            <h5>Card Number</h5>
-                                            <div className="invenShopfy-input-field-style">
-                                                <TextField
-                                                    fullWidth
-                                                    type="text"
-                                                    placeholder="Enter card number"
-                                                    variant="outlined"
-                                                    required
-                                                    onChange={handleCreditCardChange}
-                                                    value={creditCard}
-                                                    disabled={paymentType == 'Cash'}
-                                                    style={{
-                                                        backgroundColor: paymentType == 'Cash' ? '#e0e0e0' : 'inherit',
-                                                        color: paymentType == 'Cash' ? '#757575' : 'inherit',
-                                                        width: '100%',
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12 md:col-span-6">
-                                        <div className="invenShopfy-formTwo-field">
-                                            <h5>Date</h5>
-                                            <div className="invenShopfy-input-field-style">
-                                                <DatePicker
-                                                    selected={expenseDate}
-                                                    required
-                                                    onChange={handleDateChange}
-                                                    showYearDropdown
-                                                    showMonthDropdown
-                                                    useShortMonthInDropdown
-                                                    showPopperArrow={false}
-                                                    peekNextMonth
-                                                    dropdownMode="select"
-                                                    isClearable
-                                                    placeholderText="DD/MM/YYYY"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
-                                        <div className="invenShopfy-input-field-style">
-                                            <TextField
-                                                fullWidth
-                                                multiline
-                                                required
-                                                rows={4}
-                                                value={expenseNote}
-                                                placeholder='Staff Notes'
-                                                inputProps={{ maxLength: 500 }}
-                                                onChange={(e) => setExpenseNote(e.target.value)}
-                                            />
                                         </div>
                                     </div>
                                 </div>
                                 <DialogActions>
                                     <button className='invenShopfy-btn' type='submit'>
-                                        Pay Now
+                                        Switch Roles
                                     </button>
                                 </DialogActions>
                             </form>

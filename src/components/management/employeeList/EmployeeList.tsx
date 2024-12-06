@@ -43,6 +43,7 @@ const EmployeeList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [deleteUser] = useDeleteUsersMutation();
   const [userId, setUserId] = useState<number | undefined>();
+  const [currentRole, setCurrentRole] = useState<string>("");
   const { data: userData, error: userError, isLoading: userLoading, refetch } = useGetAllUsersQuery();
 
 
@@ -51,16 +52,15 @@ const EmployeeList = () => {
   // AddPayment Popup Start
   const [openeEditEmployeeDialog, setOpeneEditEmployeeDialog] = useState<boolean>(false);
 
-  const handleEditEmployeeDialogOpen = (expenseId: number) => {
-    // setExpenseId(expenseId)
+  const handleEditEmployeeDialogOpen = (userId: number, currentRole: string) => {
+    setUserId(userId)
+    setCurrentRole(currentRole)
     setOpeneEditEmployeeDialog(true);
   };
   const handleEditEmployeeDialogClose = () => {
     setOpeneEditEmployeeDialog(false);
     refetch();
   };
-
-
 
 
   // handle pagination 
@@ -222,7 +222,7 @@ const EmployeeList = () => {
     }
   };
 
-
+  console.log(userData)
   return (
 
     <>
@@ -432,7 +432,7 @@ const EmployeeList = () => {
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
                                               <MenuItem onClick={() => handleOpenDelete(user.userId)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
-                                              <MenuItem onClick={() => handleEditEmployeeDialogOpen(user.userId)}><i className="fa-light fa-pen-to-square"></i>Edit Role</MenuItem>
+                                              <MenuItem onClick={() => handleEditEmployeeDialogOpen(user.userId, user.roleName)}><i className="fa-light fa-pen-to-square"></i>Edit Role</MenuItem>
                                             </Menu>
                                           </React.Fragment>
                                         )}
@@ -486,8 +486,7 @@ const EmployeeList = () => {
           </div>
         </div>
       </div>
-      <EditEmployeeListPopup userId={userId} open={openeEditEmployeeDialog} handleEditEmployeeDialogClose={handleEditEmployeeDialogClose} />
-
+      <EditEmployeeListPopup userId={userId} currentRole={currentRole} open={openeEditEmployeeDialog} handleEditEmployeeDialogClose={handleEditEmployeeDialogClose} />
     </>
 
   );
