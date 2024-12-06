@@ -73,6 +73,7 @@ const UserList = () => {
   // handle delete submission
   const handleDelete = async () => {
     if (user > 0) {
+
       try {
         await deleteUser(user).unwrap();
         setOpen(false);
@@ -98,7 +99,7 @@ const UserList = () => {
   // Handler for selecting/deselecting all items
   const handleSelectAllClick = (checked: boolean) => {
     if (checked) {
-      setSelected(userData?.map((warehouse: any) => warehouse.id));
+      setSelected(userData?.data.map((warehouse: any) => warehouse.id));
     } else {
       setSelected([]);
     }
@@ -156,7 +157,7 @@ const UserList = () => {
     });
 
   const handleDocument = (type: string) => {
-    if (!userData?.length) return;
+    if (!userData?.data.length) return;
   
     const headers = [
       "ID",
@@ -168,7 +169,7 @@ const UserList = () => {
     ];
   
     // Map data for CSV as strings and for PDF as arrays
-    const rows = userData.map((item: any) => [
+    const rows = userData.data.map((item: any) => [
       item.userId,
       item.userName,
       item.email,
@@ -265,8 +266,8 @@ const UserList = () => {
                             <TableRow>
                               <TableCell>
                                 <Checkbox
-                                  indeterminate={selected.length > 0 && selected.length < userData?.length}
-                                  checked={userData?.length > 0 && selected.length === userData?.length}
+                                  indeterminate={selected.length > 0 && selected.length < userData?.data.length}
+                                  checked={userData?.data.length > 0 && selected.length === userData?.length}
                                   onChange={(e) => handleSelectAllClick(e.target.checked)}
                                 />
                               </TableCell>
@@ -411,8 +412,7 @@ const UserList = () => {
                                               Action <i className="fa-sharp fa-solid fa-sort-down"></i>
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href="/client/adduser">Edit</Link></MenuItem>
-                                              <MenuItem onClick={() => handleOpenDelete(user.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
+                                              <MenuItem onClick={() => handleOpenDelete(user.userId)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
                                           </React.Fragment>
                                         )}

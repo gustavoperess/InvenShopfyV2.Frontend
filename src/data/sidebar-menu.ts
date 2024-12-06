@@ -44,10 +44,6 @@ export const menuData: MenuItem[] = [
                 label: "Add Adjustment",
                 routeLink: "/product/addadjustment",
             },
-            {
-                label: "Adjustment",
-                routeLink: "/product/adjustment",
-            },
         ],
     },
     {

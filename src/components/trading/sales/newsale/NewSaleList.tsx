@@ -44,8 +44,8 @@ const NewSaleList = () => {
     const [searchResults, setSearchResults] = useState<TProductInterface[]>([]);
     const [activeItemIds, setActiveItemIds] = useState<number[]>([]);
     const [activeItems, setActiveItems] = useState<TProductInterface[]>([]);
-  
-   
+
+
 
     //debounce function
     function useDebounce(value: string, delay: number) {
@@ -81,7 +81,7 @@ const NewSaleList = () => {
             // You could display a user-friendly message if needed
         }
     }, [debouncedSearchTerm, productSuggestionsData, error]);
- 
+
 
     const selectSuggestion = (suggestion: Omit<TProductInterface, 'quantitySold' | 'totalAmountSold'>) => {
         const existingProductIndex = productInformation.findIndex(product => product.productName === suggestion.productName);
@@ -104,7 +104,7 @@ const NewSaleList = () => {
             if (suggestion.stockQuantity > 0) {
                 setProductInformation(prev => [
                     ...prev,
-                    { ...suggestion, quantitySold: 1, totalAmountSold: suggestion.productPrice, stockQuantity: suggestion.stockQuantity - 1}
+                    { ...suggestion, quantitySold: 1, totalAmountSold: suggestion.productPrice, stockQuantity: suggestion.stockQuantity - 1 }
                 ]);
 
             } else {
@@ -123,8 +123,7 @@ const NewSaleList = () => {
 
     //handler for close search with close btn
     const handleSearchClose = () => {
-        setSearchQuery('');
-        setSearchResults([]);
+        setSuggestions([])
     };
 
     //hendle increament 
@@ -137,7 +136,7 @@ const NewSaleList = () => {
                     ...item,
                     quantitySold: newQuantity,
                     stockQuantity: item.stockQuantity - 1 >= 1 ? item.stockQuantity - 1 : 1
-                }   
+                }
             }
             return item
         }))
@@ -147,17 +146,17 @@ const NewSaleList = () => {
     const handleDecrement = (decreaseId: any, e: React.MouseEvent<HTMLButtonElement>) => {
         let newQuantity = Number(e.currentTarget.getAttribute('data-quantity')) - 1;
         if (newQuantity >= 0) {
-        setProductInformation((prevData) => prevData.map((item) => {
-            if (decreaseId === item.id) {
-                return {
-                    ...item,
-                    quantitySold: newQuantity,
-                    stockQuantity: item.stockQuantity + 1
-                   
+            setProductInformation((prevData) => prevData.map((item) => {
+                if (decreaseId === item.id) {
+                    return {
+                        ...item,
+                        quantitySold: newQuantity,
+                        stockQuantity: item.stockQuantity + 1
+
+                    }
                 }
-            }
-            return item
-        }))
+                return item
+            }))
         }
     };
 
@@ -165,21 +164,21 @@ const NewSaleList = () => {
     const calculateTheAmountOfProductsAdded = () => {
         if (productInformation.length > 0) {
             return productInformation.reduce((accumulator, item) => {
-                return item.stockQuantity > 0 
-                    ? accumulator + item.quantitySold 
+                return item.stockQuantity > 0
+                    ? accumulator + item.quantitySold
                     : accumulator;
             }, 0);
-        } 
+        }
     };
 
     //claculate discount
     const calculateDiscount = () => {
         return productInformation.reduce((totalDiscount) => {
             if (discount != undefined) {
-                if(shippingCost != undefined) {
-                    return ((calculateTotal() + shippingCost ) * discount ) / 100
+                if (shippingCost != undefined) {
+                    return ((calculateTotal() + shippingCost) * discount) / 100
                 } else {
-                    return ((calculateTotal()) * discount ) / 100
+                    return ((calculateTotal()) * discount) / 100
                 }
             } else {
                 return totalDiscount;
@@ -193,13 +192,13 @@ const NewSaleList = () => {
         return productInformation.reduce((total, item) => {
             if (item.stockQuantity > 0) {
                 return total + item.productPrice * item.quantitySold;
-            } 
+            }
             return total;
         }, 0);
     }
-   
-     // calculate order tax
-     const calculateTotalTax = () => {
+
+    // calculate order tax
+    const calculateTotalTax = () => {
         return productInformation.reduce((total, item) => {
             if (item.quantitySold != undefined) {
                 return (((item.productPrice * item.quantitySold) * item.taxPercentage) / 100) + total;
@@ -210,7 +209,7 @@ const NewSaleList = () => {
 
     const calculateProfit = useMemo(() => {
         return productInformation.reduce((total, item) => {
-           
+
             if (item.quantitySold != undefined) {
                 let firstNumber = Number(item.marginRange.split("%")[0]);
                 let lastNumber = Number(item.marginRange.split(" ")[item.marginRange.split(" ").length - 1].split("%")[0]);
@@ -221,14 +220,14 @@ const NewSaleList = () => {
             }
             return total;
         }, 0);
-    }, [productInformation]);  
+    }, [productInformation]);
 
- 
-     const calculateGrandTotal = useMemo(() => {
+
+    const calculateGrandTotal = useMemo(() => {
         const total = calculateTotal();
         const discount = calculateDiscount();
         const tax = calculateTotalTax();
-    
+
         if (shippingCost != undefined) {
             return (total + tax + shippingCost + calculateProfit) - discount;
         } else {
@@ -268,40 +267,43 @@ const NewSaleList = () => {
         let productIdPlusQuantity: { [key: number]: number } = {};
         productInformation.forEach(product => {
             if (product.quantitySold > 0) {
-                productIdPlusQuantity[product.id] = product.quantitySold; 
+                productIdPlusQuantity[product.id] = product.quantitySold;
             }
         });
         let date = formatDate(saleDate)
 
-        const saleData = {customerId, warehouseId, productIdPlusQuantity, discount,
+        const saleData = {
+            customerId, warehouseId, productIdPlusQuantity, discount,
             billerId, saleDate: date, shippingCost, staffNote, saleNote, saleStatus, taxAmount: calculateTotalTax(),
-            totalAmount: calculateGrandTotal, profitAmount: calculateProfit }
+            totalAmount: calculateGrandTotal, profitAmount: calculateProfit
+        }
 
         try {
             await addSale(saleData).unwrap();
             toast.success("Sale Created successfully!");
-                setActiveItems([]);
-                setActiveItemIds([]);
-                setSaleDate(new Date());
-                setWarehouseId("")
-                setCustomerId("")
-                setBillerId("")
-                setSalesStatus("")
-                setSaleNote("")
-                setStaffNote("")
-                setProductInformation([])
-                setDiscount(undefined)
-                setShippingCost(undefined)
+            setActiveItems([]);
+            setActiveItemIds([]);
+            setSaleDate(new Date());
+            setWarehouseId("")
+            setCustomerId("")
+            setBillerId("")
+            setSalesStatus("")
+            setSaleNote("")
+            setStaffNote("")
+            setProductInformation([])
+            setDiscount(undefined)
+            setShippingCost(undefined)
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);
-            } 
+            }
             else {
                 // Fallback error message
                 toast.error("Failed to create Sale. Please try again later.");
             }
         }
     }
+  
 
     return (
         <>
@@ -433,52 +435,69 @@ const NewSaleList = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-span-12">
+                                    <div className="col-span-6">
                                         <div className="invenShopfy-select-field">
                                             <div className="invenShopfy-form-field">
-                                                <h5>Select Product</h5>
+                                                <h5 className="text-lg font-semibold mb-2">Select Product</h5>
                                                 <div className="invenShopfy-input-field-style search-field">
                                                     <TextField
                                                         fullWidth
-                                                        placeholder="Macbook..."
+                                                        placeholder="Search for a product..."
                                                         variant="outlined"
                                                         value={product}
                                                         onChange={onTypeChangeForProduct}
+                                                        className="text-sm"
                                                     />
-                                                    {
-                                                        suggestions.length > 0 && (
-                                                            <div onClick={handleSearchClose} className="search-close">x</div>
-                                                        )
-                                                    }
+                                                    {suggestions.length > 0 && (
+                                                        <div
+                                                            onClick={handleSearchClose}
+                                                            className="search-close"
+                                                            role="button"
+                                                            aria-label="Close search"
+                                                        >
+                                                            ×
+                                                        </div>
+                                                    )}
 
-                                                    {
-                                                        suggestions.length > 0 && (
-                                                            <div className='search-dropdown dropdown-scroll'>
-                                                                <ul>
-                                                                    {
-                                                                        suggestions.map(product => (
-                                                                            <li
-                                                                                key={product.id}
-                                                                                id='single-list'
-                                                                                className={activeItemIds.includes(product.id) && activeItems.find(item => item.id === product.id) ? 'active' : ''}
-                                                                                onClick={() => selectSuggestion(product)}
-                                                                            >
-                                                                                <div className="search-img">
-                                                                                    <Image src={product?.productImage == "" ? "https://res.cloudinary.com/dououppib/image/upload/v1709830638/PLANTS/placeholder_ry6d8v.webp" : product?.productImage} width={30} height={30} alt={product.productName} />
-                                                                                </div>
-                                                                                <p className='title'>{product.productName}</p>
-                                                                            </li>
-                                                                        ))
-                                                                    }
-
-                                                                </ul>
-                                                            </div>
-                                                        )
-                                                    }
+                                                    {suggestions.length > 0 && (
+                                                        <div className="search-dropdown dropdown-scroll">
+                                                            <ul>
+                                                                {suggestions.map(product => (
+                                                                    <li
+                                                                        key={product.id}
+                                                                        id="single-list"
+                                                                        className={`${activeItemIds.includes(product.id) &&
+                                                                                activeItems.find(item => item.id === product.id)
+                                                                                ? 'active'
+                                                                                : ''
+                                                                            }`}
+                                                                        onClick={() => selectSuggestion(product)}
+                                                                        role="button"
+                                                                        tabIndex={0}
+                                                                    >
+                                                                        <div className="search-img">
+                                                                            <Image
+                                                                                src={
+                                                                                    product?.productImage === ""
+                                                                                        ? "https://res.cloudinary.com/dououppib/image/upload/v1709830638/PLANTS/placeholder_ry6d8v.webp"
+                                                                                        : product?.productImage
+                                                                                }
+                                                                                width={30}
+                                                                                height={30}
+                                                                                alt={product.productName}
+                                                                            />
+                                                                        </div>
+                                                                        <p className="title">{product.productName}</p>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
                                     <div className="col-span-12">
                                         <div className="invenShopfy-add-adjustment-table mt-5 overflow-y-scroll xl:overflow-hidden">
                                             <div className="invenShopfy-common-small-table mt-0.5 w-[1150px] xl:w-full">
@@ -512,12 +531,12 @@ const NewSaleList = () => {
                                                                     <td>{product.productName}</td>
                                                                     <td>{product.productCode}</td>
                                                                     <td>{product.mainCategory} [{product.subcategory}]</td>
-                                                                     <td>{MoneyFormat.format(product.productPrice)}</td>
+                                                                    <td>{MoneyFormat.format(product.productPrice)}</td>
                                                                     <td>{product.stockQuantity}</td>
                                                                     <td>{product.taxPercentage}%</td>
                                                                     <td>{product.marginRange}</td>
                                                                     <td>
-                                                                    {product.stockQuantity > 0 ? (
+                                                                        {product.stockQuantity > 0 ? (
                                                                             <div className="invenShopfy-addsale-product-qty">
                                                                                 <span className='flex items-center'>
                                                                                     <button type='button' data-quantity={product.quantitySold} onClick={(e) => handleDecrement(product.id, e)}>
@@ -529,8 +548,8 @@ const NewSaleList = () => {
                                                                                     </button>
                                                                                 </span>
                                                                             </div>
-                                                                     ) : ( <p>Product out of stock</p>      
-                                                                     )}
+                                                                        ) : (<p>Product out of stock</p>
+                                                                        )}
                                                                     </td>
                                                                     <td>{product.expired ? "Yes" : "No"}</td>
                                                                     <td>
@@ -685,7 +704,7 @@ const NewSaleList = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-6">
                                         <div className="invenShopfy-input-field-style">
                                             <TextField

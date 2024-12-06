@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MenuItem, TextField, InputAdornment } from '@mui/material';
 import DatePicker from "react-datepicker";
-import product_data from '@/data/product-data';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { NumericFormat } from 'react-number-format';
@@ -160,7 +159,6 @@ const AddPurchaseList = () => {
             warehouseId, supplierId,
             purchaseStatus, shippingCost, purchaseNote, TotalAmountBought: calculateGrandTotal(), 
             totalTax: calculateTotalTax()
-       
         }
         try {
             await addPurchase(formData).unwrap();
@@ -172,9 +170,13 @@ const AddPurchaseList = () => {
             setProductInformation([])
             setPurchaseNote("")
             toast.success("Purchase Created successfully!");
-
-        } catch {
-            toast.error("Failed to  create Purchase. Please try again later.");
+        } catch (error: any) {
+            if (error?.data?.message) {
+                toast.error(error?.data?.message);
+            } 
+            else {
+                toast.error("Failed to create Sale. Please try again later.");
+            } 
         }
     }
 
@@ -323,7 +325,7 @@ const AddPurchaseList = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-span-12">
+                                    <div className="col-span-6">
                                         <div className="invenShopfy-select-field">
                                             <div className="invenShopfy-form-field">
                                                 <h5>Select Product</h5>
