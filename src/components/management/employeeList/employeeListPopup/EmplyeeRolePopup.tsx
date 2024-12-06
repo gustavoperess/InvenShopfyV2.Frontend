@@ -3,13 +3,15 @@ import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import { useGetAllRolesQuery } from '@/services/Role/Role';
 import { toast } from 'react-toastify';
-import { TextField } from '@mui/material';
-
+import { MenuItem, TextField, FormControl } from '@mui/material';
+import { TUserInterface } from '@/interFace/interFace';
+import { useUpdateUserRoleMutation } from '@/services/User/User';
 
 interface EditUserRoleProps {
     open: boolean;
-    userId: number | undefined;
+    userId: string;
     currentRole: string;
     handleEditEmployeeDialogClose: () => void;
 }
@@ -23,27 +25,25 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const EditEmployeeListPopup = ({ open, userId, currentRole, handleEditEmployeeDialogClose }: EditUserRoleProps) => {
+    const { data: rolesData } = useGetAllRolesQuery();
+    const [role, setRole] = useState<number | string>("");
+    const [updateUserRole, { isLoading, error: errorUpdating }] = useUpdateUserRoleMutation();
 
-   
 
 
-  
-
-    const handleCreatePayment = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleRoleAssignment = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        const PaymentData = {   }
+        const updatedUserData = {  userRoleId: role }
         try {
-            // await addPayment(PaymentData).unwrap();
-            toast.success("Payment Created successfully!");
-      
+            await updateUserRole({ body: updatedUserData, userId }).unwrap();
+            toast.success("User Assigned new role sucessfully, Please log in again to load new permissions!");
             handleEditEmployeeDialogClose();
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);
             } else {
                 // Fallback error message
-                toast.error("Failed to create payment. Please try again later.");
+                toast.error("Failed to assign new role to user. Please try again later.");
             }
         }
     }
@@ -62,7 +62,7 @@ const EditEmployeeListPopup = ({ open, userId, currentRole, handleEditEmployeeDi
                     </div>
                     <DialogContent dividers>
                         <div className='invenShopfy-common-modal-width width-full'>
-                            <form onSubmit={handleCreatePayment}>
+                            <form onSubmit={handleRoleAssignment}>
                                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                                     <div className="col-span-12 md:col-span-6">
                                         <div className="invenShopfy-formTree-field">
@@ -83,10 +83,42 @@ const EditEmployeeListPopup = ({ open, userId, currentRole, handleEditEmployeeDi
                                         </div>
                                     </div>
                                     <div className="col-span-12 md:col-span-6">
-                                        <div className="invenShopfy-formTree-field">
+                                        <div className="invenShopfy-form-field">
                                             <h5>New Role</h5>
                                             <div className="invenShopfy-select-field-style">
-                                           
+                                                <FormControl fullWidth>
+                                                    <TextField
+                                                        label="Select"
+                                                        select
+                                                        required
+                                                        helperText="Please select a Role"
+                                                        value={role}
+                                                        onChange={(e) => setRole(e.target.value)}
+                                                        fullWidth
+                                                        InputLabelProps={{ shrink: true }}
+                                                        SelectProps={{
+                                                            displayEmpty: true,
+                                                            renderValue: (value) => {
+                                                                const roleItem = rolesData?.data.find(
+                                                                    (category: TUserInterface) => category.id === Number(value)
+                                                                );
+                                                                return roleItem ? roleItem.roleName : <em>Select Role</em>;
+                                                            },
+                                                        }}
+                                                        >
+                                                        {rolesData && rolesData.data.length > 0 ? (
+                                                            rolesData.data.map((role: TUserInterface) => (
+                                                                <MenuItem key={role.id} value={role.id}>
+                                                                    {role.roleName}
+                                                                </MenuItem>
+                                                            ))
+                                                        ) : (
+                                                            <MenuItem value="">
+                                                                <em>No roles Available</em>
+                                                            </MenuItem>
+                                                        )}
+                                                    </TextField>
+                                                </FormControl>
                                             </div>
                                         </div>
                                     </div>

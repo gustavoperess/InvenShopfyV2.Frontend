@@ -59,6 +59,14 @@ export const usersApi = createApi({
             }),
             invalidatesTags: ['Users'],
         }),
+        updateUserRole: builder.mutation<any, { body: any; userId: string }>({
+            query: ({ body, userId }) => ({
+                url: `edit-user-role/${userId}`,
+                method: 'PUT',
+                body
+            }),
+            invalidatesTags: ['Users'],
+        }),
         createUsers: builder.mutation<any, any>({
             query: (body) => ({
                 url: ``,
@@ -73,6 +81,7 @@ export const usersApi = createApi({
 
 
 export const { 
+    useUpdateUserRoleMutation,
     useGetAllUsersButYourselfQuery,
     useGetAllBillersNewQuery,
     useUpdateUserMutation,
