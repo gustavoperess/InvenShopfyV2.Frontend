@@ -230,7 +230,7 @@ const EmployeeList = () => {
       <div className="invenShopfy-content-area px-4 sm:px-7">
         <div className="invenShopfy-report-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
           <div className="invenShopfy-product-top-btn flex flex-wrap gap-5 mb-7">
-            <Link className='invenShopfy-btn secondary-btn' href="/client/adduser"><span><i className="fa-regular fa-circle-plus"></i></span> Add New User</Link>
+            <Link className='invenShopfy-btn secondary-btn' href="/management/addemployee"><span><i className="fa-regular fa-circle-plus"></i></span> Add New Employee</Link>
           </div>
           <div className="invenShopfy-table-header-search-area">
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">

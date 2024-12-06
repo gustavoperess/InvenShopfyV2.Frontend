@@ -36,7 +36,7 @@ const EditEmployeeListPopup = ({ open, userId, currentRole, handleEditEmployeeDi
         const updatedUserData = {  userRoleId: role }
         try {
             await updateUserRole({ body: updatedUserData, userId }).unwrap();
-            toast.success("User Assigned new role sucessfully, Please log in again to load new permissions!");
+            toast.success("User Assigned new role sucessfully, new permissions have been added!");
             handleEditEmployeeDialogClose();
         } catch (error: any) {
             if (error?.data?.message) {
