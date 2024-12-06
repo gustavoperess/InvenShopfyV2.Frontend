@@ -130,21 +130,21 @@ export const menuData: MenuItem[] = [
         ],
     },
     {
-        label: "User Management",
+        label: "Employee Management",
         routeLink: "#",
         iconClas: "fa-light fa-user",
         subItems: [
             {
-                label: "Add User",
-                routeLink: "/client/adduser",
+                label: "Add Employee",
+                routeLink: "/management/addemployee",
             },
             {
-                label: "User List",
-                routeLink: "/client/userlist",
+                label: "Employee List",
+                routeLink: "/management/employeelist",
             },
             {
                 label: "Create Role",
-                routeLink: "/client/createrole",
+                routeLink: "/management/createrole",
             },
         ],
     },

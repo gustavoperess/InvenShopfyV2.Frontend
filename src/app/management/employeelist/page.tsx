@@ -1,5 +1,5 @@
 import BreadCrumb from '@/components/sharedComponents/BreadCrumb';
-import AddUserList from '@/components/usermanagement/adduser/AddUserList';
+import EmployeeList from '@/components/management/employeeList/EmployeeList';
 import Wrapper from '@/layout/DefaultWrapper';
 import React from 'react';
 
@@ -8,8 +8,8 @@ const page = () => {
         <>
             <Wrapper>
                 <main>
-                    <BreadCrumb title='Add User' subTitleOne='User Management' subTitleTwo='Add User'/>
-                    <AddUserList/>
+                    <BreadCrumb title='Employee List' subTitleOne='Employee Management' subTitleTwo='Employee List'/>
+                    <EmployeeList/>
                 </main>
             </Wrapper>
         </>

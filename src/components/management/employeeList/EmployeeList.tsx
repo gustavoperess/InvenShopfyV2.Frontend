@@ -31,7 +31,7 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
 
-const UserList = () => {
+const EmployeeList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
   const [currentPageSize, setCurrentPageSize] = useState(10);
   const [user, setUser] = useState<number>(0);
@@ -472,4 +472,4 @@ const UserList = () => {
 }
 
 
-export default UserList
+export default EmployeeList
