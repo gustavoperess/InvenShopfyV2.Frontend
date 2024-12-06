@@ -274,10 +274,10 @@ const AddUserList = () => {
                                                             displayEmpty: true,
                                                             renderValue: (value) => (value ? (value as string) : <em>Select Role</em>),
                                                         }}>
-                                                        {rolesData && rolesData.length > 0 ? (
-                                                            rolesData.map((role: TUserInterface) => (
-                                                                <MenuItem key={role.id} value={role.name}>
-                                                                    {role.name}
+                                                        {rolesData && rolesData.data.length > 0 ? (
+                                                            rolesData.data.map((role: TUserInterface) => (
+                                                                <MenuItem key={role.id} value={role.roleName}>
+                                                                    {role.roleName}
                                                                 </MenuItem>
                                                             ))
                                                         ) : (

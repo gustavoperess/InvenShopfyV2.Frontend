@@ -185,7 +185,6 @@ const SaleReport = () => {
                   </div>
                 </div>
               </div>
-
               <div className="col-span-12 md:col-span-6 xl:col-span-3">
                 <div className="invenShopfy-form-field">
                   <h5>Report Shortcut</h5>
@@ -209,7 +208,7 @@ const SaleReport = () => {
               </div>
             </div>
             <div className="min-w-[200px]">
-              <button type='button' className='invenShopfy-btn'>Generate Report</button>
+              <button type='button' onClick={() => handleDocument("csv")} className='invenShopfy-btn'>Generate Report</button>
             </div>
           </div>
           <div className="invenShopfy-table-header-search-area">

@@ -144,65 +144,70 @@ const SupplierReport = () => {
     <>
       <div className="invenShopfy-content-area px-4 sm:px-7">
         <div className="invenShopfy-report-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
-          <div className="grid grid-cols-12 gap-y-7 sm:gap-7 mb-7 items-end">
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-              <div className="invenShopfy-form-field">
-                <h5>Start Date</h5>
-                <div className="invenShopfy-input-field-style">
-                  <DatePicker
-                    selected={startDate ? new Date(startDate) : undefined}
-                    onChange={(date) => {
-                      if (date) {
-                        const formattedDate = formatDate(date);
-                        setStartDate(formattedDate); // Store formatted date
-                      } else {
-                        setStartDate(undefined); // Reset to undefined
-                      }
-                    }}
-                    placeholderText="DD/MM/YYYY"
-                  />
+          <div className="flex flex-col xl:flex-row xl:items-end w-full gap-7 mb-7">
+            <div className="grid grid-cols-12 gap-y-7 sm:gap-7 w-full">
+              <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
+                <div className="invenShopfy-formTwo-field">
+                  <h5>Start Date</h5>
+                  <div className="invenShopfy-input-field-style">
+                    <DatePicker
+                      selected={startDate ? new Date(startDate) : undefined}
+                      onChange={(date) => {
+                        if (date) {
+                          const formattedDate = formatDate(date);
+                          setStartDate(formattedDate); // Store formatted date
+                        } else {
+                          setStartDate(undefined); // Reset to undefined
+                        }
+                      }}
+                      placeholderText="DD/MM/YYYY"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
+                <div className="invenShopfy-formTwo-field">
+                  <h5>End Date</h5>
+                  <div className="invenShopfy-input-field-style">
+                    <DatePicker
+                      selected={endDate ? new Date(endDate) : undefined}
+                      onChange={(date) => {
+                        if (date) {
+                          const formattedDate = formatDate(date);
+                          setEndDate(formattedDate);
+                        } else {
+                          setEndDate(undefined);
+                        }
+                      }}
+                      placeholderText="DD/MM/YYYY"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-span-12 md:col-span-6 xl:col-span-3">
+                <div className="invenShopfy-form-field">
+                  <h5>Report Shortcut</h5>
+                  <div className="invenShopfy-select-field-style">
+                    <TextField
+                      select
+                      label="Select"
+                      value={dateRange} // Always defined
+                      onChange={(e) => setDateRange(e.target.value)}
+                      SelectProps={{
+                        displayEmpty: true,
+                        renderValue: (value: any) => { return value; }
+                      }}>
+                      <MenuItem value="Yearly">Yearly</MenuItem>
+                      <MenuItem value="Monthly">Monthly</MenuItem>
+                      <MenuItem value="Weekly">Weekly</MenuItem>
+                      <MenuItem value="Daily">Daily</MenuItem>
+                    </TextField>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-              <div className="invenShopfy-formTwo-field">
-                <h5>End Date</h5>
-                <div className="invenShopfy-input-field-style">
-                  <DatePicker
-                    selected={endDate ? new Date(endDate) : undefined}
-                    onChange={(date) => {
-                      if (date) {
-                        const formattedDate = formatDate(date);
-                        setEndDate(formattedDate);
-                      } else {
-                        setEndDate(undefined);
-                      }
-                    }}
-                    placeholderText="DD/MM/YYYY"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-6 xl:col-span-3">
-              <div className="invenShopfy-form-field">
-                <h5>Report Shortcut</h5>
-                <div className="invenShopfy-select-field-style">
-                  <TextField
-                    select
-                    label="Select"
-                    value={dateRange} // Always defined
-                    onChange={(e) => setDateRange(e.target.value)}
-                    SelectProps={{
-                      displayEmpty: true,
-                      renderValue: (value: any) => { return value; }
-                    }}>
-                    <MenuItem value="Yearly">Yearly</MenuItem>
-                    <MenuItem value="Monthly">Monthly</MenuItem>
-                    <MenuItem value="Weekly">Weekly</MenuItem>
-                    <MenuItem value="Daily">Daily</MenuItem>
-                  </TextField>
-                </div>
-              </div>
+            <div className="min-w-[200px]">
+              <button type='button' onClick={() => handleDocument("csv")} className='invenShopfy-btn'>Generate Report</button>
             </div>
           </div>
           <div className="invenShopfy-table-header-search-area">
