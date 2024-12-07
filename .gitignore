@@ -31,7 +31,7 @@ yarn-error.log*
 .vercel
 
 public/assets/fonts/
-public/assets/img/
+
 
 # typescript
 *.tsbuildinfo

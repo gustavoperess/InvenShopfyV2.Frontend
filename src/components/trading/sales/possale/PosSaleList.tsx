@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { MenuItem, TextField } from '@mui/material';
 import Image, { StaticImageData } from 'next/image';
 import MakePaymentPopup from './popup/MakePaymentPopup';
-import DiscountPaymentPopup from './popup/DiscountPaymentPopup';
+
 import { TSaleInterface, MoneyFormat, TProductInterface } from '@/interFace/interFace';
 import { useGetSalesReturnByNameQuery } from '@/services/Sales/SaleReturn';
 import { useGetSalesBySaleIdForPosSaleQuery } from '@/services/Sales/Sales';
@@ -409,7 +409,6 @@ const PosSaleList = (
                 open={openMakePaymentDialog}
                 handleMakePaymentDialogClose={handleMakePaymentDialogClose}
             />
-            <DiscountPaymentPopup open={openDiscountPaymentDialog} handleDiscountPaymentDialogClose={handleDiscountPaymentDialogClose} />
         </>
     );
 };
