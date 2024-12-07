@@ -1,7 +1,6 @@
 "use client"
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import product_data from '@/data/product-data';
 import { TProduct, TProductInterface } from '@/interFace/interFace'
 import CategoryPopup from './popup/CategoryPopup'
 import BrandPopup from './popup/BrandPopup'
