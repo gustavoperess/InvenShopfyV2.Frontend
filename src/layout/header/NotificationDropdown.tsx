@@ -21,6 +21,10 @@ const NotificationDropdown = () => {
     }
     const notifications = notificationData?.data || [];
 
+    const formatingDateTime = (time: string) => {
+        return `${time.split("T")[0]} - ${time.split("T")[1].split(".")[0]}`
+    }
+
 
     return (
         <ul>
@@ -44,7 +48,7 @@ const NotificationDropdown = () => {
                                 <h6>
                                     <Link href={notification.href}>{notification.notificationTitle}</Link>
                                 </h6>
-                                <span>{notification.createAt || 'Unknown Date'}</span>
+                                <span>{formatingDateTime(notification.createAt) || 'Unknown Date'}</span>
                             </div>
                         </div>
                     </li>
