@@ -70,7 +70,7 @@ const RegistrationFrom = () => {
     const handleUserData = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (password == confirmPassword) {
-            const userData = { name, email, phoneNumber: phone, roleId: role, gender, userName, passwordHash: password }
+            const userData = { name, email, phoneNumber: phone, roleId: role || 0, gender, userName, passwordHash: password }
 
             try {
                 await registerUser(userData).unwrap();
@@ -232,7 +232,6 @@ const RegistrationFrom = () => {
                                 <TextField
                                     label="Select"
                                     select
-                                    required
                                     value={role}
                                     onChange={(e) => setRole(e.target.value)}
                                     fullWidth
@@ -240,19 +239,19 @@ const RegistrationFrom = () => {
                                     SelectProps={{
                                         displayEmpty: true,
                                         renderValue: (value: any) => {
-                                            const selectedRole = rolesData?.find((role: TRoleInterface) => role.id === value);
+                                            const selectedRole = rolesData?.data.find((role: TRoleInterface) => role.id === value);
                                             return selectedRole ? selectedRole.roleName : <em>Select Role</em>;
                                         },
                                     }}>
-                                    {rolesData && rolesData.length > 0 ? (
-                                        rolesData.map((role: TRoleInterface) => (
+                                    {rolesData && rolesData.data.length > 0 ? (
+                                        rolesData.data.map((role: TRoleInterface) => (
                                             <MenuItem key={role.id} value={role.id}>
                                                 {role.roleName}
                                             </MenuItem>
                                         ))
                                     ) : (
-                                        <MenuItem value="">
-                                            <em>No roles Available</em>
+                                        <MenuItem value="0">
+                                            <em>Not role assigned</em>
                                         </MenuItem>
                                     )}
                                 </TextField>
