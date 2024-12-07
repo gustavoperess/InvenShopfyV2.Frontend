@@ -39,6 +39,12 @@ export const purchaseApi = createApi({
                 method: 'GET',
             }),
         }),
+        getPurchaseDashBoardLossOverview: builder.query<any, void>({
+            query: () => ({
+                url: `dashboard/lossoverview`,
+                method: 'GET',
+            }),
+        }),
         getPurchaseById: builder.query<any, number>({
             query: (purchaseId) => ({
                 url: `${purchaseId}`,
@@ -56,6 +62,7 @@ export const purchaseApi = createApi({
 
 
 export const { 
+    useGetPurchaseDashBoardLossOverviewQuery,
     useGetPurchaseTotalAmountQuery,
     useCreatePurchaseMutation,
     useGetPurchaseDashboardQuery,

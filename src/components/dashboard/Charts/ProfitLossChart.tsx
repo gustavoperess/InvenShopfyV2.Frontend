@@ -1,25 +1,22 @@
 'use client'
 import dynamic from "next/dynamic";
 const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
-import { useGetPurchaseTotalAmountQuery } from "@/services/Purchase/Purchase";
-import { useGetTotalSalesAmountQuery } from "@/services/Sales/Sales";
-import { useGetExpenseTotalAmountQuery } from '@/services/Expense/Expense';
-import { useGetTotalProfitDashboardQuery } from '@/services/Sales/Sales';
+import { useGetSalesDashBoardProfitOverviewQuery } from "@/services/Sales/Sales";
+import { useGetPurchaseDashBoardLossOverviewQuery } from "@/services/Purchase/Purchase";
+
+import { useMemo } from 'react';
+
+
+type ProfitOverviewItem = {
+  month: string;
+  numberOfSales: number;
+  numberOfPurchases: number;
+};
 
 const options: any = {
-  series: [
-    {
-      name: "Profit",
-      data: [7, 9, 13, 11, 14, 6, 9, 7, 13, 15, 11, 20]
-    },
-    {
-      name: "Loss",
-      data: [5, 11, 7, 13, 6, 8, 10, 16, 12, 7, 11, 16]
-    }
-  ],
   chart: {
     height: 380,
-    width: "100%", 
+    width: "100%",
     type: "line",
     dropShadow: {
       enabled: true,
@@ -120,12 +117,63 @@ const options: any = {
 };
 
 const ProfitLossChart = () => {
-  const { data: expenseTotalAmountData, isLoading: expenseTotalLoadingData } = useGetExpenseTotalAmountQuery();
-  const { data: totalProfitData, isLoading: totalProfitLoadingData } = useGetTotalProfitDashboardQuery();
-  
+  const { data: profitOverviewData, isLoading: profitOverViewLoadingData } = useGetSalesDashBoardProfitOverviewQuery();
+  const { data: lossOverviewData, isLoading: lossOverViewLoadingData } = useGetPurchaseDashBoardLossOverviewQuery();
+  const monthsOrder = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  const series = useMemo(() => {
+    if (!profitOverViewLoadingData && !lossOverViewLoadingData) {
+      const profitData = Array(12).fill(0);
+      const lossData = Array(12).fill(0);
+
+
+      if (profitOverviewData?.data) {
+        profitOverviewData.data.forEach((item: ProfitOverviewItem) => {
+          const monthIndex = monthsOrder.indexOf(item.month); 
+          if (monthIndex !== -1) {
+            profitData[monthIndex] = item.numberOfSales;
+          }
+        });
+      }
+
+      if (lossOverviewData?.data) {
+        lossOverviewData.data.forEach((item: ProfitOverviewItem) => {
+          const monthIndex = monthsOrder.indexOf(item.month); 
+     
+          if (monthIndex !== -1) {
+            lossData[monthIndex] = item.numberOfPurchases; 
+          }
+        });
+      }
+
+      return [
+        { name: "Profit", data: profitData },
+        { name: "Loss", data: lossData },
+      ];
+    }
+
+
+    return [
+      { name: "Profit", data: Array(12).fill(0) },
+      { name: "Loss", data: Array(12).fill(0) },
+    ];
+  }, [profitOverviewData, profitOverViewLoadingData, lossOverviewData, lossOverViewLoadingData]);
+
+
   return (
     <>
-      <ApexCharts options={options} width={'100%'} series={options.series} type="line" height={380} />
+      <ApexCharts
+        options={{
+          ...options,
+          xaxis: {
+            ...options.xaxis,
+            categories: monthsOrder, 
+          },
+        }}
+        series={series} 
+        type="line"
+        height={380}
+      />
     </>
   );
 };

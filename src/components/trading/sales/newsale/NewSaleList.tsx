@@ -19,7 +19,7 @@ const NewSaleList = () => {
     const [productName, setProductName] = useState<string>("");
     const [shippingCost, setShippingCost] = useState<number | undefined>();
     const [discount, setDiscount] = useState<number | undefined>();
-    const [saleStatus, setSalesStatus] = useState<string>("");
+    const [saleStatus, setSalesStatus] = useState<string>("Unpaid");
     const [saleNote, setSaleNote] = useState<string>("");
     const [staffNote, setStaffNote] = useState<string>("");
     const [productInformation, setProductInformation] = useState<TProductInterface[]>([]);
@@ -280,7 +280,6 @@ const NewSaleList = () => {
 
         try {
             await addSale(saleData).unwrap();
-            toast.success("Sale Created successfully!");
             setActiveItems([]);
             setActiveItemIds([]);
             setSaleDate(new Date());
@@ -293,6 +292,7 @@ const NewSaleList = () => {
             setProductInformation([])
             setDiscount(undefined)
             setShippingCost(undefined)
+            toast.success("Sale Created successfully!");
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);
