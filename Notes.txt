@@ -1,8 +1,0 @@
-[FIX] - Fix the Phone number type for all pages // IMPORTANT
-[IMPROVEMENTS] - Check if it is possible to track if user is currently online/logged in the account
-[Add] - add enpoint to delete current user
-[add] - add enpoint for the roles to add in the adduser and registration-form pages
-[add] - create the Return page, return by reference number
-[fix] - create a new tracking for the salesreturns/purchasereturn/ need to track the date 
-[fix] - need to track how many items are bought and sold
-[fix] - need to fix the cookies response time
