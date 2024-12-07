@@ -9,7 +9,6 @@ import { productsUnitApi } from '@/services/Product/Unit';
 import {productsBrandApi} from "@/services/Product/Brand";
 import {productsCategoryApi} from "@/services/Product/Category";
 import { customerApi } from '@/services/People/Customer';
-import { billerApi } from '@/services/People/Biller';
 import { purchaseApi } from '@/services/Purchase/Purchase';
 import { supplierApi } from '@/services/People/Supplier';
 import { roleApi } from '@/services/Role/Role';
@@ -28,7 +27,7 @@ const authApis = [authApi];
 const warehouseApis = [warehouse];
 const productsApis = [productsApi, productsUnitApi, productsBrandApi, productsCategoryApi];
 const salesApis = [salesApi, salesReturnApi];
-const peopleApis = [billerApi, customerApi, supplierApi]
+const peopleApis = [customerApi, supplierApi]
 const purchaseApis = [purchaseApi, purchaseReturnApi]
 const roleApis = [roleApi]
 const userApis = [usersApi]

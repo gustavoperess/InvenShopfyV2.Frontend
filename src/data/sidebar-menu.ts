@@ -117,16 +117,7 @@ export const menuData: MenuItem[] = [
             {
                 label: "Supplier List",
                 routeLink: "/people/supplierlist",
-            },
-        
-            {
-                label: "Add Biller",
-                routeLink: "/people/addbiller",
-            },
-            {
-                label: "Biller List",
-                routeLink: "/people/billerlist",
-            },
+            }
         ],
     },
     {
