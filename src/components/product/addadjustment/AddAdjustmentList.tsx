@@ -167,7 +167,7 @@ const AddAdjustmentList = () => {
                                             ) : (
                                                 <>
                                                     <h3 className="text-[20px] font-semibold text-heading mb-4">
-                                                        Replace product's image
+                                                        Replace product image
                                                     </h3>
                                                     <span className="block text-[20px] font-semibold text-heading mb-7">
                                                         Or

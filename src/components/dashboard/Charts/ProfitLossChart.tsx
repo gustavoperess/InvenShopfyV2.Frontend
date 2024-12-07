@@ -157,7 +157,7 @@ const ProfitLossChart = () => {
       { name: "Profit", data: Array(12).fill(0) },
       { name: "Loss", data: Array(12).fill(0) },
     ];
-  }, [profitOverviewData, profitOverViewLoadingData, lossOverviewData, lossOverViewLoadingData]);
+  }, [profitOverviewData, profitOverViewLoadingData, lossOverviewData, lossOverViewLoadingData, monthsOrder]);
 
 
   return (

@@ -149,7 +149,7 @@ const AddEmployeeList = () => {
                                             />
                                         ) : (
                                             <>
-                                                <h3 className="text-[20px] font-semibold text-heading mb-4">Drop User's image here</h3>
+                                                <h3 className="text-[20px] font-semibold text-heading mb-4">Drop User image here</h3>
                                                 <span className="block text-[20px] font-semibold text-heading mb-7">Or</span>
                                                 <button type="submit" className="invenShopfy-btn">Browse Picture</button>
                                                 <span className="text-[14px] text-heading font-medium block pt-7">Allowed JPEG, JPG & PNG format  |  Max 100 mb</span>

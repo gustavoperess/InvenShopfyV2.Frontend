@@ -128,7 +128,7 @@ const LoginForm = () => {
                 <div className="invenShopfy-login-footer">
                     <div className="invenShopfy-login-footer-account text-center">
                         <span className="text-[16px] inline-block text-body">
-                            Don't have an account? <Link className="text-[16px] text-primary" href="/registration">Register</Link>
+                            Do not have an account? <Link className="text-[16px] text-primary" href="/registration">Register</Link>
                         </span>
                     </div>
                 </div>
