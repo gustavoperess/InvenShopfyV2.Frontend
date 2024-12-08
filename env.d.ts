@@ -1,7 +1,7 @@
-interface ImportMetaEnv {
-    VITE_BACKEND_URL: string;
-}
+// interface ImportMetaEnv {
+//     VITE_BACKEND_URL: string;
+// }
 
-interface ImportMeta {
-    readonly env: ImportMetaEnv;
-}
+// interface ImportMeta {
+//     readonly env: ImportMetaEnv;
+// }

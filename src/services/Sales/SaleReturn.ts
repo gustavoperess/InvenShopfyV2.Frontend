@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BACKEND_URL = "https://invenshopfy-backend-gqfwethzeggegqdv.westeurope-01.azurewebsites.net/";
 
 export const salesReturnApi = createApi({
     reducerPath: 'SalesReturnApi',
