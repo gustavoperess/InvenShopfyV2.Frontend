@@ -350,6 +350,14 @@ const NewSaleList = () => {
                                                                 const selectedCustomer = customerData?.data.find((customer: TCustomerInterface) => customer.id === value);
                                                                 return selectedCustomer ? selectedCustomer.name : <em>Select Customer</em>;
                                                             },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
+                                                            },
                                                         }}>
                                                         {customerData && customerData.data.length > 0 ? (
                                                             customerData.data.map((customer: TCustomerInterface) => (
@@ -384,6 +392,14 @@ const NewSaleList = () => {
                                                                 const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
                                                                 return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                             },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
+                                                            },
                                                         }}>
                                                         {warehouseData && warehouseData.data.length > 0 ? (
                                                             warehouseData.data.map((warehouse: TWarehouseInterface) => (
@@ -417,6 +433,14 @@ const NewSaleList = () => {
                                                             renderValue: (value: any) => {
                                                                 const selectedBiller = billerDataNew?.find((biller: TBillerInterfaceTwo) => biller.userId === value);
                                                                 return selectedBiller ? selectedBiller.userName : <em>Select Biller</em>;
+                                                            },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
                                                             },
                                                         }}>
                                                         {billerDataNew && billerDataNew?.length > 0 ? (

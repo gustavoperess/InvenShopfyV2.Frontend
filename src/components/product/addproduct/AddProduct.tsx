@@ -167,6 +167,14 @@ const AddProduct = () => {
                                                                     );
                                                                     return selectedCategoryItem ? selectedCategoryItem.mainCategory : <em>Select Category</em>;
                                                                 },
+                                                                MenuProps: {
+                                                                    PaperProps: {
+                                                                        style: {
+                                                                            maxHeight: '200px',  
+                                                                            overflowY: 'auto',   
+                                                                        },
+                                                                    },
+                                                                },
                                                             }}
                                                         >
                                                             {totalCategoryData && totalCategoryData.data.length > 0 ? (
@@ -202,6 +210,14 @@ const AddProduct = () => {
                                                             renderValue: (value: any) => {
                                                                 const selectedSubCategory = subCategories.find((subCategory) => subCategory === value);
                                                                 return selectedSubCategory ? selectedSubCategory : <em>Select Sub-Category</em>;
+                                                            },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
                                                             },
                                                         }}>
                                                         {subCategories.length > 0 ? (
@@ -256,6 +272,14 @@ const AddProduct = () => {
                                                                 const selectedBrand = totalBrandData?.data.find((brand: TBrandInterface) => brand.id === value);
                                                                 return selectedBrand ? selectedBrand.brandName : <em>Select Brand</em>;
                                                             },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
+                                                            },
                                                         }}>
                                                         {totalBrandData && totalBrandData.data.length > 0 ? (
                                                             totalBrandData.data.map((brand: TBrandInterface) => (
@@ -289,6 +313,14 @@ const AddProduct = () => {
                                                             renderValue: (value: any) => {
                                                                 const selectedUnit = totalUnitData?.data.find((unit: TUnitInterface) => unit.id === value);
                                                                 return selectedUnit ? selectedUnit.unitName : <em>Select Unit</em>;
+                                                            },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
                                                             },
                                                         }}>
                                                         {totalUnitData && totalUnitData.data.length > 0 ? (

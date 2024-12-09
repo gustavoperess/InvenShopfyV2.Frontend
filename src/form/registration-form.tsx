@@ -242,6 +242,14 @@ const RegistrationFrom = () => {
                                             const selectedRole = rolesData?.data.find((role: TRoleInterface) => role.id === value);
                                             return selectedRole ? selectedRole.roleName : <em>Select Role</em>;
                                         },
+                                        MenuProps: {
+                                            PaperProps: {
+                                                style: {
+                                                    maxHeight: '200px',  
+                                                    overflowY: 'auto',   
+                                                },
+                                            },
+                                        },
                                     }}>
                                     {rolesData && rolesData.data.length > 0 ? (
                                         rolesData.data.map((role: TRoleInterface) => (

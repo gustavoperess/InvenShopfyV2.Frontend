@@ -104,6 +104,14 @@ const EditEmployeeListPopup = ({ open, userId, currentRole, handleEditEmployeeDi
                                                                 );
                                                                 return roleItem ? roleItem.roleName : <em>Select Role</em>;
                                                             },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
+                                                            },
                                                         }}
                                                         >
                                                         {rolesData && rolesData.data.length > 0 ? (

@@ -79,6 +79,14 @@ const NewMessage = () => {
                                                                     const selectedBiller = billerDataNew?.find((biller: TBillerInterfaceTwo) => biller.userId === value);
                                                                     return selectedBiller ? selectedBiller.userName : <em>To</em>;
                                                                 },
+                                                                MenuProps: {
+                                                                    PaperProps: {
+                                                                        style: {
+                                                                            maxHeight: '200px',  
+                                                                            overflowY: 'auto',   
+                                                                        },
+                                                                    },
+                                                                },
                                                             }}>
                                                             {billerDataNew && billerDataNew?.length > 0 ? (
                                                                 billerDataNew.map((biller: TBillerInterfaceTwo) => (

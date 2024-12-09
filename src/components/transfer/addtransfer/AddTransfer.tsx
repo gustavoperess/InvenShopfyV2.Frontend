@@ -128,7 +128,7 @@ const AddTransfer = () => {
     }
 
 
- 
+
 
     return (
         <>
@@ -216,6 +216,14 @@ const AddTransfer = () => {
                                                     renderValue: () => {
                                                         return userAdmin.userName ? userAdmin.userName : <em>Select Admin/Manager</em>;
                                                     },
+                                                    MenuProps: {
+                                                        PaperProps: {
+                                                            style: {
+                                                                maxHeight: '200px',  
+                                                                overflowY: 'auto',   
+                                                            },
+                                                        },
+                                                    },
                                                 }}>
                                                 {userAdminData && userAdminData.length > 0 ? (
                                                     userAdminData.map((userAdmin: any) => (
@@ -247,10 +255,21 @@ const AddTransfer = () => {
                                                 SelectProps={{
                                                     displayEmpty: true,
                                                     renderValue: (value: any) => {
-                                                        const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
+                                                        const selectedWarehouse = warehouseData?.data.find(
+                                                            (warehouse: TWarehouseInterface) => warehouse.id === value
+                                                        );
                                                         return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                     },
-                                                }}>
+                                                    MenuProps: {
+                                                        PaperProps: {
+                                                            style: {
+                                                                maxHeight: '200px',  
+                                                                overflowY: 'auto',   
+                                                            },
+                                                        },
+                                                    },
+                                                }}
+                                            >
                                                 {warehouseData && warehouseData.data.length > 0 ? (
                                                     warehouseData.data.map((warehouse: TWarehouseInterface) => (
                                                         <MenuItem key={warehouse.id} value={warehouse.id}>
@@ -263,6 +282,7 @@ const AddTransfer = () => {
                                                     </MenuItem>
                                                 )}
                                             </TextField>
+
                                         </div>
 
                                     </div>
@@ -284,6 +304,14 @@ const AddTransfer = () => {
                                                     renderValue: (value: any) => {
                                                         const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
                                                         return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
+                                                    },
+                                                    MenuProps: {
+                                                        PaperProps: {
+                                                            style: {
+                                                                maxHeight: '200px',  
+                                                                overflowY: 'auto',   
+                                                            },
+                                                        },
                                                     },
                                                 }}>
                                                 {warehouseData && warehouseData.data.length > 0 ? (
@@ -374,6 +402,14 @@ const AddTransfer = () => {
                                                             return <em>Select Status</em>;
                                                         }
                                                         return value;
+                                                    },
+                                                    MenuProps: {
+                                                        PaperProps: {
+                                                            style: {
+                                                                maxHeight: '200px',  
+                                                                overflowY: 'auto',   
+                                                            },
+                                                        },
                                                     },
                                                 }}
                                             >

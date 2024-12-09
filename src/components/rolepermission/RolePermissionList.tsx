@@ -99,6 +99,14 @@ const RolePermissionList = () => {
                                             const selectRole = roleNameData?.data.find((role: TRoleInterface) => role.roleName === value);
                                             return selectRole ? selectRole.roleName : <em>Select Role</em>;
                                         },
+                                        MenuProps: {
+                                            PaperProps: {
+                                                style: {
+                                                    maxHeight: '200px',  
+                                                    overflowY: 'auto',   
+                                                },
+                                            },
+                                        },
                                     }}>
                                     {roleNameData && roleNameData.data.length > 0 ? (
                                         roleNameData.data.map((role: TRoleInterface) => (

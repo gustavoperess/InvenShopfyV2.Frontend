@@ -299,6 +299,14 @@ const AddAdjustmentList = () => {
                                                                 const selectedSubCategory = subCategories.find((subCategory) => subCategory === value);
                                                                 return selectedSubCategory ? selectedSubCategory : <em>Select Sub-Category</em>;
                                                             },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
+                                                            },
                                                         }}>
                                                         {subCategories.length > 0 ? (
                                                             subCategories.map((subCategory) => (
@@ -331,6 +339,14 @@ const AddAdjustmentList = () => {
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
                                                                 return productBrand ? productBrand : <em>Select Brand</em>;
+                                                            },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
                                                             },
                                                         }}>
                                                         {totalBrandData && totalBrandData.data.length > 0 ? (
@@ -411,6 +427,14 @@ const AddAdjustmentList = () => {
                                                             displayEmpty: true,
                                                             renderValue: (value: any) => {
                                                                 return productUnit ? productUnit : <em>Select Unit</em>;
+                                                            },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
                                                             },
                                                         }}>
                                                         {totalUnitData && totalUnitData.data.length > 0 ? (

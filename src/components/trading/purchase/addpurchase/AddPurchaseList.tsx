@@ -273,6 +273,14 @@ const AddPurchaseList = () => {
                                                                 const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
                                                                 return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                             },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
+                                                            },
                                                         }}>
                                                         {warehouseData && warehouseData.data.length > 0 ? (
                                                             warehouseData.data.map((warehouse: TWarehouseInterface) => (
@@ -307,6 +315,14 @@ const AddPurchaseList = () => {
                                                             renderValue: (value: any) => {
                                                                 const selectedSupplier = supplierData?.data.find((supplier: TSupplierInterface) => supplier.id === value);
                                                                 return selectedSupplier ? selectedSupplier.supplierName : <em>Select Supplier</em>;
+                                                            },
+                                                            MenuProps: {
+                                                                PaperProps: {
+                                                                    style: {
+                                                                        maxHeight: '200px',  
+                                                                        overflowY: 'auto',   
+                                                                    },
+                                                                },
                                                             },
                                                         }}>
                                                         {supplierData && supplierData.data.length > 0 ? (

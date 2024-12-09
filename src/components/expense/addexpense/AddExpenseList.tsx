@@ -155,6 +155,14 @@ const AddExpenseList = () => {
                                                         const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
                                                         return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
                                                     },
+                                                    MenuProps: {
+                                                        PaperProps: {
+                                                            style: {
+                                                                maxHeight: '200px',  
+                                                                overflowY: 'auto',   
+                                                            },
+                                                        },
+                                                    },
                                                 }}>
                                                 {warehouseData && warehouseData.data.length > 0 ? (
                                                     warehouseData.data.map((warehouse: TWarehouseInterface) => (
@@ -196,6 +204,14 @@ const AddExpenseList = () => {
                                                             );
                                                             return selectedCategoryItem ? selectedCategoryItem.mainCategory : <em>Select Category</em>;
                                                         },
+                                                        MenuProps: {
+                                                            PaperProps: {
+                                                                style: {
+                                                                    maxHeight: '200px',  
+                                                                    overflowY: 'auto',   
+                                                                },
+                                                            },
+                                                        },
                                                     }}
                                                 >
                                                     {totalCategoryData && totalCategoryData.data.length > 0 ? (
@@ -232,6 +248,14 @@ const AddExpenseList = () => {
                                                     renderValue: (value: any) => {
                                                         const selectedSubCategory = subCategories.find((subCategory) => subCategory === value);
                                                         return selectedSubCategory ? selectedSubCategory : <em>Select Sub-Category</em>;
+                                                    },
+                                                    MenuProps: {
+                                                        PaperProps: {
+                                                            style: {
+                                                                maxHeight: '200px',  
+                                                                overflowY: 'auto',   
+                                                            },
+                                                        },
                                                     },
                                                 }}>
                                                 {subCategories.length > 0 ? (
