@@ -99,11 +99,10 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
 
     
 
-
     const handleReturnFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         let date = formatDate(returnDate)
-        const returData = { returnDate: date, customerName, referenceNumber, warehouseName, billerName, totalAmount, remarkStatus: remarkStatus || "Duplicated", returnNote }
+        const returData = { returnDate: date, customerName, referenceNumber, warehouseName, billerName, ReturnTotalAmount: totalAmount, remarkStatus: remarkStatus || "Duplicated", returnNote }
         try {
             await addSaleReturn(returData).unwrap();
             toast.success("Sale Created successfully!");
