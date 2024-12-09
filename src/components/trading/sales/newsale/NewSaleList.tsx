@@ -104,7 +104,11 @@ const NewSaleList = () => {
             if (suggestion.stockQuantity > 0) {
                 setProductInformation(prev => [
                     ...prev,
-                    { ...suggestion, quantitySold: 1, totalAmountSold: suggestion.productPrice, stockQuantity: suggestion.stockQuantity - 1 }
+                    { ...suggestion, 
+                        quantitySold: 1,
+                        totalAmountSold: suggestion.productPrice,
+                        stockQuantity: suggestion.stockQuantity === 1 ? suggestion.stockQuantity : suggestion.stockQuantity - 1
+                    }
                 ]);
 
             } else {
@@ -135,7 +139,8 @@ const NewSaleList = () => {
                 return {
                     ...item,
                     quantitySold: newQuantity,
-                    stockQuantity: item.stockQuantity - 1 >= 1 ? item.stockQuantity - 1 : 1
+                    // stockQuantity: item.stockQuantity - 1 >= 1 ? item.stockQuantity - 1 : 1
+                    stockQuantity: item.stockQuantity - 1
                 }
             }
             return item
@@ -304,7 +309,6 @@ const NewSaleList = () => {
         }
     }
   
-
     return (
         <>
             <div className="invenShopfy-content-area px-4 sm:px-7">

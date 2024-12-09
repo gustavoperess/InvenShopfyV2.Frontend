@@ -70,6 +70,7 @@ const AddProduct = () => {
             setBrandId("");
             setUnitId("");
             setProductPrice(undefined);
+            setProductCode(0)
             setFeatured(false);
             setSale(false);
             setExpired(false);
