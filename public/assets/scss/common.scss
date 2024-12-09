@@ -67,3 +67,6 @@ li.MuiMenuItem-root {
 	@apply mt-[35px];
 }
 
+.MuiPaper-root {
+    @apply max-h-[200px] overflow-y-auto; 
+  }

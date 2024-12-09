@@ -113,6 +113,7 @@ const AddEmployeeList = () => {
                 setPhone('');
                 setEmail('');
                 setGender('');
+                setName('');
                 setUserName('');
                 setPassword('');
                 setRole('');
@@ -280,7 +281,6 @@ const AddEmployeeList = () => {
                                                     <TextField
                                                         label="Select"
                                                         select
-                                                        required
                                                         value={role}
                                                         onChange={(e) => setRole(e.target.value)}
                                                         fullWidth

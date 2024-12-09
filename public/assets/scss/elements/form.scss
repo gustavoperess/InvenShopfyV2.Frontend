@@ -475,3 +475,47 @@ div.invenShopfy-input-type-file-style {
 }
 
 
+
+
+// <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
+//     <div className="invenShopfy-form-field">
+//         <div className="invenShopfy-select-field">
+//             <h5>From Warehouse</h5>
+//             <div className="invenShopfy-select-field-style">
+//                 <TextField
+//                     select
+//                     label="Select"
+//                     required
+//                     value={fromWarehouse}
+//                     onChange={(e) => setFromWarehouse(e.target.value)}
+//                     SelectProps={{
+//                         displayEmpty: true,
+//                         renderValue: (value: any) => {
+//                             const selectedWarehouse = warehouseData?.data.find((warehouse: TWarehouseInterface) => warehouse.id === value);
+//                             return selectedWarehouse ? selectedWarehouse.warehouseTitle : <em>Select Warehouse</em>;
+//                         },
+//                         MenuProps: {
+//                             PaperProps: {
+//                                 style: {
+//                                     maxHeight: '200px',  // Limit the height to 200px (adjust as needed)
+//                                     overflowY: 'auto',   // Enable vertical scrolling
+//                                 },
+//                             },
+//                         },
+//                     }}>
+//                     {warehouseData && warehouseData.data.length > 0 ? (
+//                         warehouseData.data.map((warehouse: TWarehouseInterface) => (
+//                             <MenuItem key={warehouse.id} value={warehouse.id}>
+//                                 {warehouse.warehouseTitle}
+//                             </MenuItem>
+//                         ))
+//                     ) : (
+//                         <MenuItem value="">
+//                             <em>No Warehouse Available</em>
+//                         </MenuItem>
+//                     )}
+//                 </TextField>
+//             </div>
+//         </div>
+//     </div>
+// </div>
