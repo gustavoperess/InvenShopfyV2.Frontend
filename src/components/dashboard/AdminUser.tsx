@@ -32,7 +32,7 @@ const AdminUser = () => {
             <div className="invenShopfy-dashboard-user users-view gap-2.5 mb-5">
                 <h5 className="text-[18px] text-heading font-bold">Users</h5>
                 <span className='badge badge-primary view-btn'>
-                    <Link href="/client/userlist">View All</Link>
+                    <Link href="/management/employeelist">View All</Link>
                 </span>
             </div>
             <div className="invenShopfy-dashboard-user">

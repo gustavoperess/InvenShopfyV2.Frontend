@@ -64,7 +64,7 @@ const ProfileList = () => {
  
         try {
             await updateUser({ body: updatedUserData, userId }).unwrap();
-            toast.success("User Created successfully!");
+            toast.success("User updated successfully!");
             setUserPhoneNumber('');
             setUserEmail('');
             setUserPicture("")

@@ -150,7 +150,14 @@ const CreateRoleList = () => {
     //handle role data
     const handleRoleData = async (e: any) => {
         e.preventDefault();
-        const roleDataToSubmit = { roleName: roleTitle, description: roleDescription };
+        const formatRoleName = (title: string) => {
+            return title
+                .split(" ") 
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) 
+                .join(""); 
+        };
+        const roleName = formatRoleName(roleTitle);
+        const roleDataToSubmit = { roleName, description: roleDescription };
         try {
             await createRole(roleDataToSubmit).unwrap();
             setRoleTitle('');

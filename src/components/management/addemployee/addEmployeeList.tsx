@@ -113,9 +113,11 @@ const AddEmployeeList = () => {
                 setPhone('');
                 setEmail('');
                 setGender('');
+                setUserImage('')
                 setName('');
                 setUserName('');
                 setPassword('');
+                setConfirmPassword('')
                 setRole('');
             } catch (error: any) {
                 if (error?.data) {

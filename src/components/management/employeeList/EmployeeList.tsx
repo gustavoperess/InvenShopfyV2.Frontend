@@ -313,7 +313,7 @@ const EmployeeList = () => {
                                   direction={orderBy === 'userName' ? order : 'asc'}
                                   onClick={() => handleRequestSort('userName')}
                                 >
-                                  Name
+                                  Username
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>

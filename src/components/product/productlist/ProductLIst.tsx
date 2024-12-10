@@ -34,7 +34,7 @@ import { TProductInterface, MoneyFormat } from '@/interFace/interFace';
 
 const ProductList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [currentPageSize, setCurrentPageSize] = useState<number>(25);
+  const [currentPageSize, setCurrentPageSize] = useState<number>(10);
   const [open, setOpen] = React.useState(false);
   const [product, setProduct] = useState<number>(0);
   const [selected, setSelected] = useState<number[]>([]);
