@@ -32,7 +32,7 @@ import { toast } from 'react-toastify';
 
 const SupplierList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [currentPageSize, setCurrentPageSize] = useState<number>(25);
   const [supplier, setSupplier] = useState<number>(0);
   const [open, setOpen] = React.useState(false);
   const [page, setPage] = useState(0);

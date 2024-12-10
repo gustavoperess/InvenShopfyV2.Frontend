@@ -32,7 +32,7 @@ import { saveAs } from 'file-saver';
 
 const PurchaseReturnsList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [currentPageSize, setCurrentPageSize] = useState<number>(25);
   const [purchaseReturn, setPurchaseReturn] = useState<number>(0);
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = useState<number[]>([]);

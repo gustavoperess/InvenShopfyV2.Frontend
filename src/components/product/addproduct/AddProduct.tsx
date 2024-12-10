@@ -32,7 +32,7 @@ const AddProduct = () => {
     const [subCategory, setSubCategory] = useState<string>("");
     const [subCategories, setSubCategories] = useState<string[]>([]);
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-    const [currentPageSize, setCurrentPageSize] = useState(10);
+    const [currentPageSize, setCurrentPageSize] = useState<number>(25);
     const { data: totalUnitData, error: totalUnitError, isLoading: totalUnitLoading } = useGetAllProductsUnitQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const { data: totalBrandData, error: totalBrandError, isLoading: totalBrandLoading } = useGetAllProductsBrandQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const { data: totalCategoryData, error: totalCategoryError, isLoading: totalCategoryLoading } = useGetAllProductsCategoryQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });

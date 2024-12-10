@@ -25,7 +25,7 @@ import autoTable from 'jspdf-autotable'
 
 const SupplierReport = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [currentPageSize, setCurrentPageSize] = useState(25);
+  const [currentPageSize, setCurrentPageSize] = useState<number>(25);
   const [startDate, setStartDate] = useState<string | undefined>(undefined);
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [dateRange, setDateRange] = useState<string>("Yearly");

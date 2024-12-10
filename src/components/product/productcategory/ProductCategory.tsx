@@ -29,7 +29,7 @@ import { TMainCategoryInterface } from '@/interFace/interFace';
 
 const ProductCategory = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [currentPageSize, setCurrentPageSize] = useState<number>(25);
   const [open, setOpen] = React.useState(false);
   const [category, setCategory] = useState<number>(0);
   const [mainCategory, setMainCategory] = useState<string>("");

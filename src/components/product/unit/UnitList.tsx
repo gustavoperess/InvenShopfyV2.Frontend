@@ -25,7 +25,7 @@ import { TUnitInterface } from '@/interFace/interFace';
 
 const UnitList = () => {
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-    const [currentPageSize, setCurrentPageSize] = useState(10);
+    const [currentPageSize, setCurrentPageSize] = useState<number>(25);
     const [open, setOpen] = React.useState(false);
     const [unit, setUnit] = useState<number>(0);
     const [unitName, setUnitName] = useState("");

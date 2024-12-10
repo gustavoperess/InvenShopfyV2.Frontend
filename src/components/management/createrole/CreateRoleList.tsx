@@ -29,7 +29,7 @@ import { TUserInterface } from '@/interFace/interFace';
 
 const CreateRoleList = () => {
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-    const [currentPageSize, setCurrentPageSize] = useState(10);
+    const [currentPageSize, setCurrentPageSize] = useState<number>(25);
     const [open, setOpen] = React.useState(false);
     const [roleTitle, setRoleTitle] = useState<string>("");
     const [roleDescription, setRoleDescription] = useState<string>("");

@@ -42,7 +42,7 @@ function a11yProps(index: number) {
 
 const IndexTabList = () => {
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-    const [currentPageSize, setCurrentPageSize] = useState(10);
+    const [currentPageSize, setCurrentPageSize] = useState<number>(25);
     const { data: messagesData, error: messagesError, isLoading: messagesLoading } = useGetMessagesInboxQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const [subTabValue, setSubTabValue] = useState<number>(messagesData?.data?.[0]?.id || 0);
     const [isReady, setIsReady] = useState<boolean>(false);

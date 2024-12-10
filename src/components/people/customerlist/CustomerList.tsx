@@ -31,7 +31,7 @@ import { toast } from 'react-toastify';
 
 const CustomerList = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [currentPageSize, setCurrentPageSize] = useState<number>(25);
   const [customer, setCustomer] = useState<number>(0);
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = useState<number[]>([]);

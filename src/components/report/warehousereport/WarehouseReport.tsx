@@ -22,7 +22,7 @@ import autoTable from 'jspdf-autotable'
 
 const WarehouseReport = () => {
   const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-  const [currentPageSize, setCurrentPageSize] = useState(25);
+  const [currentPageSize, setCurrentPageSize] = useState<number>(25);
   const [searchQuery, setSearchQuery] = useState('');
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof TWarehouseReportInterface>('id');

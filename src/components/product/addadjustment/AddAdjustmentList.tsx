@@ -29,7 +29,7 @@ const AddAdjustmentList = () => {
     const [productUnit, setProductUnit] = useState<string | null>(null);
     const [subCategories, setSubCategories] = useState<string[]>([]);
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-    const [currentPageSize, setCurrentPageSize] = useState(10);
+    const [currentPageSize, setCurrentPageSize] = useState<number>(25);
     const [suggestions, setSuggestions] = useState<TProductInterface[]>([]);
     const [fetchSuggestions, setFetchSuggestions] = useState(true);
     const [productId, setProductId] = useState<number>();

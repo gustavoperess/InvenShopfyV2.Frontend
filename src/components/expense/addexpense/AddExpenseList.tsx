@@ -18,7 +18,7 @@ const AddExpenseList = () => {
     const [selectStatus, setSelectStatus] = useState('');
     const [selectedPrice, setSelectedPrice] = useState<number | undefined>();
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-    const [currentPageSize, setCurrentPageSize] = useState(25);
+    const [currentPageSize, setCurrentPageSize] = useState<number>(25);
     const [shippingCost, setShippingCost] = useState<number | undefined>();
     const [selectedCategory, setSelectedCategory] = useState<number | string>("");
     const [subCategories, setSubCategories] = useState<string[]>([]);

@@ -40,7 +40,7 @@ function a11yProps(index: number) {
 
 const TrashTabList = () => {
     const [currentPageNumber, setCurrentPageNumber] = useState<number>(1);
-    const [currentPageSize, setCurrentPageSize] = useState(10);
+  const [currentPageSize, setCurrentPageSize] = useState<number>(25);
     const { data: messagesData, error: messagesError, isLoading: messagesLoading } = useGetDeletedMessagesQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
     const [isReady, setIsReady] = useState<boolean>(false);
     const [subTabValue, setSubTabValue] = useState<number>(messagesData?.data?.[0]?.id || 0);
