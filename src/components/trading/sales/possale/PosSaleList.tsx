@@ -159,7 +159,7 @@ const PosSaleList = (
                             <div className="invenShopfy-input-field-style search-field">
                                 <TextField
                                     fullWidth
-                                    placeholder="B-874739"
+                                    placeholder="C-058284"
                                     variant="outlined"
                                     value={referenceNumber}
                                     onChange={handleReferenceNumberChange}

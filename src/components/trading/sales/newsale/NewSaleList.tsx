@@ -285,18 +285,18 @@ const NewSaleList = () => {
 
         try {
             await addSale(saleData).unwrap();
-            // setActiveItems([]);
-            // setActiveItemIds([]);
-            // setSaleDate(new Date());
-            // setWarehouseId("")
-            // setCustomerId("")
-            // setBillerId("")
-            // setSalesStatus("")
-            // setSaleNote("")
-            // setStaffNote("")
-            // setProductInformation([])
-            // setDiscount(undefined)
-            // setShippingCost(undefined)
+            setActiveItems([]);
+            setActiveItemIds([]);
+            setSaleDate(new Date());
+            setWarehouseId("")
+            setCustomerId("")
+            setBillerId("")
+            setSalesStatus("")
+            setSaleNote("")
+            setStaffNote("")
+            setProductInformation([])
+            setDiscount(undefined)
+            setShippingCost(undefined)
             toast.success("Sale Created successfully!");
         } catch (error: any) {
             if (error?.data?.message) {

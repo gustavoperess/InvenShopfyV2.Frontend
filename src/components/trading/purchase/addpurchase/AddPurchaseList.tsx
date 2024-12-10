@@ -162,13 +162,13 @@ const AddPurchaseList = () => {
         }
         try {
             await addPurchase(formData).unwrap();
-            // setPurchaseDate(new Date())
-            // setWarehouseId("")
-            // setSupplierId("")
-            // setShippingCost(undefined)
-            // setPurchaseStatus("")
-            // setProductInformation([])
-            // setPurchaseNote("")
+            setPurchaseDate(new Date())
+            setWarehouseId("")
+            setSupplierId("")
+            setShippingCost(undefined)
+            setPurchaseStatus("")
+            setProductInformation([])
+            setPurchaseNote("")
             toast.success("Purchase Created successfully!");
         } catch (error: any) {
             if (error?.data?.message) {

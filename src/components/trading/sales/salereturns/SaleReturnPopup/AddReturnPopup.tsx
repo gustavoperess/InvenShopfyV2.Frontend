@@ -148,7 +148,7 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handleReturnDialo
                                         <div className="invenShopfy-input-field-style search-field">
                                             <TextField
                                                 fullWidth
-                                                placeholder="U-450158"
+                                                placeholder="C-058284"
                                                 variant="outlined"
                                                 value={referenceNumber}
                                                 onChange={handleReferenceNumberChange}

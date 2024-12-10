@@ -470,7 +470,6 @@ const SaleList = () => {
                                                 <i className={`fa-regular fa-money-check-dollar ${sales.saleStatus === "Paid" ? '' : 'disabled'}`}></i>
                                                 View Payment
                                               </MenuItem>
-                                              <MenuItem onClick={popupState.close}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
                                           </React.Fragment>
                                         )}
