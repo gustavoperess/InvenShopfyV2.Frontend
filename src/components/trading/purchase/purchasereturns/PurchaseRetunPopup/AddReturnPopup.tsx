@@ -94,7 +94,7 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handlePurchaseRet
         const returData = { returnDate: date, referenceNumber, warehouseName, supplierName, totalAmount, remarkStatus: remarkStatus || "Duplicated", returnNote }
         try {
             await addPurchaseReturn(returData).unwrap();
-            toast.success("Sale Created successfully!");
+            toast.success("Purchase Return Created successfully!");
             setReturnDate(new Date());
             setReferenceNumber("")
             setSupplierName('')
@@ -109,7 +109,7 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handlePurchaseRet
             }
             else {
                 // Fallback error message
-                toast.error("Failed to create Sale. Please try again later.");
+                toast.error("Failed to create Purchase return. Please try again later.");
             }
         }
     }

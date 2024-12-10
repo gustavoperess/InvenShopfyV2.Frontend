@@ -198,7 +198,7 @@ const TransactionReport = () => {
                                             <td>{salesReturn.customerName}</td>
                                             <td>{salesReturn.billerName}</td>
                                             <td>{salesReturn.remarkStatus}</td>
-                                            <td>{MoneyFormat.format(salesReturn.totalAmount)}</td>
+                                            <td>{MoneyFormat.format(salesReturn.returnTotalAmount)}</td>
                                         </tr>
                                     ))
                                 ) : <tr>

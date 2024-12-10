@@ -443,7 +443,6 @@ const SaleReturnsList = () => {
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
                                               <Menu {...bindMenu(popupState)}>
-                                                <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><span onClick={handleSaleReturn}>Edit Returns</span></MenuItem>
                                                 <MenuItem onClick={popupState.close}><i className="fa-regular fa-eye"></i><span onClick={handleViewSale}>View Returns</span></MenuItem>
                                                 <MenuItem onClick={() => handleOpenDelete(salesReturn.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                               </Menu>

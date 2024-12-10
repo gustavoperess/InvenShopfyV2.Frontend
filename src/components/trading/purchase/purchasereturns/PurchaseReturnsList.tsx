@@ -429,7 +429,6 @@ const PurchaseReturnsList = () => {
                                             <Menu {...bindMenu(popupState)}>
                                               <Menu {...bindMenu(popupState)}>
                                                 <MenuItem onClick={popupState.close}><i className="fa-regular fa-eye"></i><span onClick={handlePurchaseReturnDialogOpen}>View Returns</span></MenuItem>
-                                                <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i>Edit Returns</MenuItem>
                                                 <MenuItem onClick={() => handleOpenDelete(purchaseReturn.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                               </Menu>
                                             </Menu>

@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect, useCallback } from 'react';
 import { Accept, useDropzone } from "react-dropzone";
-import { MenuItem, TextField, FormControl, InputAdornment, Autocomplete } from '@mui/material';
+import { MenuItem, TextField, FormControl, InputAdornment } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import { FormControlLabel } from '@mui/material'
 import { useAddProductMutation } from '@/services/Product/Product';
