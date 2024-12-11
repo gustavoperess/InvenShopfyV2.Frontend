@@ -205,29 +205,37 @@ const AddPurchaseList = () => {
     };
 
 
-    const handleAmountChange = (increaseId: any, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleAmountChange = (
+        increaseId: any,
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      ) => {
         const inputValue = event.target.value;
         const newQuantity = inputValue === "" ? undefined : Number(inputValue);
 
+        if (newQuantity !== undefined && newQuantity < 0) {
+          return; 
+        }
+      
         setProductInformation((prevData) =>
-            prevData.map((item) => {
-                if (increaseId === item.id) {
-                    const adjustedStock = item.quantityBought !== undefined
-                        ? item.stockQuantity + ((newQuantity || 0) - (item.quantityBought || 0))
-                        : item.stockQuantity + (newQuantity || 0);
-
-                    return {
-                        ...item,
-                        quantityBought: newQuantity,
-                        stockQuantity: Math.max(adjustedStock, 0),
-                    };
-                }
-                return item;
-            })
+          prevData.map((item) => {
+            if (increaseId === item.id) {
+              const adjustedStock =
+                item.quantityBought !== undefined
+                  ? item.stockQuantity +
+                    ((newQuantity || 0) - (item.quantityBought || 0))
+                  : item.stockQuantity + (newQuantity || 0);
+      
+              return {
+                ...item,
+                quantityBought: newQuantity,
+                stockQuantity: Math.max(adjustedStock, 0),
+              };
+            }
+            return item;
+          })
         );
-    };
-
-
+      };
+      
     return (
         <>
             <form onSubmit={handleNewSaleForm}>
@@ -432,7 +440,7 @@ const AddPurchaseList = () => {
                                                                     </td>
                                                                     <td>{product.productName}</td>
                                                                     <td>{product.productCode}</td>
-                                                                    <td>{product.mainCategory}</td>
+                                                                    <td>{product.category}</td>
                                                                     <td>{product.subcategory}</td>
                                                                     <td>{MoneyFormat.format(product.productPrice)}</td>
                                                                     <td>{product.stockQuantity}</td>

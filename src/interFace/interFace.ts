@@ -104,6 +104,7 @@ export interface TProductInterface {
   id: number;
   productId: number;
   productName: string;
+  category: string
   featured: boolean;
   productPrice: number;
   productCode: number;
