@@ -5,7 +5,7 @@ import { MenuItem, TextField, InputAdornment } from '@mui/material';
 import DatePicker from "react-datepicker";
 import { toast } from 'react-toastify';
 import { NumericFormat } from 'react-number-format';
-import { useCreateSaleMutation } from '@/services/Sales/Sales';
+import { salesApi, useCreateSaleMutation } from '@/services/Sales/Sales';
 import { useGetWarehouseNamesQuery } from '@/services/Warehouse/Warehouse';
 import { useGetCustomerNamesQuery } from '@/services/People/Customer';
 import { useGetAllBillersNewQuery } from '@/services/User/User';
@@ -282,31 +282,36 @@ const NewSaleList = () => {
             billerId, saleDate: date, shippingCost, staffNote, saleNote, saleStatus, taxAmount: calculateTotalTax(),
             totalAmount: calculateGrandTotal, profitAmount: calculateProfit
         }
-
-        try {
-            await addSale(saleData).unwrap();
-            setActiveItems([]);
-            setActiveItemIds([]);
-            setSaleDate(new Date());
-            setWarehouseId("")
-            setCustomerId("")
-            setBillerId("")
-            setSalesStatus("")
-            setSaleNote("")
-            setStaffNote("")
-            setProductInformation([])
-            setDiscount(undefined)
-            setShippingCost(undefined)
-            toast.success("Sale Created successfully!");
-        } catch (error: any) {
-            if (error?.data?.message) {
-                toast.error(error?.data?.message);
+        if (Object.keys(saleData.productIdPlusQuantity).length > 0) {
+            try {
+                await addSale(saleData).unwrap();
+                setActiveItems([]);
+                setActiveItemIds([]);
+                setSaleDate(new Date());
+                setWarehouseId("")
+                setCustomerId("")
+                setBillerId("")
+                setSalesStatus("")
+                setSaleNote("")
+                setStaffNote("")
+                setProductInformation([])
+                setDiscount(undefined)
+                setShippingCost(undefined)
+                toast.success("Sale Created successfully!");
+            } catch (error: any) {
+                if (error?.data?.message) {
+                    toast.error(error?.data?.message);
+                }
+                else {
+                    // Fallback error message
+                    toast.error("Failed to create Sale. Please try again later.");
+                }
             }
-            else {
-                // Fallback error message
-                toast.error("Failed to create Sale. Please try again later.");
-            }
+        } else {
+            // Fallback error message
+            toast.error("Produc quantity can not be 0");
         }
+        
     }
   
     return (
