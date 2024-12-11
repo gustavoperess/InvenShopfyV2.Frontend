@@ -40,6 +40,7 @@ const SaleReturnsList = () => {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof TSaleReturnInterface>('id');
   const [deleteSalesReturn] = useDeleteSalesReturnMutation();
+  const [returnId, setReturnId] = useState<number | undefined>();
   const [searchQuery, setSearchQuery] = useState('');
   const { data: salesReturnData, isLoading: salesReturnLoading, refetch } = useGetAllSalesReturnQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
@@ -60,7 +61,8 @@ const SaleReturnsList = () => {
   // View Sale Popup Start
   const [openViewSaleDialog, setOpenViewSaleDialog] = useState<boolean>(false);
 
-  const handleViewSale = () => {
+  const handleViewSale = (returnId: number) => {
+    setReturnId(returnId)
     setOpenViewSaleDialog(true);
   };
   const handleViewDialogClose = () => {
@@ -443,7 +445,7 @@ const SaleReturnsList = () => {
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
                                               <Menu {...bindMenu(popupState)}>
-                                                <MenuItem onClick={popupState.close}><i className="fa-regular fa-eye"></i><span onClick={handleViewSale}>View Returns</span></MenuItem>
+                                                <MenuItem onClick={() => { handleViewSale(salesReturn.id); popupState.close() }}> <i className="fa-regular fa-eye"></i>View Returns</MenuItem>
                                                 <MenuItem onClick={() => handleOpenDelete(salesReturn.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                               </Menu>
                                             </Menu>
@@ -499,7 +501,7 @@ const SaleReturnsList = () => {
           </div>
         </div>
       </div>
-      <SaleReturnPopup open={openViewSaleDialog} handleViewDialogClose={handleViewDialogClose} />
+      <SaleReturnPopup returnId={returnId} open={openViewSaleDialog} handleViewDialogClose={handleViewDialogClose} />
       <AddReturnPopup refetch={refetch} open={openSaleReturnDialog} handleReturnDialogClose={handleReturnDialogClose} />
     </>
 

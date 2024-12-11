@@ -127,6 +127,7 @@ const WarehouseReport = () => {
     }
   };
 
+  console.log(warehouseReportData)
 
   return (
 

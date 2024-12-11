@@ -34,6 +34,12 @@ export const salesReturnApi = createApi({
                 method: 'GET',
             }),
         }),
+        getSalesReturnById: builder.query<any, number>({
+            query: (returnId) => ({
+                url: `${returnId}`,
+                method: 'GET',
+            }),
+        }),
         getSalesReturnTotalAmount: builder.query<any, void>({
             query: () => ({
                 url: `dashboard/total-sold-returned`,
@@ -52,6 +58,7 @@ export const salesReturnApi = createApi({
 
 
 export const { 
+    useGetSalesReturnByIdQuery,
     useGetSalesReturnByNameQuery,
     useCreateSaleReturnMutation,
     useGetAllSalesReturnQuery,
