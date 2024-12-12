@@ -35,7 +35,7 @@ export const salesPaymentApi = createApi({
 
     }),
 });
-
+ 
 // Export auto-generated hooks for functional components
 export const { 
     useGetSalesPaymentForViewPaymentByIdQuery,
