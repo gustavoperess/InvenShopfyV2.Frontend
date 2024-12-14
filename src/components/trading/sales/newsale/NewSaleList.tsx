@@ -167,13 +167,12 @@ const NewSaleList = () => {
 
     // calculate order tax
     const calculateTheAmountOfProductsAdded = () => {
-        if (productInformation.length > 0) {
-            return productInformation.reduce((accumulator, item) => {
-                return item.stockQuantity > 0
-                    ? accumulator + item.quantitySold
-                    : accumulator;
-            }, 0);
-        }
+        return productInformation.reduce((accumulator, item) => {
+            return item.stockQuantity >= 0
+                ? accumulator + item.quantitySold
+                : accumulator;
+        }, 0);
+        
     };
 
     //claculate discount
@@ -195,10 +194,7 @@ const NewSaleList = () => {
     // calculate total sum of all subtotals
     const calculateTotal = () => {
         return productInformation.reduce((total, item) => {
-            if (item.stockQuantity > 0) {
-                return total + item.productPrice * item.quantitySold;
-            }
-            return total;
+            return total + item.productPrice * item.quantitySold;
         }, 0);
     }
 
