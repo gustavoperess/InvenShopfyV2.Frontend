@@ -164,7 +164,7 @@ const ProductList = () => {
       "Product Code",
       "Category Name",
       "Brand Name",
-      "Stock Quantity",
+      "Stock Qty",
       "Product Price",
       "Sub Categories",
       "Tax Percentage",
@@ -253,7 +253,7 @@ const ProductList = () => {
                             <MenuItem onClick={() => { handleRequestSort("id"); popupState.close(); }}>Id</MenuItem>
                             <MenuItem onClick={() => { handleRequestSort("productName"); popupState.close() }}>Product</MenuItem>
                             <MenuItem onClick={() => { handleRequestSort("productPrice"); popupState.close() }}>Price</MenuItem>
-                            <MenuItem onClick={() => { handleRequestSort("stockQuantity"); popupState.close() }}>Stock Quantity</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("stockQuantity"); popupState.close() }}>Stock Qty</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -361,7 +361,7 @@ const ProductList = () => {
                                   direction={orderBy === 'stockQuantity' ? order : 'asc'}
                                   onClick={() => handleRequestSort('stockQuantity')}
                                 >
-                                  StkQuantity
+                                  Stock Qty
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>

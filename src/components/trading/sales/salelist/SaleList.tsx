@@ -181,7 +181,7 @@ const SaleList = () => {
       "Biller",
       "Status",
       "Total Amount",
-      "Quantity Sold",
+      "Qty Sold",
     ];
 
     // Map data for CSV as strings and for PDF as arrays
@@ -367,7 +367,7 @@ const SaleList = () => {
                                   direction={orderBy === 'totalQuantitySold' ? order : 'asc'}
                                   onClick={() => handleRequestSort('totalQuantitySold')}
                                 >
-                                  Quantity Sold
+                                  Qty Sold
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>

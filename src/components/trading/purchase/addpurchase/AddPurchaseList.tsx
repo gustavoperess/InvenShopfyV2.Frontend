@@ -416,7 +416,7 @@ const AddPurchaseList = () => {
                                                             <th>Price</th>
                                                             <th>Stock</th>
                                                             <th>Tax</th>
-                                                            <th>Quantity</th>
+                                                            <th>Qty</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -448,7 +448,7 @@ const AddPurchaseList = () => {
                                                                         <TextField
                                                                             fullWidth
                                                                             type='number'
-                                                                            placeholder="Enter quantity"
+                                                                            placeholder="Enter qty"
                                                                             variant="outlined"
                                                                             value={product.quantityBought !== undefined ? product.quantityBought : ""}
                                                                             onChange={(e) => handleAmountChange(product.id, e)}

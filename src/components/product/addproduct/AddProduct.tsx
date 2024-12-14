@@ -21,7 +21,7 @@ const AddProduct = () => {
     const [brandId, setBrandId] = useState<string>("");
     const [unitId, setUnitId] = useState<string>("");
     const [productPrice, setProductPrice] = useState<number | undefined>();
-    const [productCode, setProductCode] = useState<number | undefined>();
+    const [productCode, setProductCode] = useState<string>("");
     const [featured, setFeatured] = useState<boolean | false>(false);
     const [expired, setExpired] = useState<boolean | false>(false);
     const [taxPercentage, setTaxPercentage] = useState(5);
@@ -53,8 +53,9 @@ const AddProduct = () => {
     //handle brand submit form
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        let pcode = parseInt(productCode)
         const productData = {
-            productName, productImage, categoryId,subCategory, productCode,brandId,
+            productName, productImage, categoryId,subCategory, productCode:pcode,brandId,
             unitId, productPrice, featured, expired, sale, taxPercentage, marginRange
         };
     
@@ -66,15 +67,14 @@ const AddProduct = () => {
             setSubCategory("");
             setTaxPercentage(5);
             setMarginRange("5% to 10%");
-            setProductCode(undefined);
             setBrandId("");
             setUnitId("");
             setProductPrice(undefined);
-            setProductCode(0)
             setFeatured(false);
             setSale(false);
             setExpired(false);
             setSelectedDiffPriceWarehouse(false);
+            setProductCode("");
             toast.success("Product Created Successfully!")
         } catch (error: any) {
             if (error?.data?.message) {
@@ -249,8 +249,9 @@ const AddProduct = () => {
                                                             required
                                                             placeholder="8952202236"
                                                             variant="outlined"
+                                                            value={productCode}
                                                             inputProps={{ min: 1, max: 10000000 }}
-                                                            onChange={(e) => setProductCode(Number(e.target.value))} />
+                                                            onChange={(e) => setProductCode(e.target.value)} />
                                                     </FormControl>
                                                 </div>
                                             </div>

@@ -260,7 +260,7 @@ const AddEmployeeList = () => {
                                                         displayEmpty: true,
                                                         renderValue: (value: any) => {
                                                             if (value === '') {
-                                                                return <em>Select Type</em>;
+                                                                return <em>Select Gender</em>;
                                                             }
                                                             return value;
                                                         },
@@ -277,7 +277,7 @@ const AddEmployeeList = () => {
                                     </div>
                                     <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                         <div className="invenShopfy-form-field">
-                                            <h5>Gender</h5>
+                                            <h5>Role</h5>
                                             <div className="invenShopfy-select-field-style">
                                                 <FormControl fullWidth>
                                                     <TextField
@@ -394,7 +394,7 @@ const AddEmployeeList = () => {
                                         </div>
                                     </div>
                                     <div className="col-span-12 flex justify-end">
-                                        <button type="submit" className="invenShopfy-btn">Create Now</button>
+                                        <button type="submit" className="invenShopfy-btn">Create User</button>
                                     </div>
                                 </div>
                             </div>

@@ -82,7 +82,7 @@ const options: any = {
     position: 'top',
     horizontalAlign: 'right',
     floating: true,
-    fontSize: '14px',
+    fontSize: '15px',
     fontFamily: 'Nunito Sans',
     fontWeight: 400,
     formatter: undefined,

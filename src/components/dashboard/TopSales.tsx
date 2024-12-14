@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import React from 'react';
 import { useGetBestSellerQuery } from '@/services/Sales/Sales';
+import { MoneyFormat } from '@/interFace/interFace';
 
 
 
@@ -13,7 +14,6 @@ const TopSales = () => {
         "July", "August", "September", "October", "November", "December"
     ];
     const monthName = monthNames[d.getMonth()];
-
     return (
         <>
             <div className=" custom-boxshadow invenShopfy-dashboard-topseller-wrapper p-5 sm:p-7 bg-white rounded-8">
@@ -27,9 +27,9 @@ const TopSales = () => {
                     <table>
                         <thead>
                             <tr>
-                                <th>SL</th>
-                                <th>Name</th>
                                 <th>Qty</th>
+                                <th>Name</th>
+                                <th>Amount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -43,14 +43,14 @@ const TopSales = () => {
                                 </tr>
                             ) : data?.data.length > 0 ? (
                                 data?.data.map((item: any, index: any) => <tr key={index}>
-                                    <td>{item.id}</td>
+                                    <td>{item.totalQuantitySoldPerProduct}</td>
                                     <td>
                                         <div className="invenShopfy-dashboard-sellar-list-name">
                                             <a className="text-[15px] font-normal block mb-3">{item.productName}</a>
-                                            <span className="text-[15px] font-normal block">{item.productCode}</span>
+                                            <span className="text-[15px] font-normal block">[{item.productCode}]</span>
                                         </div>
                                     </td>
-                                    <td>{item.totalQuantitySoldPerProduct}</td>
+                                    <td>{MoneyFormat.format(item.totalAmountSold)}</td>
                                 </tr>)
                             ) : <tr>
                                 <td colSpan={3}>Data not found</td>

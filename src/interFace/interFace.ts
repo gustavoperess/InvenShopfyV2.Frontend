@@ -155,6 +155,7 @@ export let MoneyFormat = new Intl.NumberFormat('en-US', {
 export interface TSupplierReportInterface {
   supplierId: number;
   supplierName: string;
+  companyName: string;
   numberOfPurchases: number;
   numberOfProductsBought: number;
   totalPaidInShipping: number;

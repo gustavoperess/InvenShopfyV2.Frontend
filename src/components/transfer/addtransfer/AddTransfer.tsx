@@ -334,7 +334,7 @@ const AddTransfer = () => {
                             <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-3">
                                 <div className="invenShopfy-form-field">
                                     <div className="invenShopfy-select-field">
-                                        <h5>Quantity</h5>
+                                        <h5>Qty</h5>
                                         <div className="invenShopfy-input-field-style">
                                             <TextField
                                                 fullWidth
@@ -353,7 +353,7 @@ const AddTransfer = () => {
                             </div>
                             <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-3">
                                 <div className="invenShopfy-formTree-field">
-                                    <h5>Quantity in stock</h5>
+                                    <h5>Qty in stock</h5>
                                     <div className="invenShopfy-input-field-style">
                                         <TextField
                                             required

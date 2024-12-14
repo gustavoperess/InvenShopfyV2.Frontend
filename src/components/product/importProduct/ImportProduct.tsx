@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 const DownloadTemplateButton = () => {
   const handleDownloadTemplate = () => {
-    const sampleData = "Name, Code, Category, Brand, Quantity, Price\nProduct 1, P001, Category 1, Brand 1, 10, 100.00\nProduct 2, P002, Category 2, Brand 2, 20, 200.00";
+    const sampleData = "Name, Code, Category, Brand, Qty, Price\nProduct 1, P001, Category 1, Brand 1, 10, 100.00\nProduct 2, P002, Category 2, Brand 2, 20, 200.00";
     const blob = new Blob([sampleData], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     saveAs(blob, 'sample_template.xlsx');
   };

@@ -542,7 +542,7 @@ const NewSaleList = () => {
                                                             <th>Stock Amount</th>
                                                             <th>Tax</th>
                                                             <th>Margin Range</th>
-                                                            <th>Quantity Sold</th>
+                                                            <th>Qty Sold</th>
                                                             <th>Expired</th>
                                                             <th>Action</th>
                                                         </tr>

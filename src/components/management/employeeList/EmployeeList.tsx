@@ -349,7 +349,7 @@ const EmployeeList = () => {
                                   direction={orderBy === 'dateOfJoin' ? order : 'asc'}
                                   onClick={() => handleRequestSort('dateOfJoin')}
                                 >
-                                  Joining Date
+                                  Date Joined
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>

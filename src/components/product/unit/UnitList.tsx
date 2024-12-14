@@ -202,7 +202,7 @@ const UnitList = () => {
                                                             type="text"
                                                             value={unitShortName}
                                                             required
-                                                            inputProps={{ maxLength: 2 }}
+                                                            inputProps={{ maxLength: 5 }}
                                                             onChange={(e) => setunitShortName(e.target.value)}
                                                         />
                                                     </FormControl>

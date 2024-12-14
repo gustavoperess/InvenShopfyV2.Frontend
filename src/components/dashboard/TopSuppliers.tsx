@@ -18,14 +18,14 @@ const TopSuppliers = () => {
                 <div className="invenShopfy-dashboard-supplier-header flex gap-2.5 flex-wrap items-center justify-between mb-5 m-0.5">
                     <h5 className="text-[18px] text-heading font-bold">Top Suppliers <span className="text-[18px] text-heading font-normal">({monthName})</span></h5>
                     <span className="common-blue-badge">
-                        <Link href="people/supplierlist" >View All</Link>
+                        <Link href="report/supplierreport" >View All</Link>
                     </span>
                 </div>
                 <div className="invenShopfy-common-small-table top-sellar-table overflow-y-scroll sm:overflow-y-hidden">
                     <table>
                         <thead>
                             <tr>
-                                <th>SL</th>
+                                <th>Id</th>
                                 <th>Name</th>
                                 <th>Amount</th>
                             </tr>

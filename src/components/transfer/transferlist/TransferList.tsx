@@ -276,7 +276,7 @@ const TransferList = () => {
                                   direction={orderBy === 'quantity' ? order : 'asc'}
                                   onClick={() => handleRequestSort('quantity')}
                                 >
-                                  Quantity
+                                  Qty
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
