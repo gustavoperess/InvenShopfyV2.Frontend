@@ -34,6 +34,12 @@ export const purchaseReturnApi = createApi({
                 method: 'GET',
             }),
         }),
+        getPurchaseReturnById: builder.query<any, number>({
+            query: (returnId) => ({
+                url: `${returnId}`,
+                method: 'GET',
+            }),
+        }),
         deletePurchaseReturn: builder.mutation<any, number>({
             query: (id) => ({
                 url: `${id}`,
@@ -45,7 +51,9 @@ export const purchaseReturnApi = createApi({
 });
 
 
-export const { useGetAllPurchaseReturnQuery, 
+export const { 
+    useGetPurchaseReturnByIdQuery,
+    useGetAllPurchaseReturnQuery, 
     useCreatePurchaseReturnMutation,
     useGetPurchaseReturnByNameQuery,
     useDeletePurchaseReturnMutation,

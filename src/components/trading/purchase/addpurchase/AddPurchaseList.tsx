@@ -72,8 +72,7 @@ const AddPurchaseList = () => {
 
     //handler for close search with close btn
     const handleSearchClose = () => {
-        setSearchQuery('');
-        setSearchResults([]);
+        setSuggestions([]);
     };
 
 

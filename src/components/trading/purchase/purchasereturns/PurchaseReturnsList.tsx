@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import AddReturnPopup from './PurchaseRetunPopup/AddReturnPopup';
-import PurchaseReturnPopup from './PurchaseRetunPopup/SaleReturnPopup';
+import PurchaseReturnPopup from './PurchaseRetunPopup/PurchaseReturnPopup';
 import { useGetAllPurchaseReturnQuery, useDeletePurchaseReturnMutation } from '@/services/Purchase/PurchaseReturn';
 import { TPurchaseReturnInterface, MoneyFormat } from '@/interFace/interFace';
 import jsPDF from 'jspdf'
@@ -40,6 +40,7 @@ const PurchaseReturnsList = () => {
   const [orderBy, setOrderBy] = useState<keyof TPurchaseReturnInterface>('id');
   const [deletePurchaseReturn] = useDeletePurchaseReturnMutation();
   const [searchQuery, setSearchQuery] = useState('');
+  const [returnId, setReturnId] = useState<number | undefined>();
   const { data: purchaseReturnData, isLoading: purchaseReturnLoading, refetch } = useGetAllPurchaseReturnQuery({ pageNumber: currentPageNumber, pageSize: currentPageSize });
 
    // View Sale return Popup Start
@@ -55,7 +56,8 @@ const PurchaseReturnsList = () => {
    // View Purchase Popup Start
   const [openViewPurchaseDialog, setOpenViewPurchaseDialog] = useState<boolean>(false);
 
-  const handlePurchaseReturnDialogOpen = () => {
+  const handlePurchaseReturnDialogOpen = (returnId: number) => {
+    setReturnId(returnId)
     setOpenViewPurchaseDialog(true);
   };
   const handleViewDialogClose = () => {
@@ -428,7 +430,7 @@ const PurchaseReturnsList = () => {
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
                                               <Menu {...bindMenu(popupState)}>
-                                                <MenuItem onClick={popupState.close}><i className="fa-regular fa-eye"></i><span onClick={handlePurchaseReturnDialogOpen}>View Returns</span></MenuItem>
+                                                <MenuItem onClick={() => { handlePurchaseReturnDialogOpen(purchaseReturn.id); popupState.close() }}> <i className="fa-regular fa-eye"></i>View Returns</MenuItem>
                                                 <MenuItem onClick={() => handleOpenDelete(purchaseReturn.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                               </Menu>
                                             </Menu>
@@ -484,8 +486,8 @@ const PurchaseReturnsList = () => {
           </div>
         </div>
       </div>
+      <PurchaseReturnPopup  returnId={returnId}open={openViewPurchaseDialog} handleViewDialogClose={handleViewDialogClose}/>
       <AddReturnPopup refetch={refetch} open={openPurchaseReturnDialog} handlePurchaseReturnDialogClose={handlePurchaseReturnDialogClose}/>
-      <PurchaseReturnPopup  open={openViewPurchaseDialog} handleViewDialogClose={handleViewDialogClose}/>
     </>
 
   );

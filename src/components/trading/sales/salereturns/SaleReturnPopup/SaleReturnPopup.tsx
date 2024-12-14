@@ -54,7 +54,7 @@ const SaleReturnPopup = ({ open, returnId, handleViewDialogClose }: SaleReturnPo
             { label: "Warehouse:", value: salesReturnData.data.warehouseName || "N/A" },
             { label: "Sale Status:", value: salesReturnData.data.remarkStatus || "N/A" },
         ];
-    
+     
         metaInfo.forEach((item, index) => {
             doc.setFontSize(12);
             doc.setTextColor(0, 0, 0); // Black text
