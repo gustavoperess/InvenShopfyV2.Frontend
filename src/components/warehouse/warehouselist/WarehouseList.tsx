@@ -134,7 +134,13 @@ const WarehouseList = () => {
   };
 
   const filteredData = warehouseData?.data.filter((item: any) =>
-    item.warehouseName.toLowerCase().includes(searchQuery.toLowerCase()) 
+    item.warehouseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.quantityOfItems.toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.warehouseCity.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.warehouseCountry.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.warehouseEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.warehousePhoneNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.warehouseZipCode.toLowerCase().includes(searchQuery.toLowerCase()) 
   ) || [];
 
   // Check if a particular item is selected

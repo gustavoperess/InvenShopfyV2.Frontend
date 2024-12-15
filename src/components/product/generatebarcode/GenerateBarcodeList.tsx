@@ -6,10 +6,9 @@ import { toast } from 'react-toastify';
 import { TProduct } from '@/interFace/interFace';
 import { useGetProductByNameQuery } from '@/services/Product/Product';
 import { TProductInterface, MoneyFormat } from '@/interFace/interFace';
-import { saveAs } from 'file-saver';
 import jsPDF from 'jspdf'
-import Barcode from 'react-barcode';
-
+import Barcode from "react-barcode";
+import html2canvas from 'html2canvas';
 
 
 const GenerateBarcodeList = () => {
@@ -24,14 +23,14 @@ const GenerateBarcodeList = () => {
     const [name, setName] = useState<boolean>(true)
     const [code, setCode] = useState<boolean>(true)
     const [price, setPrice] = useState<boolean>(true)
+    const [barCodeGenerate, setBarCodeGenerated] = useState<boolean>(true)
     const [productCodeNumber, setProductCodeNumber] = useState<number>();
     const [selectBarSize, setSelectBarSize] = useState<string>("50");
     const [productCodeName, setProductCodeName] = useState<string>("");
     const [productCodePrice, setProductCodePrice] = useState<number>();
     const debouncedSearchTerm = useDebounce(productName, 500);
 
-
-
+    const barcodeRef = useRef<HTMLDivElement>(null);
 
     //debounce function
     function useDebounce(value: string, delay: number) {
@@ -102,34 +101,61 @@ const GenerateBarcodeList = () => {
         setProductName(value);
     };
 
-
-
     //handle generate barcode 
 
     const handleGenerateBarcode = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (productInformation.length > 0) {
-            try {
-                if (code != false) {
-                    setProductCodeNumber(productInformation?.[0].productCode)
-                }
-                if (price != false) {
-                    setProductCodePrice(productInformation?.[0].productPrice)
-                }
-                if (name != false) {
-                    setProductCodeName(productInformation?.[0].productName)
-                }
-                toast.success("Barcode Generate successfully!");
-            } catch {
-                toast.error("Failed to  Generate Barcode. Please try again later.");
+        try {
+            if (code != false) {
+                setProductCodeNumber(productInformation?.[0].productCode)
             }
-
-        } else {
-            toast.error("Please enter a product to generate the bar code");
+            if (price != false) {
+                setProductCodePrice(productInformation?.[0].productPrice)
+            }
+            if (name != false) {
+                setProductCodeName(productInformation?.[0].productName)
+            }
+            toast.success("Barcode Generate successfully!");
+            setBarCodeGenerated(true)
+        } catch {
+            toast.error("Failed to  Generate Barcode. Please try again later.");
         }
     }
-
     
+    const handleGeneratePDF = async () => {
+        if (barCodeGenerate == false) {
+            toast.error('Please generate bar code first ');
+        }
+        if (!barcodeRef.current) {
+            toast.error('Please generate bar code first ');
+            return;
+        }
+
+        try {
+            const canvas = await html2canvas(barcodeRef.current, { scale: 2 });
+            const imgData = canvas.toDataURL('image/png');
+
+            const doc = new jsPDF();
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(16);
+            doc.text('Product Details', 10, 20);
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Product Name: ${productCodeName}`, 10, 30);
+            if (productCodePrice != undefined) {
+                doc.text(`Price: ${productCodePrice}`, 10, 40);
+            }
+            if (productCodeNumber != undefined) {
+                doc.text(`Price: ${productCodeNumber}`, 10, 50);
+            }
+            const barcodeY = 60;
+            doc.addImage(imgData, 'PNG', 10, barcodeY, 100, 50);
+
+            doc.save(`${productCodeName}_barcode.pdf`);
+        } catch (error) {
+            toast.error('Failed to generate the PDF. Please try again.');
+        }
+    };
 
     return (
         <>
@@ -244,16 +270,6 @@ const GenerateBarcodeList = () => {
                                                 <div className='invenShopfy-checkbox-style'>
                                                     <FormControlLabel
                                                         control={<Checkbox inputProps={{ 'aria-label': 'controlled' }}
-                                                            checked={name}
-                                                            onChange={(e) => setName(e.target.checked)}
-                                                        />}
-
-                                                        label="Name"
-                                                    />
-                                                </div>
-                                                <div className='invenShopfy-checkbox-style'>
-                                                    <FormControlLabel
-                                                        control={<Checkbox inputProps={{ 'aria-label': 'controlled' }}
                                                             checked={code}
                                                             onChange={(e) => setCode(e.target.checked)}
                                                         />}
@@ -302,8 +318,9 @@ const GenerateBarcodeList = () => {
                                                 </div>
                                             </div>
                                             <div className="invenShopfy-btn-wrapper flex gap-5 justify-end">
-                                                <button className='invenShopfy-btn secondary-btn' type="submit">Update</button>
-                                                <button className='invenShopfy-btn' type="submit">Print</button>
+                                                <button className='invenShopfy-btn secondary-btn' type="submit">Generate</button>
+                                                <button className='invenShopfy-btn' onClick={handleGeneratePDF} type='submit'>Print</button>
+
                                             </div>
                                         </div>
                                     </div>
@@ -314,16 +331,16 @@ const GenerateBarcodeList = () => {
                                     <div className="col-span-12 lg:col-span-6 flex items-center justify-center">
                                         {productCodeName && (
                                             <div className="col-span-6 lg:col-span-4">
-                                                <div className="invenShopfy-barcode mb-10 text-center">
+                                                <div ref={barcodeRef} className="invenShopfy-barcode mb-10 text-center">
                                                     <Barcode value={productCodeName} textPosition={"top"} height={Number(selectBarSize)} />
                                                     {(productCodePrice || productCodeNumber) && (
                                                         <h1
                                                             className="text-heading font-bold text-lg mt-2  text-center" // Utility classes for styling
                                                             style={{ lineHeight: "1.0", letterSpacing: "0.3px" }} // Fine-tuning inline styles
                                                         >
-                                                            {productCodePrice && `${MoneyFormat.format(productCodePrice)}`}
-                                                            {productCodePrice && productCodeNumber && "-"}
-                                                            {productCodeNumber && `${productCodeNumber}`}
+                                                            {price && `$${productCodePrice}`}
+                                                            {price && productCodeNumber && "-"}
+                                                            {code && `${productCodeNumber}`}
                                                         </h1>
                                                     )}
                                                 </div>

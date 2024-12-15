@@ -59,7 +59,7 @@ const PurchaseList = () => {
     setOpenViewPurchaseDialog(true);
   };
   const handleViewPurchaseDialogClose = () => {
-    setSelectedPurchaseId(undefined); 
+    setSelectedPurchaseId(undefined);
     setOpenViewPurchaseDialog(false);
   };
 
@@ -72,7 +72,7 @@ const PurchaseList = () => {
   };
   const handleGenerateInvoiceDialogClose = () => {
     setOpenGenerateInvoiceDialog(false);
-    setSelectedPurchaseId(undefined); 
+    setSelectedPurchaseId(undefined);
   };
 
   // AddPayment Popup Start
@@ -106,14 +106,14 @@ const PurchaseList = () => {
   };
 
   // Handler for selecting/deselecting all items
-    // Handler for selecting/deselecting all items
-    const handleSelectAllClick = (checked: boolean) => {
-      if (checked) {
-        setSelected(purchaseData?.data.map((purchase: any) => purchase.id));
-      } else {
-        setSelected([]);
-      }
-    };
+  // Handler for selecting/deselecting all items
+  const handleSelectAllClick = (checked: boolean) => {
+    if (checked) {
+      setSelected(purchaseData?.data.map((purchase: any) => purchase.id));
+    } else {
+      setSelected([]);
+    }
+  };
 
   // Handler for selecting/deselecting a single item
   const handleClick = (id: number) => {
@@ -142,87 +142,89 @@ const PurchaseList = () => {
   const handleSearchChange = (event: any) => {
     setSearchQuery(event.target.value);
   };
-
   const filteredData = purchaseData?.data.filter((item: any) =>
-    item.supplierName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    item.purchaseStatus.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    item.referenceNumber.toLowerCase().includes(searchQuery.toLowerCase()) 
+    item.supplierName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.purchaseStatus.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.referenceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.totalAmountBought.toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.totalNumberOfProductsBought.toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.warehouseName.toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
 
- // Function to sort data
- const sortedRows = filteredData.slice().sort((a: any, b: any) => {
-  if (!orderBy) return 0;
-  const isAsc = order === 'asc';
-  const aValue = a[orderBy as keyof TPurchaseInterface]; 
-  const bValue = b[orderBy as keyof TPurchaseInterface]; 
-  if (aValue === undefined || bValue === undefined) {
-    return 0; 
-  }
+  // Function to sort data
+  const sortedRows = filteredData.slice().sort((a: any, b: any) => {
+    if (!orderBy) return 0;
+    const isAsc = order === 'asc';
+    const aValue = a[orderBy as keyof TPurchaseInterface];
+    const bValue = b[orderBy as keyof TPurchaseInterface];
+    if (aValue === undefined || bValue === undefined) {
+      return 0;
+    }
 
-  if (aValue < bValue) {
-    return isAsc ? -1 : 1;
-  }
-  if (aValue > bValue) {
-    return isAsc ? 1 : -1;
-  }
-  return 0;
-});
+    if (aValue < bValue) {
+      return isAsc ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return isAsc ? 1 : -1;
+    }
+    return 0;
+  });
 
 
-const handleDocument = (type: string) => {
-  if (!purchaseData?.data?.length) return;
+  const handleDocument = (type: string) => {
+    if (!purchaseData?.data?.length) return;
 
-  const headers = [
-    "ID",
-    "Reference Number",
-    "Purchase Date",
-    "Purchase Status",
-    "Warehouse",
-    "Supplier Name",
-    "Total Bought",
-    "Total Amount",
-    "Taxes",
-  ];
+    const headers = [
+      "ID",
+      "Reference Number",
+      "Purchase Date",
+      "Purchase Status",
+      "Warehouse",
+      "Supplier Name",
+      "Total Bought",
+      "Total Amount",
+      "Taxes",
+    ];
 
-  // Map data for CSV as strings and for PDF as arrays
-  const rows = purchaseData.data.map((item: any) => [
-    item.id,
-    item.referenceNumber,
-    item.purchaseDate,
-    item.purchaseStatus,
-    item.warehouseName,
-    item.supplierName,
-    item.totalNumberOfProductsBought,
-    item.totalAmountBought,
-    item.totalPaidInTaxes,
+    // Map data for CSV as strings and for PDF as arrays
+    const rows = purchaseData.data.map((item: any) => [
+      item.id,
+      item.referenceNumber,
+      item.purchaseDate,
+      item.purchaseStatus,
+      item.warehouseName,
+      item.supplierName,
+      item.totalNumberOfProductsBought,
+      item.totalAmountBought,
+      item.totalPaidInTaxes,
 
-  ]);
+    ]);
 
-  if (type === "csv") {
-    // Convert rows to CSV format (string)
-    const csvRows = rows.map((row: (string | number)[]) => row.join(","));
-    const csvContent = [headers.join(","), ...csvRows].join("\n");
+    if (type === "csv") {
+      // Convert rows to CSV format (string)
+      const csvRows = rows.map((row: (string | number)[]) => row.join(","));
+      const csvContent = [headers.join(","), ...csvRows].join("\n");
 
-    // Create a Blob and trigger download
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, "purchase_list.csv");
-  } else if (type === "pdf") {
-    // Generate PDF
-    const doc = new jsPDF();
+      // Create a Blob and trigger download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      saveAs(blob, "purchase_list.csv");
+    } else if (type === "pdf") {
+      // Generate PDF
+      const doc = new jsPDF();
 
-    autoTable(doc, {
-      head: [headers],
-      body: rows,
-      startY: 20,
-      theme: "grid",
-      headStyles: { fillColor: [22, 160, 133] }, 
-    });
+      autoTable(doc, {
+        head: [headers],
+        body: rows,
+        startY: 20,
+        theme: "grid",
+        headStyles: { fillColor: [22, 160, 133] },
+      });
 
-    // Save the PDF
-    doc.save("purchase_list.pdf");
-  }
-};
+      // Save the PDF
+      doc.save("purchase_list.pdf");
+    }
+  };
 
 
 
@@ -241,11 +243,11 @@ const handleDocument = (type: string) => {
             <div className="grid grid-cols-12 gap-x-5 gap-y-4 mb-7 pb-0.5">
               <div className="col-span-12 md:col-span-7 lg:col-span-7 xl:col-span-5">
                 <div className="invenShopfy-table-header-search relative">
-                <input
+                  <input
                     type="text"
                     placeholder="Search List"
-                    value={searchQuery}  
-                    onChange={handleSearchChange} 
+                    value={searchQuery}
+                    onChange={handleSearchChange}
                   />
                   <span><i className="fa-sharp fa-regular fa-magnifying-glass"></i></span>
                 </div>
@@ -257,12 +259,12 @@ const handleDocument = (type: string) => {
                       {(popupState: any) => (
                         <React.Fragment>
                           <button className='' type='button' {...bindTrigger(popupState)}>
-                            <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Filter
+                            <svg id="filter" xmlns="http://www.w3.org/2000/svg" width="15.766" height="13.34" viewBox="0 0 15.766 13.34"><path id="Path_196" data-name="Path 196" d="M18.159,6.213H9.67A1.214,1.214,0,0,0,8.457,5H7.245A1.214,1.214,0,0,0,6.032,6.213H3.606a.606.606,0,1,0,0,1.213H6.032A1.214,1.214,0,0,0,7.245,8.638H8.457A1.214,1.214,0,0,0,9.67,7.426h8.489a.606.606,0,1,0,0-1.213ZM7.245,7.426V6.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -5)" fill="#611bcb"></path><path id="Path_197" data-name="Path 197" d="M18.159,14.213H14.521A1.214,1.214,0,0,0,13.308,13H12.1a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,1,0,0,1.213h7.277A1.214,1.214,0,0,0,12.1,16.638h1.213a1.214,1.214,0,0,0,1.213-1.213h3.638a.606.606,0,1,0,0-1.213ZM12.1,15.426V14.213h1.213v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -8.149)" fill="#611bcb"></path><path id="Path_198" data-name="Path 198" d="M18.159,22.213H9.67A1.214,1.214,0,0,0,8.457,21H7.245a1.214,1.214,0,0,0-1.213,1.213H3.606a.606.606,0,0,0,0,1.213H6.032a1.214,1.214,0,0,0,1.213,1.213H8.457A1.214,1.214,0,0,0,9.67,23.426h8.489a.606.606,0,0,0,0-1.213ZM7.245,23.426V22.213H8.457v.6s0,0,0,0,0,0,0,0v.6Z" transform="translate(-3 -11.298)" fill="#611bcb"></path></svg>  Sort
                           </button>
                           <Menu {...bindMenu(popupState)}>
-                          <MenuItem onClick={() => {handleRequestSort("purchaseDate"); popupState.close()}}>Date</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("totalNumberOfProductsBougth"); popupState.close()}}>Products Bought</MenuItem>
-                            <MenuItem onClick={() => {handleRequestSort("grandTotal"); popupState.close()}}>Total Amount</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("purchaseDate"); popupState.close() }}>Date</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("totalNumberOfProductsBougth"); popupState.close() }}>Products Bought</MenuItem>
+                            <MenuItem onClick={() => { handleRequestSort("grandTotal"); popupState.close() }}>Total Amount</MenuItem>
                           </Menu>
                         </React.Fragment>
                       )}
@@ -344,7 +346,7 @@ const handleDocument = (type: string) => {
                                 >
                                   Supplier                                </TableSortLabel>
                               </TableCell>
-                              
+
                               <TableCell>
                                 <TableSortLabel
                                   active={orderBy === 'totalNumberOfProductsBougth'}
@@ -381,25 +383,25 @@ const handleDocument = (type: string) => {
                           </TableHead>
                           {/* Table body */}
                           <TableBody>
-                            {/* Rows */}    
-                              {purchaseLoading ? (
-                                <tr>
-                                  <td colSpan={14}>
-                                    <div className="invenShopfy-loading-container">
-                                      <span className="invenShopfy-loading"></span>
-                                    </div>
-                                  </td>
-                                </tr>
-                              ) : purchaseData?.message === "User is not authorized to do this task" ? (
-                                <tr>
-                                  <td colSpan={14}>
-                                    <div className="invenShopfy-loading-container">
-                                      <h1>User is not authorized to do this task</h1>
-                                    </div>
-                                  </td>
-                                </tr>
-                              ) : (
-                                sortedRows?.map((purchase: any) => (
+                            {/* Rows */}
+                            {purchaseLoading ? (
+                              <tr>
+                                <td colSpan={14}>
+                                  <div className="invenShopfy-loading-container">
+                                    <span className="invenShopfy-loading"></span>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : purchaseData?.message === "User is not authorized to do this task" ? (
+                              <tr>
+                                <td colSpan={14}>
+                                  <div className="invenShopfy-loading-container">
+                                    <h1>User is not authorized to do this task</h1>
+                                  </div>
+                                </td>
+                              </tr>
+                            ) : (
+                              sortedRows?.map((purchase: any) => (
                                 <TableRow
                                   key={purchase.id}
                                   hover
@@ -431,7 +433,7 @@ const handleDocument = (type: string) => {
                                   <TableCell>{purchase.totalNumberOfProductsBought}</TableCell>
                                   <TableCell>{MoneyFormat.format(purchase.totalAmountBought)}</TableCell>
                                   <TableCell>{MoneyFormat.format(purchase.totalPaidInTaxes)}</TableCell>
-                                  
+
                                   <TableCell>
                                     <div className="invenShopfy-list-action-style">
                                       <PopupState variant="popover">
@@ -441,7 +443,7 @@ const handleDocument = (type: string) => {
                                               Action <i className="fa-sharp fa-solid fa-sort-down"></i>
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={() => {handleViewPurchaseDialogOpen(purchase.id);  popupState.close()}}> <i className="fa-regular fa-eye"></i>View Purchase</MenuItem>
+                                              <MenuItem onClick={() => { handleViewPurchaseDialogOpen(purchase.id); popupState.close() }}> <i className="fa-regular fa-eye"></i>View Purchase</MenuItem>
                                               <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/trading/sales/newsale'>Add Purchase</Link></MenuItem>
                                               {/* <MenuItem onClick={() => {handleGenerateInvoiceDialogOpen();  popupState.close()}}> <i className="fa-regular fa-print"></i>Generate Invoice</MenuItem>
                                               <MenuItem onClick={() => {handleAddPaymentDialogOpen();  popupState.close()}}> <i className="fa-regular fa-circle-plus"></i>Add Purchase</MenuItem>
@@ -465,12 +467,12 @@ const handleDocument = (type: string) => {
                 <div className="invenShopfy-pagination-area">
                   {/* Pagination */}
                   <TablePagination
-                   component="div"
-                   count={purchaseData?.totalCount || 0}
-                   rowsPerPage={currentPageSize}
-                   page={currentPageNumber - 1}
-                   onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
-                   onRowsPerPageChange={handleChangeRowsPerPage}
+                    component="div"
+                    count={purchaseData?.totalCount || 0}
+                    rowsPerPage={currentPageSize}
+                    page={currentPageNumber - 1}
+                    onPageChange={(_, newPage) => handlePageChange(null, newPage + 1)}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </div>
               </div>
@@ -478,7 +480,7 @@ const handleDocument = (type: string) => {
           </div>
         </div>
       </div>
-      <ViewPurchasePopup  purchaseId={selectedPurchaseId} open={openViewPurchaseDialog} handleViewPurchaseDialogClose={handleViewPurchaseDialogClose} />
+      <ViewPurchasePopup purchaseId={selectedPurchaseId} open={openViewPurchaseDialog} handleViewPurchaseDialogClose={handleViewPurchaseDialogClose} />
       <TradingPurchaseListInvoice open={openeGenerateInvoiceDialog} handleGenerateInvoiceDialogClose={handleGenerateInvoiceDialogClose} />
       <PaymentManageListPopup open={openeAddPaymentDialog} handleAddPaymentDialogClose={handleAddPaymentDialogClose} />
       <PaymentViewListPopup open={openeViewPaymentDialog} handleViewPaymentDialogClose={handleViewPaymentDialogClose} />

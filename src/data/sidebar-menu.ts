@@ -17,6 +17,10 @@ export const menuData: MenuItem[] = [
                 routeLink: "/product/addproduct",
             },
             {
+                label: "Add Adjustment",
+                routeLink: "/product/addadjustment",
+            },
+            {
                 label: "Product List",
                 routeLink: "/product/productlist",
             },
@@ -40,10 +44,7 @@ export const menuData: MenuItem[] = [
                 label: "Generate Barcode",
                 routeLink: "/product/generatebarcode",
             },
-            {
-                label: "Add Adjustment",
-                routeLink: "/product/addadjustment",
-            },
+          
         ],
     },
     {
@@ -51,6 +52,15 @@ export const menuData: MenuItem[] = [
         routeLink: "#",
         iconClas: "fal fa-sack-dollar",
         subItems: [
+            {
+                label: "Purchase",
+                routeLink: "#",
+                subSubItems: [
+                    { label: "Add Purchase", routeLink: "/trading/purchase/addpurchase" },
+                    { label: "Purchase List", routeLink: "/trading/purchase/purchaselist" },
+                    { label: "Purchase Returns", routeLink: "/trading/purchase/purchasereturns" },
+                ],
+            },
             {
                 label: "Sales",
                 routeLink: "#",
@@ -60,15 +70,6 @@ export const menuData: MenuItem[] = [
                     { label: "Sales List", routeLink: "/trading/sales/salelist" },
                     { label: "Sales Returns", routeLink: "/trading/sales/salereturns" },
                 ]
-            },
-            {
-                label: "Purchase",
-                routeLink: "#",
-                subSubItems: [
-                    { label: "Add Purchase", routeLink: "/trading/purchase/addpurchase" },
-                    { label: "Purchase List", routeLink: "/trading/purchase/purchaselist" },
-                    { label: "Purchase Returns", routeLink: "/trading/purchase/purchasereturns" },
-                ],
             },
            
         ],
