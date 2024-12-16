@@ -125,14 +125,14 @@ const RolePermissionList = () => {
                                 type="button"
                                 onClick={handleSetUpSubmit}
                                 className="invenShopfy-btn primary-btn whitespace-nowrap">
-                                SetUp Permissions
+                                Apply Permissions
                             </button>
                             <button
                                 type="button"
                                 onClick={handleAssignPermissions}
                                 disabled={!isReadyToSubmit}
                                 className={`invenShopfy-btn primary-btn whitespace-nowrap ${!isReadyToSubmit ? 'disabled' : ''}`}>
-                                Assign Permissions
+                                Submit
                             </button>
                         </div>
                     </div>

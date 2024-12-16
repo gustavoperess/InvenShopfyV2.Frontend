@@ -15,6 +15,8 @@ Backend Stack
 - SWR for efficient data fetching and caching.
 - Sharp for image optimization.
 - Deployed on Azure as static Web
+- Created an Azure Gateway to forward requests from the frontend to the backend, enabling cookie sharing across different domains.
+
 
 Check the deployed version: 
   https://invenshopfy.online 
