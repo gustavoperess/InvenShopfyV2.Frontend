@@ -66,9 +66,9 @@ const AdminUser = () => {
                             </div>
                             <div className="invenShopfy-dashboard-user-list-right">
                                 {item.isOnline === true ? (
-                                    <span className='badge-stroke badge-success'>online</span>
-                                ) : (
                                     <span className='badge-stroke badge-warning'>offline</span>
+                                ) : (
+                                    <span className='badge-stroke badge-success'>online</span>
                                 )}
                             </div>
                         </div>
