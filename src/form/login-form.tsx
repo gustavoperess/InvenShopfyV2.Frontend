@@ -14,11 +14,11 @@ const LoginForm = () => {
     //form password field
     const router = useRouter()
     const [loginUser] = useUserLoginMutation();
-    const [userName, setUsername] = useState("")
+    const [userName, setUsername] = useState("Joseph")
     const [isBtnDisable, setBtnDisable] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
     const [loginError, setLoginError] = useState('');
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState('InvenShopfy123!');
     const [passwordError, setPasswordError] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
