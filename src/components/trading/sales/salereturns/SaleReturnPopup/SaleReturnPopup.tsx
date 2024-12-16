@@ -6,8 +6,9 @@ import logo from '../../../../../../public/assets/img/logo/login-logo.png';
 import Image from 'next/image';
 import { useGetSalesReturnByIdQuery } from '@/services/Sales/SaleReturn';
 import { MoneyFormat } from '@/interFace/interFace';
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf'
+import { toast } from 'react-toastify';
 
 interface SaleReturnPopupProps {
     open: boolean;
@@ -25,6 +26,8 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 
 const SaleReturnPopup = ({ open, returnId, handleViewDialogClose }: SaleReturnPopupProps) => {
+    const barcodeRef = useRef<HTMLDivElement>(null);
+
     const { data: salesReturnData, error: salesReturnError, isLoading: salesReturnLoading, refetch } = useGetSalesReturnByIdQuery(
         returnId as number,
         { skip: returnId === undefined }
@@ -35,79 +38,37 @@ const SaleReturnPopup = ({ open, returnId, handleViewDialogClose }: SaleReturnPo
         }
     }, [returnId, refetch]);
 
+    const handleGeneratePDF = async () => {
+        if (!barcodeRef.current) {
+            toast.error('Failed to find content for the PDF.');
+            return;
+        }
 
-    const handleGenerateInvoicePDF = () => {
-        if (!salesReturnData || !salesReturnData.data) return;
-    
-        const doc = new jsPDF();
-        let finalY = 0;
-    
-        // Invoice Title
-        doc.setFontSize(20);
-        doc.setTextColor(44, 106, 229); // Primary blue
-        doc.text("Invoice", 105, 15, { align: "center" });
-    
-        // Invoice Meta Information (Date, Reference, etc.)
-        const metaInfo = [
-            { label: "Date:", value: salesReturnData.data.returnDate || "N/A" },
-            { label: "Reference:", value: salesReturnData.data.referenceNumber || "N/A" },
-            { label: "Warehouse:", value: salesReturnData.data.warehouseName || "N/A" },
-            { label: "Sale Status:", value: salesReturnData.data.remarkStatus || "N/A" },
-        ];
-     
-        metaInfo.forEach((item, index) => {
-            doc.setFontSize(12);
-            doc.setTextColor(0, 0, 0); // Black text
-            doc.text(`${item.label} ${item.value}`, 14, 30 + index * 8);
-        });
-    
-        // From Section
-        doc.text("From:", 14, 60);
-        doc.text(`Name: ${salesReturnData.data.billerName || "N/A"}`, 14, 66);
-    
-        // To Section
-        doc.text("To:", 105, 60);
-        doc.text(`Name: ${salesReturnData.data.customerName || "N/A"}`, 105, 66);
-    
-        // Product Table (Single Item)
-        const product = salesReturnData.data.salesReturnProductDetails; // Assuming it's not an array
-        // autoTable(doc, {
-        //     startY: 90,
-        //     head: [["SL", "Products", "Reference No", "Unit", "Unit Price", "Qty", "Sub Total"]],
-        //     body: [
-        //         [
-        //             1, // Serial number
-        //             product.productName || "N/A",
-        //             product.referenceNumber || "N/A",
-        //             product.unitShortName || "N/A",
-        //             MoneyFormat.format(product.productPrice) || "N/A",
-        //             product.totalQuantitySoldPerProduct || "N/A",
-        //             MoneyFormat.format(product.totalPricePerProduct) || "N/A",
-        //         ],
-        //     ],
-        //     theme: "grid",
-        //     headStyles: { fillColor: [44, 106, 229], textColor: 255 }, // Header style
-        //     bodyStyles: { fontSize: 10, cellPadding: 3 },
-        // });
-    
-        // finalY = (doc as any).lastAutoTable.finalY;
-    
-        // Additional Information (Footer)
-        doc.text("Sales Note:", 14, finalY + 10);
-        doc.text(salesReturnData.data.returnNote || "N/A", 14, finalY + 16);
-        doc.text("Remarks:", 14, finalY + 22);
-        doc.text(salesReturnData.data.remarkStatus || "N/A", 14, finalY + 28);
-    
-        // Total Amount
-        doc.text("Total Amount:", 14, finalY + 34);
-        doc.text(MoneyFormat.format(salesReturnData.data.returnTotalAmount) || "N/A", 14, finalY + 40);
-    
-        // Save PDF
-        doc.save("invoice.pdf");
+        try {
+            const canvas = await html2canvas(barcodeRef.current, {
+                scale: 1.5,
+                useCORS: true,
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            console.log('Image Data Length:', imgData.length);
+
+
+            const pdfWidth = canvas.width / 3;
+            const pdfHeight = canvas.height / 3;
+
+            const pdf = new jsPDF('portrait', 'px', [pdfWidth, pdfHeight]);
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('invoice.pdf');
+        } catch (error) {
+            console.error('PDF generation error:', error);
+            toast.error('Failed to generate the PDF. Please try again.');
+        }
     };
-    
-    
-    
+
+
+
+
 
     return (
         <>
@@ -118,7 +79,7 @@ const SaleReturnPopup = ({ open, returnId, handleViewDialogClose }: SaleReturnPo
                     open={open}
                 >
                     <DialogContent dividers className='no-border'>
-                        <div className='invenShopfy-common-modal-width width-full'>
+                        <div ref={barcodeRef} className='invenShopfy-common-modal-width width-full'>
                             <div className="invenShopfy-invoice-popup-area">
                                 <div className="invenShopfy-invoice-popup-logo text-center mt-7 mb-10">
                                     <Image src={logo} style={{ width: 'auto', height: 'auto' }} alt="logo img" />
@@ -144,7 +105,7 @@ const SaleReturnPopup = ({ open, returnId, handleViewDialogClose }: SaleReturnPo
                                                     <td>{salesReturnData?.data.customerName}</td>
                                                     <td>{salesReturnData?.data.warehouseName}</td>
                                                     <td>{salesReturnData?.data.customerName}</td>
-                                                    <td>{MoneyFormat.format(salesReturnData?.data.returnTotalAmount)}</td> 
+                                                    <td>{MoneyFormat.format(salesReturnData?.data.returnTotalAmount)}</td>
                                                 </tr>
                                                 <tr>
                                                     <td colSpan={5}><span className='font-semibold text-heading'>Total = </span></td>
@@ -166,8 +127,8 @@ const SaleReturnPopup = ({ open, returnId, handleViewDialogClose }: SaleReturnPo
                                 </div>
                                 <div className="invenShopfy-invoice-popup-btn invenShopfy-table-header-search-action-btn">
                                     <button onClick={handleViewDialogClose} type="button" className="cancel"> Cancel</button>
-                                    <button onClick={() => handleGenerateInvoicePDF()} type="button" className="printer"><svg id="printer" xmlns="http://www.w3.org/2000/svg" width="19.26" height="19.26" viewBox="0 0 19.26 19.26">
-                                    <path id="Path_192" data-name="Path 192" d="M16.439,4.853h-.527V2.821A2.824,2.824,0,0,0,13.091,0H6.169A2.824,2.824,0,0,0,3.348,2.821V4.853H2.821A2.824,2.824,0,0,0,0,7.674v4.514a2.824,2.824,0,0,0,2.821,2.821h.527v2.558A1.7,1.7,0,0,0,5.041,19.26h9.178a1.7,1.7,0,0,0,1.693-1.693V15.009h.527a2.824,2.824,0,0,0,2.821-2.821V7.674A2.824,2.824,0,0,0,16.439,4.853ZM4.476,2.821A1.7,1.7,0,0,1,6.169,1.129h6.921a1.7,1.7,0,0,1,1.693,1.693V4.853H4.476ZM14.783,17.567a.565.565,0,0,1-.564.564H5.041a.565.565,0,0,1-.564-.564V12H14.783Zm3.348-5.379a1.7,1.7,0,0,1-1.693,1.693h-.527V12h.339a.564.564,0,1,0,0-1.129H3.009a.564.564,0,1,0,0,1.129h.339v1.881H2.821a1.7,1.7,0,0,1-1.693-1.693V7.674A1.7,1.7,0,0,1,2.821,5.981H16.439a1.7,1.7,0,0,1,1.693,1.693Z" fill="#2c6ae5" />
+                                    <button onClick={handleGeneratePDF} type="button" className="printer"><svg id="printer" xmlns="http://www.w3.org/2000/svg" width="19.26" height="19.26" viewBox="0 0 19.26 19.26">
+                                        <path id="Path_192" data-name="Path 192" d="M16.439,4.853h-.527V2.821A2.824,2.824,0,0,0,13.091,0H6.169A2.824,2.824,0,0,0,3.348,2.821V4.853H2.821A2.824,2.824,0,0,0,0,7.674v4.514a2.824,2.824,0,0,0,2.821,2.821h.527v2.558A1.7,1.7,0,0,0,5.041,19.26h9.178a1.7,1.7,0,0,0,1.693-1.693V15.009h.527a2.824,2.824,0,0,0,2.821-2.821V7.674A2.824,2.824,0,0,0,16.439,4.853ZM4.476,2.821A1.7,1.7,0,0,1,6.169,1.129h6.921a1.7,1.7,0,0,1,1.693,1.693V4.853H4.476ZM14.783,17.567a.565.565,0,0,1-.564.564H5.041a.565.565,0,0,1-.564-.564V12H14.783Zm3.348-5.379a1.7,1.7,0,0,1-1.693,1.693h-.527V12h.339a.564.564,0,1,0,0-1.129H3.009a.564.564,0,1,0,0,1.129h.339v1.881H2.821a1.7,1.7,0,0,1-1.693-1.693V7.674A1.7,1.7,0,0,1,2.821,5.981H16.439a1.7,1.7,0,0,1,1.693,1.693Z" fill="#2c6ae5" />
                                         <path id="Path_193" data-name="Path 193" d="M204.574,353h-3.009a.564.564,0,1,0,0,1.128h3.009a.564.564,0,1,0,0-1.128Z" transform="translate(-193.439 -339.721)" fill="#2c6ae5" />
                                         <path id="Path_194" data-name="Path 194" d="M204.574,417h-3.009a.564.564,0,1,0,0,1.129h3.009a.564.564,0,1,0,0-1.129Z" transform="translate(-193.439 -401.314)" fill="#2c6ae5" />
                                         <path id="Path_195" data-name="Path 195" d="M67.37,193H65.564a.564.564,0,1,0,0,1.128H67.37a.564.564,0,1,0,0-1.128Z" transform="translate(-62.555 -185.74)" fill="#2c6ae5" />
