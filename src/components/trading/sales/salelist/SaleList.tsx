@@ -181,7 +181,7 @@ const SaleList = () => {
     const headers = [
       "ID",
       "Sale Date",
-      "Reference Number",
+      "Reference",
       "Customer",
       "Warehouse",
       "Biller",

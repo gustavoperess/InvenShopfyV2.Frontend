@@ -177,7 +177,7 @@ const PurchaseList = () => {
 
     const headers = [
       "ID",
-      "Reference Number",
+      "Reference",
       "Purchase Date",
       "Purchase Status",
       "Warehouse",

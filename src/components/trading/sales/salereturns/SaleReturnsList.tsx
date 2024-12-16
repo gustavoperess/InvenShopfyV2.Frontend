@@ -205,7 +205,7 @@ const SaleReturnsList = () => {
     const headers = [
       "ID",
       "Return Date",
-      "Reference Number",
+      "Reference",
       "Customer",
       "Warehouse",
       "Biller",

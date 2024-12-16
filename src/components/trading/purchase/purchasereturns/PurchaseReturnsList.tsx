@@ -199,7 +199,7 @@ const PurchaseReturnsList = () => {
   
     const headers = [
       "ID",
-      "Reference Number",
+      "Reference",
       "returnDate Date",
       "Purchase Status",
       "Warehouse",

@@ -41,15 +41,6 @@ const AddCustomer = () => {
         } catch (error: any) {
             if (error?.data?.message) {
                 toast.error(error?.data?.message);
-                setCustomerName('');
-                setCustomerGroup('');
-                setPhone('');
-                setEmail('');
-                setCountry('');
-                setCity('');
-                setAddress('');
-                setZipCode('');
-                setRewardPoint(undefined);
             } else {
                 // Fallback error message
                 toast.error("Failed to create Customer. Please try again later.");
@@ -72,8 +63,6 @@ const AddCustomer = () => {
             );
         }
     );
-
-
 
     const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -111,7 +100,7 @@ const AddCustomer = () => {
                                                 type="text"
                                                 required
                                                 value={customerName}
-                                                placeholder='Walk - in - customer'
+                                                placeholder='John Smith'
                                                 variant="outlined"
                                                 inputProps={{ maxLength: 150 }}
                                                 onChange={(e) => setCustomerName(e.target.value)} />
@@ -191,18 +180,18 @@ const AddCustomer = () => {
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                 <div className="invenShopfy-form-field">
-                                    <h5>Country</h5>
+                                    <h5>Address</h5>
                                     <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
                                                 type="text"
                                                 required
-                                                value={country}
-                                                placeholder="United Kindgom"
+                                                value={address}
+                                                placeholder='Boulevard 101'
                                                 variant="outlined"
-                                                inputProps={{ maxLength: 30 }}
-                                                onChange={(e) => setCountry(e.target.value)}
+                                                inputProps={{ maxLength: 160 }}
+                                                onChange={(e) => setAddress(e.target.value)}
                                             />
                                         </FormControl>
                                     </div>
@@ -229,18 +218,18 @@ const AddCustomer = () => {
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                 <div className="invenShopfy-form-field">
-                                    <h5>Address</h5>
+                                    <h5>Country</h5>
                                     <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
                                                 type="text"
                                                 required
-                                                value={address}
-                                                placeholder='Boulevard 101'
+                                                value={country}
+                                                placeholder="United Kingdom"
                                                 variant="outlined"
-                                                inputProps={{ maxLength: 160 }}
-                                                onChange={(e) => setAddress(e.target.value)}
+                                                inputProps={{ maxLength: 30 }}
+                                                onChange={(e) => setCountry(e.target.value)}
                                             />
                                         </FormControl>
                                     </div>

@@ -267,7 +267,7 @@ const CustomerReport = () => {
                                   direction={orderBy === 'numberOfPurchases' ? order : 'asc'}
                                   onClick={() => handleRequestSort('numberOfPurchases')}
                                 >
-                                  Purchased Qty
+                                  Purchases
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>

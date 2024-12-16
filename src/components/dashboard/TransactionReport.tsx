@@ -173,7 +173,7 @@ const TransactionReport = () => {
                         <thead>
                             <tr className='bg-lightest'>
                                 <th>Return Date</th>
-                                <th>Reference Number</th>
+                                <th>Reference</th>
                                 <th>Customer</th>
                                 <th>Biller</th>
                                 <th>Status</th>

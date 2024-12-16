@@ -99,10 +99,29 @@ const AddSupplier = () => {
                                                 type="name"
                                                 required
                                                 value={supplierName}
-                                                placeholder='Supplier 01'
+                                                placeholder='John Smith'
                                                 variant="outlined"
                                                 inputProps={{ maxLength: 150 }}
                                                 onChange={(e) => setSupplierName(e.target.value)} />
+                                        </FormControl>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
+                                <div className="invenShopfy-form-field">
+                                    <h5>Company</h5>
+                                    <div className="invenShopfy-input-field-style">
+                                        <FormControl fullWidth>
+                                            <TextField
+                                                fullWidth
+                                                type="text"
+                                                required
+                                                value={company}
+                                                placeholder='Apple'
+                                                variant="outlined"
+                                                inputProps={{ maxLength: 160 }}
+                                                onChange={(e) => setCompany(e.target.value)}
+                                            />
                                         </FormControl>
                                     </div>
                                 </div>
@@ -147,18 +166,18 @@ const AddSupplier = () => {
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                 <div className="invenShopfy-form-field">
-                                    <h5>Country</h5>
+                                    <h5>Address</h5>
                                     <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
                                                 type="text"
                                                 required
-                                                value={country}
-                                                placeholder="United Kindgom"
+                                                value={address}
+                                                placeholder='Boulevard 101'
                                                 variant="outlined"
-                                                inputProps={{ maxLength: 30 }}
-                                                onChange={(e) => setCountry(e.target.value)}
+                                                inputProps={{ maxLength: 160 }}
+                                                onChange={(e) => setAddress(e.target.value)}
                                             />
                                         </FormControl>
                                     </div>
@@ -185,23 +204,23 @@ const AddSupplier = () => {
                             </div>
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                 <div className="invenShopfy-form-field">
-                                    <h5>Address</h5>
+                                    <h5>Country</h5>
                                     <div className="invenShopfy-input-field-style">
                                         <FormControl fullWidth>
                                             <TextField
                                                 fullWidth
                                                 type="text"
                                                 required
-                                                value={address}
-                                                placeholder='Boulevard 101'
+                                                value={country}
+                                                placeholder="United Kingdom"
                                                 variant="outlined"
-                                                inputProps={{ maxLength: 160 }}
-                                                onChange={(e) => setAddress(e.target.value)}
+                                                inputProps={{ maxLength: 30 }}
+                                                onChange={(e) => setCountry(e.target.value)}
                                             />
                                         </FormControl>
                                     </div>
                                 </div>
-                            </div>
+                            </div> 
                             <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
                                 <div className="invenShopfy-form-field">
                                     <h5>Zip Code</h5>
@@ -216,25 +235,6 @@ const AddSupplier = () => {
                                                 variant="outlined"
                                                 inputProps={{ maxLength: 20 }}
                                                 onChange={(e) => setZipCode(e.target.value)}
-                                            />
-                                        </FormControl>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-4">
-                                <div className="invenShopfy-form-field">
-                                    <h5>Company</h5>
-                                    <div className="invenShopfy-input-field-style">
-                                        <FormControl fullWidth>
-                                            <TextField
-                                                fullWidth
-                                                type="text"
-                                                required
-                                                value={company}
-                                                placeholder='Apple'
-                                                variant="outlined"
-                                                inputProps={{ maxLength: 160 }}
-                                                onChange={(e) => setCompany(e.target.value)}
                                             />
                                         </FormControl>
                                     </div>

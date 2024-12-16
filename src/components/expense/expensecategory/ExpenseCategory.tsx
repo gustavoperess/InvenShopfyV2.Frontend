@@ -316,7 +316,7 @@ const ExpenseCategory = () => {
                                             Action <i className="fa-sharp fa-solid fa-sort-down"></i>
                                           </button>
                                           <Menu {...bindMenu(popupState)}>
-                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i> Edit</MenuItem>
+                                            {/* <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i> Edit</MenuItem> */}
                                             <MenuItem onClick={() => handleOpenDelete(expenseCategory.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                           </Menu>
                                         </React.Fragment>

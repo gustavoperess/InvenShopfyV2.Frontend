@@ -155,7 +155,7 @@ const PosSaleList = (
                 <div className="grid grid-cols-12 gap-x-5 gap-y-6">
                     <div className="col-span-12 md:col-span-12 lg:col-span-12 xl:col-span-12">
                         <div className="invenShopfy-form-field">
-                            <h5>Search by reference number</h5>
+                            <h5>Search by reference</h5>
                             <div className="invenShopfy-input-field-style search-field">
                                 <TextField
                                     fullWidth

@@ -402,7 +402,7 @@ const CustomerList = () => {
                                               Action <i className="fa-sharp fa-solid fa-sort-down"></i>
                                             </button>
                                             <Menu {...bindMenu(popupState)}>
-                                              <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/people/addcustomer'>Edit</Link></MenuItem>
+                                              {/* <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/people/addcustomer'>Edit</Link></MenuItem> */}
                                               <MenuItem onClick={() => handleOpenDelete(customer.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                             </Menu>
                                           </React.Fragment>

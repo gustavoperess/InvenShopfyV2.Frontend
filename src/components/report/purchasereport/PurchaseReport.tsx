@@ -96,7 +96,7 @@ const PurchaseReport = () => {
       "ID",
       "Product",
       "Purchase Date",
-      "Reference Number",
+      "Reference",
       "Supplier",
       "Tax",
       "Price",
@@ -258,7 +258,7 @@ const PurchaseReport = () => {
                                   direction={orderBy === 'purchaseReferenceNumber' ? order : 'asc'}
                                   onClick={() => handleRequestSort('purchaseReferenceNumber')}
                                 >
-                                  Reference Number
+                                  Reference
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -292,7 +292,7 @@ const PurchaseReport = () => {
                                   direction={orderBy === 'totalQuantityBoughtPerProduct' ? order : 'asc'}
                                   onClick={() => handleRequestSort('totalQuantityBoughtPerProduct')}
                                 >
-                                  Total Qty Bought
+                                  Total Qty Purchased
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>

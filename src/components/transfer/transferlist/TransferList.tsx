@@ -132,7 +132,7 @@ const TransferList = () => {
       "Product Name",
       "Qty Transfered",
       "Reason",
-      "Reference Number",
+      "Reference",
       "Date",
       "To Warehouse",
       "From Warehouse",

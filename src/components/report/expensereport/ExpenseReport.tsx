@@ -135,44 +135,6 @@ const ExpenseReport = () => {
       <div className="invenShopfy-content-area px-4 sm:px-7">
         <div className="invenShopfy-report-area bg-white p-5 sm:p-7 custom-shadow rounded-8 mt-7">
           <div className="grid grid-cols-12 gap-y-7 sm:gap-7 mb-7 items-end">
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-              <div className="invenShopfy-formTwo-field">
-                <h5>Start Date</h5>
-                <div className="invenShopfy-input-field-style">
-                  <DatePicker
-                    selected={startDate ? new Date(startDate) : undefined}
-                    onChange={(date) => {
-                      if (date) {
-                        const formattedDate = formatDate(date);
-                        setStartDate(formattedDate); // Store formatted date
-                      } else {
-                        setStartDate(undefined); // Reset to undefined
-                      }
-                    }}
-                    placeholderText="DD/MM/YYYY"
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 xl:col-span-3">
-              <div className="invenShopfy-formTwo-field">
-                <h5>End Date</h5>
-                <div className="invenShopfy-input-field-style">
-                  <DatePicker
-                    selected={endDate ? new Date(endDate) : undefined}
-                    onChange={(date) => {
-                      if (date) {
-                        const formattedDate = formatDate(date);
-                        setEndDate(formattedDate);
-                      } else {
-                        setEndDate(undefined);
-                      }
-                    }}
-                    placeholderText="DD/MM/YYYY"
-                  />
-                </div>
-              </div>
-            </div>
             <div className="col-span-12 md:col-span-6 xl:col-span-3">
               <div className="invenShopfy-form-field">
                 <h5>Report Shortcut</h5>
@@ -245,7 +207,7 @@ const ExpenseReport = () => {
                                   direction={orderBy === 'numberOfTimesUsed' ? order : 'asc'}
                                   onClick={() => handleRequestSort('numberOfTimesUsed')}
                                 >
-                                  Number of times
+                                  Purchases
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>

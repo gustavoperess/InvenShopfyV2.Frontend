@@ -134,7 +134,7 @@ const AddReturnPopup: React.FC<AddReturnPopupProps> = ({ open, handlePurchaseRet
                             <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                                 <div className="col-span-12">
                                     <div className="invenShopfy-form-field">
-                                        <h5>Search by reference number</h5>
+                                        <h5>Search by reference</h5>
                                         <div className="invenShopfy-input-field-style search-field">
                                             <TextField
                                                 fullWidth

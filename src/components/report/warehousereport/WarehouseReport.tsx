@@ -186,7 +186,7 @@ const WarehouseReport = () => {
                                   direction={orderBy === 'totalAmountBought' ? order : 'asc'}
                                   onClick={() => handleRequestSort('totalAmountBought')}
                                 >
-                                  Total Amount bought
+                                  Total Amount Purchased
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>

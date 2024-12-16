@@ -99,7 +99,7 @@ const TradingSalesListAddPayemnt = ({ open, saleId, handleAddPaymentDialogClose 
                                 <div className="grid grid-cols-12 sm:gap-x-[30px] gap-y-[18px]">
                                     <div className="col-span-12 md:col-span-6">
                                         <div className="invenShopfy-formTree-field">
-                                            <h5>Reference Number</h5>
+                                            <h5>Reference</h5>
                                             <div className="invenShopfy-select-field-style">
                                                 <TextField
                                                     required

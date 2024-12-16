@@ -123,7 +123,7 @@ const CreatePayment = () => {
                                 <div className="grid grid-cols-12 gap-y-7 sm:gap-7">
                                     <div className="col-span-12 md:col-span-4 lg:col-span-4 xl:col-span-4">
                                         <div className="invenShopfy-form-field">
-                                            <h5>Search by Voucher number</h5>
+                                            <h5>Search by Reference</h5>
                                             <div className="invenShopfy-input-field-style search-field">
                                                 <TextField
                                                     fullWidth

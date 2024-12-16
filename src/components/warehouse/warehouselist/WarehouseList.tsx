@@ -298,7 +298,7 @@ const WarehouseList = () => {
                                   direction={orderBy === 'id' ? order : 'asc'}
                                   onClick={() => handleRequestSort('id')}
                                 >
-                                  Sl
+                                  Number
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell sortDirection={orderBy === 'warehouse' ? order : false}>
@@ -391,7 +391,7 @@ const WarehouseList = () => {
                                             Action <i className="fa-sharp fa-solid fa-sort-down"></i>
                                           </button>
                                           <Menu {...bindMenu(popupState)}>
-                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href="/warehouse/addWarehouse">Edit</Link></MenuItem>
+                                            {/* <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href="/warehouse/addWarehouse">Edit</Link></MenuItem> */}
                                             <MenuItem onClick={() => handleOpenDelete(warehouse.id)}><i className="fa-light fa-trash-can"></i> Delete</MenuItem>
                                           </Menu>
                                         </React.Fragment>

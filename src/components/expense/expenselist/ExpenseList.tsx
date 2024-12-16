@@ -336,7 +336,7 @@ const ExpenseList = () => {
                                   active={orderBy === 'voucherNumber'}
                                   direction={orderBy === 'voucherNumber' ? order : 'asc'}
                                   onClick={() => handleRequestSort('voucherNumber')}>
-                                  Vucher No
+                                  Reference No
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
@@ -453,7 +453,7 @@ const ExpenseList = () => {
                                           </button>
                                           {/* className={`invenShopfy-btn w-full ${paymentStatus != "Paid" ? '' : 'disabled'}`} */}
                                           <Menu {...bindMenu(popupState)}>
-                                            <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/expense/addexpense'>Edit</Link></MenuItem>
+                                            {/* <MenuItem onClick={popupState.close}><i className="fa-regular fa-pen-to-square"></i><Link href='/expense/addexpense'>Edit</Link></MenuItem> */}
                                             <MenuItem
                                               onClick={() => {
                                                 if (expense.expenseStatus !== "Paid") {

@@ -267,7 +267,7 @@ const SupplierReport = () => {
                                   active={orderBy === 'numberOfProductsBought'}
                                   direction={orderBy === 'numberOfProductsBought' ? order : 'asc'}
                                   onClick={() => handleRequestSort('numberOfProductsBought')}>
-                                  Purchased Qty
+                                  Purchases
                                 </TableSortLabel>
                               </TableCell>
                               <TableCell>
