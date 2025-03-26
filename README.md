@@ -7,7 +7,7 @@ employees, and more 📦👥📊.
 Check the deployed version: 
   https://invenshopfy.online 
 
-Backend Stack 
+Frontend Stack 
 - TypeScript, React, Redux-Toolkit, TailwindCSS, Next.js
 - Material-UI (MUI) for component design and icons.
 - ApexCharts for interactive charts and data visualization.
