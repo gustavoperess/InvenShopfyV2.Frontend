@@ -58,6 +58,14 @@ const LoginForm = () => {
     return (
         <>
             <form onSubmit={handleSubmit} className="invenShopfy-login-wrapper">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-center">
+                    <p className="text-red-800 text-sm font-bold">
+                        Please note<br/>
+                        This application is hosted on Azure and may experience a cold start.<br />
+                        Please be patient while the application loads. <br />
+                        It will only take a few seconds to log in 😊
+                    </p>
+                </div>
                 <div className="invenShopfy-login-logo text-center mb-12">
                     <Image src={logo}  style={{ width: 'auto', height: 'auto' }} alt="logo img" />
                 </div>
